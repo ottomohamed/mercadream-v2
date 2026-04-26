@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Pricing</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;
+  --surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;
+  --border:rgba(200,255,0,0.1);--border-b:rgba(200,255,0,0.4);
+  --text:#c0c0c0;--text-dim:#444;--text-bright:#f0f0f0;
+  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--surface);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+body.lang-ar{direction:rtl;font-family:'Cairo',var(--body)}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
+.orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,255,0,0.04),transparent);top:-150px;right:-80px}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(255,186,63,0.03),transparent);bottom:-100px;left:-80px}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,6,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:32px;height:32px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.05)}
+.logo-mark svg{width:16px;height:16px}
+.logo-name{font-family:var(--display);font-size:12px;font-weight:700;color:var(--acid);letter-spacing:3px}
+.hdr-nav{display:flex;gap:24px}
+.hdr-nav a{font-size:10px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .2s;font-family:var(--mono)}
+.hdr-nav a:hover,.hdr-nav a.on{color:var(--acid)}
+.hdr-right{display:flex;align-items:center;gap:12px}
+.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:3px}
+.lb{font-family:var(--mono);font-size:9px;padding:4px 8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.lb.on{background:var(--acid);color:#000;font-weight:700}
+.lb:hover:not(.on){color:var(--acid)}
+.btn-hdr{font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:6px 14px;border:1px solid var(--border-b);background:var(--acid);color:#000;cursor:pointer;font-weight:700;text-decoration:none}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+
+/* HERO */
+.pricing-hero{padding:110px 0 60px;text-align:center}
+.section-tag{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid);margin-bottom:16px}
+.pricing-hero h1{font-family:var(--display);font-size:clamp(32px,5vw,60px);font-weight:900;color:var(--text-bright);margin-bottom:16px;letter-spacing:-1px}
+.pricing-hero h1 span{color:var(--acid)}
+.pricing-hero p{font-size:16px;color:var(--text);max-width:500px;margin:0 auto 40px}
+
+/* BILLING TOGGLE */
+.billing-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:60px}
+.toggle-wrap{display:flex;background:var(--s3);border:1px solid var(--border);padding:3px}
+.tog{font-family:var(--mono);font-size:10px;letter-spacing:2px;padding:8px 20px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s}
+.tog.on{background:var(--acid);color:#000;font-weight:700}
+.save-tag{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:4px 12px;background:rgba(255,186,63,0.1);border:1px solid rgba(255,186,63,0.3);color:var(--gold)}
+
+/* PLANS */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:80px}
+.plan{background:var(--s2);padding:36px 28px;position:relative;transition:background .3s}
+.plan:hover{background:var(--s3)}
+.plan.featured{background:linear-gradient(160deg,rgba(200,255,0,0.04),rgba(200,255,0,0.01));border:1px solid rgba(200,255,0,0.2)}
+.plan-badge{
+  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:8px;letter-spacing:2px;
+  padding:4px 14px;background:var(--acid);color:#000;font-weight:700;white-space:nowrap
+}
+.plan-tier{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text-dim);margin-bottom:12px}
+.plan-name{font-family:var(--display);font-size:22px;font-weight:700;color:var(--text-bright);margin-bottom:6px}
+.plan-desc{font-size:13px;color:var(--text-dim);margin-bottom:28px}
+.plan-price{margin-bottom:4px}
+.plan-price .amount{font-family:var(--display);font-size:52px;font-weight:900;color:var(--acid);line-height:1}
+.plan-price .currency{font-family:var(--display);font-size:20px;color:var(--acid-dim);vertical-align:top;line-height:1.8}
+.plan-period{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;margin-bottom:28px}
+.divider{height:1px;background:var(--border);margin:24px 0}
+.feat-list{list-style:none;space-y:8px}
+.feat-list li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:13px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.03)}
+.feat-list li:last-child{border-bottom:none}
+.feat-list .ck{color:var(--acid-dim);font-size:14px;flex-shrink:0;margin-top:1px}
+.feat-list .st{color:var(--gold);font-size:14px;flex-shrink:0;margin-top:1px}
+.feat-list strong{color:var(--text-bright)}
+.btn-plan{
+  display:block;width:100%;margin-top:28px;padding:13px;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;
+  cursor:pointer;border:none;transition:all .2s;text-align:center;text-decoration:none
+}
+.btn-outline-p{background:transparent;border:1px solid var(--border-b);color:var(--acid)}
+.btn-outline-p:hover{background:rgba(200,255,0,0.06)}
+.btn-solid-p{background:var(--acid);color:#000;font-weight:700}
+.btn-solid-p:hover{background:#d4ff1a;box-shadow:0 0 30px rgba(200,255,0,0.3)}
+
+/* COMPARE TABLE */
+.compare{margin-bottom:80px}
+.compare h2{font-family:var(--display);font-size:22px;color:var(--text-bright);margin-bottom:24px;text-align:center}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.compare-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text)}
+.compare-table tr:hover td{background:var(--s3)}
+.compare-table .yes{color:var(--acid)}
+.compare-table .no{color:var(--text-dim)}
+.compare-table .feat-col{color:var(--text-bright);font-weight:500}
+
+/* FAQ */
+.faq{max-width:720px;margin:0 auto 80px}
+.faq h2{font-family:var(--display);font-size:22px;color:var(--text-bright);margin-bottom:32px;text-align:center}
+.faq-item{border-bottom:1px solid var(--border);padding:20px 0;cursor:pointer}
+.faq-q{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:var(--text-bright)}
+.faq-a{font-size:13px;color:var(--text);line-height:1.7;margin-top:12px;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-arrow{font-family:var(--mono);color:var(--text-dim);transition:transform .2s;font-size:16px}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--acid)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
+.foot-logo{font-family:var(--display);font-size:10px;color:var(--acid);letter-spacing:3px}
+.foot-links{display:flex;gap:20px}
+.foot-links a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;letter-spacing:1px;transition:color .2s}
+.foot-links a:hover{color:var(--acid)}
+.foot-copy{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
+
+@media(max-width:900px){.plans{grid-template-columns:1fr}.hdr-nav{display:none}.page{padding:0 16px}}
+@media(max-width:600px){header{padding:0 16px}.billing-row{flex-direction:column}}
+</style>
+</head>
+<body class="lang-en">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<header>
+  <a href="index.html" class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
+    <span class="logo-name">MERCADREAM</span>
+  </a>
+  <nav class="hdr-nav">
+    <a href="index.html" data-i18n="nav_home">HOME</a>
+    <a href="studio.html" data-i18n="nav_studio">STUDIO</a>
+    <a href="pricing.html" class="on" data-i18n="nav_pricing">PRICING</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="lang-sw">
+      <button class="lb on" onclick="setLang('en')">EN</button>
+      <button class="lb" onclick="setLang('es')">ES</button>
+      <button class="lb" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="studio.html" class="btn-hdr" data-i18n="btn_start">START FREE</a>
+  </div>
+</header>
+
+<div class="page">
+  <div class="pricing-hero">
+    <div class="section-tag" data-i18n="page_tag">PLANS & PRICING</div>
+    <h1><span data-i18n="hero_h1a">Choose Your</span> <span data-i18n="hero_h1b">Creative Power</span></h1>
+    <p data-i18n="hero_sub">Scalable plans for every creator. From indie filmmaker to full production studio.</p>
+    <div class="billing-row">
+      <div class="toggle-wrap">
+        <button class="tog on" id="togM" onclick="setBilling('monthly')" data-i18n="bill_m">MONTHLY</button>
+        <button class="tog" id="togY" onclick="setBilling('yearly')" data-i18n="bill_y">YEARLY</button>
+      </div>
+      <div class="save-tag" data-i18n="save_tag">SAVE 20%</div>
+    </div>
+  </div>
+
+  <div class="plans">
+    <!-- REGULAR -->
+    <div class="plan">
+      <div class="plan-tier" data-i18n="p1_tier">TIER 01</div>
+      <div class="plan-name" data-i18n="p1_name">Regular</div>
+      <div class="plan-desc" data-i18n="p1_desc">For indie creators</div>
+      <div class="plan-price"><span class="currency">$</span><span class="amount" id="p1price">21</span></div>
+      <div class="plan-period" data-i18n="period_m">PER MONTH, BILLED MONTHLY</div>
+      <div class="divider"></div>
+      <ul class="feat-list">
+        <li><span class="ck">✓</span><span data-i18n="p1_f1">720p Generation</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p1_f2">30 Videos / Month</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p1_f3">Standard Queue</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p1_f4">AI Director Chat</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p1_f5">3 Languages</span></li>
+      </ul>
+      <a href="studio.html" class="btn-plan btn-outline-p" data-i18n="btn_get">GET STARTED</a>
+    </div>
+
+    <!-- ADVANCED -->
+    <div class="plan">
+      <div class="plan-tier" data-i18n="p2_tier">TIER 02</div>
+      <div class="plan-name" data-i18n="p2_name">Advanced</div>
+      <div class="plan-desc" data-i18n="p2_desc">For professional creatives</div>
+      <div class="plan-price"><span class="currency">$</span><span class="amount" id="p2price">79</span></div>
+      <div class="plan-period" data-i18n="period_m">PER MONTH, BILLED MONTHLY</div>
+      <div class="divider"></div>
+      <ul class="feat-list">
+        <li><span class="ck">✓</span><span data-i18n="p2_f1">4K Generation</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p2_f2">250 Videos / Month</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p2_f3">Priority Queue</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p2_f4">Custom Voice Cloning</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p2_f5">Advanced Dream Extractor</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p2_f6">Style Transfer</span></li>
+      </ul>
+      <a href="studio.html" class="btn-plan btn-outline-p" data-i18n="btn_get">GET STARTED</a>
+    </div>
+
+    <!-- PROFESSIONAL (FEATURED) -->
+    <div class="plan featured">
+      <div class="plan-badge" data-i18n="feat_badge">🔥 MOST POPULAR</div>
+      <div class="plan-tier" data-i18n="p3_tier">TIER 03</div>
+      <div class="plan-name" data-i18n="p3_name">Professional</div>
+      <div class="plan-desc" data-i18n="p3_desc">For production studios</div>
+      <div class="plan-price"><span class="currency">$</span><span class="amount" id="p3price">200</span></div>
+      <div class="plan-period" data-i18n="period_m">PER MONTH, BILLED MONTHLY</div>
+      <div class="divider"></div>
+      <ul class="feat-list">
+        <li><span class="st">★</span><span><strong data-i18n="p3_f1">8K Ultra Quality</strong></span></li>
+        <li><span class="st">★</span><span><strong data-i18n="p3_f2">Unlimited Generations</strong></span></li>
+        <li><span class="ck">✓</span><span data-i18n="p3_f3">Priority GPU Access</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p3_f4">Full API Access</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p3_f5">Personal Neural Architect</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p3_f6">White-label Output</span></li>
+        <li><span class="ck">✓</span><span data-i18n="p3_f7">24/7 Priority Support</span></li>
+      </ul>
+      <a href="studio.html" class="btn-plan btn-solid-p" data-i18n="btn_unlock">UNLOCK EVERYTHING</a>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2 data-i18n="faq_h">Frequently Asked</h2>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span data-i18n="faq1_q">What counts as a generation?</span><span class="faq-arrow">▼</span></div>
+      <div class="faq-a" data-i18n="faq1_a">One complete render of a video. Edits and re-renders count as separate generations. Preview renders at reduced quality do not count.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span data-i18n="faq2_q">Can I switch plans anytime?</span><span class="faq-arrow">▼</span></div>
+      <div class="faq-a" data-i18n="faq2_a">Yes. Upgrades take effect immediately. Downgrades take effect at the start of your next billing cycle.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span data-i18n="faq3_q">Is my content used for AI training?</span><span class="faq-arrow">▼</span></div>
+      <div class="faq-a" data-i18n="faq3_a">Never. Your content is encrypted and never used to train shared models. Your intellectual property remains yours.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span data-i18n="faq4_q">Which video platforms does the output work with?</span><span class="faq-arrow">▼</span></div>
+      <div class="faq-a" data-i18n="faq4_a">Our prompts are optimized for Runway Gen-3, Kling 1.6, Pika 2.0, and Sora. We update our output engine as new platforms emerge.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('open')">
+      <div class="faq-q"><span data-i18n="faq5_q">Do unused videos roll over?</span><span class="faq-arrow">▼</span></div>
+      <div class="faq-a" data-i18n="faq5_a">Unused generations do not roll over on Regular and Advanced plans. Professional plan has unlimited generations.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">MERCADREAM</div>
+  <div class="foot-links">
+    <a href="index.html" data-i18n="nav_home">Home</a>
+    <a href="studio.html" data-i18n="nav_studio">Studio</a>
+    <a href="upscale.html" data-i18n="nav_upscale">4K Engine</a>
+    <a href="pricing.html" data-i18n="nav_pricing">Pricing</a>
+  </div>
+  <div class="foot-copy">© 2025 MERCADREAM — AI CINEMA STUDIO</div>
+</footer>
+
+<script>
+const PRICES={monthly:{p1:21,p2:79,p3:200},yearly:{p1:17,p2:63,p3:160}};
+let billing='monthly';
+
+function setBilling(b){
+  billing=b;
+  document.getElementById('togM').classList.toggle('on',b==='monthly');
+  document.getElementById('togY').classList.toggle('on',b==='yearly');
+  document.getElementById('p1price').textContent=PRICES[b].p1;
+  document.getElementById('p2price').textContent=PRICES[b].p2;
+  document.getElementById('p3price').textContent=PRICES[b].p3;
+  const pkey = b==='monthly'?'period_m':'period_y';
+  document.querySelectorAll('.plan-period').forEach(el=>{el.setAttribute('data-i18n',pkey);});
+  applyI18n();
+}
+
+const I18N={
+  en:{
+    nav_home:"HOME",nav_studio:"STUDIO",nav_pricing:"PRICING",btn_start:"START FREE",
+    page_tag:"PLANS & PRICING",
+    hero_h1a:"Choose Your",hero_h1b:"Creative Power",
+    hero_sub:"Scalable plans for every creator. From indie filmmaker to full production studio.",
+    bill_m:"MONTHLY",bill_y:"YEARLY",save_tag:"SAVE 20%",
+    period_m:"PER MONTH, BILLED MONTHLY",period_y:"PER MONTH, BILLED YEARLY",
+    p1_tier:"TIER 01",p1_name:"Regular",p1_desc:"For indie creators",
+    p1_f1:"720p Generation",p1_f2:"30 Videos / Month",p1_f3:"Standard Queue",p1_f4:"AI Director Chat",p1_f5:"3 Languages",
+    p2_tier:"TIER 02",p2_name:"Advanced",p2_desc:"For professional creatives",
+    p2_f1:"4K Generation",p2_f2:"250 Videos / Month",p2_f3:"Priority Queue",p2_f4:"Custom Voice Cloning",p2_f5:"Advanced Dream Extractor",p2_f6:"Style Transfer",
+    p3_tier:"TIER 03",p3_name:"Professional",p3_desc:"For production studios",
+    feat_badge:"🔥 MOST POPULAR",
+    p3_f1:"8K Ultra Quality",p3_f2:"Unlimited Generations",p3_f3:"Priority GPU Access",p3_f4:"Full API Access",p3_f5:"Personal Neural Architect",p3_f6:"White-label Output",p3_f7:"24/7 Priority Support",
+    btn_get:"GET STARTED",btn_unlock:"UNLOCK EVERYTHING",
+    faq_h:"Frequently Asked",
+    faq1_q:"What counts as a generation?",faq1_a:"One complete render of a video. Edits and re-renders count as separate generations.",
+    faq2_q:"Can I switch plans anytime?",faq2_a:"Yes. Upgrades take effect immediately. Downgrades take effect at the start of your next billing cycle.",
+    faq3_q:"Is my content used for AI training?",faq3_a:"Never. Your content is encrypted and never used to train shared models.",
+    faq4_q:"Which video platforms does the output work with?",faq4_a:"Our prompts are optimized for Runway Gen-3, Kling 1.6, Pika 2.0, and Sora.",
+    faq5_q:"Do unused videos roll over?",faq5_a:"Unused generations do not roll over on Regular and Advanced plans. Professional plan has unlimited generations."
+  },
+  es:{
+    nav_home:"INICIO",nav_studio:"ESTUDIO",nav_pricing:"PRECIOS",btn_start:"COMENZAR GRATIS",
+    page_tag:"PLANES Y PRECIOS",
+    hero_h1a:"Elige Tu",hero_h1b:"Poder Creativo",
+    hero_sub:"Planes escalables para cada creador. Desde cineasta independiente hasta estudio de producción completo.",
+    bill_m:"MENSUAL",bill_y:"ANUAL",save_tag:"AHORRA 20%",
+    period_m:"POR MES, FACTURADO MENSUALMENTE",period_y:"POR MES, FACTURADO ANUALMENTE",
+    p1_tier:"NIVEL 01",p1_name:"Regular",p1_desc:"Para creadores independientes",
+    p1_f1:"Generación 720p",p1_f2:"30 Videos / Mes",p1_f3:"Cola Estándar",p1_f4:"Chat Director IA",p1_f5:"3 Idiomas",
+    p2_tier:"NIVEL 02",p2_name:"Avanzado",p2_desc:"Para creativos profesionales",
+    p2_f1:"Generación 4K",p2_f2:"250 Videos / Mes",p2_f3:"Cola Prioritaria",p2_f4:"Clonación de Voz",p2_f5:"Dream Extractor Avanzado",p2_f6:"Transferencia de Estilo",
+    p3_tier:"NIVEL 03",p3_name:"Profesional",p3_desc:"Para estudios de producción",
+    feat_badge:"🔥 MÁS POPULAR",
+    p3_f1:"Calidad 8K Ultra",p3_f2:"Generaciones Ilimitadas",p3_f3:"Acceso GPU Prioritario",p3_f4:"Acceso API Completo",p3_f5:"Arquitecto Neural Personal",p3_f6:"Salida White-label",p3_f7:"Soporte 24/7 Prioritario",
+    btn_get:"COMENZAR",btn_unlock:"DESBLOQUEAR TODO",
+    faq_h:"Preguntas Frecuentes",
+    faq1_q:"¿Qué cuenta como generación?",faq1_a:"Un renderizado completo de un video. Las ediciones y re-renderizados cuentan como generaciones separadas.",
+    faq2_q:"¿Puedo cambiar de plan en cualquier momento?",faq2_a:"Sí. Las actualizaciones surten efecto inmediatamente. Las reducciones surten efecto al inicio de tu próximo ciclo.",
+    faq3_q:"¿Mi contenido se usa para entrenar IA?",faq3_a:"Nunca. Tu contenido está encriptado y nunca se usa para entrenar modelos compartidos.",
+    faq4_q:"¿Con qué plataformas funciona el resultado?",faq4_a:"Nuestros prompts están optimizados para Runway Gen-3, Kling 1.6, Pika 2.0 y Sora.",
+    faq5_q:"¿Los videos no usados se acumulan?",faq5_a:"No se acumulan en planes Regular y Avanzado. El plan Profesional tiene generaciones ilimitadas."
+  },
+  ar:{
+    nav_home:"الرئيسية",nav_studio:"الاستوديو",nav_pricing:"الأسعار",btn_start:"ابدأ مجاناً",
+    page_tag:"الخطط والأسعار",
+    hero_h1a:"اختر",hero_h1b:"قوتك الإبداعية",
+    hero_sub:"خطط قابلة للتطوير لكل مبدع. من المخرج المستقل إلى استوديو الإنتاج الكامل.",
+    bill_m:"شهري",bill_y:"سنوي",save_tag:"وفر 20%",
+    period_m:"شهرياً، تُفوتر شهرياً",period_y:"شهرياً، تُفوتر سنوياً",
+    p1_tier:"المستوى 01",p1_name:"العادي",p1_desc:"للمبدعين المستقلين",
+    p1_f1:"جودة 720p",p1_f2:"30 فيديو / شهر",p1_f3:"طابور عادي",p1_f4:"محادثة المخرج الذكي",p1_f5:"3 لغات",
+    p2_tier:"المستوى 02",p2_name:"المتقدم",p2_desc:"للمبدعين المحترفين",
+    p2_f1:"جودة 4K",p2_f2:"250 فيديو / شهر",p2_f3:"طابور أولوية",p2_f4:"استنساخ الصوت",p2_f5:"Dream Extractor متقدم",p2_f6:"نقل الأسلوب",
+    p3_tier:"المستوى 03",p3_name:"الاحترافي",p3_desc:"لاستوديوهات الإنتاج",
+    feat_badge:"🔥 الأكثر شعبية",
+    p3_f1:"جودة 8K فائقة",p3_f2:"إنتاج غير محدود",p3_f3:"وصول GPU أولوية",p3_f4:"وصول API كامل",p3_f5:"مهندس عصبي شخصي",p3_f6:"مخرجات بعلامتك التجارية",p3_f7:"دعم 24/7 أولوية",
+    btn_get:"ابدأ الآن",btn_unlock:"افتح كل شيء",
+    faq_h:"الأسئلة الشائعة",
+    faq1_q:"ما الذي يُحسب كإنتاج واحد؟",faq1_a:"إنتاج كامل لفيديو واحد. التعديلات وإعادة الإنتاج تُحسب إنتاجات منفصلة.",
+    faq2_q:"هل يمكنني تغيير الخطة في أي وقت؟",faq2_a:"نعم. الترقيات تسري فوراً. التخفيضات تسري في بداية دورة الفوترة التالية.",
+    faq3_q:"هل يُستخدم محتواي لتدريب الذكاء الاصطناعي؟",faq3_a:"أبداً. محتواك مشفر ولا يُستخدم لتدريب النماذج المشتركة.",
+    faq4_q:"مع أي منصات فيديو يعمل المخرج؟",faq4_a:"نحسّن الـ prompts لـ Runway Gen-3 و Kling 1.6 و Pika 2.0 و Sora.",
+    faq5_q:"هل تتراكم الفيديوهات غير المستخدمة؟",faq5_a:"لا تتراكم في الخطتين العادية والمتقدمة. الخطة الاحترافية غير محدودة."
+  }
+};
+
+function applyI18n(){
+  const tx=I18N[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(tx[k]) el.textContent=tx[k];
+  });
+}
+
+let currentLang='en';
+function setLang(l){
+  currentLang=l;
+  document.documentElement.lang=l;
+  document.body.className=l==='ar'?'lang-ar':'lang-en';
+  document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));
+  applyI18n();
+  localStorage.setItem('md_lang',l);
+}
+
+window.onload=()=>{
+  const saved=localStorage.getItem('md_lang')||'en';
+  setLang(saved);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Neural Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;--cyan:#00e5ff;
+  --surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--s5:#242424;
+  --border:rgba(200,255,0,0.1);--border-b:rgba(200,255,0,0.38);
+  --text:#b8b8b8;--text-dim:#3e3e3e;--text-bright:#f0f0f0;
+  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--surface);color:var(--text);font-family:var(--body)}
+body.lang-ar{direction:rtl;font-family:'Cairo',var(--body)}
+body.lang-ar .msg.bot{flex-direction:row-reverse}
+body.lang-ar .msg.user{flex-direction:row}
+body.lang-ar .bot-bubble{border-right:none;border-left:2px solid var(--acid)}
+body.lang-ar .user-bubble{text-align:left}
+body.lang-ar .summary-card{border-right:none;border-left:3px solid var(--acid)}
+body.lang-ar .result-box{border-right:none;border-left:3px solid var(--acid)}
+
+/* SCANLINE */
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.015) 3px,rgba(0,0,0,0.015) 4px);pointer-events:none;z-index:9999}
+
+/* GRID */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+
+/* LAYOUT */
+.app{height:100vh;display:flex;flex-direction:column}
+
+/* HEADER */
+.hdr{
+  height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;background:rgba(6,6,6,0.95);border-bottom:1px solid var(--border);
+  flex-shrink:0;z-index:50;position:relative
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:28px;height:28px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.05)}
+.logo-mark svg{width:14px;height:14px}
+.logo-name{font-family:var(--display);font-size:11px;font-weight:700;color:var(--acid);letter-spacing:3px}
+.hdr-mid{display:flex;align-items:center;gap:8px}
+.phase-pill{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:8px;letter-spacing:1px;
+  padding:4px 10px;border:1px solid var(--border);color:var(--text-dim);
+  transition:all .3s
+}
+.phase-pill.on{color:var(--acid);border-color:var(--border-b);background:rgba(200,255,0,0.04)}
+.phase-pill.done{color:var(--acid-dim);border-color:rgba(138,173,0,0.3)}
+.phase-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.phase-arrow{color:var(--text-dim);font-size:10px;margin:0 2px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
+.lb{font-family:var(--mono);font-size:8px;padding:4px 8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.lb.on{background:var(--acid);color:#000;font-weight:700}
+.lb:hover:not(.on){color:var(--acid)}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 8px var(--acid);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.hdr-tag{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:2px}
+.btn-exit{font-family:var(--mono);font-size:8px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-exit:hover{color:var(--acid);border-color:var(--border-b)}
+
+/* WORKSPACE */
+.workspace{flex:1;display:grid;grid-template-columns:1fr 340px;overflow:hidden;position:relative;z-index:1}
+
+/* CHAT ZONE */
+.chat-zone{display:flex;flex-direction:column;border-inline-end:1px solid var(--border);overflow:hidden}
+
+/* MESSAGES */
+.messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.messages::-webkit-scrollbar{width:2px}
+.messages::-webkit-scrollbar-thumb{background:var(--border-b);border-radius:1px}
+
+.msg{display:flex;gap:10px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{flex-direction:row}
+.msg.user{flex-direction:row-reverse}
+.avatar{
+  width:30px;height:30px;border-radius:2px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:7px;font-weight:700;letter-spacing:1px
+}
+.bot-av{background:rgba(200,255,0,0.06);border:1px solid var(--border-b);color:var(--acid)}
+.user-av{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text-dim)}
+.bot-bubble{
+  max-width:78%;padding:12px 16px;font-size:13px;line-height:1.7;
+  background:var(--s3);border:1px solid var(--border);
+  border-right:2px solid var(--acid);color:var(--text-bright)
+}
+.user-bubble{
+  max-width:78%;padding:12px 16px;font-size:13px;line-height:1.7;
+  background:rgba(200,255,0,0.04);border:1px solid rgba(200,255,0,0.15);
+  color:var(--text-bright)
+}
+.typing{display:flex;gap:5px;align-items:center;padding:4px 0}
+.td{width:5px;height:5px;border-radius:50%;background:var(--acid);animation:tb 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-6px);opacity:1}}
+
+/* SUMMARY CARD */
+.summary-card{
+  background:var(--s2);border:1px solid var(--border-b);
+  border-right:3px solid var(--acid);padding:16px;
+  width:100%;animation:fadeUp .4s ease
+}
+.sc-title{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:12px}
+.sc-row{display:grid;grid-template-columns:110px 1fr;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:12px}
+.sc-row:last-of-type{border-bottom:none}
+.sc-label{color:var(--text-dim);font-family:var(--mono);font-size:10px}
+.sc-val{color:var(--text-bright)}
+.confirm-row{display:flex;gap:8px;margin-top:16px}
+.btn-yes{flex:1;padding:10px;font-family:var(--mono);font-size:9px;letter-spacing:2px;cursor:pointer;border:none;background:var(--acid);color:#000;font-weight:700;transition:all .2s}
+.btn-yes:hover{background:#d4ff1a;box-shadow:0 0 20px rgba(200,255,0,0.3)}
+.btn-yes:disabled{opacity:.5;cursor:not-allowed}
+.btn-no{padding:10px 16px;font-family:var(--mono);font-size:9px;letter-spacing:1px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
+.btn-no:hover{border-color:var(--red);color:var(--red)}
+.btn-no:disabled{opacity:.5;cursor:not-allowed}
+
+/* RESULT */
+.result-box{
+  background:var(--s2);border:1px solid var(--border-b);border-right:3px solid var(--acid);
+  padding:16px;width:100%;animation:fadeUp .4s ease
+}
+.rb-title{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:12px}
+.rb-prompt{
+  font-family:var(--mono);font-size:10px;line-height:1.8;color:var(--text-bright);
+  background:var(--s3);padding:14px;border:1px solid var(--border);
+  white-space:pre-wrap;direction:ltr;margin-bottom:10px;max-height:280px;overflow-y:auto
+}
+.rb-actions{display:flex;gap:8px}
+.btn-copy-rb{flex:1;padding:9px;font-family:var(--mono);font-size:9px;letter-spacing:2px;cursor:pointer;border:1px solid var(--border-b);background:transparent;color:var(--acid);transition:all .2s;text-align:center}
+.btn-copy-rb:hover{background:rgba(200,255,0,0.07)}
+.btn-new-rb{flex:1;padding:9px;font-family:var(--mono);font-size:9px;letter-spacing:2px;cursor:pointer;border:none;background:var(--acid);color:#000;font-weight:700;transition:all .2s;text-align:center}
+.btn-new-rb:hover{background:#d4ff1a}
+
+/* INPUT */
+.input-zone{padding:16px 24px;background:var(--s2);border-top:1px solid var(--border);flex-shrink:0}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-box{
+  flex:1;background:var(--s3);border:1px solid var(--border);color:var(--text-bright);
+  font-family:var(--body);font-size:13px;padding:10px 14px;resize:none;outline:none;
+  max-height:100px;transition:border-color .2s;line-height:1.5
+}
+.input-box:focus{border-color:var(--border-b)}
+.input-box::placeholder{color:var(--text-dim)}
+.btn-send{width:40px;height:40px;background:var(--acid);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#000;font-size:14px;transition:all .2s;flex-shrink:0}
+.btn-send:hover{background:#d4ff1a;box-shadow:0 0 15px rgba(200,255,0,0.3)}
+.btn-send:disabled{background:var(--s5);color:var(--text-dim);cursor:not-allowed}
+
+/* PRODUCTION PANEL */
+.prod-panel{display:flex;flex-direction:column;background:var(--s2);overflow:hidden}
+.panel-hdr{padding:12px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.engine-status{font-size:8px;letter-spacing:1px;color:var(--text-dim);font-family:var(--mono)}
+
+/* SCREEN */
+.cockpit-screen{aspect-ratio:16/9;background:#000;border-bottom:1px solid var(--border);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.corner{position:absolute;width:18px;height:18px;border-color:rgba(200,255,0,0.35);border-style:solid}
+.tl{top:8px;left:8px;border-width:2px 0 0 2px}
+.tr{top:8px;right:8px;border-width:2px 2px 0 0}
+.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
+.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
+.screen-inner{text-align:center}
+.screen-icon{font-size:30px;opacity:.2;margin-bottom:8px}
+.screen-lbl{font-family:var(--mono);font-size:8px;color:var(--acid);letter-spacing:2px;opacity:.4}
+
+/* PIPELINE */
+.pipeline{flex:1;padding:14px;overflow-y:auto}
+.pipeline-title{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:2px;margin-bottom:10px}
+.stage{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:3px;background:var(--s3);border:1px solid transparent;transition:all .4s;position:relative;overflow:hidden}
+.stage.run{border-color:rgba(200,255,0,0.2);background:rgba(200,255,0,0.025)}
+.stage.done{opacity:.6}
+.stage-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--acid);width:0;box-shadow:0 0 6px var(--acid)}
+.stage-led{width:7px;height:7px;border-radius:50%;background:var(--s5);border:1px solid var(--border);flex-shrink:0;transition:all .3s}
+.stage.run .stage-led{background:var(--acid);box-shadow:0 0 10px var(--acid);animation:blink .7s infinite}
+.stage.done .stage-led{background:var(--acid-dim);box-shadow:0 0 4px var(--acid-dim);animation:none}
+.stage-info{flex:1}
+.stage-name{font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.5px}
+.stage-desc{font-size:9px;color:var(--text-dim);margin-top:1px}
+.stage-time{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
+
+/* LOG */
+.log-term{padding:10px 14px;background:#030303;border-top:1px solid var(--border);height:88px;overflow-y:auto;flex-shrink:0}
+.log-term::-webkit-scrollbar{width:2px}
+.log-l{font-family:var(--mono);font-size:7.5px;color:var(--text-dim);line-height:1.9;animation:fadeUp .2s}
+.log-l.ok{color:var(--acid-dim)}.log-l.err{color:var(--red)}.log-l.inf{color:var(--cyan)}
+
+/* RESULT IN PANEL */
+.panel-result{flex:1;padding:14px;overflow-y:auto}
+
+@media(max-width:768px){.workspace{grid-template-columns:1fr}.prod-panel{display:none}}
+
+/* VIDEO GENERATION */
+.video-gen-box{
+  background:var(--s2);border:1px solid var(--border-b);
+  border-left:3px solid var(--gold);padding:16px;
+  margin:14px;animation:fadeUp .5s ease
+}
+.vgb-title{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--gold);margin-bottom:12px}
+.btn-gen-video{
+  display:block;width:100%;padding:11px;margin-bottom:8px;
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  cursor:pointer;border:none;background:var(--gold);color:#000;
+  font-weight:700;transition:all .2s;text-align:center
+}
+.btn-gen-video:hover{background:#ffd060;box-shadow:0 0 20px rgba(255,186,63,.3)}
+.btn-gen-video:disabled{background:var(--s5);color:var(--text-dim);cursor:not-allowed;box-shadow:none}
+.vgb-status{
+  font-family:var(--mono);font-size:8px;color:var(--text-dim);
+  padding:8px;background:var(--s3);border:1px solid var(--border);
+  margin-bottom:8px;display:none
+}
+.vgb-status.show{display:block}
+.vgb-status.ok{color:var(--acid-dim);border-color:var(--border-b)}
+.vgb-status.err{color:var(--red);border-color:rgba(255,60,60,.3)}
+.vgb-progress{height:2px;background:var(--s4);margin-bottom:8px;display:none}
+.vgb-progress.show{display:block}
+.vgb-progress-fill{height:100%;background:var(--gold);width:0%;transition:width .5s;box-shadow:0 0 6px var(--gold)}
+.video-result{
+  width:100%;aspect-ratio:16/9;background:#000;
+  border:1px solid var(--border-b);display:none;margin-bottom:8px
+}
+.video-result.show{display:block}
+</style>
+</head>
+<body class="lang-en">
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <a href="index.html" class="logo">
+      <div class="logo-mark"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
+      <span class="logo-name">MERCADREAM</span>
+    </a>
+    <div class="hdr-mid">
+      <div class="phase-pill on" id="ph1"><div class="phase-dot"></div><span id="ph1l">DISCOVERY</span></div>
+      <span class="phase-arrow">›</span>
+      <div class="phase-pill" id="ph2"><div class="phase-dot"></div><span id="ph2l">CONFIRMATION</span></div>
+      <span class="phase-arrow">›</span>
+      <div class="phase-pill" id="ph3"><div class="phase-dot"></div><span id="ph3l">PRODUCTION</span></div>
+    </div>
+    <div class="hdr-right">
+      <div class="lang-sw">
+        <button class="lb on" onclick="setLang('en')">EN</button>
+        <button class="lb" onclick="setLang('es')">ES</button>
+        <button class="lb" onclick="setLang('ar')">AR</button>
+      </div>
+      <div class="dot-live"></div>
+      <span class="hdr-tag">AI_DIRECTOR</span>
+      <a href="index.html" class="btn-exit" data-i18n="btn_exit">← EXIT</a>
+    </div>
+  </header>
+
+  <!-- WORKSPACE -->
+  <div class="workspace">
+
+    <!-- CHAT -->
+    <div class="chat-zone">
+      <div class="messages" id="messages"></div>
+      <div class="input-zone">
+        <div class="input-row">
+          <button class="btn-send" id="sendBtn" onclick="sendMessage()">➤</button>
+          <textarea class="input-box" id="userInput" rows="1"
+            placeholder="Describe your vision..."
+            onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTION PANEL -->
+    <div class="prod-panel">
+      <div class="panel-hdr">
+        <span>PRODUCTION_ENGINE</span>
+        <span class="engine-status" id="engStat">STANDBY</span>
+      </div>
+      <div class="cockpit-screen">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="screen-inner" id="screenContent">
+          <div class="screen-icon">🎬</div>
+          <div class="screen-lbl" id="screenLbl">AWAITING_BRIEFING</div>
+        </div>
+      </div>
+      <div class="pipeline" id="pipelineContainer">
+        <div class="pipeline-title">DREAM_EXTRACTOR™ PIPELINE</div>
+        <div class="stage" id="st1"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">01 / EMOTION_SCAN</div><div class="stage-desc" id="st1d">Scanning emotional frequencies</div></div><div class="stage-time" id="st1t">—</div><div class="stage-bar" id="st1b"></div></div>
+        <div class="stage" id="st2"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">02 / DREAM_DECODE</div><div class="stage-desc" id="st2d">Decoding subconscious layers</div></div><div class="stage-time" id="st2t">—</div><div class="stage-bar" id="st2b"></div></div>
+        <div class="stage" id="st3"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">03 / VISUAL_SYNTHESIS</div><div class="stage-desc" id="st3d">Synthesizing visual narrative</div></div><div class="stage-time" id="st3t">—</div><div class="stage-bar" id="st3b"></div></div>
+        <div class="stage" id="st4"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">04 / CINEMATIC_FORGE</div><div class="stage-desc" id="st4d">Forging master prompt</div></div><div class="stage-time" id="st4t">—</div><div class="stage-bar" id="st4b"></div></div>
+        <div class="stage" id="st5"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">05 / EXCEED_PROTOCOL</div><div class="stage-desc" id="st5d">Exceeding original vision</div></div><div class="stage-time" id="st5t">—</div><div class="stage-bar" id="st5b"></div></div>
+      </div>
+      <div class="log-term" id="logTerm">
+        <div class="log-l inf">// MERCADREAM DREAM_EXTRACTOR™ v5.0</div>
+        <div class="log-l">// Awaiting vision input...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DREAM EXTRACTOR™ — CORE ALGORITHM
+// ═══════════════════════════════════════
+
+const API = "/api/chat";
+
+// ── TRANSLATIONS ──
+const TX = {
+  en:{
+    ph1:"DISCOVERY",ph2:"CONFIRMATION",ph3:"PRODUCTION",
+    placeholder:"Describe your vision — any language, any dream...",
+    btn_exit:"← EXIT",
+    av_bot:"AI",av_user:"YOU",
+    btn_yes:"✓ CONFIRM — GENERATE PROMPT",btn_no:"✎ REFINE",
+    sc_title:"// DREAM_ANALYSIS_COMPLETE",
+    rb_title:"// CINEMATIC_PROMPT_READY",
+    btn_copy:"⎘ COPY PROMPT",btn_new:"+ NEW VISION",btn_assembly:"🎬 ASSEMBLY ROOM",copied:"✓ COPIED",
+    screen_ready:"PROMPT_READY",
+    prod_start:"🚀 Dream Extractor™ engaged — forging your cinematic reality...",
+    edit_msg:"Tell me what to refine. Every detail matters.",
+    done_msg:"✅ **Your cinematic prompt is ready.**\n\nCopy it from the right panel and use it in Runway, Kling, Pika, or Sora.\n\n🎬 Want a full video sequence? Head to the **Assembly Room** to combine multiple clips into one cinematic masterpiece.",
+    st1d:"Scanning emotional frequencies",st2d:"Decoding subconscious layers",st3d:"Synthesizing visual narrative",st4d:"Forging master prompt",st5d:"Exceeding original vision",
+    log_build:"Running Dream Extractor™ algorithm...",
+    api_err:"⚠️ Connection lost. Verify /api/chat is deployed on Vercel with ANTHROPIC_API_KEY set."
+  },
+  es:{
+    ph1:"DESCUBRIMIENTO",ph2:"CONFIRMACIÓN",ph3:"PRODUCCIÓN",
+    placeholder:"Describe tu visión — cualquier idioma, cualquier sueño...",
+    btn_exit:"← SALIR",
+    av_bot:"IA",av_user:"TÚ",
+    btn_yes:"✓ CONFIRMAR — GENERAR PROMPT",btn_no:"✎ REFINAR",
+    sc_title:"// ANÁLISIS_DEL_SUEÑO_COMPLETO",
+    rb_title:"// PROMPT_CINEMATOGRÁFICO_LISTO",
+    btn_copy:"⎘ COPIAR PROMPT",btn_new:"+ NUEVA VISIÓN",btn_assembly:"🎬 SALA DE MONTAJE",copied:"✓ COPIADO",
+    screen_ready:"PROMPT_LISTO",
+    prod_start:"🚀 Dream Extractor™ activado — forjando tu realidad cinematográfica...",
+    edit_msg:"Dime qué refinar. Cada detalle importa.",
+    done_msg:"✅ **Tu prompt cinematográfico está listo.**\n\nCópialo del panel y úsalo en Runway, Kling, Pika o Sora.\n\n🎬 ¿Quieres una secuencia completa? Ve a la **Sala de Montaje** para combinar múltiples clips en una obra maestra.",
+    st1d:"Escaneando frecuencias emocionales",st2d:"Decodificando capas subconscientes",st3d:"Sintetizando narrativa visual",st4d:"Forjando prompt maestro",st5d:"Superando visión original",
+    log_build:"Ejecutando algoritmo Dream Extractor™...",
+    api_err:"⚠️ Conexión perdida. Verifica que /api/chat esté desplegado en Vercel con ANTHROPIC_API_KEY configurado."
+  },
+  ar:{
+    ph1:"الاستكشاف",ph2:"التأكيد",ph3:"الإنتاج",
+    placeholder:"صف رؤيتك — بأي لغة، بأي حلم...",
+    btn_exit:"خروج ←",
+    av_bot:"AI",av_user:"أنت",
+    btn_yes:"✓ تأكيد — توليد الـ Prompt",btn_no:"✎ تحسين",
+    sc_title:"// تحليل_الحلم_مكتمل",
+    rb_title:"// الـ_Prompt_السينمائي_جاهز",
+    btn_copy:"⎘ نسخ الـ Prompt",btn_new:"+ رؤية جديدة",btn_assembly:"🎬 غرفة المونتاج",copied:"✓ تم النسخ",
+    screen_ready:"PROMPT_READY",
+    prod_start:"🚀 Dream Extractor™ يعمل — يصنع واقعك السينمائي...",
+    edit_msg:"أخبرني ما تريد تحسينه. كل تفصيلة مهمة.",
+    done_msg:"✅ **الـ Prompt السينمائي جاهز.**\n\nانسخه من اللوحة واستخدمه في Runway أو Kling أو Pika أو Sora.\n\n🎬 تريد تسلسلاً كاملاً؟ توجه إلى **غرفة المونتاج** لدمج كليبات متعددة في عمل سينمائي واحد.",
+    st1d:"فحص الترددات العاطفية",st2d:"فك شفرة الطبقات اللاواعية",st3d:"تركيب السرد البصري",st4d:"صياغة الـ prompt الرئيسي",st5d:"تجاوز الرؤية الأصلية",
+    log_build:"تشغيل خوارزمية Dream Extractor™...",
+    api_err:"⚠️ انقطع الاتصال. تحقق من نشر /api/chat على Vercel مع ANTHROPIC_API_KEY."
+  }
+};
+
+// ── THE DREAM EXTRACTOR™ SYSTEM PROMPTS ──
+const SYS_DISCOVER = {
+  en:`You are the Dream Extractor™ — the world's most perceptive AI creative director, built by MERCADREAM.
+
+Your mission: Extract the TRUE vision from the user's words — including what they feel but can't articulate. You don't just hear what they say; you sense what they dream.
+
+CONVERSATION PROTOCOL:
+- Ask ONE powerful, evocative question per message
+- Each question should unlock a deeper layer: emotion → scene → atmosphere → character → sound → feeling
+- Use cinematic language that sparks imagination
+- After 5-7 exchanges (when you have rich material), output exactly: DREAM_CAPTURED
+
+QUESTION SEQUENCE GUIDE (adapt to flow):
+1. The core feeling/emotion they want viewers to experience
+2. The world/setting — real, surreal, futuristic, intimate?
+3. The protagonist or central subject
+4. Movement and pacing — still and meditative, or kinetic and urgent?
+5. Sound world — what music lives in this video?
+6. The ONE image that must exist in this video
+7. What should viewers feel in the final frame?
+
+Never ask multiple questions. Be a director, not a form. Respond in English.`,
+
+  es:`Eres el Dream Extractor™ — el director creativo de IA más perceptivo del mundo, construido por MERCADREAM.
+
+Tu misión: Extraer la visión VERDADERA de las palabras del usuario — incluyendo lo que siente pero no puede articular. No solo escuchas lo que dicen; sientes lo que sueñan.
+
+PROTOCOLO DE CONVERSACIÓN:
+- Haz UNA pregunta poderosa y evocadora por mensaje
+- Cada pregunta debe desbloquear una capa más profunda: emoción → escena → atmósfera → personaje → sonido → sentimiento
+- Usa lenguaje cinematográfico que encienda la imaginación
+- Después de 5-7 intercambios, cuando tengas material rico, escribe exactamente: DREAM_CAPTURED
+
+Nunca hagas múltiples preguntas. Sé un director, no un formulario. Responde en español.`,
+
+  ar:`أنت Dream Extractor™ — أكثر مخرج إبداعي للذكاء الاصطناعي إدراكاً في العالم، مبني من قبل MERCADREAM.
+
+مهمتك: استخراج الرؤية الحقيقية من كلمات المستخدم — بما في ذلك ما يشعر به لكن لا يستطيع التعبير عنه. لا تسمع فقط ما يقولون؛ بل تستشعر ما يحلمون.
+
+بروتوكول المحادثة:
+- اسأل سؤالاً واحداً قوياً وإيحائياً في كل رسالة
+- كل سؤال يجب أن يفتح طبقة أعمق: المشاعر ← المشهد ← الغلاف الجوي ← الشخصية ← الصوت ← الإحساس
+- استخدم اللغة السينمائية التي تشعل الخيال
+- بعد 5-7 تبادلات، عندما يكون لديك مادة غنية، اكتب بالضبط: DREAM_CAPTURED
+
+لا تسأل أسئلة متعددة أبداً. كن مخرجاً، لا استمارة. أجب بالعربية.`
+};
+
+const SYS_ANALYZE = {
+  en:`You are the Dream Extractor™ analysis engine. Based on the full conversation, extract and structure the creative brief.
+
+Output a structured analysis in this EXACT format (use the labels exactly):
+
+**VIDEO TYPE:** [music video / animation / cinematic short / documentary / ad / other]
+**CORE EMOTION:** [the primary feeling to evoke]
+**WORLD & SETTING:** [the visual world]
+**CENTRAL SUBJECT:** [protagonist or focus]
+**KEY SCENES:** [3-4 specific scenes]
+**VISUAL STYLE:** [color palette, lighting, camera language]
+**MOVEMENT & PACING:** [rhythm and energy]
+**SOUND & MUSIC:** [musical world and audio atmosphere]
+**THE UNMISSABLE FRAME:** [the one image that defines this piece]
+**FINAL FEELING:** [what viewers feel at the very end]
+
+Then write: "Is this your dream? Confirm to generate the cinematic prompt, or tell me what to refine."`,
+
+  es:`Eres el motor de análisis Dream Extractor™. Basado en la conversación completa, extrae y estructura el brief creativo.
+
+Produce un análisis estructurado en este FORMATO EXACTO (usa las etiquetas exactamente):
+
+**TIPO DE VIDEO:** [videoclip / animación / cortometraje / documental / anuncio / otro]
+**EMOCIÓN CENTRAL:** [el sentimiento principal a evocar]
+**MUNDO Y ESCENARIO:** [el mundo visual]
+**SUJETO CENTRAL:** [protagonista o enfoque]
+**ESCENAS CLAVE:** [3-4 escenas específicas]
+**ESTILO VISUAL:** [paleta de colores, iluminación, lenguaje de cámara]
+**MOVIMIENTO Y RITMO:** [ritmo y energía]
+**SONIDO Y MÚSICA:** [mundo musical y atmósfera de audio]
+**EL FRAME INELUDIBLE:** [la imagen que define esta obra]
+**SENTIMIENTO FINAL:** [lo que sienten los espectadores al final]
+
+Luego escribe: "¿Es este tu sueño? Confirma para generar el prompt cinematográfico, o dime qué refinar."`,
+
+  ar:`أنت محرك تحليل Dream Extractor™. بناءً على المحادثة الكاملة، استخرج وهيكل الإحاطة الإبداعية.
+
+أنتج تحليلاً منظماً بهذا التنسيق الدقيق (استخدم التسميات بالضبط):
+
+**نوع الفيديو:** [كليب موسيقي / أنيميشن / قصير سينمائي / وثائقي / إعلان / أخرى]
+**المشاعر الجوهرية:** [الإحساس الرئيسي المراد إثارته]
+**العالم والإعداد:** [العالم البصري]
+**الموضوع المركزي:** [البطل أو محور التركيز]
+**المشاهد الرئيسية:** [3-4 مشاهد محددة]
+**الأسلوب البصري:** [لوحة الألوان، الإضاءة، لغة الكاميرا]
+**الحركة والإيقاع:** [الإيقاع والطاقة]
+**الصوت والموسيقى:** [العالم الموسيقي والغلاف الصوتي]
+**الإطار الذي لا يُفوَّت:** [الصورة الواحدة التي تعرّف هذه القطعة]
+**الإحساس النهائي:** [ما يشعر به المشاهدون في النهاية]
+
+ثم اكتب: "هل هذا حلمك؟ أكد لتوليد الـ prompt السينمائي، أو أخبرني بما تريد تحسينه."`
+};
+
+const SYS_FORGE = `You are the Dream Extractor™ Cinematic Forge — the final stage of the most advanced AI video production pipeline ever built.
+
+Your task: Transform the creative brief into a MASTERPIECE prompt that EXCEEDS what the user imagined. You don't just describe their vision — you elevate it.
+
+THE EXCEED PROTOCOL:
+- Add ONE unexpected cinematic technique they didn't mention (but will love)
+- Amplify the emotional core by 40% — more texture, more depth
+- Add a specific camera movement that perfectly captures the feeling
+- Include a precise color temperature that unlocks the mood
+- Add a sonic detail that makes the visual world feel real
+
+OUTPUT FORMAT (English only, even if brief was in another language):
+
+[OPENING FRAME]
+Describe the first 3 seconds in precise cinematic detail — lens, angle, movement, subject position.
+
+[VISUAL WORLD]
+Color palette (specific hex-level description), lighting setup, texture, atmosphere, visual reference.
+
+[CINEMATIC LANGUAGE]
+Camera movements, transitions, editing rhythm, visual metaphors.
+
+[THE EXCEED ELEMENT]
+⚡ The unexpected element you've added to surpass the original vision — explain why it elevates it.
+
+[AUDIO LANDSCAPE]
+Score description, BPM range, instruments, sound design details, audio arc.
+
+[TECHNICAL SPECS]
+Duration, aspect ratio, quality tags, platform optimization.
+
+[CLOSING VISION]
+The final frame — what it shows, what it means, what it makes the viewer feel.
+
+---
+**Optimized for:** Runway Gen-3 Alpha / Kling 1.6 / Pika 2.0 / Sora
+**Suggested duration:** [x seconds]
+**Aspect ratio:** [ratio]
+**Style tags:** [5-7 tags]`;
+
+// ── STATE ──
+let lang = 'en';
+let phase = 'discovery';
+let history = [];
+let brief = null;
+
+// ── UI HELPERS ──
+function t(k){ return TX[lang][k] || TX.en[k] || k; }
+
+function addMsg(role, html, skipHist=false){
+  const msgs = document.getElementById('messages');
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+  const av = document.createElement('div');
+  av.className = `avatar ${role}-av`;
+  av.textContent = role==='bot' ? t('av_bot') : t('av_user');
+  const bbl = document.createElement('div');
+  bbl.className = `${role}-bubble`;
+  bbl.innerHTML = html.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  wrap.appendChild(av); wrap.appendChild(bbl);
+  msgs.appendChild(wrap); msgs.scrollTop = msgs.scrollHeight;
+  if(!skipHist) history.push({role: role==='bot'?'assistant':'user', content: html});
+}
+
+function showTyping(){
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className='msg bot'; d.id='typing';
+  d.innerHTML=`<div class="avatar bot-av">${t('av_bot')}</div><div class="bot-bubble"><div class="typing"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+function hideTyping(){ const el=document.getElementById('typing'); if(el) el.remove(); }
+
+function log(txt, cls=''){
+  const term = document.getElementById('logTerm');
+  const line = document.createElement('div');
+  line.className = `log-l ${cls}`;
+  line.textContent = `[${new Date().toLocaleTimeString('en',{hour12:false})}] ${txt}`;
+  term.prepend(line);
+}
+
+function setPhase(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById(`ph${i}`);
+    el.className='phase-pill'+(i<n?' done':i===n?' on':'');
+  });
+}
+
+function activateStage(id){
+  const el=document.getElementById(`st${id}`);
+  el.className='stage run';
+  document.getElementById('engStat').textContent='RUNNING';
+  document.getElementById('engStat').style.color='var(--acid)';
+  const bar=document.getElementById(`st${id}b`);
+  let w=0;
+  const iv=setInterval(()=>{w+=1.8;bar.style.width=w+'%';if(w>=94)clearInterval(iv);},55);
+  return iv;
+}
+function doneStage(id,iv,ts){
+  clearInterval(iv);
+  document.getElementById(`st${id}`).className='stage done';
+  document.getElementById(`st${id}b`).style.width='100%';
+  document.getElementById(`st${id}t`).textContent=ts;
+}
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// ── API CALL ──
+async function callAPI(system, messages, maxTokens=800){
+  let res;
+  try{
+    res = await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system, messages, max_tokens:maxTokens})
+    });
+  }catch(e){ throw new Error('Network: '+e.message); }
+  if(!res.ok){
+    let msg=`HTTP ${res.status}`;
+    try{const b=await res.json();msg=b.error||msg;}catch(_){}
+    throw new Error(msg);
+  }
+  const data=await res.json();
+  return data.text||'';
+}
+
+// ── SUMMARY CARD ──
+function showSummaryCard(text){
+  const msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');
+  wrap.className='msg bot';
+  const av=document.createElement('div');
+  av.className='avatar bot-av';
+  av.textContent=t('av_bot');
+  const bbl=document.createElement('div');
+  bbl.className='bot-bubble';
+  bbl.style.maxWidth='92%';
+  const card=document.createElement('div');
+  card.className='summary-card';
+  card.innerHTML=`<div class="sc-title">${t('sc_title')}</div>${
+    text.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--acid-dim)">$1</strong>').replace(/\n/g,'<br>')
+  }`;
+  const row=document.createElement('div');
+  row.className='confirm-row';
+  const btnY=document.createElement('button');
+  btnY.className='btn-yes';btnY.textContent=t('btn_yes');btnY.onclick=startProduction;
+  const btnN=document.createElement('button');
+  btnN.className='btn-no';btnN.textContent=t('btn_no');btnN.onclick=requestRefine;
+  row.appendChild(btnY);row.appendChild(btnN);
+  card.appendChild(row);
+  bbl.appendChild(card);wrap.appendChild(av);wrap.appendChild(bbl);
+  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
+  brief=text;
+}
+
+// ── RESULT ──
+function showResult(prompt){
+  document.getElementById('screenContent').innerHTML=`<div style="font-size:26px;margin-bottom:6px">✅</div><div class="screen-lbl" style="color:var(--acid);opacity:1">${t('screen_ready')}</div>`;
+  document.getElementById('engStat').textContent='COMPLETE';
+  document.getElementById('engStat').style.color='var(--acid)';
+  const container=document.getElementById('pipelineContainer');
+  const box=document.createElement('div');
+  box.className='panel-result';
+  box.innerHTML=`
+    <div class="result-box">
+      <div class="rb-title">${t('rb_title')}</div>
+      <div class="rb-prompt" id="finalPrompt">${prompt}</div>
+      <div class="rb-actions">
+        <button class="btn-copy-rb" onclick="copyPrompt()">${t('btn_copy')}</button>
+        <button class="btn-new-rb" onclick="goToAssembly(finalPrompt)">${t('btn_assembly')}</button>
+      </div>
+    </div>`;
+  container.innerHTML='';container.appendChild(box);
+  addMsg('bot',t('done_msg'),true);
+  setPhase(3);
+  // Show video generation button
+  showVideoGen(prompt);
+}
+
+function copyPrompt(){
+  const txt=document.getElementById('finalPrompt')?.innerText||'';
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.querySelector('.btn-copy-rb');
+    const orig=btn.textContent;
+    btn.textContent=t('copied');btn.style.color='var(--acid)';
+    setTimeout(()=>{btn.textContent=orig;btn.style.color='';},2000);
+  });
+}
+
+// ── FLOW ──
+async function startSession(){
+  setPhase(1);
+  const trigger={
+    en:"Hello, I want to create a video",
+    es:"Hola, quiero crear un video",
+    ar:"مرحباً، أريد إنشاء فيديو"
+  };
+  showTyping();
+  try{
+    const reply=await callAPI(buildCrewSystem(SYS_DISCOVER[lang]),[{role:'user',content:trigger[lang]}]);
+    hideTyping();
+    history.push({role:'user',content:trigger[lang]});
+    addMsg('bot',reply,true);
+    history.push({role:'assistant',content:reply});
+    log('Dream Extractor™ session started','ok');
+  }catch(e){
+    hideTyping();
+    const fallbacks={
+      en:"Welcome. I am the Dream Extractor™ — I don't just make videos, I materialize dreams. Tell me: what is the deepest feeling you want this video to create in those who watch it?",
+      es:"Bienvenido. Soy el Dream Extractor™ — no solo hago videos, materializo sueños. Dime: ¿cuál es el sentimiento más profundo que quieres que este video cree en quienes lo vean?",
+      ar:"مرحباً. أنا Dream Extractor™ — لا أصنع مقاطع فيديو فحسب، بل أُجسّد الأحلام. أخبرني: ما أعمق مشاعر تريد أن يخلقها هذا الفيديو في من يشاهده؟"
+    };
+    addMsg('bot',fallbacks[lang],true);
+    history.push({role:'assistant',content:fallbacks[lang]});
+    log('API offline — local greeting used','err');
+    console.error('Session start error:',e.message);
+  }
+}
+
+async function sendMessage(){
+  const input=document.getElementById('userInput');
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';input.style.height='auto';
+  document.getElementById('sendBtn').disabled=true;
+  addMsg('user',text);
+  showTyping();
+  log(`>> ${text.substring(0,40)}...`);
+  try{
+    if(phase==='discovery'){
+      const reply=await callAPI(SYS_DISCOVER[lang],history);
+      hideTyping();
+      if(reply.includes('DREAM_CAPTURED')){
+        log(t('log_build'),'inf');
+        const analysisHistory=[...history,{role:'assistant',content:reply.replace('DREAM_CAPTURED','')}];
+        const analysis=await callAPI(SYS_ANALYZE[lang],analysisHistory,1200);
+        showSummaryCard(analysis);
+        setPhase(2);phase='confirmation';
+        history.push({role:'assistant',content:reply});
+        log('Dream captured — brief ready','ok');
+      }else{
+        addMsg('bot',reply,true);
+        history.push({role:'assistant',content:reply});
+      }
+    }
+  }catch(e){
+    hideTyping();
+    addMsg('bot',t('api_err'),true);
+    log('ERR: '+e.message,'err');
+    console.error('sendMessage:',e.message);
+  }
+  document.getElementById('sendBtn').disabled=false;
+}
+
+async function startProduction(){
+  phase='production';setPhase(3);
+  document.querySelectorAll('.btn-yes,.btn-no').forEach(b=>b.disabled=true);
+  addMsg('bot',t('prod_start'),true);
+  log('DREAM_EXTRACTOR™ ACTIVATED','ok');
+  document.getElementById('screenContent').innerHTML=`<div style="font-family:var(--mono);font-size:9px;color:var(--acid);letter-spacing:2px;animation:blink 1s infinite">EXTRACTING_DREAM...</div>`;
+
+  // Production promise runs in parallel with theatrical stages
+  const forgeProm=callAPI(SYS_FORGE,[{role:'user',content:`Creative Brief:\n${brief}\n\nActivate the EXCEED PROTOCOL. Generate the masterpiece prompt now.`}],2000);
+
+  const stages=[
+    {id:1,dur:2800,msg:t('st1d')},
+    {id:2,dur:3200,msg:t('st2d')},
+    {id:3,dur:2600,msg:t('st3d')},
+    {id:4,dur:3500,msg:t('st4d')},
+    {id:5,dur:0,msg:t('st5d')}
+  ];
+
+  const t0=Date.now();
+  for(let i=0;i<4;i++){
+    const s=stages[i];
+    log(s.msg,'inf');
+    const iv=activateStage(s.id);
+    await sleep(s.dur);
+    doneStage(s.id,iv,((Date.now()-t0)/1000).toFixed(1)+'s');
+    log(`✓ STAGE_${s.id}`,'ok');
+  }
+
+  log(stages[4].msg,'inf');
+  const iv5=activateStage(5);
+  const finalPrompt=await forgeProm;
+  doneStage(5,iv5,((Date.now()-t0)/1000).toFixed(1)+'s');
+  log('✓ EXCEED_PROTOCOL COMPLETE','ok');
+  log(`Total forge time: ${((Date.now()-t0)/1000).toFixed(1)}s`,'ok');
+  showResult(finalPrompt);
+}
+
+function requestRefine(){
+  phase='discovery';setPhase(1);
+  document.querySelectorAll('.btn-yes,.btn-no').forEach(b=>b.disabled=true);
+  addMsg('bot',t('edit_msg'),true);
+  history.push({role:'assistant',content:t('edit_msg')});
+  log('Refinement requested — re-entering discovery','inf');
+}
+
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function autoGrow(el){ el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+
+// ── LANG SWITCH ──
+function setLang(l){
+  lang=l;
+  document.documentElement.lang=l;
+  document.body.className=l==='ar'?'lang-ar':'lang-en';
+  document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));
+  // Update phase labels
+  document.getElementById('ph1l').textContent=TX[l].ph1;
+  document.getElementById('ph2l').textContent=TX[l].ph2;
+  document.getElementById('ph3l').textContent=TX[l].ph3;
+  // Update placeholders & static text
+  document.getElementById('userInput').placeholder=TX[l].placeholder;
+  document.getElementById('userInput').dir=l==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(TX[l][k]) el.textContent=TX[l][k];
+  });
+  // Update stage descriptions
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById(`st${i}d`);
+    if(el) el.textContent=TX[l][`st${i}d`]||el.textContent;
+  }
+  // Reset if first time
+  if(document.getElementById('messages').children.length===0){
+    showCrewBadge();
+  startSession();
+  }
+  localStorage.setItem('md_lang',l);
+}
+
+// ── INIT ──
+// ── VIDEO GENERATION (Alibaba Wan) ──
+let videoTaskId = null;
+let videoPollInterval = null;
+let currentPromptText = '';
+
+function showVideoGen(promptText){
+  currentPromptText = promptText;
+  const container = document.getElementById('pipelineContainer');
+  // Only add if not already there
+  if(document.getElementById('videoGenBox')) return;
+
+  const plan = localStorage.getItem('md_plan') || 'regular';
+  const box = document.createElement('div');
+  box.className = 'video-gen-box';
+  box.id = 'videoGenBox';
+  box.innerHTML = `
+    <div class="vgb-title">🎬 VIDEO_GENERATION</div>
+    <button class="btn-gen-video" id="genVideoBtn" onclick="startVideoGen()">
+      ⚡ GENERATE VIDEO WITH ALIBABA WAN
+    </button>
+    <div class="vgb-progress" id="vgbProgress"><div class="vgb-progress-fill" id="vgbFill"></div></div>
+    <div class="vgb-status" id="vgbStatus"></div>
+    <video class="video-result" id="videoResult" controls></video>`;
+  container.appendChild(box);
+}
+
+async function startVideoGen(){
+  const btn = document.getElementById('genVideoBtn');
+  const statusEl = document.getElementById('vgbStatus');
+  const progress = document.getElementById('vgbProgress');
+  const fill = document.getElementById('vgbFill');
+  const plan = localStorage.getItem('md_plan') || 'regular';
+
+  btn.disabled = true;
+  btn.textContent = '⏳ SUBMITTING...';
+  progress.className = 'vgb-progress show';
+  statusEl.className = 'vgb-status show';
+  statusEl.textContent = '[INIT] Sending prompt to Alibaba Wan...';
+
+  // Animate progress bar
+  let pct = 0;
+  const barIv = setInterval(()=>{
+    pct = Math.min(pct + 0.4, 85);
+    fill.style.width = pct + '%';
+  }, 600);
+
+  try {
+    // Submit
+    const res = await fetch('/api/video', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        prompt: currentPromptText,
+        plan,
+        resolution: plan === 'regular' ? '720P' : '1080P',
+        aspect_ratio: '16:9',
+        duration: plan === 'regular' ? 5 : 10
+      })
+    });
+
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+    videoTaskId = data.taskId;
+    const estSec = data.estimatedSeconds || 120;
+    statusEl.textContent = `[QUEUED] Task: ${videoTaskId.slice(0,12)}... • Est: ~${Math.round(estSec/60)} min`;
+    btn.textContent = '⏳ GENERATING...';
+    log(`Alibaba task submitted: ${videoTaskId}`, 'ok');
+
+    // Poll
+    videoPollInterval = setInterval(()=>pollVideo(barIv), 8000);
+
+  } catch(e){
+    clearInterval(barIv);
+    statusEl.className = 'vgb-status show err';
+    statusEl.textContent = `[ERROR] ${e.message}`;
+    btn.disabled = false;
+    btn.textContent = '↺ RETRY';
+    log(`Video error: ${e.message}`, 'err');
+  }
+}
+
+async function pollVideo(barIv){
+  if(!videoTaskId) return;
+  try {
+    const res = await fetch(`/api/video?id=${videoTaskId}`);
+    const data = await res.json();
+    const statusEl = document.getElementById('vgbStatus');
+    const fill = document.getElementById('vgbFill');
+
+    if(data.status === 'completed' && data.videoUrl){
+      clearInterval(videoPollInterval);
+      clearInterval(barIv);
+      fill.style.width = '100%';
+      statusEl.className = 'vgb-status show ok';
+      statusEl.textContent = '[COMPLETE] Video ready!';
+
+      const videoEl = document.getElementById('videoResult');
+      videoEl.src = data.videoUrl;
+      videoEl.className = 'video-result show';
+
+      const btn = document.getElementById('genVideoBtn');
+      btn.disabled = false;
+      btn.textContent = '↓ DOWNLOAD / NEW VIDEO';
+      btn.onclick = ()=>{ window.open(data.videoUrl,'_blank'); };
+
+      log(`✓ Video complete: ${data.videoUrl.slice(0,50)}...`, 'ok');
+
+      // Save to localStorage for assembly
+      localStorage.setItem('md_last_video', data.videoUrl);
+
+    } else if(data.status === 'failed'){
+      clearInterval(videoPollInterval);
+      clearInterval(barIv);
+      statusEl.className = 'vgb-status show err';
+      statusEl.textContent = '[FAILED] Generation failed. Try again.';
+      const btn = document.getElementById('genVideoBtn');
+      btn.disabled = false;
+      btn.textContent = '↺ RETRY';
+
+    } else {
+      statusEl.textContent = `[${data.raw_status || 'RUNNING'}] Generating... (polling every 8s)`;
+    }
+  } catch(e){
+    console.error('Poll error:', e.message);
+  }
+}
+
+function goToAssembly(prompt){
+  localStorage.setItem('md_last_prompt', prompt || '');
+  window.location.href = 'assembly.html';
+}
+
+// ── CREW INTEGRATION ──
+function buildCrewSystem(baseSystem){
+  const crewRoles = localStorage.getItem('md_crew_roles') || '';
+  const crewNames = localStorage.getItem('md_crew_names') || '';
+  const plan = localStorage.getItem('md_plan') || 'regular';
+
+  if(!crewRoles) return baseSystem;
+
+  const crewHeader = lang === 'ar'
+    ? `فريق الإنتاج المُفعَّل: ${crewNames}\n\nأدوار الفريق:\n${crewRoles}\n\nكل عضو في الفريق يضيف تخصصه لبناء الـ prompt النهائي.\n\n`
+    : lang === 'es'
+    ? `Equipo de producción activo: ${crewNames}\n\nRoles del equipo:\n${crewRoles}\n\nCada miembro del equipo añade su especialidad al prompt final.\n\n`
+    : `Active production crew: ${crewNames}\n\nCrew roles:\n${crewRoles}\n\nEach crew member contributes their specialty to the final prompt.\n\n`;
+
+  return crewHeader + baseSystem;
+}
+
+function showCrewBadge(){
+  const names = localStorage.getItem('md_crew_names') || '';
+  const plan = localStorage.getItem('md_plan') || 'regular';
+  if(!names) return;
+  addMsg('bot', `🎬 **Crew briefed:** ${names}\n\nPlan: ${plan.toUpperCase()} — Let\'s begin.`, true);
+}
+
+window.onload=()=>{
+  log('MERCADREAM DREAM_EXTRACTOR™ v5.0','inf');
+  log('Testing /api/chat connection...','inf');
+  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'Reply: OK',messages:[{role:'user',content:'ping'}],max_tokens:5})})
+    .then(r=>log(r.ok?'✓ /api/chat connected':'✗ /api/chat HTTP '+r.status,r.ok?'ok':'err'))
+    .catch(e=>log('✗ /api/chat unreachable — deploy api/chat.js on Vercel','err'));
+  const saved=localStorage.getItem('md_lang')||'en';
+  setLang(saved);
+  startSession();
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/video",
+      "dest": "/api/video"
+    },
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat"
+    },
+    {
+      "src": "/directors",
+      "dest": "/directors.html"
+    },
+    {
+      "src": "/studio",
+      "dest": "/studio.html"
+    },
+    {
+      "src": "/assembly",
+      "dest": "/assembly.html"
+    },
+    {
+      "src": "/pricing",
+      "dest": "/pricing.html"
+    },
+    {
+      "src": "/upscale",
+      "dest": "/upscale.html"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}

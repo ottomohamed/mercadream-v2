@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — 4K Upscale Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;--cyan:#00e5ff;
+  --surface:#060606;--s2:#0d0d0d;--s3:#141414;--s4:#1c1c1c;--s5:#242424;
+  --border:rgba(200,255,0,0.09);--border-b:rgba(200,255,0,0.35);
+  --text:#aaa;--text-dim:#3a3a3a;--text-bright:#f0f0f0;
+  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--surface);color:var(--text);font-family:var(--body);overflow-x:hidden}
+body.lang-ar{direction:rtl;font-family:'Cairo',sans-serif}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.018) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
+.orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:0}
+.o1{width:600px;height:600px;background:radial-gradient(circle,rgba(200,255,0,0.04),transparent);top:-150px;left:-100px}
+.o2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,229,255,0.03),transparent);bottom:-100px;right:-100px}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(6,6,6,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.logo-m{width:28px;height:28px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04)}
+.logo-m svg{width:13px;height:13px}
+.logo-n{font-family:var(--display);font-size:11px;font-weight:700;color:var(--acid);letter-spacing:3px}
+.hdr-r{display:flex;align-items:center;gap:10px}
+.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
+.lb{font-family:var(--mono);font-size:8px;padding:4px 8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.lb.on{background:var(--acid);color:#000;font-weight:700}
+.lb:hover:not(.on){color:var(--acid)}
+.btn-nav{font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;text-decoration:none;transition:all .2s}
+.btn-nav:hover{color:var(--acid);border-color:var(--border-b)}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:90px 28px 80px;position:relative;z-index:1}
+
+/* HERO */
+.hero{text-align:center;padding:40px 0 80px}
+.hero-tag{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-tag-line{width:40px;height:1px;background:var(--border-b)}
+.hero h1{font-family:var(--display);font-size:clamp(28px,5vw,60px);font-weight:900;color:var(--text-bright);line-height:1.05;letter-spacing:-1px;margin-bottom:20px}
+.hero h1 .accent{color:var(--acid)}
+.hero-sub{font-size:16px;color:var(--text);max-width:580px;margin:0 auto 48px;line-height:1.7}
+
+/* COMPARE SECTION */
+.compare-wrap{
+  position:relative;margin-bottom:80px;
+  border:1px solid var(--border);overflow:hidden;background:#000;
+  aspect-ratio:16/9
+}
+.compare-side{
+  position:absolute;top:0;bottom:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center
+}
+.compare-left{left:0;width:50%;border-right:2px solid var(--acid)}
+.compare-right{right:0;width:50%}
+.compare-label{
+  position:absolute;bottom:12px;font-family:var(--mono);font-size:9px;
+  letter-spacing:2px;padding:4px 10px;background:rgba(0,0,0,.7)
+}
+.compare-left .compare-label{left:10px;color:var(--text-dim);border:1px solid var(--border)}
+.compare-right .compare-label{right:10px;color:var(--acid);border:1px solid var(--border-b)}
+.compare-bg-left{
+  width:100%;height:100%;background:
+    radial-gradient(ellipse at 30% 50%,rgba(200,255,0,.02),transparent),
+    repeating-linear-gradient(45deg,#0a0a0a 0px,#0a0a0a 4px,#0d0d0d 4px,#0d0d0d 8px);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:2px;
+  filter:blur(1.5px)
+}
+.compare-bg-right{
+  width:100%;height:100%;
+  background:radial-gradient(ellipse at 70% 50%,rgba(200,255,0,.06),transparent),
+  linear-gradient(135deg,#0a0a0a,#111);
+  display:flex;align-items:center;justify-content:center
+}
+.quality-demo-left{
+  text-align:center;opacity:.5;
+  filter:blur(1px) contrast(0.7)
+}
+.quality-demo-right{text-align:center}
+.demo-icon{font-size:48px;margin-bottom:8px;display:block}
+.demo-res{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:2px}
+.quality-demo-left .demo-res{color:var(--text-dim)}
+.quality-demo-right .demo-res{color:var(--acid);text-shadow:0 0 20px rgba(200,255,0,.4)}
+/* SLIDER */
+.compare-slider{
+  position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:4px;background:var(--acid);cursor:ew-resize;z-index:10;
+  box-shadow:0 0 12px var(--acid)
+}
+.compare-handle{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:32px;height:32px;border-radius:50%;background:var(--acid);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#000;font-weight:700;box-shadow:0 0 20px rgba(200,255,0,.5);
+  user-select:none
+}
+.compare-hint{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:7px;letter-spacing:2px;
+  color:var(--acid);opacity:.6;white-space:nowrap
+}
+
+/* PIPELINE */
+.pipeline{margin-bottom:80px}
+.section-tag{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid);margin-bottom:14px}
+.section-h{font-family:var(--display);font-size:clamp(22px,3.5vw,38px);font-weight:700;color:var(--text-bright);margin-bottom:40px;letter-spacing:-.5px}
+
+.pipe-track{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
+  background:var(--border);margin-bottom:24px
+}
+.pipe-step{
+  background:var(--s2);padding:24px 18px;position:relative;overflow:hidden;
+  transition:background .3s
+}
+.pipe-step:hover{background:var(--s3)}
+.pipe-step::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--acid),transparent);
+  opacity:0;transition:opacity .3s
+}
+.pipe-step:hover::before{opacity:1}
+.ps-num{
+  font-family:var(--display);font-size:10px;color:var(--acid);
+  letter-spacing:2px;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px
+}
+.ps-num::after{content:'';flex:1;height:1px;background:var(--border)}
+.ps-icon{font-size:24px;margin-bottom:10px}
+.ps-title{font-size:13px;font-weight:600;color:var(--text-bright);margin-bottom:6px}
+.ps-desc{font-size:11px;color:var(--text);line-height:1.6}
+.ps-badge{
+  display:inline-block;margin-top:10px;
+  font-family:var(--mono);font-size:7px;letter-spacing:2px;
+  padding:3px 8px;border:1px solid var(--border-b);color:var(--acid-dim)
+}
+
+/* COMPARISON TABLE */
+.comp-table-wrap{margin-bottom:80px}
+.comp-table{width:100%;border-collapse:collapse}
+.comp-table th{
+  font-family:var(--mono);font-size:8px;letter-spacing:2px;
+  color:var(--text-dim);padding:12px 16px;text-align:left;
+  border-bottom:1px solid var(--border);background:var(--s2)
+}
+.comp-table th.highlight{color:var(--acid);background:rgba(200,255,0,.04)}
+.comp-table td{
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);
+  font-size:12px;color:var(--text);vertical-align:middle
+}
+.comp-table td.feature{color:var(--text-bright);font-weight:500}
+.comp-table td.highlight{background:rgba(200,255,0,.025)}
+.comp-table tr:hover td{background:var(--s3)}
+.val-yes{color:var(--acid);font-weight:700}
+.val-no{color:var(--text-dim)}
+.val-mid{color:var(--gold)}
+
+/* STATS BAR */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);margin-bottom:80px
+}
+.sb-stat{background:var(--s2);padding:24px;text-align:center}
+.sb-val{font-family:var(--display);font-size:32px;font-weight:900;color:var(--acid);text-shadow:0 0 20px rgba(200,255,0,.25)}
+.sb-lbl{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-top:6px}
+
+/* API SECTION */
+.api-section{
+  background:var(--s2);border:1px solid var(--border);padding:40px;
+  margin-bottom:80px;display:grid;grid-template-columns:1fr 1fr;gap:40px
+}
+body.lang-ar .api-section{grid-template-columns:1fr 1fr}
+.api-info{}
+.api-info h3{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);margin-bottom:12px}
+.api-info p{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:16px}
+.api-partner{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  background:var(--s3);border:1px solid var(--border);margin-bottom:8px
+}
+.ap-dot{width:8px;height:8px;border-radius:50%;background:var(--acid);flex-shrink:0}
+.ap-name{font-family:var(--mono);font-size:10px;color:var(--acid);letter-spacing:1px}
+.ap-desc{font-size:11px;color:var(--text-dim);margin-left:auto}
+.api-code-wrap{}
+.api-code-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px}
+.api-code{
+  background:#030303;border:1px solid var(--border);
+  padding:20px;font-family:var(--mono);font-size:11px;
+  line-height:1.8;color:var(--acid-dim);overflow-x:auto;
+  white-space:pre;direction:ltr
+}
+.api-code .kw{color:var(--cyan)}
+.api-code .str{color:var(--gold)}
+.api-code .cm{color:var(--text-dim)}
+.api-code .fn{color:var(--acid)}
+
+/* CTA */
+.cta-wrap{
+  text-align:center;padding:60px 0;
+  background:radial-gradient(ellipse at 50% 100%,rgba(200,255,0,.04),transparent 70%)
+}
+.cta-wrap h2{font-family:var(--display);font-size:clamp(22px,4vw,42px);font-weight:900;color:var(--text-bright);margin-bottom:12px}
+.cta-wrap p{font-size:15px;color:var(--text);margin-bottom:36px}
+.btn-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--acid);color:#000;font-family:var(--mono);
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  padding:15px 36px;border:none;cursor:pointer;transition:all .3s;text-decoration:none
+}
+.btn-cta:hover{background:#d4ff1a;box-shadow:0 0 40px rgba(200,255,0,.3);transform:translateY(-2px)}
+.btn-sec{
+  display:inline-flex;align-items:center;gap:8px;margin-left:12px;
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  padding:15px 22px;border:1px solid var(--border-b);
+  background:transparent;color:var(--acid);text-decoration:none;transition:all .2s
+}
+.btn-sec:hover{background:rgba(200,255,0,.06)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
+.foot-logo{font-family:var(--display);font-size:10px;color:var(--acid);letter-spacing:3px}
+.foot-links{display:flex;gap:20px}
+.foot-links a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;letter-spacing:1px;transition:color .2s}
+.foot-links a:hover{color:var(--acid)}
+.foot-copy{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
+
+@media(max-width:900px){
+  .pipe-track{grid-template-columns:1fr 1fr}
+  .api-section{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .pipe-track{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:1fr}
+  .page{padding:80px 16px 60px}
+}
+</style>
+</head>
+<body class="lang-en">
+<div class="orb o1"></div><div class="orb o2"></div>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="logo">
+    <div class="logo-m"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
+    <span class="logo-n">MERCADREAM</span>
+  </a>
+  <div class="hdr-r">
+    <div class="lang-sw">
+      <button class="lb on" onclick="setLang('en')">EN</button>
+      <button class="lb" onclick="setLang('es')">ES</button>
+      <button class="lb" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="index.html" class="btn-nav" data-i18n="btn_home">← HOME</a>
+    <a href="directors.html" class="btn-nav" data-i18n="btn_studio">ENTER STUDIO</a>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag"><div class="hero-tag-line"></div><span data-i18n="hero_tag">4K UPSCALE ENGINE</span><div class="hero-tag-line"></div></div>
+    <h1><span data-i18n="h1a">Generate Fast.</span><br><span class="accent" data-i18n="h1b">Deliver 4K.</span></h1>
+    <p class="hero-sub" data-i18n="hero_sub">We generate your video at optimized resolution — fast and affordable. Then our AI upscaling pipeline reconstructs every frame to cinematic 4K. You get premium quality at a fraction of the cost.</p>
+  </div>
+
+  <!-- VISUAL COMPARE -->
+  <div class="compare-wrap" id="compareWrap">
+    <div class="compare-side compare-left" id="compareLeft">
+      <div class="compare-bg-left">
+        <div class="quality-demo-left">
+          <span class="demo-icon">🎬</span>
+          <div class="demo-res">720p SOURCE</div>
+        </div>
+      </div>
+      <div class="compare-label" data-i18n="lbl_before">BEFORE — 720p Generated</div>
+    </div>
+    <div class="compare-side compare-right" id="compareRight">
+      <div class="compare-bg-right">
+        <div class="quality-demo-right">
+          <span class="demo-icon">🎬</span>
+          <div class="demo-res">4K OUTPUT</div>
+        </div>
+      </div>
+      <div class="compare-label" data-i18n="lbl_after">AFTER — AI 4K Upscaled</div>
+    </div>
+    <div class="compare-slider" id="slider">
+      <div class="compare-handle">⇔</div>
+    </div>
+    <div class="compare-hint" data-i18n="compare_hint">DRAG TO COMPARE</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="sb-stat"><div class="sb-val">2×</div><div class="sb-lbl" data-i18n="stat1">FASTER DELIVERY</div></div>
+    <div class="sb-stat"><div class="sb-val">60%</div><div class="sb-lbl" data-i18n="stat2">LOWER GENERATION COST</div></div>
+    <div class="sb-stat"><div class="sb-val">4K</div><div class="sb-lbl" data-i18n="stat3">OUTPUT QUALITY</div></div>
+    <div class="sb-stat"><div class="sb-val">100%</div><div class="sb-lbl" data-i18n="stat4">FRAME RECONSTRUCTED</div></div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="pipeline">
+    <div class="section-tag" data-i18n="pipe_tag">THE PROCESS</div>
+    <h2 class="section-h" data-i18n="pipe_h">How the 4K Pipeline Works</h2>
+    <div class="pipe-track">
+      <div class="pipe-step">
+        <div class="ps-num">01</div>
+        <div class="ps-icon">🎯</div>
+        <div class="ps-title" data-i18n="ps1_h">Optimized Generation</div>
+        <div class="ps-desc" data-i18n="ps1_p">Your video is generated at 720p or 1080p — the sweet spot of speed, quality, and cost from Runway, Kling, or Pika.</div>
+        <span class="ps-badge">FAST · CHEAP</span>
+      </div>
+      <div class="pipe-step">
+        <div class="ps-num">02</div>
+        <div class="ps-icon">🔬</div>
+        <div class="ps-title" data-i18n="ps2_h">Frame Analysis</div>
+        <div class="ps-desc" data-i18n="ps2_p">Our AI analyzes every single frame — detecting edges, textures, motion, and depth to understand what each pixel should become at 4K.</div>
+        <span class="ps-badge">AI DEEP SCAN</span>
+      </div>
+      <div class="pipe-step">
+        <div class="ps-num">03</div>
+        <div class="ps-icon">⚡</div>
+        <div class="ps-title" data-i18n="ps3_h">Detail Reconstruction</div>
+        <div class="ps-desc" data-i18n="ps3_p">Missing pixels are generated — not stretched. The AI reconstructs what a true 4K camera would have captured, adding real visual detail.</div>
+        <span class="ps-badge">GENERATIVE UPSCALE</span>
+      </div>
+      <div class="pipe-step">
+        <div class="ps-num">04</div>
+        <div class="ps-icon">🏆</div>
+        <div class="ps-title" data-i18n="ps4_h">4K Delivery</div>
+        <div class="ps-desc" data-i18n="ps4_p">Your final video is delivered in true 4K — sharper, more detailed, and more cinematic than the source. Ready for any screen or platform.</div>
+        <span class="ps-badge">3840×2160</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="comp-table-wrap">
+    <div class="section-tag" data-i18n="tbl_tag">WHY THIS APPROACH</div>
+    <h2 class="section-h" data-i18n="tbl_h">Generate + Upscale vs. Direct 4K</h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th data-i18n="th_feature">FEATURE</th>
+          <th data-i18n="th_direct">Direct 4K Generation</th>
+          <th class="highlight" data-i18n="th_ours">MercaDream Pipeline ⚡</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="feature" data-i18n="tr1">Generation Speed</td><td class="val-no" data-i18n="tr1a">3–8× slower</td><td class="highlight val-yes" data-i18n="tr1b">2× faster</td></tr>
+        <tr><td class="feature" data-i18n="tr2">Cost per Video</td><td class="val-no" data-i18n="tr2a">3–5× more expensive</td><td class="highlight val-yes" data-i18n="tr2b">60% lower cost</td></tr>
+        <tr><td class="feature" data-i18n="tr3">Final Quality</td><td class="val-mid" data-i18n="tr3a">Native 4K</td><td class="highlight val-yes" data-i18n="tr3b">AI-reconstructed 4K+</td></tr>
+        <tr><td class="feature" data-i18n="tr4">Artifact Reduction</td><td class="val-no" data-i18n="tr4a">Standard</td><td class="highlight val-yes" data-i18n="tr4b">Advanced AI cleanup</td></tr>
+        <tr><td class="feature" data-i18n="tr5">Platform Optimization</td><td class="val-mid" data-i18n="tr5a">Generic output</td><td class="highlight val-yes" data-i18n="tr5b">Optimized per platform</td></tr>
+        <tr><td class="feature" data-i18n="tr6">Daily Volume</td><td class="val-no" data-i18n="tr6a">Limited by cost</td><td class="highlight val-yes" data-i18n="tr6b">Higher throughput</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- API PARTNERS -->
+  <div class="api-section">
+    <div class="api-info">
+      <h3 data-i18n="api_h">Powered by Leading AI APIs</h3>
+      <p data-i18n="api_p">Our upscaling pipeline integrates with the best video enhancement APIs available — each specialized for AI-generated content.</p>
+      <div class="api-partner"><div class="ap-dot"></div><span class="ap-name">WaveSpeedAI</span><span class="ap-desc" data-i18n="ws_desc">REST API · per-second billing</span></div>
+      <div class="api-partner"><div class="ap-dot" style="background:var(--cyan)"></div><span class="ap-name" style="color:var(--cyan)">Vmake AI</span><span class="ap-desc" data-i18n="vm_desc">AI-generated content specialist</span></div>
+      <div class="api-partner"><div class="ap-dot" style="background:var(--gold)"></div><span class="ap-name" style="color:var(--gold)">TensorPix</span><span class="ap-desc" data-i18n="tp_desc">Frame-by-frame enhancement</span></div>
+    </div>
+    <div class="api-code-wrap">
+      <div class="api-code-label" data-i18n="code_label">// PIPELINE FLOW</div>
+      <div class="api-code"><span class="cm">// 1. Generate at optimized quality</span>
+<span class="kw">const</span> source = <span class="kw">await</span> <span class="fn">generateVideo</span>({
+  prompt: enhancedPrompt,
+  resolution: <span class="str">'720p'</span>,   <span class="cm">// fast + cheap</span>
+  duration: <span class="str">'10s'</span>
+});
+
+<span class="cm">// 2. Auto-upscale to 4K</span>
+<span class="kw">const</span> output = <span class="kw">await</span> <span class="fn">upscale</span>({
+  input: source.url,
+  target: <span class="str">'4K'</span>,
+  model: <span class="str">'ai-reconstruct'</span>,
+  cleanup_artifacts: <span class="kw">true</span>
+});
+
+<span class="cm">// 3. Deliver cinema-grade result</span>
+<span class="kw">return</span> output; <span class="cm">// 3840×2160</span></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <h2 data-i18n="cta_h">Ready for Your First 4K?</h2>
+    <p data-i18n="cta_p">Start creating now. Every video you make is automatically upscaled to cinematic quality.</p>
+    <a href="directors.html" class="btn-cta"><span>▶</span><span data-i18n="cta_btn">START CREATING</span></a>
+    <a href="pricing.html" class="btn-sec" data-i18n="cta_sec">VIEW PLANS</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">MERCADREAM</div>
+  <div class="foot-links">
+    <a href="index.html" data-i18n="nav_home">Home</a>
+    <a href="directors.html" data-i18n="nav_studio">Studio</a>
+    <a href="pricing.html" data-i18n="nav_pricing">Pricing</a>
+    <a href="upscale.html" data-i18n="nav_upscale">4K Engine</a>
+  </div>
+  <div class="foot-copy">© 2025 MERCADREAM — AI CINEMA STUDIO</div>
+</footer>
+
+<script>
+// ── I18N ──
+const TX = {
+  en:{
+    btn_home:"← HOME", btn_studio:"ENTER STUDIO",
+    hero_tag:"4K UPSCALE ENGINE",
+    h1a:"Generate Fast.", h1b:"Deliver 4K.",
+    hero_sub:"We generate your video at optimized resolution — fast and affordable. Then our AI upscaling pipeline reconstructs every frame to cinematic 4K. You get premium quality at a fraction of the cost.",
+    lbl_before:"BEFORE — 720p Generated", lbl_after:"AFTER — AI 4K Upscaled",
+    compare_hint:"DRAG TO COMPARE",
+    stat1:"FASTER DELIVERY", stat2:"LOWER GENERATION COST", stat3:"OUTPUT QUALITY", stat4:"FRAME RECONSTRUCTED",
+    pipe_tag:"THE PROCESS", pipe_h:"How the 4K Pipeline Works",
+    ps1_h:"Optimized Generation", ps1_p:"Your video is generated at 720p or 1080p — the sweet spot of speed, quality, and cost from Runway, Kling, or Pika.",
+    ps2_h:"Frame Analysis", ps2_p:"Our AI analyzes every single frame — detecting edges, textures, motion, and depth to understand what each pixel should become at 4K.",
+    ps3_h:"Detail Reconstruction", ps3_p:"Missing pixels are generated — not stretched. The AI reconstructs what a true 4K camera would have captured, adding real visual detail.",
+    ps4_h:"4K Delivery", ps4_p:"Your final video is delivered in true 4K — sharper, more detailed, and more cinematic than the source. Ready for any screen or platform.",
+    tbl_tag:"WHY THIS APPROACH", tbl_h:"Generate + Upscale vs. Direct 4K",
+    th_feature:"FEATURE", th_direct:"Direct 4K Generation", th_ours:"MercaDream Pipeline ⚡",
+    tr1:"Generation Speed", tr1a:"3–8× slower", tr1b:"2× faster",
+    tr2:"Cost per Video", tr2a:"3–5× more expensive", tr2b:"60% lower cost",
+    tr3:"Final Quality", tr3a:"Native 4K", tr3b:"AI-reconstructed 4K+",
+    tr4:"Artifact Reduction", tr4a:"Standard", tr4b:"Advanced AI cleanup",
+    tr5:"Platform Optimization", tr5a:"Generic output", tr5b:"Optimized per platform",
+    tr6:"Daily Volume", tr6a:"Limited by cost", tr6b:"Higher throughput",
+    api_h:"Powered by Leading AI APIs",
+    api_p:"Our upscaling pipeline integrates with the best video enhancement APIs available — each specialized for AI-generated content.",
+    ws_desc:"REST API · per-second billing", vm_desc:"AI-generated content specialist", tp_desc:"Frame-by-frame enhancement",
+    code_label:"// PIPELINE FLOW",
+    cta_h:"Ready for Your First 4K?", cta_p:"Start creating now. Every video you make is automatically upscaled to cinematic quality.",
+    cta_btn:"START CREATING", cta_sec:"VIEW PLANS",
+    nav_home:"Home", nav_studio:"Studio", nav_pricing:"Pricing", nav_upscale:"4K Engine"
+  },
+  es:{
+    btn_home:"← INICIO", btn_studio:"ENTRAR AL ESTUDIO",
+    hero_tag:"MOTOR DE ESCALADO 4K",
+    h1a:"Genera Rápido.", h1b:"Entrega 4K.",
+    hero_sub:"Generamos tu video en resolución optimizada — rápido y económico. Luego nuestro pipeline de IA reconstruye cada fotograma a 4K cinematográfico. Obtienes calidad premium a una fracción del costo.",
+    lbl_before:"ANTES — 720p Generado", lbl_after:"DESPUÉS — IA 4K Escalado",
+    compare_hint:"ARRASTRA PARA COMPARAR",
+    stat1:"ENTREGA MÁS RÁPIDA", stat2:"MENOR COSTO DE GENERACIÓN", stat3:"CALIDAD DE SALIDA", stat4:"FOTOGRAMAS RECONSTRUIDOS",
+    pipe_tag:"EL PROCESO", pipe_h:"Cómo Funciona el Pipeline 4K",
+    ps1_h:"Generación Optimizada", ps1_p:"Tu video se genera en 720p o 1080p — el punto óptimo de velocidad, calidad y costo en Runway, Kling o Pika.",
+    ps2_h:"Análisis de Fotogramas", ps2_p:"Nuestra IA analiza cada fotograma — detectando bordes, texturas, movimiento y profundidad para entender qué debe convertirse cada píxel en 4K.",
+    ps3_h:"Reconstrucción de Detalle", ps3_p:"Los píxeles faltantes se generan — no se estiran. La IA reconstruye lo que capturaría una verdadera cámara 4K, añadiendo detalle visual real.",
+    ps4_h:"Entrega en 4K", ps4_p:"Tu video final se entrega en 4K real — más nítido, más detallado y más cinematográfico que la fuente. Listo para cualquier pantalla o plataforma.",
+    tbl_tag:"POR QUÉ ESTE ENFOQUE", tbl_h:"Generar + Escalar vs. 4K Directo",
+    th_feature:"CARACTERÍSTICA", th_direct:"Generación 4K Directa", th_ours:"Pipeline MercaDream ⚡",
+    tr1:"Velocidad de Generación", tr1a:"3–8× más lento", tr1b:"2× más rápido",
+    tr2:"Costo por Video", tr2a:"3–5× más caro", tr2b:"60% menor costo",
+    tr3:"Calidad Final", tr3a:"4K nativo", tr3b:"4K+ reconstruido por IA",
+    tr4:"Reducción de Artefactos", tr4a:"Estándar", tr4b:"Limpieza avanzada con IA",
+    tr5:"Optimización de Plataforma", tr5a:"Salida genérica", tr5b:"Optimizado por plataforma",
+    tr6:"Volumen Diario", tr6a:"Limitado por costo", tr6b:"Mayor rendimiento",
+    api_h:"Impulsado por las Mejores APIs de IA",
+    api_p:"Nuestro pipeline de escalado se integra con las mejores APIs de mejora de video disponibles.",
+    ws_desc:"API REST · facturación por segundo", vm_desc:"Especialista en contenido generado por IA", tp_desc:"Mejora fotograma a fotograma",
+    code_label:"// FLUJO DEL PIPELINE",
+    cta_h:"¿Listo para tu Primer 4K?", cta_p:"Empieza ahora. Cada video que crees se escala automáticamente a calidad cinematográfica.",
+    cta_btn:"EMPEZAR A CREAR", cta_sec:"VER PLANES",
+    nav_home:"Inicio", nav_studio:"Estudio", nav_pricing:"Precios", nav_upscale:"Motor 4K"
+  },
+  ar:{
+    btn_home:"الرئيسية →", btn_studio:"ادخل الاستوديو",
+    hero_tag:"محرك الترقية إلى 4K",
+    h1a:"ولّد بسرعة.", h1b:"سلّم بـ 4K.",
+    hero_sub:"نولّد فيديوك بدقة محسّنة — سريع واقتصادي. ثم يعيد pipeline الذكاء الاصطناعي بناء كل إطار إلى 4K سينمائي. تحصل على جودة عالية بجزء من التكلفة.",
+    lbl_before:"قبل — 720p مولّد", lbl_after:"بعد — 4K مُرقَّى بالذكاء",
+    compare_hint:"اسحب للمقارنة",
+    stat1:"توصيل أسرع", stat2:"تكلفة توليد أقل", stat3:"جودة الإخراج", stat4:"إطارات مُعادة البناء",
+    pipe_tag:"العملية", pipe_h:"كيف يعمل الـ Pipeline للـ 4K",
+    ps1_h:"توليد محسّن", ps1_p:"يُولَّد فيديوك بـ 720p أو 1080p — نقطة التوازن المثالية بين السرعة والجودة والتكلفة في Runway أو Kling أو Pika.",
+    ps2_h:"تحليل الإطارات", ps2_p:"يحلل الذكاء الاصطناعي كل إطار — يكشف الحواف والملمس والحركة والعمق لفهم ما يجب أن يصبح عليه كل بكسل بدقة 4K.",
+    ps3_h:"إعادة بناء التفاصيل", ps3_p:"البكسلات المفقودة تُولَّد — لا تُمدَّد. يعيد الذكاء الاصطناعي بناء ما كانت ستلتقطه كاميرا 4K حقيقية مع إضافة تفاصيل بصرية حقيقية.",
+    ps4_h:"تسليم 4K", ps4_p:"يُسلَّم فيديوك النهائي بـ 4K حقيقية — أكثر حدة وتفصيلاً وسينمائية من المصدر. جاهز لأي شاشة أو منصة.",
+    tbl_tag:"لماذا هذا النهج", tbl_h:"التوليد + الترقية مقابل 4K مباشر",
+    th_feature:"الميزة", th_direct:"توليد 4K مباشر", th_ours:"Pipeline ميركادريم ⚡",
+    tr1:"سرعة التوليد", tr1a:"أبطأ 3–8 مرات", tr1b:"أسرع مرتين",
+    tr2:"تكلفة الفيديو", tr2a:"أغلى 3–5 مرات", tr2b:"أقل تكلفة بـ 60%",
+    tr3:"الجودة النهائية", tr3a:"4K أصلي", tr3b:"4K+ مُعاد البناء بالذكاء",
+    tr4:"تقليل العيوب", tr4a:"عادي", tr4b:"تنظيف متقدم بالذكاء الاصطناعي",
+    tr5:"تحسين المنصة", tr5a:"مخرج عام", tr5b:"محسّن لكل منصة",
+    tr6:"الحجم اليومي", tr6a:"محدود بالتكلفة", tr6b:"إنتاجية أعلى",
+    api_h:"مدعوم بأفضل APIs للذكاء الاصطناعي",
+    api_p:"يتكامل الـ pipeline مع أفضل APIs تحسين الفيديو المتاحة — كل منها متخصص في المحتوى المولّد بالذكاء الاصطناعي.",
+    ws_desc:"REST API · فوترة بالثانية", vm_desc:"متخصص في المحتوى المولّد بالذكاء", tp_desc:"تحسين إطار بإطار",
+    code_label:"// تدفق الـ Pipeline",
+    cta_h:"جاهز لأول 4K؟", cta_p:"ابدأ الإنشاء الآن. كل فيديو تصنعه يُرقَّى تلقائياً إلى جودة سينمائية.",
+    cta_btn:"ابدأ الإنشاء", cta_sec:"عرض الخطط",
+    nav_home:"الرئيسية", nav_studio:"الاستوديو", nav_pricing:"الأسعار", nav_upscale:"محرك 4K"
+  }
+};
+
+let lang = 'en';
+
+function setLang(l){
+  lang = l;
+  document.documentElement.lang = l;
+  document.body.className = l === 'ar' ? 'lang-ar' : 'lang-en';
+  document.querySelectorAll('.lb').forEach(b => b.classList.toggle('on', b.textContent.toLowerCase() === l));
+  const tx = TX[l];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if(tx[k]) el.textContent = tx[k];
+  });
+  localStorage.setItem('md_lang', l);
+}
+
+// ── COMPARE SLIDER ──
+function initSlider(){
+  const wrap = document.getElementById('compareWrap');
+  const left = document.getElementById('compareLeft');
+  const slider = document.getElementById('slider');
+  if(!wrap || !slider) return;
+
+  let dragging = false;
+
+  function setPos(x){
+    const rect = wrap.getBoundingClientRect();
+    let pct = ((x - rect.left) / rect.width) * 100;
+    pct = Math.max(10, Math.min(90, pct));
+    left.style.width = pct + '%';
+    slider.style.left = pct + '%';
+  }
+
+  slider.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+  slider.addEventListener('touchstart', e => { dragging = true; }, {passive:true});
+
+  window.addEventListener('mousemove', e => { if(dragging) setPos(e.clientX); });
+  window.addEventListener('touchmove', e => { if(dragging && e.touches[0]) setPos(e.touches[0].clientX); }, {passive:true});
+
+  window.addEventListener('mouseup', () => { dragging = false; });
+  window.addEventListener('touchend', () => { dragging = false; });
+}
+
+// ── INIT ──
+window.onload = () => {
+  const saved = localStorage.getItem('md_lang') || 'en';
+  setLang(saved);
+  initSlider();
+};
+</script>
+</body>
+</html>
