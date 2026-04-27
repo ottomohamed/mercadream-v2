@@ -8,6 +8,6 @@
     { "src": "/assembly",  "dest": "/assembly.html"  },
     { "src": "/pricing",   "dest": "/pricing.html"   },
     { "src": "/",          "dest": "/index.html"     },
-    { "src": "/(.*)",      "dest": "/"             }
+    { "src": "/(.*)",      "dest": "/$1"            }
   ]
 }
