@@ -365,24 +365,6 @@ footer{
     </div>
   </section>
 
-  <!-- UPSCALE STRIP -->
-  <div class="upscale-strip" id="upscaleStrip">
-    <div class="us-left">
-      <div class="us-icon">⬆️</div>
-      <div>
-        <div class="us-title" data-i18n="us_title">Every Video. Upgraded to 4K.</div>
-        <div class="us-sub" data-i18n="us_sub">We generate at optimized quality, then our AI upscaling pipeline transforms every frame to cinematic 4K — faster and cheaper than generating 4K directly.</div>
-        <div class="us-badges">
-          <span class="us-badge">720p → 4K</span>
-          <span class="us-badge">AI FRAME RECONSTRUCTION</span>
-          <span class="us-badge">NO QUALITY LOSS</span>
-          <span class="us-badge">2× FASTER</span>
-        </div>
-      </div>
-    </div>
-    <a href="upscale.html" class="us-btn" data-i18n="us_btn">LEARN HOW →</a>
-  </div>
-
   <section class="how">
     <div class="section-tag" data-i18n="how_tag">HOW IT WORKS</div>
     <h2 class="section-h" data-i18n="how_h">From Dream to Screen<br>in Minutes</h2>
@@ -548,9 +530,6 @@ const I18N = {
     feat5_h:"أي تنسيق",feat5_p:"كليبات موسيقية، رسوم متحركة، أفلام قصيرة، إعلانات — يتكيف الذكاء الاصطناعي مع نوعك الخاص.",
     feat6_h:"ملكيتك دائماً",feat6_p:"أفكارك وإبداعاتك مشفرة ولا تُستخدم أبداً لتدريب النماذج المشتركة.",
     cta_h:"مستعد لتجاوز\nحدود خيالك؟",cta_p:"انضم لآلاف المبدعين الذين رأوا رؤيتهم تتحول إلى واقع سينمائي.",cta_btn:"أطلق الاستوديو الآن",
-    us_title:"كل فيديو. مُرقَّى إلى 4K.",
-    us_sub:"نولّد بجودة محسّنة، ثم يحوّل pipeline الذكاء الاصطناعي كل إطار إلى 4K سينمائي — أسرع وأرخص من التوليد المباشر بـ 4K.",
-    us_btn:"كيف يعمل →",
     reel_label:"DEMO_REEL // 2025"
   }
 };
@@ -570,7 +549,7 @@ function setLang(l){
 }
 
 // ── REEL VIDEO PLAYER ──
-const VIDEO_SRC = 'YOUR_VIDEO_URL_HERE.mp4'; // ← ضع رابط فيديوك هنا
+const VIDEO_SRC = '/public/demo.mp4'; // ← ضع رابط فيديوك هنا
 
 function initReel(){
   const video = document.getElementById('reelVideo');
@@ -640,3 +619,8 @@ window.onload = ()=>{
 </script>
 </body>
 </html>
+
+
+
+
+
