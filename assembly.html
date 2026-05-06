@@ -494,7 +494,8 @@ const TX = {
     toast_cleared:"Timeline cleared",toast_arranged:"Auto-arranged by narrative flow",
     toast_generating:"Generating master sequence...",
     master_generating:"⏳ Generating Master Sequence with Dream Extractor™...",
-    no_clips_warn:"Add at least 2 clips to generate a master sequence."
+    no_clips_warn:"Add at least 2 clips to generate a master sequence.",
+    toast_videos_loaded:" videos loaded from Studio!"
   },
   es:{
     ph4:"MONTAJE",hdr_title:"SALA DE MONTAJE",hdr_sub:"PROTOCOLO DE CORTE FINAL",
@@ -521,7 +522,8 @@ const TX = {
     toast_cleared:"Línea de tiempo limpiada",toast_arranged:"Auto-ordenado por flujo narrativo",
     toast_generating:"Generando secuencia maestra...",
     master_generating:"⏳ Generando Secuencia Maestra con Dream Extractor™...",
-    no_clips_warn:"Añade al menos 2 clips para generar una secuencia maestra."
+    no_clips_warn:"Añade al menos 2 clips para generar una secuencia maestra.",
+    toast_videos_loaded:" videos cargados del Estudio!"
   },
   ar:{
     ph4:"المونتاج",hdr_title:"غرفة المونتاج",hdr_sub:"بروتوكول القطع النهائي",
@@ -548,7 +550,8 @@ const TX = {
     toast_cleared:"تم مسح الخط الزمني",toast_arranged:"تم الترتيب حسب التدفق السردي",
     toast_generating:"جاري توليد التسلسل الرئيسي...",
     master_generating:"⏳ جاري توليد التسلسل الرئيسي بـ Dream Extractor™...",
-    no_clips_warn:"أضف كليبين على الأقل لتوليد تسلسل رئيسي."
+    no_clips_warn:"أضف كليبين على الأقل لتوليد تسلسل رئيسي.",
+    toast_videos_loaded:" فيديو تم تحميله من الاستوديو!"
   }
 };
 
@@ -613,6 +616,7 @@ let activeClipIdx = -1;
 let masterDocument = '';
 let playInterval = null;
 let playProgress = 0;
+let currentVideoElement = null;
 let settings = {
   aspect: '16:9', quality: '1080p',
   clipDuration: 10, volume: 80,
@@ -671,21 +675,20 @@ function createClip(prompt='', idx=null){
     transition: settings.defaultTransition,
     emoji,
     aiNotes: '',
-    aiLoading: false
+    aiLoading: false,
+    videoUrl: null
   };
 }
 
 function addClipFromStudio(){
-  // Check if studio sent a prompt via localStorage
   const studioPrompt = localStorage.getItem('md_last_prompt') || '';
   const promptText = studioPrompt || '';
 
-  // Show input dialog inline
   const userPrompt = window.prompt(
     t('placeholder_add') + '\n\n' + (promptText ? `[Studio prompt loaded — edit or accept]: ` : ''),
     promptText
   );
-  if(userPrompt === null) return; // cancelled
+  if(userPrompt === null) return;
 
   const clip = createClip(userPrompt.trim() || `Scene ${clips.length + 1}`);
   clips.push(clip);
@@ -693,7 +696,6 @@ function addClipFromStudio(){
   selectClip(clips.length - 1);
   updateStats();
 
-  // Auto-analyze with AI
   if(clip.prompt) analyzeClip(clips.length - 1);
 }
 
@@ -711,7 +713,6 @@ async function analyzeClip(idx){
     clip.aiNotes = notes;
     clip.aiLoading = false;
     if(activeClipIdx === idx) renderInspector(idx);
-    // Mark clip as analyzed
     const el = document.getElementById(`clip-${clip.id}`);
     if(el) el.classList.add('done');
   } catch(e){
@@ -737,7 +738,6 @@ function renderTimeline(){
   tl.innerHTML = '';
 
   clips.forEach((clip, i) => {
-    // CONNECTOR (not before first)
     if(i > 0){
       const conn = document.createElement('div');
       conn.className = 'clip-connector';
@@ -745,13 +745,13 @@ function renderTimeline(){
       tl.appendChild(conn);
     }
 
-    // CLIP
     const el = document.createElement('div');
     el.className = `clip${activeClipIdx === i ? ' active' : ''}${clip.aiNotes ? ' done' : ''}`;
     el.id = `clip-${clip.id}`;
     el.onclick = () => selectClip(i);
+    const thumbIcon = clip.videoUrl ? '🎬' : clip.emoji;
     el.innerHTML = `
-      <div class="clip-thumb">${clip.emoji}</div>
+      <div class="clip-thumb">${thumbIcon}</div>
       <div class="clip-footer">
         <span class="clip-num">CLIP_${String(clip.num).padStart(2,'0')}</span>
         <span class="clip-dur">${clip.duration}s</span>
@@ -760,7 +760,6 @@ function renderTimeline(){
     tl.appendChild(el);
   });
 
-  // ADD button
   const addBtn = document.createElement('div');
   addBtn.className = 'clip-add';
   addBtn.onclick = addClipFromStudio;
@@ -774,6 +773,16 @@ function formatTransition(t){
 
 // ── SELECT CLIP ──
 function selectClip(idx){
+  if(playInterval){
+    clearInterval(playInterval);
+    playInterval = null;
+    document.getElementById('playBtn').textContent = '▶';
+    document.getElementById('playBtn').classList.remove('playing');
+  }
+  if(currentVideoElement){
+    currentVideoElement.pause();
+    currentVideoElement = null;
+  }
   activeClipIdx = idx;
   renderTimeline();
   renderInspector(idx);
@@ -784,30 +793,65 @@ function selectClip(idx){
 function renderPreview(idx){
   const clip = clips[idx];
   const screen = document.getElementById('previewScreen');
-  // Remove default placeholder
   const def = document.getElementById('psDefault');
   if(def) def.style.display = 'none';
 
-  // Remove old preview
   const old = document.getElementById('clipPreviewActive');
   if(old) old.remove();
 
   const div = document.createElement('div');
   div.className = 'clip-preview-active';
   div.id = 'clipPreviewActive';
-  div.innerHTML = `
-    <div class="cpa-num">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
-    <div class="cpa-title">${clip.title}</div>
-    <div class="cpa-desc">${clip.prompt || '—'}</div>
-    <div class="cpa-dur">⏱ ${clip.duration}s &nbsp;|&nbsp; ${formatTransition(clip.transition)}</div>`;
+  
+  // Check if this clip has a video URL from studio
+  if(clip.videoUrl) {
+    div.innerHTML = `
+      <video style="width:100%;height:100%;object-fit:contain" 
+             id="previewVideo" 
+             src="${clip.videoUrl}" 
+             controls 
+             muted
+             onended="onPreviewVideoEnded()"
+             onplay="onVideoPlay()"
+             onpause="onVideoPause()"></video>
+      <div class="cpa-dur" style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);padding:4px 8px;border-radius:4px">
+        ⏱ ${clip.duration}s &nbsp;|&nbsp; ${formatTransition(clip.transition)}
+      </div>
+    `;
+    currentVideoElement = div.querySelector('video');
+  } else {
+    div.innerHTML = `
+      <div class="cpa-num">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
+      <div class="cpa-title">${clip.title}</div>
+      <div class="cpa-desc">${clip.prompt || '—'}</div>
+      <div class="cpa-dur">⏱ ${clip.duration}s &nbsp;|&nbsp; ${formatTransition(clip.transition)}</div>
+    `;
+  }
+  
   screen.appendChild(div);
-
-  // Animate progress bar
   playProgress = 0;
   updatePlaybar();
   document.getElementById('hudStatus').textContent = 'PREVIEW';
   document.getElementById('hudTC').textContent = `00:00:${String(clip.num).padStart(2,'0')}`;
   updateTransportInfo();
+}
+
+function onVideoPlay(){
+  const btn = document.getElementById('playBtn');
+  btn.textContent = '⏸';
+  btn.classList.add('playing');
+}
+
+function onVideoPause(){
+  const btn = document.getElementById('playBtn');
+  btn.textContent = '▶';
+  btn.classList.remove('playing');
+}
+
+function onPreviewVideoEnded(){
+  if(activeClipIdx < clips.length - 1) {
+    selectClip(activeClipIdx + 1);
+  }
 }
 
 function updatePlaybar(){
@@ -817,6 +861,18 @@ function updatePlaybar(){
 
 function togglePlay(){
   const btn = document.getElementById('playBtn');
+  
+  // Check if we have a video element
+  if(currentVideoElement) {
+    if(currentVideoElement.paused) {
+      currentVideoElement.play();
+    } else {
+      currentVideoElement.pause();
+    }
+    return;
+  }
+  
+  // Fallback to simulated playback for text-only clips
   if(playInterval){
     clearInterval(playInterval);
     playInterval = null;
@@ -840,7 +896,6 @@ function togglePlay(){
         btn.classList.remove('playing');
         playProgress = 0;
         updatePlaybar();
-        // Auto-advance
         if(activeClipIdx < clips.length - 1) selectClip(activeClipIdx + 1);
       }
     }, 100);
@@ -852,7 +907,6 @@ function nextClip(){ if(activeClipIdx < clips.length - 1) selectClip(activeClipI
 
 function updateTransportInfo(){
   const total = clips.reduce((s,c)=>s+c.duration,0);
-  const cur = activeClipIdx >= 0 ? clips.slice(0,activeClipIdx).reduce((s,c)=>s+c.duration,0) : 0;
   document.getElementById('tpCurrent').textContent = activeClipIdx >= 0 ? `CLIP ${clips[activeClipIdx].num}` : '—';
   document.getElementById('tpTotal').textContent = `${total}s`;
 }
@@ -939,7 +993,6 @@ function setSetting(key, el, val){
 // ── AUTO ARRANGE ──
 function autoArrange(){
   if(clips.length < 2){ toast(t('no_clips_warn')); return; }
-  // Assign transitions cinematically based on position
   const CINEMATIC_FLOW = ['hard_cut','cinematic_dissolve','match_cut','smash_cut','whip_pan','cinematic_dissolve'];
   clips.forEach((clip, i) => {
     clip.transition = CINEMATIC_FLOW[i % CINEMATIC_FLOW.length];
@@ -962,7 +1015,6 @@ function clearAll(){
   document.getElementById('exportBtn').disabled = true;
   document.getElementById('copyMasterBtn').style.display = 'none';
   document.getElementById('renderWrap').style.display = 'none';
-  // Clear preview
   const old = document.getElementById('clipPreviewActive');
   if(old) old.remove();
   const def = document.getElementById('psDefault');
@@ -982,7 +1034,6 @@ async function generateMaster(){
   document.getElementById('renderWrap').style.display = 'block';
   toast(t('toast_generating'));
 
-  // Animate render bar
   let pct = 0;
   const fill = document.getElementById('renderFill');
   const pctEl = document.getElementById('renderPct');
@@ -992,11 +1043,9 @@ async function generateMaster(){
     pctEl.textContent = Math.round(pct) + '%';
   }, 120);
 
-  // Switch to sequence tab
   switchTab('sequence');
 
-  // Build clips summary
-  const clipsSummary = clips.map((c,i) => `
+  const clipsSummary = clips.map((c) => `
 CLIP ${c.num}: "${c.prompt}"
 Duration: ${c.duration}s
 Transition to next: ${formatTransition(c.transition)}
@@ -1023,7 +1072,6 @@ Volume: ${settings.volume}%
     fill.style.width = '100%';
     pctEl.textContent = '100%';
 
-    // Display
     const box = document.getElementById('masterPromptBox');
     box.style.cssText = 'font-family:var(--mono);font-size:9px;color:var(--acid-dim);background:var(--s2);border:1px solid var(--border-b);border-left:3px solid var(--acid);padding:14px;line-height:1.8;white-space:pre-wrap;direction:ltr;max-height:280px;overflow-y:auto;margin-bottom:10px';
     box.textContent = master;
@@ -1067,18 +1115,38 @@ function switchTab(tab){
 
 // ── LOAD STUDIO DATA ──
 function loadFromStudio(){
-  // Check if studio.html passed a prompt via localStorage
   const lastPrompt = localStorage.getItem('md_last_prompt');
   const lastBrief = localStorage.getItem('md_last_brief');
 
   if(lastPrompt || lastBrief){
-    // Pre-populate first clip from studio output
     const clip = createClip(lastPrompt || 'Opening scene from studio production');
     clips.push(clip);
     renderTimeline();
     selectClip(0);
     updateStats();
     if(clip.prompt) analyzeClip(0);
+  }
+}
+
+// ✅ الدالة الجديدة: تحميل الفيديوهات من الاستوديو
+function loadVideosFromStudio() {
+  const savedVideos = localStorage.getItem('md_assembly_videos');
+  if(savedVideos) {
+    const videos = JSON.parse(savedVideos);
+    if(videos.length > 0) {
+      videos.forEach(video => {
+        const clip = createClip(video.prompt || 'Generated Video');
+        clip.videoUrl = video.url;
+        clip.id = video.id;
+        clip.title = video.title || `Video ${clips.length + 1}`;
+        clip.emoji = '🎬';
+        clips.push(clip);
+      });
+      renderTimeline();
+      updateStats();
+      if(clips.length > 0) selectClip(0);
+      toast(`📹 ${videos.length} ${t('toast_videos_loaded')}`, 3000);
+    }
   }
 }
 
@@ -1089,8 +1157,8 @@ window.onload = () => {
   renderTimeline();
   updateStats();
   loadFromStudio();
+  loadVideosFromStudio(); // ✅ تحميل الفيديوهات من الاستوديو
 
-  // Test API
   fetch(API, {method:'POST', headers:{'Content-Type':'application/json'},
     body:JSON.stringify({system:'Reply: OK', messages:[{role:'user',content:'ping'}], max_tokens:5})})
     .then(r => console.log(r.ok ? '✓ /api/chat OK' : '✗ /api/chat HTTP '+r.status))

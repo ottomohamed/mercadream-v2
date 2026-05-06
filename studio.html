@@ -797,16 +797,37 @@ function setLang(l){
   localStorage.setItem('md_lang',l);
 }
 
-// ── INIT ──
 // ── VIDEO GENERATION (Alibaba Wan) ──
 let videoTaskId = null;
 let videoPollInterval = null;
 let currentPromptText = '';
 
+// ✅ دالة حفظ الفيديو في غرفة المونتاج
+function saveVideoToAssembly(videoUrl, prompt) {
+    let videos = JSON.parse(localStorage.getItem('md_assembly_videos') || '[]');
+    videos.push({
+        id: Date.now(),
+        url: videoUrl,
+        prompt: prompt.substring(0, 300),
+        timestamp: new Date().toISOString(),
+        duration: 10,
+        title: prompt.split(' ').slice(0, 6).join(' ') + '...'
+    });
+    localStorage.setItem('md_assembly_videos', JSON.stringify(videos));
+    log('✓ Video saved to Assembly Room!', 'ok');
+    
+    // إظهار إشعار
+    let toast = document.createElement('div');
+    toast.textContent = '✓ Video saved! Click to go to Assembly Room →';
+    toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--acid);color:#000;padding:12px 20px;font-family:var(--mono);font-size:10px;z-index:9999;border-radius:4px;cursor:pointer';
+    toast.onclick = () => { window.location.href = 'assembly.html'; };
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
 function showVideoGen(promptText){
   currentPromptText = promptText;
   const container = document.getElementById('pipelineContainer');
-  // Only add if not already there
   if(document.getElementById('videoGenBox')) return;
 
   const plan = localStorage.getItem('md_plan') || 'regular';
@@ -816,7 +837,7 @@ function showVideoGen(promptText){
   box.innerHTML = `
     <div class="vgb-title">🎬 VIDEO_GENERATION</div>
     <button class="btn-gen-video" id="genVideoBtn" onclick="startVideoGen()">
-      ⚡ GENERATE VIDEO WITH ALIBABA WAN
+      ⚡ GENERATE VIDEO
     </button>
     <div class="vgb-progress" id="vgbProgress"><div class="vgb-progress-fill" id="vgbFill"></div></div>
     <div class="vgb-status" id="vgbStatus"></div>
@@ -835,9 +856,8 @@ async function startVideoGen(){
   btn.textContent = '⏳ SUBMITTING...';
   progress.className = 'vgb-progress show';
   statusEl.className = 'vgb-status show';
-  statusEl.textContent = '[INIT] Sending prompt to Alibaba Wan...';
+  statusEl.textContent = '[INIT] Sending prompt...';
 
-  // Animate progress bar
   let pct = 0;
   const barIv = setInterval(()=>{
     pct = Math.min(pct + 0.4, 85);
@@ -845,7 +865,6 @@ async function startVideoGen(){
   }, 600);
 
   try {
-    // Submit
     const res = await fetch('/api/video', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
@@ -865,9 +884,8 @@ async function startVideoGen(){
     const estSec = data.estimatedSeconds || 120;
     statusEl.textContent = `[QUEUED] Task: ${videoTaskId.slice(0,12)}... • Est: ~${Math.round(estSec/60)} min`;
     btn.textContent = '⏳ GENERATING...';
-    log(`Alibaba task submitted: ${videoTaskId}`, 'ok');
+    log(`Task submitted: ${videoTaskId}`, 'ok');
 
-    // Poll
     videoPollInterval = setInterval(()=>pollVideo(barIv), 8000);
 
   } catch(e){
@@ -906,7 +924,16 @@ async function pollVideo(barIv){
 
       log(`✓ Video complete: ${data.videoUrl.slice(0,50)}...`, 'ok');
 
-      // Save to localStorage for assembly
+      // ✅ حفظ الفيديو في غرفة المونتاج
+      saveVideoToAssembly(data.videoUrl, currentPromptText);
+
+      // ✅ إضافة زر للانتقال إلى غرفة المونتاج
+      const assemblyBtn = document.createElement('button');
+      assemblyBtn.textContent = '🎬 GO TO ASSEMBLY ROOM →';
+      assemblyBtn.style.cssText = 'display:block;width:100%;margin-top:8px;padding:9px;font-family:var(--mono);font-size:9px;letter-spacing:2px;cursor:pointer;border:none;background:var(--acid);color:#000;font-weight:700;transition:all .2s;text-align:center';
+      assemblyBtn.onclick = () => { window.location.href = 'assembly.html'; };
+      statusEl.parentElement.appendChild(assemblyBtn);
+
       localStorage.setItem('md_last_video', data.videoUrl);
 
     } else if(data.status === 'failed'){
@@ -917,7 +944,6 @@ async function pollVideo(barIv){
       const btn = document.getElementById('genVideoBtn');
       btn.disabled = false;
       btn.textContent = '↺ RETRY';
-
     } else {
       statusEl.textContent = `[${data.raw_status || 'RUNNING'}] Generating... (polling every 8s)`;
     }
@@ -952,7 +978,7 @@ function showCrewBadge(){
   const names = localStorage.getItem('md_crew_names') || '';
   const plan = localStorage.getItem('md_plan') || 'regular';
   if(!names) return;
-  addMsg('bot', `🎬 **Crew briefed:** ${names}\n\nPlan: ${plan.toUpperCase()} — Let\'s begin.`, true);
+  addMsg('bot', `🎬 **Crew briefed:** ${names}\n\nPlan: ${plan.toUpperCase()} — Let's begin.`, true);
 }
 
 window.onload=()=>{
