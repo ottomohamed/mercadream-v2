@@ -116,6 +116,26 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .btn-send{width:40px;height:40px;background:var(--acid);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#000;font-size:14px;transition:all .2s;flex-shrink:0}
 .btn-send:hover{background:#d4ff1a;box-shadow:0 0 15px rgba(200,255,0,0.3)}
 .btn-send:disabled{background:var(--s5);color:var(--text-dim);cursor:not-allowed}
+.btn-action{
+  width:auto;
+  padding:0 16px;
+  background:var(--gold);
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#000;
+  font-family:var(--mono);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:2px;
+  transition:all .2s;
+  flex-shrink:0;
+  height:40px;
+  gap:6px;
+}
+.btn-action:hover{background:#ffd060;box-shadow:0 0 15px rgba(255,186,63,0.3)}
 .prod-panel{display:flex;flex-direction:column;background:var(--s2);overflow:hidden}
 .panel-hdr{padding:12px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .engine-status{font-size:8px;letter-spacing:1px;color:var(--text-dim);font-family:var(--mono)}
@@ -230,8 +250,9 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
         <div class="input-row">
           <button class="btn-send" id="sendBtn" onclick="sendMessage()">➤</button>
           <textarea class="input-box" id="userInput" rows="1"
-            placeholder="Describe your vision..."
+            placeholder="Describe your vision... or type 'ACTION' to start production immediately"
             onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+          <button class="btn-action" id="actionBtn" onclick="triggerActionFromButton()" title="Start Production Now">⚡ ACTION</button>
         </div>
       </div>
     </div>
@@ -259,7 +280,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       </div>
       <div class="log-term" id="logTerm">
         <div class="log-l inf">// MERCADREAM DREAM_EXTRACTOR™ v6.0 (6-Scene Film Mode)</div>
-        <div class="log-l">// Awaiting vision input...</div>
+        <div class="log-l">// Type ACTION or press the ⚡ button to start production immediately</div>
       </div>
     </div>
   </div>
@@ -271,7 +292,7 @@ const API = "/api/chat";
 const TX = {
   en:{
     ph1:"DISCOVERY",ph2:"CONFIRMATION",ph3:"PRODUCTION",
-    placeholder:"Describe your 1-minute film vision...",
+    placeholder:"Describe your vision... or type 'ACTION' to start production immediately",
     btn_exit:"← EXIT",
     av_bot:"AI",av_user:"YOU",
     btn_yes:"✓ CONFIRM — GENERATE 6 SCENES",btn_no:"✎ REFINE",
@@ -286,11 +307,13 @@ const TX = {
     scene_prefix:"Scene",
     generating:"Generating scene",
     completed:"Completed",
-    all_complete:"All 6 scenes generated and sent to Assembly Room!"
+    all_complete:"All 6 scenes generated and sent to Assembly Room!",
+    action_trigger:"🎬 ACTION command received! Starting production immediately...",
+    action_production:"⚡ PRODUCTION STARTED - Generating 6 scenes based on conversation so far"
   },
   es:{
     ph1:"DESCUBRIMIENTO",ph2:"CONFIRMACIÓN",ph3:"PRODUCCIÓN",
-    placeholder:"Describe tu visión de película de 1 minuto...",
+    placeholder:"Describe tu visión... o escribe 'ACCIÓN' para iniciar producción",
     btn_exit:"← SALIR",
     av_bot:"IA",av_user:"TÚ",
     btn_yes:"✓ CONFIRMAR — GENERAR 6 ESCENAS",btn_no:"✎ REFINAR",
@@ -305,11 +328,13 @@ const TX = {
     scene_prefix:"Escena",
     generating:"Generando escena",
     completed:"Completada",
-    all_complete:"¡Las 6 escenas generadas y enviadas a la Sala de Montaje!"
+    all_complete:"¡Las 6 escenas generadas y enviadas a la Sala de Montaje!",
+    action_trigger:"🎬 ¡Comando ACCIÓN recibido! Iniciando producción inmediatamente...",
+    action_production:"⚡ PRODUCCIÓN INICIADA - Generando 6 escenas basadas en la conversación"
   },
   ar:{
     ph1:"الاستكشاف",ph2:"التأكيد",ph3:"الإنتاج",
-    placeholder:"صف رؤيتك لفيلم دقيقة واحدة...",
+    placeholder:"صف رؤيتك... أو اكتب 'ACTION' لبدء الإنتاج فوراً",
     btn_exit:"خروج ←",
     av_bot:"AI",av_user:"أنت",
     btn_yes:"✓ تأكيد — توليد 6 مشاهد",btn_no:"✎ تحسين",
@@ -324,7 +349,9 @@ const TX = {
     scene_prefix:"المشهد",
     generating:"جاري توليد",
     completed:"تم",
-    all_complete:"تم توليد جميع المشاهد الستة وإرسالها إلى غرفة المونتاج!"
+    all_complete:"تم توليد جميع المشاهد الستة وإرسالها إلى غرفة المونتاج!",
+    action_trigger:"🎬 تم استلام أمر ACTION! بدء الإنتاج فوراً...",
+    action_production:"⚡ بدأ الإنتاج - جاري توليد 6 مشاهد بناءً على المحادثة"
   }
 };
 
@@ -372,11 +399,33 @@ OUTPUT FORMAT (JSON array):
 The 6 scenes must have a narrative arc: opening, development, climax, resolution, closing.
 Each prompt must be optimized for AI video generation (Runway Gen-3, Kling 1.6, Pika 2.0, Sora).`;
 
+const SYS_ANALYZE = {
+  en:`You are the Dream Extractor™ analysis engine. Based on the full conversation, extract and structure the creative brief.
+
+Output a structured analysis:
+
+**VIDEO TYPE:** [type]
+**CORE EMOTION:** [emotion]
+**WORLD & SETTING:** [world]
+**CENTRAL SUBJECT:** [character]
+**KEY SCENES:** [scenes]
+**VISUAL STYLE:** [style]
+**MOVEMENT & PACING:** [pacing]
+**SOUND & MUSIC:** [audio]
+**THE UNMISSABLE FRAME:** [key frame]
+**FINAL FEELING:** [closing emotion]`,
+
+  es:`Eres el motor de análisis Dream Extractor™. Basado en la conversación completa, extrae y estructura el brief creativo.`,
+
+  ar:`أنت محرك تحليل Dream Extractor™. بناءً على المحادثة الكاملة، استخرج وهيكل الإحاطة الإبداعية.`
+};
+
 let lang = 'en';
 let phase = 'discovery';
 let history = [];
 let brief = null;
 let scenesData = null;
+let actionTriggered = false;
 
 function t(k){ return TX[lang][k] || TX.en[k] || k; }
 
@@ -467,9 +516,7 @@ function showSummaryCard(text){
   bbl.style.maxWidth='92%';
   const card=document.createElement('div');
   card.className='summary-card';
-  card.innerHTML=`<div class="sc-title">${t('sc_title')}</div>${
-    text.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--acid-dim)">$1</strong>').replace(/\n/g,'<br>')
-  }`;
+  card.innerHTML=`<div class="sc-title">${t('sc_title')}</div>${text.replace(/\n/g,'<br>')}`;
   const row=document.createElement('div');
   row.className='confirm-row';
   const btnY=document.createElement('button');
@@ -483,7 +530,7 @@ function showSummaryCard(text){
   brief=text;
 }
 
-// ✅ وظيفة حفظ مشهد فردي في غرفة المونتاج
+// ✅ دالة حفظ مشهد فردي في غرفة المونتاج
 function saveSceneToAssembly(scenePrompt, sceneNum, totalScenes=6){
   let videos = JSON.parse(localStorage.getItem('md_assembly_videos') || '[]');
   videos.push({
@@ -497,9 +544,7 @@ function saveSceneToAssembly(scenePrompt, sceneNum, totalScenes=6){
     status: 'pending'
   });
   localStorage.setItem('md_assembly_videos', JSON.stringify(videos));
-  log(`✓ Scene ${sceneNum}/6 saved to Assembly Room (pending video generation)`, 'ok');
-  
-  // تحديث شريط التقدم
+  log(`✓ Scene ${sceneNum}/6 saved to Assembly Room`, 'ok');
   updateSceneProgress(sceneNum, totalScenes);
 }
 
@@ -530,6 +575,43 @@ function updateSceneProgress(currentScene, totalScenes){
       `;
     }
   }
+}
+
+// ✅ دالة التحقق من أمر ACTION
+function checkForActionCommand(text){
+  const lowerText = text.toLowerCase().trim();
+  const actionWords = ['action', 'اكشن', 'إجراء', 'start', 'ابدأ', 'انتج', 'produce', 'generate', 'صنع', 'go'];
+  for(let word of actionWords){
+    if(lowerText === word || lowerText === word + '!' || lowerText.startsWith(word + ' ')){
+      return true;
+    }
+  }
+  return false;
+}
+
+// ✅ دالة بدء الإنتاج فوراً (ACTION)
+async function triggerActionProduction(){
+  if(actionTriggered) return;
+  actionTriggered = true;
+  
+  log(t('action_trigger'), 'inf');
+  addMsg('bot', `**⚡ ACTION!**\n\n${t('action_production')}`, true);
+  
+  // Create summary from conversation
+  const conversationText = history.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
+  const forcedBrief = `**CONVERSATION SUMMARY:**\n${conversationText}\n\n**ACTION:** Immediate production. Generate 6 scenes (10 seconds each) based on this conversation.`;
+  
+  brief = forcedBrief;
+  setPhase(2);
+  phase = 'confirmation';
+  
+  // Start production immediately
+  await startProduction();
+}
+
+// ✅ زر ACTION
+function triggerActionFromButton(){
+  triggerActionProduction();
 }
 
 async function startSession(){
@@ -564,6 +646,15 @@ async function sendMessage(){
   const input=document.getElementById('userInput');
   const text=input.value.trim();
   if(!text) return;
+  
+  // ✅ التحقق من أمر ACTION
+  if(checkForActionCommand(text)){
+    input.value='';
+    await triggerActionProduction();
+    document.getElementById('sendBtn').disabled=false;
+    return;
+  }
+  
   input.value='';input.style.height='auto';
   document.getElementById('sendBtn').disabled=true;
   addMsg('user',text);
@@ -601,7 +692,6 @@ async function startProduction(){
   log('DREAM_EXTRACTOR™ ACTIVATED - 6 SCENE MODE','ok');
   document.getElementById('screenContent').innerHTML=`<div style="font-family:var(--mono);font-size:9px;color:var(--acid);letter-spacing:2px;animation:blink 1s infinite">CREATING_6_SCENES...</div>`;
 
-  // Step 1: Generate 6 scenes structure
   const conversationText = history.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
   const fullContext = `CONVERSATION:\n${conversationText}\n\n---\nBRIEF:\n${brief}\n\n---\nGenerate 6 scenes (10 seconds each) for a 60-second film. Output as JSON array.`;
 
@@ -627,7 +717,6 @@ async function startProduction(){
   scenesData = scenes;
   localStorage.setItem('md_6scenes', JSON.stringify(scenes));
   
-  // Save all 6 scenes to Assembly Room
   for(let i=0; i<scenes.length; i++){
     const scene = scenes[i];
     const scenePrompt = scene.prompt || `Scene ${i+1}: ${scene.title}`;
@@ -639,13 +728,11 @@ async function startProduction(){
   updateSceneProgress(scenes.length, scenes.length);
   log(t('all_complete'), 'ok');
   
-  // Final message
   addMsg('bot',t('done_msg'),true);
   document.getElementById('screenContent').innerHTML=`<div style="font-size:26px;margin-bottom:6px">✅</div><div class="screen-lbl" style="color:var(--acid);opacity:1">6 SCENES READY</div>`;
   document.getElementById('engStat').textContent='COMPLETE';
   document.getElementById('engStat').style.color='var(--acid)';
   
-  // Show button to go to Assembly Room
   const container = document.getElementById('pipelineContainer');
   const goBtn = document.createElement('button');
   goBtn.textContent = '🎬 GO TO ASSEMBLY ROOM →';
@@ -662,7 +749,12 @@ function requestRefine(){
   log('Refinement requested — re-entering discovery','inf');
 }
 
-function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function handleKey(e){ 
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  } 
+}
 function autoGrow(el){ el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'; }
 
 function setLang(l){
@@ -700,12 +792,13 @@ function buildCrewSystem(baseSystem){
 function showCrewBadge(){
   const names = localStorage.getItem('md_crew_names') || '';
   if(!names) return;
-  addMsg('bot', `🎬 **Crew briefed:** ${names}\n\n6-SCENE FILM MODE ACTIVATED — Let's create your 60-second masterpiece.`, true);
+  addMsg('bot', `🎬 **Crew briefed:** ${names}\n\n6-SCENE FILM MODE ACTIVATED — Type ACTION to start production instantly!`, true);
 }
 
 window.onload=()=>{
-  log('MERCADREAM DREAM_EXTRACTOR™ v6.0 - 6-SCENE FILM MODE','inf');
+  log('MERCADREAM DREAM_EXTRACTOR™ v7.0 - ACTION MODE','inf');
   log('Each scene: 10 seconds → Total: 60 seconds','inf');
+  log('⚡ Type "ACTION" or press the yellow button to start production immediately','inf');
   fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'Reply: OK',messages:[{role:'user',content:'ping'}],max_tokens:5})})
     .then(r=>log(r.ok?'✓ /api/chat connected':'✗ /api/chat HTTP '+r.status,r.ok?'ok':'err'))
     .catch(e=>log('✗ /api/chat unreachable — deploy api/chat.js on Vercel','err'));
