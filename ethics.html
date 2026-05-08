@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Ethics & Privacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--surface);color:var(--text);font-family:var(--body);min-height:100dvh;overflow-x:hidden}
+body.lang-ar{direction:rtl}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.022) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
+.orb{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0}
+.orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,255,0,0.025),transparent);top:-150px;right:-100px}
+header{position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,6,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100;transition:background .3s}
+header.scrolled{background:rgba(6,6,6,0.98);border-bottom-color:var(--border-b)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:30px;height:30px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04);font-family:var(--display);font-size:7px;font-weight:900;color:var(--acid);letter-spacing:1px}
+.logo-name{font-family:var(--display);font-size:13px;font-weight:900;color:var(--text-bright);letter-spacing:3px}
+.logo-name span{color:var(--acid)}
+.hdr-nav{display:flex;gap:24px}
+.hdr-nav a{font-size:9px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .2s;font-family:var(--mono);text-transform:uppercase}
+.hdr-nav a:hover,.hdr-nav a.active{color:var(--acid)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
+.lb{font-family:var(--mono);font-size:8px;padding:4px 9px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.lb.on{background:var(--acid);color:#000;font-weight:700}
+.lb:hover:not(.on){color:var(--acid)}
+.btn-hdr{font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:6px 14px;border:1px solid var(--border-b);background:transparent;color:var(--acid);cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-hdr:hover{background:rgba(200,255,0,0.08)}
+.btn-hdr.solid{background:var(--acid);color:#000;font-weight:700;border-color:var(--acid)}
+
+main{position:relative;z-index:1;padding-top:60px;display:grid;grid-template-columns:220px 1fr}
+
+/* TOC SIDEBAR */
+.toc-nav{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;border-right:1px solid var(--border);padding:20px 12px}
+.tn-sec{font-family:var(--mono);font-size:7px;letter-spacing:2px;color:var(--text-dim);padding:8px 10px 4px;text-transform:uppercase}
+.tn-item{display:block;padding:8px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.5px;color:var(--text-dim);text-decoration:none;border-left:2px solid transparent;transition:all .18s;text-transform:uppercase;cursor:pointer;margin-bottom:1px}
+.tn-item:hover{color:var(--text);border-left-color:rgba(200,255,0,0.2)}
+.tn-item.active{color:var(--acid);border-left-color:var(--acid);background:rgba(200,255,0,0.03)}
+
+/* CONTENT */
+.ethics-content{padding:48px 56px;max-width:800px}
+
+/* HERO */
+.eth-hero{margin-bottom:48px;padding-bottom:40px;border-bottom:1px solid var(--border)}
+.eth-tag{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.tag-dot{width:5px;height:5px;border-radius:50%;background:var(--acid);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.eth-hero h1{font-family:var(--display);font-size:clamp(24px,4vw,44px);font-weight:900;color:var(--text-bright);line-height:1.1;margin-bottom:16px}
+.eth-hero h1 span{color:var(--acid)}
+.eth-hero p{font-size:14px;color:var(--text);line-height:1.8;max-width:580px;font-weight:300}
+.last-updated{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;margin-top:16px;padding:8px 12px;border:1px solid var(--border);display:inline-block}
+
+/* SECTION */
+.eth-sct{margin-bottom:48px;scroll-margin-top:80px}
+.eth-sct-title{font-family:var(--display);font-size:13px;font-weight:700;color:var(--text-bright);letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.eth-sct-title::before{content:'';display:block;width:20px;height:1px;background:var(--acid)}
+.eth-sct p{font-size:14px;color:var(--text);line-height:1.85;margin-bottom:14px;font-weight:300}
+.eth-sct p:last-child{margin-bottom:0}
+
+/* COMMITMENT CARDS */
+.commit-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin:20px 0}
+.commit-card{background:var(--s2);padding:22px 18px;transition:background .25s;position:relative;overflow:hidden}
+.commit-card:hover{background:var(--s3)}
+.commit-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background .3s}
+.commit-card:hover::before{background:var(--acid)}
+.cc-icon{font-size:22px;margin-bottom:12px}
+.cc-title{font-family:var(--display);font-size:10px;font-weight:700;color:var(--text-bright);letter-spacing:1px;margin-bottom:7px}
+.cc-desc{font-size:12px;color:var(--text);line-height:1.65;font-weight:300}
+
+/* PROHIBITIONS */
+.prohib-list{background:rgba(255,80,80,0.03);border:1px solid rgba(255,80,80,0.12);padding:16px 18px;margin:16px 0}
+.prohib-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:#ff5050;margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase}
+.prohib-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,80,80,0.06);font-size:13px;color:var(--text)}
+.prohib-item:last-child{border-bottom:none;padding-bottom:0}
+.prohib-item::before{content:'✗';color:#ff5050;font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px}
+
+/* ALLOWED LIST */
+.allow-list{background:rgba(200,255,0,0.02);border:1px solid rgba(200,255,0,0.12);padding:16px 18px;margin:16px 0}
+.allow-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase}
+.allow-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(200,255,0,0.05);font-size:13px;color:var(--text)}
+.allow-item:last-child{border-bottom:none;padding-bottom:0}
+.allow-item::before{content:'✓';color:var(--acid);font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px}
+
+/* DATA TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:12px;margin:14px 0;background:var(--s2);border:1px solid var(--border)}
+.data-table th{font-family:var(--mono);font-size:7px;letter-spacing:2px;color:var(--text-dim);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase}
+.data-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.025);color:var(--text);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .category{font-family:var(--mono);font-size:10px;color:var(--acid)}
+
+/* CONTACT */
+.contact-card{background:var(--s2);border:1px solid var(--border);padding:24px;margin-top:20px;position:relative;overflow:hidden}
+.contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acid),transparent)}
+.contact-card h3{font-family:var(--display);font-size:12px;font-weight:700;color:var(--text-bright);letter-spacing:1px;margin-bottom:8px}
+.contact-card p{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:14px;font-weight:300}
+.contact-links{display:flex;gap:10px;flex-wrap:wrap}
+.contact-link{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:7px 14px;border:1px solid var(--border-b);color:var(--acid);text-decoration:none;transition:all .2s;text-transform:uppercase}
+.contact-link:hover{background:rgba(200,255,0,0.08)}
+
+footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
+.foot-logo{font-family:var(--display);font-size:13px;font-weight:900;color:var(--text-dim);letter-spacing:4px}
+.foot-logo span{color:var(--acid)}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .2s;text-transform:uppercase}
+.foot-links a:hover{color:var(--acid)}
+.foot-links a.active-link{color:var(--text-bright)}
+.foot-copy{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:rgba(6,6,6,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:none;justify-content:space-around;align-items:center;z-index:100}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--text-dim);transition:color .2s}
+.bn-item.active,.bn-item:hover{color:var(--acid)}
+.bn-item .bi{font-size:18px}
+.bn-item span{font-family:var(--mono);font-size:7px;letter-spacing:1px;text-transform:uppercase}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:900px){main{grid-template-columns:1fr}.toc-nav{display:none}.ethics-content{padding:28px 20px}}
+@media(max-width:768px){header{padding:0 20px}.hdr-nav{display:none}.bottom-nav{display:flex}body{padding-bottom:62px}footer{padding:24px 20px}.commit-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="lang-en">
+<div class="orb orb-1"></div>
+
+<header id="hdr">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">MD</div>
+    <span class="logo-name">MERCA<span>DREAM</span></span>
+  </a>
+  <nav class="hdr-nav">
+    <a href="index.html">HOME</a>
+    <a href="studio.html">STUDIO</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="architecture.html">ARCHITECTURE</a>
+    <a href="api.html">API</a>
+    <a href="ethics.html" class="active">ETHICS</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="lang-sw">
+      <button class="lb on" onclick="setLang('en')">EN</button>
+      <button class="lb" onclick="setLang('es')">ES</button>
+      <button class="lb" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="login.html" class="btn-hdr">SIGN IN</a>
+    <a href="register.html" class="btn-hdr solid">START FREE</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- TOC -->
+  <div class="toc-nav">
+    <div class="tn-sec">Contents</div>
+    <div class="tn-item active" onclick="sc('mission',this)">OUR MISSION</div>
+    <div class="tn-item" onclick="sc('commitments',this)">COMMITMENTS</div>
+    <div class="tn-item" onclick="sc('content',this)">CONTENT POLICY</div>
+    <div class="tn-item" onclick="sc('data',this)">DATA & PRIVACY</div>
+    <div class="tn-item" onclick="sc('ip',this)">INTELLECTUAL PROPERTY</div>
+    <div class="tn-item" onclick="sc('ai',this)">RESPONSIBLE AI</div>
+    <div class="tn-item" onclick="sc('transparency',this)">TRANSPARENCY</div>
+    <div class="tn-item" onclick="sc('contact',this)">CONTACT</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="ethics-content">
+
+    <div class="eth-hero reveal">
+      <div class="eth-tag"><div class="tag-dot"></div>ETHICS & PRIVACY</div>
+      <h1>Creating Without <span>Compromising.</span></h1>
+      <p>MercaDream believes creative freedom and ethical responsibility are inseparable. This document outlines our commitments to you, to creators everywhere, and to the world our technology shapes.</p>
+      <div class="last-updated">⟳ LAST UPDATED: JUNE 2025 · VERSION 3.1</div>
+    </div>
+
+    <!-- MISSION -->
+    <div class="eth-sct reveal" id="mission">
+      <div class="eth-sct-title">OUR MISSION</div>
+      <p>MercaDream was built on a single conviction: every person deserves the ability to bring their imagination to life in cinematic form, regardless of budget, technical skill, or access to production resources.</p>
+      <p>We believe AI-powered creation should expand human creativity — not replace it, not homogenize it, and never weaponize it. Our technology is designed to serve the creator's vision, not redirect it.</p>
+      <p>This mission requires discipline. Not every use of our technology is one we will support. The commitments below are not aspirations — they are enforced policies that shape every product decision we make.</p>
+    </div>
+
+    <!-- COMMITMENTS -->
+    <div class="eth-sct reveal" id="commitments">
+      <div class="eth-sct-title">OUR COMMITMENTS</div>
+      <div class="commit-grid">
+        <div class="commit-card"><div class="cc-icon">🔒</div><div class="cc-title">YOUR DATA IS YOURS</div><div class="cc-desc">Your creative content, voice data, and prompts are never used to train shared models. What you create belongs entirely to you.</div></div>
+        <div class="commit-card"><div class="cc-icon">🌐</div><div class="cc-title">CULTURAL RESPECT</div><div class="cc-desc">MercaDream is natively trilingual and designed with cultural sensitivity. We do not produce content that degrades, stereotypes, or misrepresents any culture or community.</div></div>
+        <div class="commit-card"><div class="cc-icon">💎</div><div class="cc-title">TRANSPARENT PRICING</div><div class="cc-desc">No hidden fees, no surprise charges. You know exactly what you pay for and what you get. Our billing is public and auditable.</div></div>
+        <div class="commit-card"><div class="cc-icon">🛡</div><div class="cc-title">SAFETY BY DEFAULT</div><div class="cc-desc">Safety filters are always active. They cannot be disabled by users, API callers, or operators. No exceptions, no workarounds.</div></div>
+        <div class="commit-card"><div class="cc-icon">🔏</div><div class="cc-title">AES-256 ENCRYPTION</div><div class="cc-desc">All content is encrypted at rest and in transit. Multi-region replication with zero-knowledge architecture.</div></div>
+        <div class="commit-card"><div class="cc-icon">⚖</div><div class="cc-title">CREATOR SOVEREIGNTY</div><div class="cc-desc">We will never claim ownership of your creations, license them to third parties, or display them publicly without your explicit consent.</div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT POLICY -->
+    <div class="eth-sct reveal" id="content">
+      <div class="eth-sct-title">CONTENT POLICY</div>
+      <p>MercaDream operates under a strict content policy enforced at the model, API, and platform levels simultaneously. Our Dream Extractor model is fine-tuned to refuse harmful requests regardless of how they are phrased.</p>
+
+      <div class="prohib-list">
+        <div class="prohib-title">⚠ STRICTLY PROHIBITED</div>
+        <div class="prohib-item">Sexual content involving minors (CSAM) — zero tolerance, always reported to NCMEC</div>
+        <div class="prohib-item">Non-consensual deepfakes or synthetic media depicting real individuals without documented consent</div>
+        <div class="prohib-item">Content designed to incite violence, terrorism, or hatred against protected groups</div>
+        <div class="prohib-item">Disinformation, electoral manipulation, or synthetic propaganda</div>
+        <div class="prohib-item">Impersonation of real public figures in harmful, defamatory, or deceptive contexts</div>
+        <div class="prohib-item">Content designed to facilitate harassment, stalking, or threats</div>
+      </div>
+
+      <div class="allow-list">
+        <div class="allow-title">✓ SUPPORTED USE CASES</div>
+        <div class="allow-item">Fiction, storytelling, and cinematic art of all genres and themes</div>
+        <div class="allow-item">Commercial video production, advertising, and brand content</div>
+        <div class="allow-item">Educational and documentary-style content</div>
+        <div class="allow-item">Music videos, artistic experimentation, and avant-garde projects</div>
+        <div class="allow-item">Satire and commentary on public figures within legal bounds</div>
+        <div class="allow-item">Historical recreation and cultural preservation projects</div>
+      </div>
+    </div>
+
+    <!-- DATA & PRIVACY -->
+    <div class="eth-sct reveal" id="data">
+      <div class="eth-sct-title">DATA & PRIVACY</div>
+      <p>We collect only what is necessary to operate the service. We do not sell data. We do not share data with advertisers. We do not build behavioral profiles for third-party targeting.</p>
+
+      <table class="data-table">
+        <thead><tr><th>DATA TYPE</th><th>COLLECTED</th><th>RETENTION</th><th>SHARED WITH</th></tr></thead>
+        <tbody>
+          <tr><td class="category">ACCOUNT DATA</td><td>Email, name, payment method</td><td>Account lifetime + 90 days</td><td>Payment processor only</td></tr>
+          <tr><td class="category">GENERATION PROMPTS</td><td>Text prompts you submit</td><td>90 days (user-deletable)</td><td>Nobody</td></tr>
+          <tr><td class="category">GENERATED CONTENT</td><td>Video, audio, outputs</td><td>Until deleted by user</td><td>Nobody</td></tr>
+          <tr><td class="category">VOICE DATA</td><td>Only if voice cloning used</td><td>Until deleted by user</td><td>Nobody — never for training</td></tr>
+          <tr><td class="category">USAGE ANALYTICS</td><td>Anonymized performance data</td><td>24 months aggregated</td><td>Nobody (internal only)</td></tr>
+        </tbody>
+      </table>
+
+      <p>You may request export or deletion of all your data at any time via Settings → Privacy or by contacting privacy@mercadream.com. Deletion requests are processed within 30 days.</p>
+    </div>
+
+    <!-- IP -->
+    <div class="eth-sct reveal" id="ip">
+      <div class="eth-sct-title">INTELLECTUAL PROPERTY</div>
+      <p>Content you generate using MercaDream is yours. You own the copyright to your outputs to the extent permitted by law in your jurisdiction. MercaDream does not claim any ownership, license, or rights over generated content.</p>
+      <p>You grant MercaDream a limited, non-exclusive license solely to store and deliver your content back to you. We do not sublicense, display, or monetize your content in any form.</p>
+      <p>MercaDream's own training data consists exclusively of properly licensed corpora. We respect copyright holders and operate in full compliance with applicable intellectual property law.</p>
+      <p>All output content is watermarked with a C2PA-compliant AI provenance signal embedded invisibly in the media. This protects both creators (proof of origin) and the public (transparency about AI generation).</p>
+    </div>
+
+    <!-- RESPONSIBLE AI -->
+    <div class="eth-sct reveal" id="ai">
+      <div class="eth-sct-title">RESPONSIBLE AI</div>
+      <p>MercaDream operates under a continuous AI safety program. Our red-teaming team probes the model quarterly for new failure modes, bias patterns, and policy circumvention techniques.</p>
+      <p>We publish a semi-annual safety report disclosing: model refusal rates by category, bias evaluation results, content moderation accuracy, and known limitations. These reports are public and linked below.</p>
+      <p>MercaDream participates in the Partnership on AI, the Content Authenticity Initiative (CAI), and the Coalition for Content Provenance and Authenticity (C2PA). We hold ourselves accountable to external standards, not just internal ones.</p>
+    </div>
+
+    <!-- TRANSPARENCY -->
+    <div class="eth-sct reveal" id="transparency">
+      <div class="eth-sct-title">TRANSPARENCY</div>
+      <p>Every video generated by MercaDream contains a C2PA watermark identifying it as AI-generated content. This watermark survives re-encoding, social media compression, and format conversion. We believe AI-generated media should be identifiable as such.</p>
+      <p>We publish the following on a rolling basis: infrastructure uptime and incident reports, quarterly safety evaluations, data breach notifications (within 72 hours of discovery), and material changes to this policy (30 days advance notice).</p>
+      <p>If we materially change how we handle your data or generate your content, you will receive direct notification and the opportunity to export your data before changes take effect.</p>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="eth-sct reveal" id="contact">
+      <div class="eth-sct-title">CONTACT & REPORTING</div>
+      <p>If you encounter content that violates our policy, believe your data has been mishandled, or have questions about this document, please reach out through the channels below.</p>
+      <div class="contact-card">
+        <h3>GET IN TOUCH</h3>
+        <p>We take all reports seriously. Policy violations are reviewed within 24 hours. Data requests are processed within 30 days.</p>
+        <div class="contact-links">
+          <a href="mailto:ethics@mercadream.com" class="contact-link">ETHICS REPORT →</a>
+          <a href="mailto:privacy@mercadream.com" class="contact-link">PRIVACY REQUEST →</a>
+          <a href="mailto:security@mercadream.com" class="contact-link">SECURITY ISSUE →</a>
+          <a href="mailto:legal@mercadream.com" class="contact-link">LEGAL INQUIRY →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot-logo">MERCA<span>DREAM</span></div>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="studio.html">Studio</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="api.html">API</a>
+    <a href="ethics.html" class="active-link">Ethics</a>
+  </div>
+  <div class="foot-copy">© 2025 MERCADREAM — AI CINEMA STUDIO</div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bn-item"><span class="bi">⌂</span><span>HOME</span></a>
+  <a href="studio.html" class="bn-item"><span class="bi">⚡</span><span>STUDIO</span></a>
+  <a href="assembly.html" class="bn-item"><span class="bi">🗄</span><span>VAULT</span></a>
+  <a href="pricing.html" class="bn-item"><span class="bi">💎</span><span>PLANS</span></a>
+</nav>
+
+<script>
+const obs=new IntersectionObserver(e=>e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');obs.unobserve(el.target);}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+function sc(id,el){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.tn-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
+window.addEventListener('scroll',()=>document.getElementById('hdr').classList.toggle('scrolled',scrollY>40),{passive:true});
+function setLang(l){document.documentElement.lang=l;document.body.className=l==='ar'?'lang-ar':'lang-en';document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));localStorage.setItem('md_lang',l);}
+window.onload=()=>{const s=localStorage.getItem('md_lang')||'en';setLang(s);};
+</script>
+</body>
+</html>

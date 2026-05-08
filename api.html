@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — API Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--surface);color:var(--text);font-family:var(--body);min-height:100dvh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.018) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+header{position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,6,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
+header.scrolled{border-bottom-color:var(--border-b)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:30px;height:30px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04);font-family:var(--display);font-size:7px;font-weight:900;color:var(--acid);letter-spacing:1px}
+.logo-name{font-family:var(--display);font-size:13px;font-weight:900;color:var(--text-bright);letter-spacing:3px}
+.logo-name span{color:var(--acid)}
+.hdr-nav{display:flex;gap:24px}
+.hdr-nav a{font-size:9px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .2s;font-family:var(--mono);text-transform:uppercase}
+.hdr-nav a:hover,.hdr-nav a.active{color:var(--acid)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
+.lb{font-family:var(--mono);font-size:8px;padding:4px 9px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.lb.on{background:var(--acid);color:#000;font-weight:700}
+.lb:hover:not(.on){color:var(--acid)}
+.btn-hdr{font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:6px 14px;border:1px solid var(--border-b);background:transparent;color:var(--acid);cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-hdr.solid{background:var(--acid);color:#000;font-weight:700;border-color:var(--acid)}
+
+main{position:relative;z-index:1;padding-top:60px;display:grid;grid-template-columns:220px 1fr}
+
+/* SIDEBAR */
+.doc-nav{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;border-right:1px solid var(--border);padding:20px 12px}
+.dn-sec{font-family:var(--mono);font-size:7px;letter-spacing:2px;color:var(--text-dim);padding:8px 10px 4px;text-transform:uppercase}
+.dn-item{display:block;padding:8px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.5px;color:var(--text-dim);text-decoration:none;border-left:2px solid transparent;transition:all .18s;text-transform:uppercase;cursor:pointer;margin-bottom:1px}
+.dn-item:hover{color:var(--text);border-left-color:rgba(200,255,0,0.2);background:rgba(200,255,0,0.02)}
+.dn-item.active{color:var(--acid);border-left-color:var(--acid);background:rgba(200,255,0,0.03)}
+
+/* CONTENT */
+.doc-content{padding:36px 48px;max-width:860px}
+.sct{margin-bottom:52px}
+.sct-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text-bright);letter-spacing:2px;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.sct-title::before{content:'';display:block;width:20px;height:1px;background:var(--acid)}
+.sct-sub{font-size:13px;color:var(--text);margin-bottom:20px;font-weight:300;line-height:1.7}
+.sct-div{height:1px;background:var(--border);margin-bottom:22px}
+
+/* HERO */
+.api-hero{background:var(--s2);border:1px solid var(--border);padding:28px 32px;margin-bottom:32px;position:relative;overflow:hidden}
+.api-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acid),transparent)}
+.api-hero-tag{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:12px;opacity:.7}
+.api-hero h1{font-family:var(--display);font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--text-bright);margin-bottom:10px}
+.api-hero h1 span{color:var(--acid)}
+.api-hero p{font-size:13px;color:var(--text);line-height:1.75;font-weight:300}
+
+/* ENDPOINT */
+.endpoint{background:var(--s2);border:1px solid var(--border);margin-bottom:10px;overflow:hidden}
+.ep-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .2s}
+.ep-header:hover{background:var(--s3)}
+.method{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 9px;flex-shrink:0}
+.method.post{background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.3);color:var(--acid)}
+.method.get{background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);color:#00e5ff}
+.method.del{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff5050}
+.ep-path{font-family:var(--mono);font-size:11px;color:var(--text-bright);flex:1;letter-spacing:.5px}
+.ep-desc-short{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:.5px}
+.ep-chevron{font-family:var(--mono);font-size:11px;color:var(--text-dim);transition:transform .2s;flex-shrink:0}
+.endpoint.open .ep-chevron{transform:rotate(90deg)}
+.ep-body{display:none;border-top:1px solid var(--border);padding:16px}
+.endpoint.open .ep-body{display:block}
+.ep-section-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;margin-top:14px;text-transform:uppercase}
+.ep-section-title:first-child{margin-top:0}
+
+/* CODE BLOCK */
+.code-block{background:var(--s4);border:1px solid var(--border);padding:16px;font-family:var(--mono);font-size:11px;line-height:1.7;overflow-x:auto;position:relative;margin-bottom:8px}
+.code-block .k{color:var(--acid)}.code-block .s{color:#ffba3f}.code-block .n{color:#00e5ff}.code-block .c{color:var(--text-dim)}
+.copy-btn{position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:3px 8px;background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.2);color:var(--acid);cursor:pointer;transition:all .2s;text-transform:uppercase}
+.copy-btn:hover{background:rgba(200,255,0,0.15)}
+
+/* PARAMS TABLE */
+.params-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
+.params-table th{font-family:var(--mono);font-size:7px;letter-spacing:2px;color:var(--text-dim);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase}
+.params-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.02);color:var(--text)}
+.params-table tr:last-child td{border-bottom:none}
+.param-name{font-family:var(--mono);font-size:11px;color:var(--acid)}
+.param-type{font-family:var(--mono);font-size:10px;color:var(--gold)}
+.param-req{font-family:var(--mono);font-size:9px;color:#ff5050}
+.param-opt{font-family:var(--mono);font-size:9px;color:var(--text-dim)}
+
+/* SDK CHIPS */
+.sdk-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.sdk-chip{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:6px 14px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all .2s;text-transform:uppercase}
+.sdk-chip.active,.sdk-chip:hover{border-color:var(--border-b);color:var(--acid);background:rgba(200,255,0,0.03)}
+
+/* AUTH */
+.auth-card{background:var(--s3);border:1px solid var(--border);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.auth-card .badge{font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:4px 10px;border:1px solid rgba(200,255,0,0.3);color:var(--acid);flex-shrink:0}
+.auth-card .key-val{font-family:var(--mono);font-size:11px;color:var(--text-dim);flex:1;letter-spacing:.5px}
+
+/* RESPONSE CODES */
+.resp-codes{display:flex;flex-direction:column;gap:4px}
+.resp-code{display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--s3);border-left:2px solid transparent}
+.resp-code.ok{border-left-color:var(--acid)}.resp-code.err{border-left-color:#ff5050}.resp-code.info{border-left-color:var(--gold)}
+.rc-code{font-family:var(--mono);font-size:11px;font-weight:700;width:40px;flex-shrink:0}
+.rc-code.ok{color:var(--acid)}.rc-code.err{color:#ff5050}.rc-code.info{color:var(--gold)}
+.rc-desc{font-size:12px;color:var(--text)}
+
+footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
+.foot-logo{font-family:var(--display);font-size:13px;font-weight:900;color:var(--text-dim);letter-spacing:4px}
+.foot-logo span{color:var(--acid)}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .2s;text-transform:uppercase}
+.foot-links a:hover{color:var(--acid)}
+.foot-links a.active-link{color:var(--text-bright)}
+.foot-copy{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:62px;background:rgba(6,6,6,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:none;justify-content:space-around;align-items:center;z-index:100}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--text-dim);transition:color .2s}
+.bn-item.active,.bn-item:hover{color:var(--acid)}
+.bn-item .bi{font-size:18px}
+.bn-item span{font-family:var(--mono);font-size:7px;letter-spacing:1px;text-transform:uppercase}
+
+@media(max-width:900px){main{grid-template-columns:1fr}.doc-nav{display:none}.doc-content{padding:24px 20px}}
+@media(max-width:768px){header{padding:0 20px}.hdr-nav{display:none}.bottom-nav{display:flex}body{padding-bottom:62px}footer{padding:24px 20px}}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">MD</div>
+    <span class="logo-name">MERCA<span>DREAM</span></span>
+  </a>
+  <nav class="hdr-nav">
+    <a href="index.html">HOME</a>
+    <a href="studio.html">STUDIO</a>
+    <a href="directors.html">DIRECTORS</a>
+    <a href="assembly.html">ASSEMBLY</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="assembly.html">VAULT</a>
+    <a href="architecture.html">ARCHITECTURE</a>
+    <a href="api.html" class="active">API</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="lang-sw">
+      <button class="lb on" onclick="setLang('en')">EN</button>
+      <button class="lb" onclick="setLang('es')">ES</button>
+      <button class="lb" onclick="setLang('ar')">AR</button>
+    </div>
+    <a href="login.html" class="btn-hdr">SIGN IN</a>
+    <a href="register.html" class="btn-hdr solid">START FREE</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- DOC NAV -->
+  <div class="doc-nav">
+    <div class="dn-sec">Getting Started</div>
+    <div class="dn-item active" onclick="scrollSec('intro',this)">INTRODUCTION</div>
+    <div class="dn-item" onclick="scrollSec('auth',this)">AUTHENTICATION</div>
+    <div class="dn-item" onclick="scrollSec('sdks',this)">SDKS</div>
+    <div class="dn-sec">Endpoints</div>
+    <div class="dn-item" onclick="scrollSec('generate',this)">POST /GENERATE</div>
+    <div class="dn-item" onclick="scrollSec('jobs',this)">GET /JOBS</div>
+    <div class="dn-item" onclick="scrollSec('vault',this)">GET /VAULT</div>
+    <div class="dn-item" onclick="scrollSec('speech',this)">POST /SPEECH</div>
+    <div class="dn-item" onclick="scrollSec('music',this)">POST /MUSIC</div>
+    <div class="dn-sec">Reference</div>
+    <div class="dn-item" onclick="scrollSec('errors',this)">ERROR CODES</div>
+    <div class="dn-item" onclick="scrollSec('limits',this)">RATE LIMITS</div>
+    <div class="dn-item" onclick="scrollSec('webhooks',this)">WEBHOOKS</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="doc-content">
+
+    <div class="api-hero">
+      <div class="api-hero-tag">REST API · VERSION 2.0</div>
+      <h1>MercaDream <span>API.</span></h1>
+      <p>Programmatic access to the full MercaDream generation stack. Generate cinematic video, synthesize speech, compose music, and manage your Vault — all through a clean REST interface.</p>
+    </div>
+
+    <!-- B2B BANNER -->
+    <div style="background:linear-gradient(135deg,rgba(200,255,0,0.04),rgba(0,0,0,0));border:1px solid rgba(200,255,0,0.2);padding:20px 24px;margin-bottom:28px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acid),transparent)"></div>
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:8px;opacity:.7">DREAM EXTRACTOR™ API — BUILD ON TOP OF US</div>
+      <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--text-bright);margin-bottom:6px">The Most Cinematically Intelligent <span style="color:var(--acid)">AI API</span> on the Internet</div>
+      <div style="font-size:13px;color:var(--text);font-weight:300;line-height:1.65;margin-bottom:14px">Our Dream Extractor™ PhD Edition — trained with 6 doctoral disciplines in cinema — is available as an API. Build video production tools, creative platforms, or enterprise pipelines on top of our intelligence.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="register.html" style="font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:8px 18px;background:var(--acid);color:#000;font-weight:700;text-decoration:none;transition:all .2s">GET API KEY →</a>
+        <a href="pricing.html" style="font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:8px 18px;border:1px solid var(--border-b);color:var(--acid);text-decoration:none">VIEW PRICING</a>
+      </div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="sct" id="intro">
+      <div class="sct-title">INTRODUCTION</div>
+      <div class="sct-sub">Base URL for all API requests:</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyText('https://api.mercadream.com/v2')">COPY</button>
+        <span class="k">https://api.mercadream.com/v2</span>
+      </div>
+      <p style="font-size:13px;color:var(--text);line-height:1.75;font-weight:300;margin-bottom:14px">All requests must be made over HTTPS. The API accepts JSON request bodies and returns JSON responses. Timestamps are in ISO 8601 format (UTC).</p>
+      <div class="resp-codes">
+        <div class="resp-code info"><div class="rc-code info">NOTE</div><div class="rc-desc">API access requires a Regular, Professional, or Advanced plan. Free plan does not include API access.</div></div>
+      </div>
+    </div>
+
+    <!-- AUTH -->
+    <div class="sct" id="auth">
+      <div class="sct-title">AUTHENTICATION</div>
+      <div class="sct-sub">All API requests require authentication via Bearer token. Include your API key in the Authorization header.</div>
+      <div class="sct-div"></div>
+      <div class="auth-card"><div class="badge">LIVE KEY</div><div class="key-val">mk_live_•••••••••••••••••x9pq7</div></div>
+      <div class="auth-card" style="border-color:rgba(255,186,63,0.2)"><div class="badge" style="color:var(--gold);border-color:rgba(255,186,63,0.3)">TEST KEY</div><div class="key-val">mk_test_•••••••••••••••••k3j8</div></div>
+      <div class="ep-section-title">EXAMPLE REQUEST</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<span class="k">curl</span> -X POST https://api.mercadream.com/v2/generate \
+  -H <span class="s">"Authorization: Bearer mk_live_your_key"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"prompt": "Neon rain on Tokyo streets", "resolution": "4k"}'</span>
+      </div>
+    </div>
+
+    <!-- SDKS -->
+    <div class="sct" id="sdks">
+      <div class="sct-title">SDKs & LIBRARIES</div>
+      <div class="sct-sub">Official client libraries for the most common languages. Community SDKs available on GitHub.</div>
+      <div class="sct-div"></div>
+      <div class="sdk-row">
+        <div class="sdk-chip active" onclick="showSdk(this,'python')">PYTHON</div>
+        <div class="sdk-chip" onclick="showSdk(this,'js')">JAVASCRIPT</div>
+        <div class="sdk-chip" onclick="showSdk(this,'rust')">RUST</div>
+        <div class="sdk-chip" onclick="showSdk(this,'go')">GO</div>
+      </div>
+      <div id="sdkCode">
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+<span class="c"># Install</span>
+<span class="k">pip install</span> mercadream
+
+<span class="c"># Initialize</span>
+<span class="k">from</span> mercadream <span class="k">import</span> MercaClient
+
+client = MercaClient(<span class="s">"mk_live_your_key"</span>)
+
+<span class="c"># Generate video</span>
+job = client.generate(
+    prompt=<span class="s">"Neon rain on Tokyo streets at midnight"</span>,
+    resolution=<span class="s">"4k"</span>,
+    duration=<span class="n">30</span>,
+    style=<span class="s">"cinematic"</span>
+)
+
+<span class="c"># Wait for completion</span>
+result = client.jobs.wait(job.id)
+<span class="k">print</span>(result.download_url)
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERATE -->
+    <div class="sct" id="generate">
+      <div class="sct-title">POST /GENERATE</div>
+      <div class="sct-sub">Submit a new generation job. Returns a job object with status tracking.</div>
+      <div class="sct-div"></div>
+      <div class="endpoint open">
+        <div class="ep-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method post">POST</span>
+          <span class="ep-path">/v2/generate</span>
+          <span class="ep-desc-short">Create generation job</span>
+          <span class="ep-chevron">→</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-section-title">REQUEST BODY</div>
+          <table class="params-table">
+            <thead><tr><th>PARAMETER</th><th>TYPE</th><th>REQUIRED</th><th>DESCRIPTION</th></tr></thead>
+            <tbody>
+              <tr><td><span class="param-name">prompt</span></td><td><span class="param-type">string</span></td><td><span class="param-req">required</span></td><td>Cinematic description (max 1000 chars)</td></tr>
+              <tr><td><span class="param-name">resolution</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"720p" | "1080p" | "4k" | "8k" — default: "4k"</td></tr>
+              <tr><td><span class="param-name">duration</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Seconds: 15 | 30 | 60 | 120 — default: 30</td></tr>
+              <tr><td><span class="param-name">style</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Visual style preset — default: "cinematic"</td></tr>
+              <tr><td><span class="param-name">fps</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>24 | 30 | 60 — default: 24</td></tr>
+              <tr><td><span class="param-name">voice_id</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Voice model ID for narration</td></tr>
+              <tr><td><span class="param-name">webhook_url</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>URL to receive completion event</td></tr>
+            </tbody>
+          </table>
+          <div class="ep-section-title">EXAMPLE RESPONSE</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+{
+  <span class="k">"id"</span>: <span class="s">"job_01j8x9k2m4p6q8r"</span>,
+  <span class="k">"status"</span>: <span class="s">"queued"</span>,
+  <span class="k">"prompt"</span>: <span class="s">"Neon rain on Tokyo streets at midnight"</span>,
+  <span class="k">"resolution"</span>: <span class="s">"4k"</span>,
+  <span class="k">"duration"</span>: <span class="n">30</span>,
+  <span class="k">"compute_units"</span>: <span class="n">12</span>,
+  <span class="k">"created_at"</span>: <span class="s">"2025-06-01T14:22:31Z"</span>,
+  <span class="k">"estimated_completion"</span>: <span class="s">"2025-06-01T14:23:16Z"</span>
+}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOBS -->
+    <div class="sct" id="jobs">
+      <div class="sct-title">GET /JOBS</div>
+      <div class="sct-sub">Retrieve job status and download URLs upon completion.</div>
+      <div class="sct-div"></div>
+      <div class="endpoint">
+        <div class="ep-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method get">GET</span>
+          <span class="ep-path">/v2/jobs/{job_id}</span>
+          <span class="ep-desc-short">Get job status</span>
+          <span class="ep-chevron">→</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-section-title">EXAMPLE RESPONSE (COMPLETED)</div>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+{
+  <span class="k">"id"</span>: <span class="s">"job_01j8x9k2m4p6q8r"</span>,
+  <span class="k">"status"</span>: <span class="s">"completed"</span>,
+  <span class="k">"progress"</span>: <span class="n">100</span>,
+  <span class="k">"download_url"</span>: <span class="s">"https://vault.mercadream.com/..."</span>,
+  <span class="k">"thumbnail_url"</span>: <span class="s">"https://vault.mercadream.com/..."</span>,
+  <span class="k">"duration"</span>: <span class="n">30</span>,
+  <span class="k">"resolution"</span>: <span class="s">"4k"</span>,
+  <span class="k">"file_size_bytes"</span>: <span class="n">284772400</span>,
+  <span class="k">"completed_at"</span>: <span class="s">"2025-06-01T14:23:14Z"</span>
+}
+          </div>
+        </div>
+      </div>
+      <div class="endpoint" style="margin-top:1px">
+        <div class="ep-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method get">GET</span>
+          <span class="ep-path">/v2/jobs</span>
+          <span class="ep-desc-short">List all jobs</span>
+          <span class="ep-chevron">→</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-section-title">QUERY PARAMETERS</div>
+          <table class="params-table">
+            <tbody>
+              <tr><td><span class="param-name">status</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Filter: "queued" | "processing" | "completed" | "failed"</td></tr>
+              <tr><td><span class="param-name">limit</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Max results (1–100, default: 20)</td></tr>
+              <tr><td><span class="param-name">before</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>ISO 8601 cursor for pagination</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEECH -->
+    <div class="sct" id="speech">
+      <div class="sct-title">POST /SPEECH</div>
+      <div class="sct-sub">Generate neural speech with voice cloning or preset voices.</div>
+      <div class="sct-div"></div>
+      <div class="endpoint">
+        <div class="ep-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method post">POST</span>
+          <span class="ep-path">/v2/speech</span>
+          <span class="ep-desc-short">Synthesize speech</span>
+          <span class="ep-chevron">→</span>
+        </div>
+        <div class="ep-body">
+          <table class="params-table">
+            <tbody>
+              <tr><td><span class="param-name">text</span></td><td><span class="param-type">string</span></td><td><span class="param-req">required</span></td><td>Text to synthesize (max 5000 chars)</td></tr>
+              <tr><td><span class="param-name">voice_id</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Voice model ID — default: "neural-narrator-m"</td></tr>
+              <tr><td><span class="param-name">format</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"mp3" | "wav" | "flac" — default: "mp3"</td></tr>
+              <tr><td><span class="param-name">speed</span></td><td><span class="param-type">float</span></td><td><span class="param-opt">optional</span></td><td>0.5–2.0 — default: 1.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUSIC -->
+    <div class="sct" id="music">
+      <div class="sct-title">POST /MUSIC</div>
+      <div class="sct-sub">Generate original music scores from text descriptions.</div>
+      <div class="sct-div"></div>
+      <div class="endpoint">
+        <div class="ep-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method post">POST</span>
+          <span class="ep-path">/v2/music</span>
+          <span class="ep-desc-short">Compose music</span>
+          <span class="ep-chevron">→</span>
+        </div>
+        <div class="ep-body">
+          <table class="params-table">
+            <tbody>
+              <tr><td><span class="param-name">prompt</span></td><td><span class="param-type">string</span></td><td><span class="param-req">required</span></td><td>Music description (genre, mood, instruments)</td></tr>
+              <tr><td><span class="param-name">duration</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Seconds: 15–300 — default: 60</td></tr>
+              <tr><td><span class="param-name">format</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"mp3" | "wav" | "flac" — default: "mp3"</td></tr>
+              <tr><td><span class="param-name">bpm</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>60–200 — auto-detected if omitted</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR CODES -->
+    <div class="sct" id="errors">
+      <div class="sct-title">ERROR CODES</div>
+      <div class="sct-sub">All errors follow a consistent JSON structure with a code and human-readable message.</div>
+      <div class="sct-div"></div>
+      <div class="resp-codes">
+        <div class="resp-code ok"><div class="rc-code ok">200</div><div class="rc-desc">OK — Request successful</div></div>
+        <div class="resp-code ok"><div class="rc-code ok">201</div><div class="rc-desc">Created — Job successfully submitted</div></div>
+        <div class="resp-code info"><div class="rc-code info">400</div><div class="rc-desc">Bad Request — Invalid parameters or malformed JSON</div></div>
+        <div class="resp-code info"><div class="rc-code info">401</div><div class="rc-desc">Unauthorized — Missing or invalid API key</div></div>
+        <div class="resp-code info"><div class="rc-code info">403</div><div class="rc-desc">Forbidden — Feature not available on your plan</div></div>
+        <div class="resp-code info"><div class="rc-code info">404</div><div class="rc-desc">Not Found — Job or resource does not exist</div></div>
+        <div class="resp-code err"><div class="rc-code err">429</div><div class="rc-desc">Too Many Requests — Rate limit exceeded</div></div>
+        <div class="resp-code err"><div class="rc-code err">500</div><div class="rc-desc">Internal Server Error — Please contact support</div></div>
+      </div>
+    </div>
+
+    <!-- RATE LIMITS -->
+    <div class="sct" id="limits">
+      <div class="sct-title">RATE LIMITS</div>
+      <div class="sct-sub">Rate limits are applied per API key per minute.</div>
+      <div class="sct-div"></div>
+      <table class="params-table" style="background:var(--s2);border:1px solid var(--border)">
+        <thead><tr><th>PLAN</th><th>REQUESTS / MIN</th><th>CONCURRENT JOBS</th><th>MAX RESOLUTION</th></tr></thead>
+        <tbody>
+          <tr><td>Regular</td><td style="font-family:var(--mono)">60</td><td style="font-family:var(--mono)">2</td><td style="font-family:var(--mono)">720p</td></tr>
+          <tr><td>Advanced</td><td style="font-family:var(--mono)">200</td><td style="font-family:var(--mono)">5</td><td style="font-family:var(--mono)">4K</td></tr>
+          <tr><td style="color:var(--acid)">Professional</td><td style="font-family:var(--mono);color:var(--acid)">1,000</td><td style="font-family:var(--mono);color:var(--acid)">20</td><td style="font-family:var(--mono);color:var(--acid)">8K</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- WEBHOOKS -->
+    <div class="sct" id="webhooks">
+      <div class="sct-title">WEBHOOKS</div>
+      <div class="sct-sub">Receive real-time notifications when your jobs complete, fail, or update.</div>
+      <div class="sct-div"></div>
+      <p style="font-size:13px;color:var(--text);line-height:1.75;font-weight:300;margin-bottom:14px">Include a <code style="font-family:var(--mono);font-size:11px;color:var(--acid)">webhook_url</code> in your generation request. MercaDream will POST a signed payload to that URL upon status change.</p>
+      <div class="ep-section-title">WEBHOOK PAYLOAD</div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+{
+  <span class="k">"event"</span>: <span class="s">"job.completed"</span>,
+  <span class="k">"job_id"</span>: <span class="s">"job_01j8x9k2m4p6q8r"</span>,
+  <span class="k">"status"</span>: <span class="s">"completed"</span>,
+  <span class="k">"download_url"</span>: <span class="s">"https://vault.mercadream.com/..."</span>,
+  <span class="k">"timestamp"</span>: <span class="s">"2025-06-01T14:23:14Z"</span>,
+  <span class="k">"signature"</span>: <span class="s">"sha256=abc123..."</span>
+}
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot-logo">MERCA<span>DREAM</span></div>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="studio.html">Studio</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="api.html" class="active-link">API</a>
+    <a href="ethics.html">Ethics</a>
+  </div>
+  <div class="foot-copy">© 2025 MERCADREAM</div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bn-item"><span class="bi">⌂</span><span>HOME</span></a>
+  <a href="studio.html" class="bn-item"><span class="bi">⚡</span><span>STUDIO</span></a>
+  <a href="assembly.html" class="bn-item"><span class="bi">🗄</span><span>VAULT</span></a>
+  <a href="pricing.html" class="bn-item"><span class="bi">💎</span><span>PLANS</span></a>
+</nav>
+
+<script>
+function scrollSec(id,el){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.dn-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
+function copyText(t){navigator.clipboard.writeText(t).then(()=>{});} 
+function copyCode(btn){const code=btn.parentElement.textContent.replace('COPY','').trim();navigator.clipboard.writeText(code).then(()=>{btn.textContent='✓ COPIED';setTimeout(()=>btn.textContent='COPY',1500);});}
+const sdkCodes={python:`<span class="c"># Install</span>\n<span class="k">pip install</span> mercadream\n\n<span class="k">from</span> mercadream <span class="k">import</span> MercaClient\nclient = MercaClient(<span class="s">"mk_live_your_key"</span>)\njob = client.generate(prompt=<span class="s">"Neon rain on Tokyo"</span>, resolution=<span class="s">"4k"</span>)\nresult = client.jobs.wait(job.id)\n<span class="k">print</span>(result.download_url)`,js:`<span class="c">// Install: npm install mercadream</span>\n<span class="k">import</span> { MercaClient } <span class="k">from</span> <span class="s">'mercadream'</span>;\n<span class="k">const</span> client = <span class="k">new</span> MercaClient(<span class="s">'mk_live_your_key'</span>);\n<span class="k">const</span> job = <span class="k">await</span> client.generate({ prompt: <span class="s">'Neon rain on Tokyo'</span>, resolution: <span class="s">'4k'</span> });\n<span class="k">const</span> result = <span class="k">await</span> client.jobs.wait(job.id);\nconsole.log(result.downloadUrl);`,rust:`<span class="c">// Cargo.toml: mercadream = "2.0"</span>\n<span class="k">use</span> mercadream::MercaClient;\n\n<span class="k">let</span> client = MercaClient::new(<span class="s">"mk_live_your_key"</span>);\n<span class="k">let</span> job = client.generate(GenerateRequest {\n    prompt: <span class="s">"Neon rain on Tokyo"</span>.into(),\n    resolution: Some(<span class="s">"4k"</span>.into()),\n    ..Default::default()\n}).await?;`,go:`<span class="c">// go get github.com/mercadream/go-sdk</span>\n<span class="k">import</span> merca <span class="s">"github.com/mercadream/go-sdk"</span>\n\nclient := merca.New(<span class="s">"mk_live_your_key"</span>)\njob, _ := client.Generate(merca.GenerateRequest{\n    Prompt: <span class="s">"Neon rain on Tokyo"</span>,\n    Resolution: <span class="s">"4k"</span>,\n})`};
+function showSdk(el,lang){document.querySelectorAll('.sdk-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');document.getElementById('sdkCode').innerHTML=`<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">COPY</button>${sdkCodes[lang]}</div>`;}
+function setLang(l){document.documentElement.lang=l;document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));localStorage.setItem('md_lang',l);}
+window.addEventListener('scroll',()=>document.getElementById('hdr').classList.toggle('scrolled',scrollY>40),{passive:true});
+window.onload=()=>{const s=localStorage.getItem('md_lang')||'en';setLang(s);};
+</script>
+</body>
+</html>
