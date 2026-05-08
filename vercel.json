@@ -4,6 +4,7 @@
     { "src": "api/chat.js",    "use": "@vercel/node" },
     { "src": "api/video.js",   "use": "@vercel/node" },
     { "src": "api/upscale.js", "use": "@vercel/node" },
+    { "src": "api/credits.js", "use": "@vercel/node" },
     { "src": "*.html",         "use": "@vercel/static" },
     { "src": "public/**",      "use": "@vercel/static" }
   ],
@@ -11,6 +12,7 @@
     { "src": "/api/chat",    "dest": "/api/chat.js"    },
     { "src": "/api/video",   "dest": "/api/video.js"   },
     { "src": "/api/upscale", "dest": "/api/upscale.js" },
+    { "src": "/api/credits", "dest": "/api/credits.js" },
     { "src": "/",            "dest": "/index.html"     },
     { "src": "/(.*)\\.html", "dest": "/$1.html"        },
     { "src": "/(.*)",        "dest": "/$1"             }
