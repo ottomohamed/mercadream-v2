@@ -625,13 +625,13 @@ function doneStage(id,iv,ts){
 }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-async function callAPI(system, messages, maxTokens=1200){
+async function callAPI(system, messages, maxTokens=1200, mode='discovery'){
   let res;
   try{
     res = await fetch(API,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system, messages, max_tokens:maxTokens})
+      body:JSON.stringify({system, messages, max_tokens:maxTokens, mode})
     });
   }catch(e){ throw new Error('Network: '+e.message); }
   if(!res.ok){
@@ -793,25 +793,14 @@ async function startSession(){
     es:"Hola, quiero crear una película de 60 segundos con 6 escenas, cada una de 10 segundos",
     ar:"مرحباً، أريد إنشاء فيلم مدته 60 ثانية من 6 مشاهد، كل مشهد 10 ثوانٍ"
   };
-  showTyping();
-  try{
-    const reply=await callAPI(buildCrewSystem(SYS_DISCOVER[lang]),[{role:'user',content:trigger[lang]}]);
-    hideTyping();
-    history.push({role:'user',content:trigger[lang]});
-    addMsg('bot',reply,true);
-    history.push({role:'assistant',content:reply});
-    log('Dream Extractor™ session started (6-scene film mode)','ok');
-  }catch(e){
-    hideTyping();
-    const fallbacks={
-      en:"Welcome. I am your screenplay writer at MercaDream. I will work with you to transform your idea into a professional cinematic s",
-      es:"Bienvenido. Soy el guionista de MercaDream. Trabajaré contigo para transformar tu idea en un guión cinematográfico profesional.tador...",
-      ar:"مرحباً. أنا Dream Extractor™. أخبرني المشاعر الواحدة التي تريد أن يتركها فيلمك البالغ 60 ثانية في روح المشاهد..."
-    };
-    addMsg('bot',fallbacks[lang],true);
-    history.push({role:'assistant',content:fallbacks[lang]});
-    log('API offline — local greeting used','err');
-  }
+  const welcome={
+    en:"Welcome. I am your screenplay writer at MercaDream.\n\nI will work with you to transform your idea into a professional cinematic screenplay — scene by scene.\n\nOnce you approve it, we hand it to our director to bring it to life.\n\nSo — what idea is on your mind?",
+    es:"Bienvenido. Soy el guionista de MercaDream.\n\nTrabajaré contigo para transformar tu idea en un guión cinematográfico profesional.\n\nCuando lo apruebes, lo enviamos al director.\n\n¿Qué idea tienes en mente?",
+    ar:"مرحباً. أنا كاتب السيناريو في MercaDream.\n\nسأتعاون معك لتحويل فكرتك إلى سيناريو سينمائي احترافي.\n\nبعد موافقتك نسلّمه للمخرج لتجسيده.\n\nأخبرني — ما الفكرة التي تدور في ذهنك؟"
+  };
+  addMsg('bot', welcome[lang], true);
+  history.push({role:'assistant', content:welcome[lang]});
+  log('Dream Extractor™ session started (6-scene film mode)','ok');
 }
 
 async function sendMessage(){
@@ -836,12 +825,12 @@ async function sendMessage(){
   log(`>> ${text.substring(0,40)}...`);
   try{
     if(phase==='discovery'){
-      const reply=await callAPI(SYS_DISCOVER[lang],history);
+      const reply=await callAPI(SYS_DISCOVER[lang],history,1200,'discovery');
       hideTyping();
       if(reply.includes('DREAM_CAPTURED')){
         log(t('log_build'),'inf');
         const analysisHistory=[...history,{role:'assistant',content:reply.replace('DREAM_CAPTURED','')}];
-        const analysis=await callAPI(SYS_ANALYZE[lang],analysisHistory,1500);
+        const analysis=await callAPI(SYS_ANALYZE[lang],analysisHistory,1500,'discovery');
         showSummaryCard(analysis);
         setPhase(2);phase='confirmation';
         history.push({role:'assistant',content:reply});
@@ -871,7 +860,7 @@ async function startProduction(){
 
   let scenes = [];
   try {
-    const scenesJSON = await callAPI(SYS_6SCENES, [{role:'user', content:fullContext}], 2000);
+    const scenesJSON = await callAPI(SYS_6SCENES, [{role:'user', content:fullContext}], 2000,'generate');
     const jsonMatch = scenesJSON.match(/\[[\s\S]*\]/);
     if(jsonMatch){
       scenes = JSON.parse(jsonMatch[0]);
@@ -966,7 +955,7 @@ function buildCrewSystem(baseSystem){
 function showCrewBadge(){
   const names = localStorage.getItem('md_crew_names') || '';
   if(!names) return;
-  addMsg('bot', `🎬 **Crew briefed:** ${names}\n\n6-SCENE FILM MODE ACTIVATED — Type ACTION to start production instantly!`, true);
+  addMsg('bot', `🎬 **${names}** — ready. Tell me your story.`, true);
 }
 
 window.onload=()=>{
