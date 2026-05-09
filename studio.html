@@ -241,7 +241,24 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .pw-close{position:absolute;top:12px;right:14px;background:transparent;border:none;color:#444;cursor:pointer;font-size:18px;transition:color .2s}
 .pw-close:hover{color:#c8ff00}
 
-</style>
+.pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px}
+.pw-overlay.show{display:flex}
+.pw-box{background:#0d0d0d;border:1px solid rgba(200,255,0,.35);max-width:480px;width:100%;position:relative;overflow:hidden;padding:32px}
+.pw-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c8ff00,transparent)}
+.pw-title{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:#f0f0f0;margin-bottom:8px;text-align:center}
+.pw-title span{color:#c8ff00}
+.pw-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#b0b0b0;text-align:center;margin-bottom:24px;letter-spacing:1px;line-height:1.6}
+.pw-cost{background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.2);padding:14px;text-align:center;margin-bottom:20px}
+.pw-cost-val{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:#c8ff00}
+.pw-cost-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#444;letter-spacing:2px;margin-top:3px}
+.pw-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-btn{padding:12px;border:none;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .3s}
+.pw-btn.primary{background:#c8ff00;color:#000}
+.pw-btn.primary:hover{background:#d4ff1a}
+.pw-btn.secondary{background:transparent;border:1px solid rgba(200,255,0,.3);color:#b0b0b0}
+.pw-btn.secondary:hover{border-color:rgba(200,255,0,.6);color:#c8ff00}
+.pw-close{position:absolute;top:12px;right:14px;background:transparent;border:none;color:#444;cursor:pointer;font-size:18px}
+.pw-close:hover{color:#c8ff00}</style>
 </head>
 <body class="lang-en">
 <div class="app">
@@ -753,7 +770,7 @@ async function triggerActionProduction(){
 let selectedPaywallPlan = 'regular';
 let paywallShown = false;
 
-function triggerActionFromButton(){
+function triggerActionFromButton(){showPw();return;if(false){
   // Check if user has had at least 2 exchanges (some conversation happened)
   const userMessages = history.filter(m => m.role === 'user').length;
   if(userMessages >= 1 && !paywallShown){
@@ -999,5 +1016,22 @@ window.onload=()=>{
   </div>
 </div>
 
-</body>
+<div class="pw-overlay" id="pwOverlay">
+  <div class="pw-box">
+    <button class="pw-close" onclick="closePw()">x</button>
+    <div class="pw-title">Ready to <span>Generate?</span></div>
+    <div class="pw-sub">YOUR SCREENPLAY IS COMPLETE<br>GENERATING YOUR 6-SCENE FILM REQUIRES</div>
+    <div class="pw-cost">
+      <div class="pw-cost-val">10</div>
+      <div class="pw-cost-lbl">CREDITS</div>
+    </div>
+    <div class="pw-btns">
+      <button class="pw-btn secondary" onclick="closePw()">BACK</button>
+      <button class="pw-btn primary" onclick="pwContinue()">GET CREDITS +</button>
+    </div>
+  </div>
+</div><script>function showPw(){document.getElementById('pwOverlay').classList.add('show');}
+function closePw(){document.getElementById('pwOverlay').classList.remove('show');}
+function pwContinue(){localStorage.setItem('md_return','generate');window.location.href='register.html';}</script></body>
 </html>
+
