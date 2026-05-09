@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
+﻿<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22&gt;&lt;polygon points=%228,1 15,13 1,13%22 fill=%22%23c8ff00%22/&gt;&lt;/svg&gt;" rel="icon"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM — Select Your Crew</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{
   --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;--cyan:#00e5ff;--purple:#b06aff;
@@ -15,734 +16,524 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--surface);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
-body.lang-ar{direction:rtl;font-family:'Cairo',sans-serif}
+body{background:var(--surface);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden}
 
-/* GRID */
+/* GRID & FX */
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.018) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
-/* SCANLINE */
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
 
-/* AMBIENT */
 .orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:0}
 .orb1{width:700px;height:700px;background:radial-gradient(circle,rgba(200,255,0,0.035),transparent);top:-200px;right:-200px}
 .orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,229,255,0.025),transparent);bottom:-100px;left:-100px}
 
 /* HEADER */
 header{
-  position:fixed;top:0;left:0;right:0;height:56px;
+  position:fixed;top:0;left:0;right:0;height:64px;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 28px;background:rgba(6,6,6,0.94);
+  padding:0 32px;background:rgba(6,6,6,0.95);
   backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
-  z-index:100
+  z-index:1000
 }
-.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
-.logo-m{width:28px;height:28px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04)}
-.logo-m svg{width:13px;height:13px}
-.logo-n{font-family:var(--display);font-size:11px;font-weight:700;color:var(--acid);letter-spacing:3px;text-shadow:0 0 16px rgba(200,255,0,0.25)}
-.hdr-mid{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--text-dim)}
-.hdr-mid span{color:var(--acid)}
-.hdr-r{display:flex;align-items:center;gap:10px}
-.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
-.lb{font-family:var(--mono);font-size:8px;padding:4px 8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-m{width:32px;height:32px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04);position:relative}
+.logo-m svg{width:16px;height:16px}
+.logo-n{font-family:var(--display);font-size:12px;font-weight:900;color:var(--acid);letter-spacing:4px;text-shadow:0 0 16px rgba(200,255,0,0.3)}
+
+.hdr-r{display:flex;align-items:center;gap:24px}
+.credits-wrap{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px}
+.credits-val{color:var(--acid);font-weight:700}
+
+.lang-sw{display:flex;gap:4px;background:rgba(200,255,0,0.03);border:1px solid var(--border);padding:3px}
+.lb{font-family:var(--mono);font-size:9px;padding:4px 10px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
 .lb.on{background:var(--acid);color:#000;font-weight:700}
-.lb:hover:not(.on){color:var(--acid)}
-.dot-live{width:5px;height:5px;border-radius:50%;background:var(--acid);box-shadow:0 0 7px var(--acid);animation:blink 1.4s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-.btn-back{font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;text-decoration:none;transition:all .2s}
-.btn-back:hover{color:var(--acid);border-color:var(--border-b)}
 
-/* PAGE */
-.page{max-width:1200px;margin:0 auto;padding:80px 28px 60px;position:relative;z-index:1}
+/* PAGE CONTAINER */
+.page{max-width:1200px;margin:0 auto;padding:100px 32px 80px;position:relative;z-index:1}
 
-/* PLAN SELECTOR */
-.plan-bar{
-  display:flex;align-items:center;justify-content:center;gap:0;
-  margin-bottom:52px;border:1px solid var(--border);
-  background:var(--s2);overflow:hidden;max-width:520px;margin-left:auto;margin-right:auto
+/* COMPACT CREDIT HERO BAR */
+.credit-hero-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--s2); border: 1px solid var(--border-b);
+  padding: 12px 24px; margin-bottom: 24px; position: relative;
+  overflow: hidden;
 }
-.plan-tab{
-  flex:1;padding:12px 8px;text-align:center;cursor:pointer;
-  font-family:var(--mono);font-size:9px;letter-spacing:2px;
-  color:var(--text-dim);border:none;background:transparent;
-  transition:all .25s;border-right:1px solid var(--border);position:relative
+.credit-hero-bar::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--acid);
 }
-.plan-tab:last-child{border-right:none}
-.plan-tab.on{background:rgba(200,255,0,0.07);color:var(--acid)}
-.plan-tab.on::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--acid);box-shadow:0 0 8px var(--acid)}
-.plan-tab-name{display:block;font-size:10px;font-weight:700;margin-bottom:2px}
-.plan-tab-price{display:block;font-size:8px;color:var(--text-dim)}
-.plan-tab.on .plan-tab-price{color:var(--acid-dim)}
-
-/* PAGE HEADER */
-.pg-tag{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid);margin-bottom:12px}
-.pg-h{font-family:var(--display);font-size:clamp(22px,4vw,42px);font-weight:900;color:var(--text-bright);margin-bottom:10px;letter-spacing:-1px}
-.pg-sub{font-size:14px;color:var(--text);max-width:560px;line-height:1.65;margin-bottom:40px}
-
-/* PLAN BADGE */
-.plan-info-bar{
-  display:flex;align-items:center;gap:16px;padding:12px 18px;
-  background:var(--s2);border:1px solid var(--border-b);
-  border-left:3px solid var(--acid);margin-bottom:40px;
-  font-family:var(--mono);font-size:9px
+.chb-left { display: flex; align-items: center; gap: 16px; }
+.chb-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+.chb-value { font-family: var(--display); font-size: 18px; color: var(--acid); font-weight: 700; }
+.chb-btn {
+  background: transparent; border: 1px solid var(--border-b); color: var(--acid);
+  padding: 6px 16px; font-family: var(--mono); font-size: 9px; font-weight: 700;
+  cursor: pointer; transition: all 0.3s;
 }
-.pib-label{color:var(--text-dim);letter-spacing:1px}
-.pib-val{color:var(--acid);font-weight:700}
-.pib-sep{color:var(--text-dim);opacity:.3}
-.pib-slots{margin-left:auto;color:var(--text-dim)}
-.pib-slots span{color:var(--gold)}
+.chb-btn:hover { background: var(--acid); color: #000; }
+
+/* NEURAL STATUS DASHBOARD */
+.neural-dashboard {
+  background: rgba(13,13,13,0.6); border: 1px solid var(--border);
+  margin-bottom: 48px; padding: 24px; display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+  backdrop-filter: blur(10px);
+}
+.nd-status { display: flex; flex-direction: column; gap: 12px; }
+.nd-title { font-family: var(--display); font-size: 11px; color: var(--acid); letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
+.pulse-dot { width: 8px; height: 8px; background: var(--acid); border-radius: 50%; box-shadow: 0 0 10px var(--acid); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+.nd-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nd-stat-box { border: 1px solid rgba(200,255,0,0.1); padding: 12px; background: rgba(0,0,0,0.2); }
+.nd-stat-label { font-family: var(--mono); font-size: 8px; color: var(--text-dim); text-transform: uppercase; }
+.nd-stat-val { font-family: var(--display); font-size: 14px; color: var(--text-bright); margin-top: 4px; }
+
+.nd-feed { border-right: 1px solid var(--border); padding-right: 24px; overflow: hidden; position: relative; height: 120px; }
+.feed-scroll { animation: scroll-up 20s linear infinite; }
+@keyframes scroll-up { 0% { transform: translateY(0); } 100% { transform: translateY(-100%); } }
+.feed-item { font-family: var(--mono); font-size: 10px; color: var(--acid-dim); margin-bottom: 8px; white-space: nowrap; }
+.feed-item span { color: var(--text-dim); }
+
+/* SECTION HEADERS */
+.section-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.sh-left h2{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);letter-spacing:2px}
+.sh-right{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px}
 
 /* CREW GRID */
 .crew-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:2px;background:var(--border);
-  margin-bottom:40px
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:24px;margin-bottom:48px
 }
 
 /* CREW CARD */
 .crew-card{
-  background:var(--s2);position:relative;
-  overflow:hidden;cursor:pointer;
-  transition:all .3s;user-select:none
+  background:var(--s2);border:1px solid var(--border);
+  position:relative;overflow:hidden;transition:all .4s ease;
+  display:flex;flex-direction:column
 }
-.crew-card:hover .cc-img{transform:scale(1.04);filter:grayscale(0%) brightness(1)}
-.crew-card.selected{background:rgba(200,255,0,0.04)}
-.crew-card.selected .cc-overlay{background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.3) 60%,transparent 100%)}
-.crew-card.locked{cursor:not-allowed}
-.crew-card.locked .cc-img{filter:grayscale(100%) brightness(.3)}
-
-/* CARD IMAGE */
-.cc-img-wrap{aspect-ratio:4/5;overflow:hidden;position:relative}
-.cc-img{
-  width:100%;height:100%;object-fit:cover;
-  filter:grayscale(80%) brightness(.7);
-  transition:all .5s;display:block
-}
-.cc-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.2) 55%,transparent 100%);
-  transition:all .3s
-}
-
-/* STATUS BADGE */
-.cc-status{
-  position:absolute;top:10px;left:10px;
-  display:flex;align-items:center;gap:5px;
-  font-family:var(--mono);font-size:7px;letter-spacing:2px;
-  padding:4px 8px;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
-  border:1px solid rgba(255,255,255,.08)
-}
-.cc-status-dot{width:5px;height:5px;border-radius:50%}
-.cc-status.available .cc-status-dot{background:var(--acid);box-shadow:0 0 6px var(--acid);animation:blink .9s infinite}
-.cc-status.available{color:var(--acid)}
-.cc-status.busy .cc-status-dot{background:var(--gold);animation:blink 1.2s infinite}
-.cc-status.busy{color:var(--gold)}
-.cc-status.locked-st .cc-status-dot{background:var(--text-dim)}
-.cc-status.locked-st{color:var(--text-dim)}
-
-/* TIER BADGE */
-.cc-tier{
-  position:absolute;top:10px;right:10px;
-  font-family:var(--mono);font-size:7px;letter-spacing:1px;
-  padding:3px 8px;background:rgba(0,0,0,.6);
-  border:1px solid rgba(255,255,255,.08);color:var(--text-dim)
-}
-
-/* CARD INFO */
-.cc-info{position:absolute;bottom:0;left:0;right:0;padding:14px 12px}
-.cc-role{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid-dim);margin-bottom:4px}
-.cc-name{font-family:var(--display);font-size:16px;font-weight:700;color:var(--text-bright);line-height:1.1;margin-bottom:8px;letter-spacing:.5px}
-.cc-spec{font-size:10px;color:var(--text);line-height:1.5;margin-bottom:10px}
-
-/* SELECT BUTTON */
+.crew-card:hover{border-color:var(--border-b);transform:translateY(-4px)}
+.crew-card.selected{border-color:var(--acid);background:rgba(200,255,0,0.02)}
+.cc-visual{height:220px;position:relative;overflow:hidden}
+.cc-img{width:100%;height:100%;object-fit:cover;transition:all .6s ease;filter:grayscale(30%)}
+.cc-gradient{position:absolute;inset:0;background:linear-gradient(to top, var(--s2) 0%, transparent 60%)}
+.cc-body{padding:24px;flex:1;display:flex;flex-direction:column}
+.cc-role{font-family:var(--mono);font-size:9px;color:var(--acid);letter-spacing:2px;margin-bottom:8px}
+.cc-name{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);margin-bottom:12px}
+.cc-desc{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:24px;flex:1}
 .cc-btn{
-  width:100%;padding:9px;font-family:var(--mono);font-size:8px;
-  letter-spacing:2px;border:none;cursor:pointer;transition:all .2s;
-  text-align:center
+  width: 100%; padding:12px; font-family:var(--mono); font-size:10px; font-weight:700;
+  letter-spacing:1px; border:1px solid var(--border-b); background:transparent;
+  color:var(--text-bright); cursor:pointer; transition:all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.cc-btn-avail{background:var(--acid);color:#000;font-weight:700}
-.cc-btn-avail:hover{background:#d4ff1a}
-.cc-btn-selected{background:rgba(200,255,0,0.15);color:var(--acid);border:1px solid var(--acid)}
-.cc-btn-busy{background:transparent;border:1px solid rgba(255,186,63,.3);color:var(--gold);cursor:not-allowed;opacity:.6}
-.cc-btn-locked{background:var(--s4);color:var(--text-dim);cursor:not-allowed}
+.cc-btn:hover:not(:disabled){background:rgba(200,255,0,0.1);border-color:var(--acid);color:var(--acid)}
+.cc-btn.active{background:var(--acid);color:#000;border-color:var(--acid)}
 
-/* LOCK OVERLAY */
-.cc-lock-overlay{
-  position:absolute;inset:0;background:rgba(6,6,6,.75);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px
-}
-.cc-lock-icon{font-size:28px;opacity:.5}
-.cc-lock-txt{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim);text-align:center;padding:0 16px;line-height:1.6}
-
-/* SELECTED INDICATOR */
-.cc-selected-mark{
-  position:absolute;top:10px;left:10px;right:10px;
-  display:none;align-items:center;justify-content:center;gap:6px;
-  background:rgba(200,255,0,0.15);border:1px solid var(--acid);
-  padding:5px;font-family:var(--mono);font-size:8px;color:var(--acid);letter-spacing:1px
-}
-.crew-card.selected .cc-selected-mark{display:flex}
-.crew-card.selected .cc-status{display:none}
-
-/* CREW SUMMARY */
-.crew-summary{
+/* CREDIT SUMMARY BAR */
+.plan-info-bar{
+  display:flex;align-items:center;gap:32px;padding:24px 32px;
   background:var(--s2);border:1px solid var(--border-b);
-  padding:20px 24px;margin-bottom:24px;
-  display:flex;align-items:center;gap:20px;flex-wrap:wrap
+  margin-bottom:32px;border-right:4px solid var(--acid);
 }
-.cs-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim)}
-.cs-crew{display:flex;gap:8px;flex-wrap:wrap;flex:1}
-.cs-member{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(200,255,0,0.06);border:1px solid var(--border-b);
-  padding:5px 10px;font-family:var(--mono);font-size:8px;color:var(--acid);letter-spacing:1px
-}
-.cs-member-remove{
-  background:none;border:none;color:var(--acid-dim);cursor:pointer;
-  font-size:12px;padding:0 0 0 4px;transition:color .2s;line-height:1
-}
-.cs-member-remove:hover{color:var(--red)}
-.cs-empty{font-family:var(--mono);font-size:9px;color:var(--text-dim)}
+.pib-item{display:flex;flex-direction:column;gap:4px}
+.pib-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px}
+.pib-val{font-family:var(--display);font-size:14px;color:var(--acid);font-weight:700}
 
-/* CTA */
-.cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+/* STICKY FOOTER */
+.sticky-cta{
+  position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,6,0.95);
+  backdrop-filter:blur(20px);border-top:1px solid var(--border-b);
+  padding:16px 32px;z-index:500;display:flex;align-items:center;justify-content:space-between
+}
+.sc-left{display:flex;align-items:center;gap:16px}
+.sc-summary-label{font-family:var(--mono);font-size:9px;color:var(--text-dim)}
+.sc-crew-chips{display:flex;gap:8px}
+.crew-chip{
+  background:rgba(200,255,0,0.1);border:1px solid var(--border-b);
+  padding:6px 12px;font-family:var(--mono);font-size:9px;color:var(--acid);
+  display:flex;align-items:center;gap:8px
+}
+.chip-remove{cursor:pointer;opacity:.6;transition:opacity .2s}
 .btn-launch{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--acid);color:#000;font-family:var(--mono);
-  font-size:10px;font-weight:700;letter-spacing:3px;padding:14px 36px;
-  border:none;cursor:pointer;transition:all .3s;text-decoration:none
+  background:var(--acid);color:#000;padding:12px 48px;
+  font-family:var(--display);font-size:12px;font-weight:900;
+  border:none;cursor:pointer;letter-spacing:2px;transition:all .3s
 }
-.btn-launch:hover:not(:disabled){background:#d4ff1a;box-shadow:0 0 40px rgba(200,255,0,0.3);transform:translateY(-1px)}
-.btn-launch:disabled{background:var(--s5);color:var(--text-dim);cursor:not-allowed;transform:none;box-shadow:none}
-.btn-pricing{
-  font-family:var(--mono);font-size:9px;letter-spacing:2px;
-  padding:14px 20px;border:1px solid var(--border-b);
-  background:transparent;color:var(--acid);cursor:pointer;text-decoration:none;transition:all .2s
-}
-.btn-pricing:hover{background:rgba(200,255,0,0.06)}
-.cta-note{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:1px}
+.btn-launch:disabled{background:var(--s4);color:var(--text-dim);cursor:not-allowed}
 
-/* SLOT COUNTER */
-.slot-indicator{
-  display:flex;gap:4px;align-items:center;
-  font-family:var(--mono);font-size:9px;color:var(--text-dim)
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000;
+  display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
 }
-.slot-dot{
-  width:10px;height:10px;border-radius:50%;border:1px solid var(--border-b);
-  transition:all .3s
+.modal-overlay.open { display: flex; }
+.modal-content {
+  width: 90%; max-width: 500px; background: var(--s2); border: 1px solid var(--acid);
+  padding: 40px; position: relative;
 }
-.slot-dot.filled{background:var(--acid);border-color:var(--acid);box-shadow:0 0 8px var(--acid)}
-.slot-dot.excess{background:var(--red);border-color:var(--red);box-shadow:0 0 8px var(--red)}
+.modal-close {
+  position: absolute; top: 16px; left: 16px; color: var(--text-dim); cursor: pointer; font-size: 20px;
+}
+.modal-title { font-family: var(--display); color: var(--acid); font-size: 18px; margin-bottom: 24px; text-align: center; }
+.tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tier-card {
+  border: 1px solid var(--border-b); padding: 20px; text-align: center; cursor: pointer; transition: 0.3s;
+}
+.tier-card:hover { border-color: var(--acid); background: rgba(200,255,0,0.05); }
+.tier-price { font-family: var(--display); font-size: 20px; color: var(--text-bright); margin-bottom: 4px; }
+.tier-pts { font-family: var(--mono); font-size: 11px; color: var(--acid); }
+.tier-bonus { font-size: 9px; color: var(--gold); margin-top: 4px; display: block; font-weight: 700; }
+
+/* GUIDE SECTION */
+.guide-section { background: var(--s2); border: 1px solid var(--border); padding: 32px; margin-bottom: 48px; }
+.guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.guide-step { display: flex; flex-direction: column; gap: 8px; }
+.step-num { font-family: var(--display); color: var(--acid); font-size: 24px; font-weight: 900; opacity: 0.5; }
+.guide-step p { font-size: 13px; line-height: 1.6; }
+.directors-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
+
+/* PRODUCTION SHOWCASE */
+.production-showcase { margin-top: 64px; margin-bottom: 120px; }
+.showcase-player {
+  position: relative; aspect-ratio: 21/9; border: 1px solid var(--border-b);
+  overflow: hidden; background: #000;
+}
+.showcase-player img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: saturate(0.2); }
+.showcase-overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(circle, transparent 0%, rgba(0,0,0,0.6) 100%);
+}
+.play-btn-large {
+  width: 100px; height: 100px; border: 1px solid var(--acid); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  background: rgba(200,255,0,0.05); transition: 0.4s;
+}
+.play-btn-large:hover { transform: scale(1.1); background: var(--acid); color: #000; }
+.showcase-labels {
+  position: absolute; bottom: 24px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: flex-end;
+}
+.sl-left { text-align: right; }
+.sl-tag { font-family: var(--mono); font-size: 9px; color: var(--acid); margin-bottom: 8px; }
+.sl-title { font-family: var(--display); font-size: 24px; color: var(--text-bright); }
 
 @media(max-width:768px){
-  .page{padding:72px 16px 40px}
-  .plan-bar{max-width:100%}
-  .crew-summary{flex-direction:column;align-items:flex-start}
-  .cta-row{flex-direction:column;align-items:stretch}
-  .btn-launch{justify-content:center}
+  .credit-hero-bar { flex-direction: column; align-items: stretch; gap: 12px; }
+  .neural-dashboard { grid-template-columns: 1fr; }
+  .nd-feed { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 16px; margin-bottom: 16px; }
+  .crew-grid, .directors-row, .guide-steps { grid-template-columns: 1fr; }
+  .sticky-cta{flex-direction:column;gap:16px;padding:24px 16px}
+  .showcase-player { aspect-ratio: 16/9; }
 }
-</style>
-</head>
-<body class="lang-en">
 
+.cc-preview-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--acid); color: var(--acid); padding: 4px 8px; font-family: var(--mono); font-size: 8px; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; z-index: 5; }
+.cc-preview-btn:hover { background: var(--acid); color: #000; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/></head>
+<body class="lang-ar">
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
-
-<!-- HEADER -->
 <header>
-  <a href="index.html" class="logo">
-    <div class="logo-m"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
-    <span class="logo-n">MERCADREAM</span>
-  </a>
-  <div class="hdr-mid"><span data-i18n="hdr_sub">CREW SELECTION</span> // STAGE_02</div>
-  <div class="hdr-r">
-    <div class="lang-sw">
-      <button class="lb on" onclick="setLang('en')">EN</button>
-      <button class="lb" onclick="setLang('es')">ES</button>
-      <button class="lb" onclick="setLang('ar')">AR</button>
-    </div>
-    <div class="dot-live"></div>
-    <a href="index.html" class="btn-back" data-i18n="btn_back">← HOME</a>
-  </div>
-</header>
-
-<div class="page">
-
-  <!-- PLAN SELECTOR -->
-  <div class="plan-bar" id="planBar">
-    <button class="plan-tab" data-plan="regular" onclick="setPlan('regular')">
-      <span class="plan-tab-name" data-i18n="plan_regular">REGULAR</span>
-      <span class="plan-tab-price">$21 / mo</span>
-    </button>
-    <button class="plan-tab" data-plan="advanced" onclick="setPlan('advanced')">
-      <span class="plan-tab-name" data-i18n="plan_advanced">ADVANCED</span>
-      <span class="plan-tab-price">$79 / mo</span>
-    </button>
-    <button class="plan-tab" data-plan="professional" onclick="setPlan('professional')">
-      <span class="plan-tab-name" data-i18n="plan_pro">PROFESSIONAL</span>
-      <span class="plan-tab-price">$200 / mo</span>
-    </button>
-  </div>
-
-  <!-- PAGE HEADER -->
-  <div class="pg-tag" data-i18n="pg_tag">DIRECTOR SELECTION STAGE // 02</div>
-  <h1 class="pg-h" data-i18n="pg_h">Choose Your<br>Neural Crew</h1>
-  <p class="pg-sub" data-i18n="pg_sub">Each crew member brings a unique creative intelligence to your production. Higher plans unlock more specialists and a deeper, richer cinematic output.</p>
-
-  <!-- PLAN INFO BAR -->
-  <div class="plan-info-bar" id="planInfoBar">
-    <span class="pib-label" data-i18n="pib_plan">ACTIVE PLAN</span>
-    <span class="pib-val" id="pibPlan">—</span>
-    <span class="pib-sep">|</span>
-    <span class="pib-label" data-i18n="pib_slots">CREW SLOTS</span>
-    <span class="pib-val" id="pibSlots">—</span>
-    <span class="pib-sep">|</span>
-    <span class="pib-label" data-i18n="pib_selected">SELECTED</span>
-    <div class="slot-indicator" id="slotIndicator"></div>
-  </div>
-
-  <!-- CREW GRID -->
-  <div class="crew-grid" id="crewGrid"></div>
-
-  <!-- CREW SUMMARY -->
-  <div class="crew-summary">
-    <span class="cs-label" data-i18n="cs_label">YOUR CREW</span>
-    <div class="cs-crew" id="crewSummary">
-      <span class="cs-empty" id="csEmpty" data-i18n="cs_empty">No crew selected yet — choose from above</span>
-    </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="cta-row">
-    <button class="btn-launch" id="launchBtn" onclick="launchStudio()" disabled data-i18n="btn_launch">▶ ENTER THE STUDIO</button>
-    <a href="pricing.html" class="btn-pricing" data-i18n="btn_upgrade">↑ UPGRADE PLAN</a>
-    <span class="cta-note" id="ctaNote" data-i18n="cta_note_empty">Select at least 1 crew member to continue</span>
-  </div>
-
+<a class="logo" href="index.html">
+<div class="logo-m">
+<svg fill="none" viewbox="0 0 16 16"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5"></polygon><circle cx="8" cy="8" fill="#c8ff00" r="1.5"></circle></svg>
 </div>
-
-<script>
-// ═══════════════════════════════════════
-// MERCADREAM — CREW SELECTION
-// ═══════════════════════════════════════
-
-// ── CREW DATA ──
-const CREW = [
-  {
-    id: 'director',
-    role_en: 'AI DIRECTOR',
-    role_es: 'DIRECTOR IA',
-    role_ar: 'المخرج الذكي',
-    name_en: 'The Visionary',
-    name_es: 'El Visionario',
-    name_ar: 'العبقري',
-    spec_en: 'Extracts your deepest creative vision. Master of emotion and cinematic language.',
-    spec_es: 'Extrae tu visión creativa más profunda. Maestro de la emoción y el lenguaje cinematográfico.',
-    spec_ar: 'يستخرج رؤيتك الإبداعية الأعمق. سيد المشاعر واللغة السينمائية.',
-    tier: 'STANDARD',
-    minPlan: 'regular',
-    emoji: '🎬',
-    color: '#c8ff00',
-    img: 'https://images.unsplash.com/photo-1618519764620-7403abdbdfe9?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'AI Director — extracts vision, asks cinematic questions, builds the emotional core of the brief'
+<span class="logo-n">MERCADREAM</span>
+</a>
+<div class="hdr-r">
+<div class="credits-wrap">
+<span data-i18n="hdr_credits">الرصيد</span>
+<span class="credits-val" id="topCredits">1,240</span>
+</div>
+<div class="lang-sw">
+<button class="lb" onclick="setLang('en')">EN</button>
+<button class="lb" onclick="setLang('es')">ES</button>
+<button class="lb on" onclick="setLang('ar')">AR</button>
+</div>
+<div class="dot-live" style="width:6px;height:6px;background:var(--acid);border-radius:50%;box-shadow:0 0 8px var(--acid)"></div>
+</div>
+</header>
+<div class="page">
+<!-- COMPACT CREDIT HERO BAR -->
+<div class="credit-hero-bar">
+<div class="chb-left"><span class="chb-label" data-i18n="current_balance">الرصيد:</span>
+<span class="chb-value" id="heroCredits">1,240</span></div>
+<button class="chb-btn" data-i18n="btn_add" onclick="openModal()">[+ إضافة رصيد]</button>
+</div>
+<!-- NEURAL INTELLIGENCE DASHBOARD -->
+<div class="neural-dashboard">
+<div class="nd-feed">
+<div class="feed-scroll">
+<div class="feed-item"><span>[SYS]:</span> NEURAL_ENGINE_V4_ONLINE</div>
+<div class="feed-item"><span>[LOC]:</span> GLOBAL_RENDER_FARM_09</div>
+<div class="feed-item"><span>[ACT]:</span> SYNTHESIZING_SCENE_772</div>
+<div class="feed-item"><span>[MEM]:</span> 128TB_VRAM_ALLOCATED</div>
+<div class="feed-item"><span>[LAT]:</span> 0.04ms_SYNC</div>
+<div class="feed-item"><span>[SYS]:</span> NEURAL_ENGINE_V4_ONLINE</div>
+<div class="feed-item"><span>[LOC]:</span> GLOBAL_RENDER_FARM_09</div>
+<div class="feed-item"><span>[ACT]:</span> SYNTHESIZING_SCENE_772</div>
+<div class="feed-item"><span>[MEM]:</span> 128TB_VRAM_ALLOCATED</div>
+<div class="feed-item"><span>[LAT]:</span> 0.04ms_SYNC</div>
+</div>
+</div>
+<div class="nd-status"><div class="nd-title">
+<div class="pulse-dot"></div>
+<span data-i18n="neural_status">حالة الذكاء العصبي: نظام نشط</span>
+</div>
+<div class="nd-stat-grid">
+<div class="nd-stat-box">
+<div class="nd-stat-label" data-i18n="proc_power">قوة المعالجة</div>
+<div class="nd-stat-val">98.4 PFLOPS</div>
+</div>
+<div class="nd-stat-box">
+<div class="nd-stat-label" data-i18n="prod_activity">نشاط الإنتاج العالمي</div>
+<div class="nd-stat-val">12,402 <span data-i18n="projects_unit">مشروع</span></div>
+</div>
+</div></div>
+</div>
+<div class="guide-section">
+<div class="sh-left" style="margin-bottom: 16px;">
+<h2 data-i18n="guide_title">كيفية بناء فريقك</h2>
+</div>
+<div class="guide-steps">
+<div class="guide-step">
+<span class="step-num">01</span>
+<p data-i18n="step_1">اختر المتخصصين بناءً على احتياجات مشروعك.</p>
+</div>
+<div class="guide-step">
+<span class="step-num">02</span>
+<p data-i18n="step_2">افتح قفل العناصر المختارة باستخدام رصيدك.</p>
+</div>
+<div class="guide-step">
+<span class="step-num">03</span>
+<p data-i18n="step_3">ادخل إلى الأستوديو لبدء عملية الإنتاج.</p>
+</div>
+</div>
+</div>
+<!-- FEATURED DIRECTOR -->
+<div class="featured-crew-wrap" id="featuredContainer">
+<div class="section-hdr">
+<div class="sh-left">
+<h2 data-i18n="sec_directors">المخرجون الرائدون</h2>
+</div>
+</div>
+<div class="directors-row" id="leadDirectorsGrid"></div>
+</div>
+<!-- CREDIT SUMMARY BAR -->
+<div class="plan-info-bar"><div class="pib-item">
+<span class="pib-label" data-i18n="pib_cost">تكلفة الفريق</span>
+<span class="pib-val" id="crewCost">0 رصيد</span>
+</div>
+<div style="width:1px;height:30px;background:var(--border)"></div>
+<div class="pib-item">
+<span class="pib-label" data-i18n="pib_balance">الرصيد الكلي</span>
+<span class="pib-val" id="balanceVal">1,240</span>
+</div>
+<div style="width:1px;height:30px;background:var(--border)"></div>
+<div class="pib-item">
+<span class="pib-label" data-i18n="pib_remaining">المتبقي</span>
+<span class="pib-val" id="remainingVal">1,240</span>
+</div></div>
+<!-- CREW SECTION -->
+<div class="section-hdr">
+<div class="sh-left">
+<h2 data-i18n="sec_specialists">متخصصو الفريق</h2>
+</div>
+<div class="sh-right" id="slotCounter">تم اختيار 0 متخصصين</div>
+</div>
+<div class="crew-grid" id="crewGrid"></div>
+<!-- PRODUCTION SHOWCASE SECTION -->
+<div class="production-showcase"><div class="section-hdr">
+<div class="sh-left">
+<h2 data-i18n="showcase_hdr">معرض الإنتاج: الأعمال المميزة</h2>
+</div>
+</div>
+<div class="showcase-player">
+<img alt="Showcase" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxM9QfRAERGXUYWyXOt3UV-IjZQe98o32vxg6G5WpafBXEBghZQyNZ5y7UH9Fo2c41HzTx_ddzIOYfWLlIlmfHKLouaf2HzVifqsztZi_nfZiafCVWeM2ETbD-DzYuq8Nk7F8xBiFFCsK5hAhBvBFSfvMp4BWMwcWsitLmZ9t8ICHwKQP_ecjraeFamaotk6gZ5cUsgqOybhvonA7i36IQ0Jbj8T3Ny4wp1V7WxKwnVqaedsp3-bO6tArQsX5lBE-2i-qSayDL7J8"/>
+<div class="showcase-overlay">
+<div class="play-btn-large">
+<span class="material-symbols-outlined" style="font-size: 56px;">play_arrow</span>
+</div>
+</div>
+<div class="showcase-labels">
+<div class="sl-left">
+<div class="sl-tag" data-i18n="feat_project">مشروع مميز / نظام عصبي 2.0</div>
+<div class="sl-title" data-i18n="feat_title">أطلال السايبربانك: نهضة الماكينة</div>
+</div>
+<div class="sl-right" style="font-family: var(--mono); font-size: 10px; color: var(--text-dim);">
+[4K HDR] • [120FPS] • [NEURAL_GEN]
+</div>
+</div>
+</div></div>
+</div>
+<!-- STICKY FOOTER -->
+<div class="sticky-cta">
+<div class="sc-left">
+<span class="sc-summary-label" data-i18n="cs_label">الفريق المختار:</span>
+<div class="sc-crew-chips" id="crewSummary">
+<span data-i18n="cs_empty" style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">لم يتم اختيار أحد</span>
+</div>
+</div>
+<button class="btn-launch" id="launchBtn" onclick="launchStudio()">دخول الأستوديو ← (0 رصيد)</button>
+</div>
+<!-- MODAL -->
+<div class="modal-overlay" id="creditModal" onclick="closeModal()">
+<div class="modal-content" onclick="event.stopPropagation()">
+<span class="modal-close" onclick="closeModal()">✕</span>
+<h3 class="modal-title">إضافة رصيد للإنتاج</h3>
+<div class="tier-grid">
+<div class="tier-card">
+<div class="tier-price">$10</div>
+<div class="tier-pts">100 نقطة</div>
+</div>
+<div class="tier-card">
+<div class="tier-price">$25</div>
+<div class="tier-pts">300 نقطة</div>
+<span class="tier-bonus">+ 50 مجاناً</span>
+</div>
+<div class="tier-card">
+<div class="tier-price">$50</div>
+<div class="tier-pts">700 نقطة</div>
+<span class="tier-bonus">+ 200 مجاناً</span>
+</div>
+<div class="tier-card">
+<div class="tier-price">$100</div>
+<div class="tier-pts">1500 نقطة</div>
+<span class="tier-bonus">+ 500 مجاناً</span>
+</div>
+</div>
+</div>
+</div>
+<script>const I18N = {
+  en: {
+    hdr_credits: 'CREDITS', btn_add: '[+ ADD CREDITS]', current_balance: 'CREDITS:', sec_specialists: 'CREW SPECIALISTS', slot_counter: '{{n}} SPECIALISTS SELECTED', footer_label: 'SELECTED CREW:', footer_empty: 'NONE SELECTED', pib_cost: 'CREW COST', pib_balance: 'TOTAL BALANCE', pib_remaining: 'REMAINING', btn_launch: 'ENTER STUDIO ← ({{cost}} CREDITS)', btn_launching: 'INITIALIZING ENGINE...', modal_title: 'ADD PRODUCTION CREDITS', unlock_msg: 'REQUIRES 10 CREDITS TO UNLOCK', btn_assign: 'ASSIGN SPECIALIST', btn_selected: '✓ SELECTED', btn_unlock: '10 CREDITS ← UNLOCK', guide_title: 'How to Build Your Crew', step_1: 'Choose specialists based on your project needs.', step_2: 'Unlock them using credits.', step_3: 'Enter the studio to begin production.', sec_directors: 'LEAD DIRECTORS', preview: 'PREVIEW REEL',
+    neural_status: 'NEURAL STATUS: SYSTEM ACTIVE', proc_power: 'PROCESSING POWER', prod_activity: 'GLOBAL PRODUCTION ACTIVITY', showcase_hdr: 'PRODUCTION SHOWCASE: FEATURED WORKS', feat_project: 'FEATURED PROJECT / NEURAL ENGINE 2.0', feat_title: 'CYBERPUNK RUINS: RISE OF THE MACHINE', projects_unit: 'PROJECTS'
   },
-  {
-    id: 'writer',
-    role_en: 'SCREENWRITER',
-    role_es: 'GUIONISTA',
-    role_ar: 'كاتب السيناريو',
-    name_en: 'The Narrator',
-    name_es: 'El Narrador',
-    name_ar: 'الراوي',
-    spec_en: 'Crafts the narrative arc, dialogue subtext, and story beats for maximum emotional impact.',
-    spec_es: 'Construye el arco narrativo, el subtexto del diálogo y los puntos de la historia.',
-    spec_ar: 'يصنع القوس السردي ونقاط القصة للتأثير العاطفي الأقصى.',
-    tier: 'STANDARD',
-    minPlan: 'regular',
-    emoji: '✍️',
-    color: '#c8ff00',
-    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'Screenwriter — adds narrative structure, story arc, character motivation and dialogue subtext to the prompt'
+  es: {
+    hdr_credits: 'CRÉDITOS', btn_add: '[+ AÑADIR CRÉDITOS]', current_balance: 'CRÉDITOS:', sec_specialists: 'ESPECIALISTAS', slot_counter: '{{n}} SELECCIONADOS', footer_label: 'EQUIPO SELECCIONADO:', footer_empty: 'NINGUNO SELECCIONADO', pib_cost: 'COSTE DEL EQUIPO', pib_balance: 'SALDO TOTAL', pib_remaining: 'RESTANTE', btn_launch: 'ENTRAR AL ESTUDIO ← ({{cost}} CRÉDITOS)', btn_launching: 'INICIALIZANDO MOTOR...', modal_title: 'AÑADIR CRÉDITOS', unlock_msg: 'REQUIERE 10 CRÉDITOS PARA DESBLOQUEAR', btn_assign: 'ASIGNAR ESPECIALISTA', btn_selected: '✓ SELECCIONADO', btn_unlock: '10 CRÉDITOS ← DESBLOQUEAR', guide_title: 'Cómo construir tu equipo', step_1: 'Elige especialistas según las necesidades de tu proyecto.', step_2: 'Desbloquéalos usando créditos.', step_3: 'Entra al estudio para comenzar la producción.', sec_directors: 'DIRECTORES LÍDERES', preview: 'VER DEMO',
+    neural_status: 'ESTADO NEURAL: SISTEMA ACTIVO', proc_power: 'POTENCIA DE PROCESO', prod_activity: 'ACTIVIDAD DE PRODUCCIÓN GLOBAL', showcase_hdr: 'EXPOSICIÓN DE PRODUCCIÓN: TRABAJOS DESTACADOS', feat_project: 'PROYECTO DESTACADO / MOTOR NEURAL 2.0', feat_title: 'RUINAS CYBERPUNK: EL DESPERTAR DE LA MÁQUINA', projects_unit: 'PROYECTOS'
   },
-  {
-    id: 'cinematographer',
-    role_en: 'CINEMATOGRAPHER',
-    role_es: 'CINEMATÓGRAFO',
-    role_ar: 'مدير التصوير',
-    name_en: 'The Eye',
-    name_es: 'El Ojo',
-    name_ar: 'العين',
-    spec_en: 'Masters camera language — lenses, angles, movements, and the poetry of light.',
-    spec_es: 'Domina el lenguaje de la cámara — lentes, ángulos, movimientos y la poesía de la luz.',
-    spec_ar: 'يتقن لغة الكاميرا — العدسات والزوايا والحركات وشعر الضوء.',
-    tier: 'ADVANCED',
-    minPlan: 'advanced',
-    emoji: '📷',
-    color: '#00e5ff',
-    img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'Cinematographer — specifies exact camera movements, lens choices, shot compositions, lighting setups and visual texture'
-  },
-  {
-    id: 'colorist',
-    role_en: 'COLOR ARTIST',
-    role_es: 'ARTISTA DE COLOR',
-    role_ar: 'فنان الألوان',
-    name_en: 'The Palette',
-    name_es: 'La Paleta',
-    name_ar: 'لوحة الألوان',
-    spec_en: 'Defines the emotional color language — every hue, contrast, and grade carries meaning.',
-    spec_es: 'Define el lenguaje emocional del color — cada tono, contraste y gradación tiene significado.',
-    spec_ar: 'يحدد لغة الألوان العاطفية — كل تدرج وتباين يحمل معنى.',
-    tier: 'ADVANCED',
-    minPlan: 'advanced',
-    emoji: '🎨',
-    color: '#b06aff',
-    img: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'Color Artist — adds precise color palette, LUT descriptions, color temperature, saturation and contrast specs to the prompt'
-  },
-  {
-    id: 'vfx',
-    role_en: 'VFX ARCHITECT',
-    role_es: 'ARQUITECTO VFX',
-    role_ar: 'مهندس المؤثرات',
-    name_en: 'The Alchemist',
-    name_es: 'El Alquimista',
-    name_ar: 'الخيميائي',
-    spec_en: 'Engineers impossible realities — particle systems, procedural worlds, and visual alchemy.',
-    spec_es: 'Ingenia realidades imposibles — sistemas de partículas, mundos procedurales y alquimia visual.',
-    spec_ar: 'يهندس واقع مستحيل — أنظمة الجزيئات والعوالم الإجرائية والكيمياء البصرية.',
-    tier: 'PROFESSIONAL',
-    minPlan: 'professional',
-    emoji: '⚡',
-    color: '#ffba3f',
-    img: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'VFX Architect — adds particle systems, CGI elements, digital world-building and visual effects specifications'
-  },
-  {
-    id: 'sound',
-    role_en: 'SOUND DESIGNER',
-    role_es: 'DISEÑADOR DE SONIDO',
-    role_ar: 'مصمم الصوت',
-    name_en: 'The Frequency',
-    name_es: 'La Frecuencia',
-    name_ar: 'التردد',
-    spec_en: 'Sculpts the audio landscape — score, ambience, and the sounds that make visuals feel real.',
-    spec_es: 'Esculpe el paisaje sonoro — partitura, ambiente y los sonidos que hacen reales los visuales.',
-    spec_ar: 'ينحت المشهد الصوتي — الموسيقى والأجواء والأصوات التي تجعل المرئيات حقيقية.',
-    tier: 'PROFESSIONAL',
-    minPlan: 'professional',
-    emoji: '🎵',
-    color: '#00e5ff',
-    img: 'https://images.unsplash.com/photo-1559181567-c3190ca9d5db?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'Sound Designer — adds detailed audio landscape: musical score, BPM, instrumentation, sound design, and audio arc'
-  },
-  {
-    id: 'producer',
-    role_en: 'EXECUTIVE PRODUCER',
-    role_es: 'PRODUCTOR EJECUTIVO',
-    role_ar: 'المنتج التنفيذي',
-    name_en: 'The Architect',
-    name_es: 'El Arquitecto',
-    name_ar: 'المهندس المعماري',
-    spec_en: 'The master integrator. Synthesizes all crew inputs into one unified, flawless creative brief.',
-    spec_es: 'El integrador maestro. Sintetiza todas las aportaciones del equipo en un brief creativo unificado.',
-    spec_ar: 'المتكامل الرئيسي. يجمع كل مدخلات الفريق في إحاطة إبداعية موحدة ومثالية.',
-    tier: 'PROFESSIONAL',
-    minPlan: 'professional',
-    emoji: '👁️',
-    color: '#c8ff00',
-    img: 'https://images.unsplash.com/photo-1600486913747-55e5470d6f40?w=400&q=80&auto=format',
-    status: 'available',
-    systemRole: 'Executive Producer — synthesizes all crew perspectives into one unified, executive-level cinematic brief that exceeds the original vision'
+  ar: {
+    hdr_credits: 'الرصيد', btn_add: '[+ إضافة رصيد]', current_balance: 'الرصيد:', sec_specialists: 'متخصصو الفريق', slot_counter: 'تم اختيار {{n}} متخصصين', footer_label: 'الفريق المختار:', footer_empty: 'لم يتم اختيار أحد', pib_cost: 'تكلفة الفريق', pib_balance: 'الرصيد الكلي', pib_remaining: 'المتبقي', btn_launch: 'دخول الأستوديو ← ({{cost}} رصيد)', btn_launching: 'جاري تهيئة محرك الإنتاج...', modal_title: 'إضافة رصيد للإنتاج', unlock_msg: 'يتطلب 10 رصيد لفتح هذا المتخصص', btn_assign: 'اختيار المتخصص', btn_selected: '✓ تم الاختيار', btn_unlock: '10 رصيد ← فتح القفل', guide_title: 'كيفية بناء فريقك', step_1: 'اختر المتخصصين بناءً على احتياجات مشروعك.', step_2: 'افتح قفل العناصر المختارة باستخدام رصيدك.', step_3: 'ادخل إلى الأستوديو لبدء عملية الإنتاج.', sec_directors: 'المخرجون الرائدون', preview: 'عرض تشويقي',
+    neural_status: 'حالة الذكاء العصبي: نظام نشط', proc_power: 'قوة المعالجة', prod_activity: 'نشاط الإنتاج العالمي', showcase_hdr: 'معرض الإنتاج: الأعمال المميزة', feat_project: 'مشروع مميز / نظام عصبي 2.0', feat_title: 'أطلال السايبربانك: نهضة الماكينة', projects_unit: 'مشروع'
   }
+};
+
+const LEAD_DIRECTORS = [
+  { id: 'dir_narrative', isDirector: true, role: { en: 'NARRATIVE DIRECTOR', es: 'DIRECTOR NARRATIVO', ar: 'مخرج سردي' }, name: { en: 'Aria Thorne', es: 'Aria Thorne', ar: 'آريا ثورن' }, spec: { en: 'Focus on story and dialogue depth.', es: 'Foco en la profundidad de la historia y el diálogo.', ar: 'التركيز على عمق القصة والحوار.' }, img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80&auto=format&fit=crop' },
+  { id: 'dir_visual', isDirector: true, role: { en: 'VISUAL DIRECTOR', es: 'DIRECTOR VISUAL', ar: 'مخرج بصري' }, name: { en: 'Julian Vane', es: 'Julian Vane', ar: 'جوليان فاين' }, spec: { en: 'Focus on cinematography and lighting.', es: 'Foco en cinematografía e iluminación.', ar: 'التركيز على التصوير السينمائي والإضاءة.' }, img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80&auto=format&fit=crop' },
+  { id: 'dir_action', isDirector: true, role: { en: 'ACTION DIRECTOR', es: 'DIRECTOR DE ACCIÓN', ar: 'مخرج أكشن' }, name: { en: 'Serafina Nix', es: 'Serafina Nix', ar: 'سيرافينا نيكس' }, spec: { en: 'Focus on pacing and VFX integration.', es: 'Foco en el ritmo y la integración de VFX.', ar: 'التركيز على الإيقاع ودمج المؤثرات البصرية.' }, img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80&auto=format&fit=crop' }
 ];
 
-const PLANS = {
-  regular:      { slots: 1, label_en: 'REGULAR',      label_es: 'REGULAR',     label_ar: 'العادي',       price: '$21' },
-  advanced:     { slots: 2, label_en: 'ADVANCED',     label_es: 'AVANZADO',    label_ar: 'المتقدم',      price: '$79' },
-  professional: { slots: 7, label_en: 'PROFESSIONAL', label_es: 'PROFESIONAL', label_ar: 'الاحترافي',    price: '$200' }
-};
+const CREW = [
+  { id: 'adam_vance', role: { en: 'ELITE VISIONARY', es: 'VISIONARIO ELITE', ar: 'الرؤيوي النخبة' }, name: { en: 'Adam Vance', es: 'Adam Vance', ar: 'آدم فانس' }, spec: { en: 'Architect of human-neural cinematic generation.', es: 'Arquitecto de la generación cinematográfica humano-neural.', ar: 'مهندس التوليد السينمائي البشري العصبي.' }, img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80&auto=format&fit=crop' },
+  { id: 'marco', role: { en: 'DRAMA SPECIALIST', es: 'ESPECIALISTA EN DRAMA', ar: 'متخصص دراما' }, name: { en: 'Marco Visconti', es: 'Marco Visconti', ar: 'ماركو فيسكونتي' }, spec: { en: 'Expert in emotional gravity and character studies.', es: 'Experto en gravedad emocional y estudios de personajes.', ar: 'خبير في الجاذبية العاطفية ودراسات الشخصية.' }, img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=80&auto=format&fit=crop' },
+  { id: 'elena', role: { en: 'COMEDY DIRECTOR', es: 'DIRECTORA DE COMEDIA', ar: 'مخرجة كوميدية' }, name: { en: 'Elena Bright', es: 'Elena Bright', ar: 'إيلينا برايت' }, spec: { en: 'Specialist in timing and vibrant color palettes.', es: 'Especialista en ritmo y paletas de colores vibrantes.', ar: 'متخصصة في التوقيت والألوان النابضة.' }, img: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=500&q=80&auto=format&fit=crop' },
+  { id: 'kai', role: { en: 'MV PRO', es: 'PRO DE VIDEOCLIPS', ar: 'محترف فيديو كليب' }, name: { en: 'Kai Neon', es: 'Kai Neon', ar: 'كاي نيون' }, spec: { en: 'Rhythmic editing styles and neon aesthetics.', es: 'Estilos de edición rítmicos y estética neón.', ar: 'أنماط تحرير إيقاعية وجماليات النيون.' }, img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80&auto=format&fit=crop' },
+  { id: 'sara', role: { en: 'DOCUMENTARY LEAD', es: 'LÍDER DOCUMENTAL', ar: 'رائدة وثائقية' }, name: { en: 'Sara Truth', es: 'Sara Truth', ar: 'سارة تروث' }, spec: { en: 'Ultra-realistic grain and natural lighting.', es: 'Grano ultra realista e iluminación natural.', ar: 'حبيبات واقعية وإضاءة طبيعية.' }, img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80&auto=format&fit=crop' },
+  { id: 'rex', role: { en: 'ACTION ARCHITECT', es: 'ARQUITECTO DE ACCIÓN', ar: 'مهندس أكشن' }, name: { en: 'Rex Storm', es: 'Rex Storm', ar: 'ريكس ستورم' }, spec: { en: 'Dynamic camera movement and high-contrast.', es: 'Movimiento de cámara dinámico y alto contraste.', ar: 'حركة كاميرا ديناميكية وتباين عالي.' }, img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80&auto=format&fit=crop' },
+  { id: 'nova', role: { en: 'COMMERCIAL GENIUS', es: 'GENIO COMERCIAL', ar: 'عبقري تجاري' }, name: { en: 'Nova Brand', es: 'Nova Brand', ar: 'نوفا براند' }, spec: { en: 'Polished product focus and luxury grading.', es: 'Enfoque de producto pulido y gradación de lujo.', ar: 'تركيز منتج مصقول ولغة بصرية طموحة.' }, img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80&auto=format&fit=crop' }
+];
 
-const TX = {
-  en:{
-    hdr_sub:'CREW SELECTION',btn_back:'← HOME',
-    plan_regular:'REGULAR',plan_advanced:'ADVANCED',plan_pro:'PROFESSIONAL',
-    pg_tag:'DIRECTOR SELECTION STAGE // 02',
-    pg_h:'Choose Your\nNeural Crew',
-    pg_sub:'Each crew member brings a unique creative intelligence to your production. Higher plans unlock more specialists and a deeper, richer cinematic output.',
-    pib_plan:'ACTIVE PLAN',pib_slots:'CREW SLOTS',pib_selected:'SELECTED',
-    cs_label:'YOUR CREW',cs_empty:'No crew selected yet — choose from above',
-    btn_launch:'▶ ENTER THE STUDIO',btn_upgrade:'↑ UPGRADE PLAN',
-    cta_note_empty:'Select at least 1 crew member to continue',
-    cta_note_ready:'Your crew is briefed — entering the studio',
-    tier_std:'STANDARD',tier_adv:'ADVANCED',tier_pro:'PROFESSIONAL',
-    status_available:'AVAILABLE',status_busy:'ON SET',status_locked:'LOCKED',
-    btn_hire:'HIRE',btn_hired:'✓ ON CREW',btn_busy:'BUSY',btn_locked:'UPGRADE TO ACCESS',
-    lock_txt:'Requires {plan} plan',
-    slot_full:'Crew full — upgrade plan for more slots',
-    slot_ok:'crew ready'
-  },
-  es:{
-    hdr_sub:'SELECCIÓN DE EQUIPO',btn_back:'← INICIO',
-    plan_regular:'REGULAR',plan_advanced:'AVANZADO',plan_pro:'PROFESIONAL',
-    pg_tag:'SELECCIÓN DE DIRECTOR // ETAPA 02',
-    pg_h:'Elige Tu\nEquipo Neural',
-    pg_sub:'Cada miembro del equipo aporta una inteligencia creativa única a tu producción. Los planes superiores desbloquean más especialistas y una salida cinematográfica más rica.',
-    pib_plan:'PLAN ACTIVO',pib_slots:'ESPACIOS',pib_selected:'SELECCIONADOS',
-    cs_label:'TU EQUIPO',cs_empty:'Ningún miembro seleccionado aún',
-    btn_launch:'▶ ENTRAR AL ESTUDIO',btn_upgrade:'↑ MEJORAR PLAN',
-    cta_note_empty:'Selecciona al menos 1 miembro para continuar',
-    cta_note_ready:'Tu equipo está listo — entrando al estudio',
-    tier_std:'ESTÁNDAR',tier_adv:'AVANZADO',tier_pro:'PROFESIONAL',
-    status_available:'DISPONIBLE',status_busy:'EN SET',status_locked:'BLOQUEADO',
-    btn_hire:'CONTRATAR',btn_hired:'✓ EN EQUIPO',btn_busy:'OCUPADO',btn_locked:'MEJORAR ACCESO',
-    lock_txt:'Requiere plan {plan}',
-    slot_full:'Equipo completo — mejora el plan para más',
-    slot_ok:'equipo listo'
-  },
-  ar:{
-    hdr_sub:'اختيار الفريق',btn_back:'الرئيسية →',
-    plan_regular:'العادي',plan_advanced:'المتقدم',plan_pro:'الاحترافي',
-    pg_tag:'مرحلة اختيار الفريق // 02',
-    pg_h:'اختر\nفريقك العصبي',
-    pg_sub:'كل عضو في الفريق يجلب ذكاءً إبداعياً فريداً لإنتاجك. الخطط الأعلى تفتح متخصصين أكثر ومخرجاً سينمائياً أغنى وأعمق.',
-    pib_plan:'الخطة الفعلية',pib_slots:'مقاعد الفريق',pib_selected:'المختارون',
-    cs_label:'فريقك',cs_empty:'لم يُختر أحد بعد — اختر من الأعلى',
-    btn_launch:'▶ ادخل الاستوديو',btn_upgrade:'↑ ترقية الخطة',
-    cta_note_empty:'اختر عضواً واحداً على الأقل للمتابعة',
-    cta_note_ready:'فريقك جاهز — يدخل الاستوديو',
-    tier_std:'عادي',tier_adv:'متقدم',tier_pro:'احترافي',
-    status_available:'متاح',status_busy:'في التصوير',status_locked:'مقفل',
-    btn_hire:'توظيف',btn_hired:'✓ في الفريق',btn_busy:'مشغول',btn_locked:'ترقية للوصول',
-    lock_txt:'يتطلب خطة {plan}',
-    slot_full:'الفريق ممتلئ — رقّ الخطة للمزيد',
-    slot_ok:'الفريق جاهز'
-  }
-};
+let currentLang = 'ar';
+let userCredits = 1240;
+let unlockedIds = ['dir_narrative'];
+let selectedIds = [];
 
-// ── STATE ──
-let lang = 'en';
-let currentPlan = 'regular';
-let selectedCrew = []; // array of crew ids
-
-// ── LANG ──
-function t(k){ return TX[lang]?.[k] || TX.en[k] || k; }
-
-function setLang(l){
-  lang = l;
-  document.documentElement.lang = l;
-  document.body.className = l === 'ar' ? 'lang-ar' : 'lang-en';
-  document.querySelectorAll('.lb').forEach(b => b.classList.toggle('on', b.textContent.toLowerCase() === l));
+function setLang(lang) {
+  currentLang = lang;
+  const html = document.documentElement;
+  html.setAttribute('lang', lang);
+  html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.body.className = `lang-${lang}`;
+  document.querySelectorAll('.lang-sw .lb').forEach(b => b.classList.toggle('on', b.getAttribute('onclick').includes(lang)));
+  const t = I18N[lang];
+  
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
-    const v = TX[l]?.[k];
-    if(v) el.innerHTML = v.replace(/\n/g,'<br>');
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
   });
-  renderGrid();
-  renderSummary();
-  updatePlanBar();
-  localStorage.setItem('md_lang', l);
+
+  const slLeft = document.querySelector('.sl-left');
+  if (slLeft) slLeft.style.textAlign = lang === 'ar' ? 'right' : 'left';
+
+  renderAll();
 }
 
-// ── PLAN ──
-function setPlan(plan){
-  currentPlan = plan;
-  document.querySelectorAll('.plan-tab').forEach(b => b.classList.toggle('on', b.dataset.plan === plan));
-  // Remove selected crew that exceed new slot count
-  const maxSlots = PLANS[plan].slots;
-  if(selectedCrew.length > maxSlots){
-    selectedCrew = selectedCrew.slice(0, maxSlots);
-  }
-  renderGrid();
-  renderSummary();
-  updatePlanBar();
-  localStorage.setItem('md_plan', plan);
-}
-
-function updatePlanBar(){
-  const plan = PLANS[currentPlan];
-  const labelKey = `label_${lang}`;
-  document.getElementById('pibPlan').textContent = plan[labelKey] || plan.label_en;
-  document.getElementById('pibSlots').textContent = currentPlan === 'professional' ? '∞' : plan.slots;
-  renderSlotIndicator();
-}
-
-function renderSlotIndicator(){
-  const plan = PLANS[currentPlan];
-  const slots = plan.slots;
-  const sel = selectedCrew.length;
-  const container = document.getElementById('slotIndicator');
-
-  if(currentPlan === 'professional'){
-    container.innerHTML = `<span style="color:var(--acid);font-family:var(--mono);font-size:9px">${sel} / ∞</span>`;
-    return;
-  }
-
-  let html = '';
-  for(let i = 0; i < slots; i++){
-    const filled = i < sel;
-    html += `<div class="slot-dot ${filled ? 'filled' : ''}"></div>`;
-  }
-  html += `<span style="margin-left:6px;color:var(--text-dim)">${sel}/${slots}</span>`;
-  container.innerHTML = html;
-}
-
-// ── PLAN ORDER ──
-const PLAN_ORDER = { regular: 0, advanced: 1, professional: 2 };
-function planUnlocks(memberMinPlan){
-  return PLAN_ORDER[currentPlan] >= PLAN_ORDER[memberMinPlan];
-}
-
-// ── GRID ──
-function renderGrid(){
-  const grid = document.getElementById('crewGrid');
-  const maxSlots = PLANS[currentPlan].slots;
-  const atMax = selectedCrew.length >= maxSlots && currentPlan !== 'professional';
-
-  grid.innerHTML = CREW.map(member => {
-    const isSelected = selectedCrew.includes(member.id);
-    const isUnlocked = planUnlocks(member.minPlan);
-    const isBusy = member.status === 'busy' && !isSelected;
-
-    // Status
-    let statusClass = 'available', statusTxt = t('status_available');
-    if(!isUnlocked){ statusClass = 'locked-st'; statusTxt = t('status_locked'); }
-    else if(isBusy){ statusClass = 'busy'; statusTxt = t('status_busy'); }
-
-    // Tier label
-    const tierMap = { STANDARD: t('tier_std'), ADVANCED: t('tier_adv'), PROFESSIONAL: t('tier_pro') };
-
-    // Button
-    let btnClass = 'cc-btn-avail', btnTxt = t('btn_hire');
-    if(!isUnlocked){ btnClass = 'cc-btn-locked'; btnTxt = t('btn_locked'); }
-    else if(isSelected){ btnClass = 'cc-btn-selected'; btnTxt = t('btn_hired'); }
-    else if(isBusy){ btnClass = 'cc-btn-busy'; btnTxt = t('btn_busy'); }
-    else if(atMax && !isSelected){ btnClass = 'cc-btn-locked'; btnTxt = t('slot_full'); }
-
-    // Lock overlay
-    const lockOverlay = !isUnlocked ? `
-      <div class="cc-lock-overlay">
-        <div class="cc-lock-icon">🔒</div>
-        <div class="cc-lock-txt">${t('lock_txt').replace('{plan}', PLANS[member.minPlan][`label_${lang}`] || PLANS[member.minPlan].label_en)}</div>
-      </div>` : '';
-
-    const canClick = isUnlocked && !isBusy && (isSelected || !atMax || currentPlan === 'professional');
-
-    return `
-      <div class="crew-card ${isSelected?'selected':''} ${!isUnlocked?'locked':''}"
-           id="card-${member.id}"
-           onclick="${canClick ? `toggleMember('${member.id}')` : ''}">
-        <div class="cc-img-wrap">
-          <img class="cc-img" src="${member.img}" alt="${member.name_en}" loading="lazy"
-               onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,var(--s3),var(--s4))'">
-          <div class="cc-overlay"></div>
-          <div class="cc-selected-mark">✓ ${t('btn_hired')}</div>
-          <div class="cc-status ${statusClass}">
-            <div class="cc-status-dot"></div>${statusTxt}
-          </div>
-          <div class="cc-tier">${tierMap[member.tier] || member.tier}</div>
-          ${lockOverlay}
-        </div>
-        <div class="cc-info">
-          <div class="cc-role">${member['role_' + lang] || member.role_en}</div>
-          <div class="cc-name">${member['name_' + lang] || member.name_en}</div>
-          <div class="cc-spec">${member['spec_' + lang] || member.spec_en}</div>
-          <button class="cc-btn ${btnClass}" onclick="${canClick ? `event.stopPropagation();toggleMember('${member.id}')` : 'event.stopPropagation()'}">
-            ${btnTxt}
-          </button>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function toggleMember(id){
-  const maxSlots = PLANS[currentPlan].slots;
-  const idx = selectedCrew.indexOf(id);
-
-  if(idx >= 0){
-    selectedCrew.splice(idx, 1);
+function toggleSelection(id) {
+  if (!unlockedIds.includes(id)) {
+    if (userCredits >= 10) {
+      unlockedIds.push(id); selectedIds.push(id);
+    } else {
+      alert(currentLang === 'ar' ? 'رصيد غير كافٍ' : (currentLang === 'es' ? 'Créditos insuficientes' : 'Insufficient credits')); return;
+    }
   } else {
-    if(currentPlan !== 'professional' && selectedCrew.length >= maxSlots) return;
-    selectedCrew.push(id);
+    const idx = selectedIds.indexOf(id);
+    if (idx > -1) selectedIds.splice(idx, 1); else selectedIds.push(id);
   }
-
-  renderGrid();
-  renderSummary();
-  renderSlotIndicator();
+  renderAll();
 }
 
-// ── SUMMARY ──
-function renderSummary(){
+function renderAll() {
+  const cost = selectedIds.length * 10; const remaining = userCredits - cost; const t = I18N[currentLang];
+  document.getElementById('topCredits').textContent = userCredits.toLocaleString();
+  document.getElementById('heroCredits').textContent = userCredits.toLocaleString();
+  document.getElementById('crewCost').textContent = `${cost} ${currentLang === 'ar' ? 'رصيد' : 'CREDITS'}`;
+  document.getElementById('balanceVal').textContent = userCredits.toLocaleString();
+  document.getElementById('remainingVal').textContent = remaining.toLocaleString();
+  const launchBtn = document.getElementById('launchBtn');
+  launchBtn.textContent = t.btn_launch.replace('{{cost}}', cost);
+  launchBtn.disabled = selectedIds.length === 0;
+  renderDirectors(); renderGrid(); renderSummary();
+}
+
+function renderDirectors() {
+  const container = document.getElementById('leadDirectorsGrid');
+  container.innerHTML = LEAD_DIRECTORS.map(m => renderCard(m)).join('');
+}
+
+function renderGrid() {
+  const container = document.getElementById('crewGrid');
+  container.innerHTML = CREW.map(m => renderCard(m)).join('');
+}
+
+function renderCard(m) {
+  const t = I18N[currentLang];
+  const isUnlocked = unlockedIds.includes(m.id);
+  const isSelected = selectedIds.includes(m.id);
+  const btnText = isSelected ? t.btn_selected : (isUnlocked ? t.btn_assign : `<span class="material-symbols-outlined" style="font-size:16px; margin-${currentLang==='ar'?'left':'right'}:4px">lock</span>` + t.btn_unlock);
+  const previewBtn = m.isDirector ? `<div class="cc-preview-btn"><span class="material-symbols-outlined" style="font-size:12px">movie</span>${t.preview}</div>` : '';
+  
+  return `
+    <div class="crew-card ${isSelected?'selected':''}">
+<div class="cc-visual"><img class="cc-img" src="${m.img}"/><div class="cc-gradient"></div>${previewBtn}</div>
+<div class="cc-body">
+<div class="cc-role">${m.role[currentLang]}</div>
+<div class="cc-name">${m.name[currentLang]}</div>
+<p class="cc-desc">${m.spec[currentLang]}</p>
+<button class="cc-btn ${isSelected?'active':''}" onclick="toggleSelection('${m.id}')">${btnText}</button>
+</div>
+</div>`;
+}
+
+function renderSummary() {
   const container = document.getElementById('crewSummary');
-  const empty = document.getElementById('csEmpty');
-  const btn = document.getElementById('launchBtn');
-  const note = document.getElementById('ctaNote');
-
-  if(selectedCrew.length === 0){
-    container.innerHTML = `<span class="cs-empty" id="csEmpty">${t('cs_empty')}</span>`;
-    btn.disabled = true;
-    note.textContent = t('cta_note_empty');
-    return;
-  }
-
-  container.innerHTML = selectedCrew.map(id => {
-    const m = CREW.find(c => c.id === id);
-    if(!m) return '';
-    return `
-      <div class="cs-member">
-        <span>${m.emoji}</span>
-        <span>${m['name_' + lang] || m.name_en}</span>
-        <button class="cs-member-remove" onclick="toggleMember('${id}')" title="Remove">✕</button>
-      </div>`;
+  const counter = document.getElementById('slotCounter');
+  const t = I18N[currentLang];
+  counter.textContent = t.slot_counter.replace('{{n}}', selectedIds.length);
+  if(selectedIds.length === 0) { container.innerHTML = `<span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${t.footer_empty}</span>`; return; }
+  container.innerHTML = selectedIds.map(id => {
+    const m = [...LEAD_DIRECTORS, ...CREW].find(c => c.id === id);
+    return `<div class="crew-chip"><span>${m.name[currentLang]}</span><span class="chip-remove" onclick="toggleSelection('${id}')">✕</span></div>`;
   }).join('');
-
-  btn.disabled = false;
-  note.textContent = t('cta_note_ready');
 }
 
-// ── LAUNCH ──
-function launchStudio(){
-  if(selectedCrew.length === 0) return;
-
-  // Save crew config to localStorage for studio.html to read
-  const crewData = selectedCrew.map(id => CREW.find(c => c.id === id)).filter(Boolean);
-  const crewRoles = crewData.map(m => m.systemRole).join('\n');
-  const crewNames = crewData.map(m => m['name_' + lang] || m.name_en).join(', ');
-
-  localStorage.setItem('md_crew_ids', JSON.stringify(selectedCrew));
-  localStorage.setItem('md_crew_roles', crewRoles);
-  localStorage.setItem('md_crew_names', crewNames);
-  localStorage.setItem('md_plan', currentPlan);
-
-  // Animate button
-  const btn = document.getElementById('launchBtn');
-  btn.textContent = '⚡ BRIEFING CREW...';
-  btn.style.background = '#a8d700';
-
-  setTimeout(() => {
-    window.location.href = 'studio.html';
-  }, 800);
+function openModal() { document.getElementById('creditModal').classList.add('open'); }
+function closeModal() { document.getElementById('creditModal').classList.remove('open'); }
+function launchStudio() {
+  const cost = selectedIds.length * 10; const t = I18N[currentLang];
+  if(userCredits >= cost) {
+    userCredits -= cost;
+    const btn = document.getElementById('launchBtn'); btn.textContent = t.btn_launching; btn.style.opacity = '0.7';
+    setTimeout(() => { window.location.href = 'studio.html'; }, 1200);
+  }
 }
-
-// ── INIT ──
-window.onload = () => {
-  const savedLang = localStorage.getItem('md_lang') || 'en';
-  const savedPlan = localStorage.getItem('md_plan') || 'regular';
-
-  // Apply plan tab styling first
-  document.querySelectorAll('.plan-tab').forEach(b => b.classList.toggle('on', b.dataset.plan === savedPlan));
-  currentPlan = savedPlan;
-
-  setLang(savedLang);
-  updatePlanBar();
-};
-</script>
-</body>
-</html>
+window.onload = () => setLang('ar');</script>
+</body></html>
