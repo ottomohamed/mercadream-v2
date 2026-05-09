@@ -1,4 +1,4 @@
-// ═══════════════════════════════════════════════════════
+﻿// ═══════════════════════════════════════════════════════
 // MERCADREAM — /api/video.js
 // Video Generation → WaveSpeed API
 // ═══════════════════════════════════════════════════════
@@ -10,12 +10,12 @@
 //   GET  /api/video?id=xxx → poll status → returns { status, videoUrl }
 // ═══════════════════════════════════════════════════════
 
-const WAVESPEED_BASE = 'https://api.wavespeed.ai/api/v2';
+const WAVESPEED_BASE = 'https://api.wavespeed.ai/api/v3';
 
 // Cheapest models for development
 const MODELS = {
-  fast:    'wavespeed-ai/wan2.1-t2v-480p',   // cheapest — 480p
-  regular: 'wavespeed-ai/wan2.1-t2v-720p',   // standard — 720p
+  fast:    'wavespeed-ai/wan-2.1/t2v-480p',   // cheapest — 480p
+  regular: 'wavespeed-ai/wan-2.2/t2v-720p',   // standard — 720p
 };
 
 export default async function handler(req, res) {
@@ -126,3 +126,4 @@ export default async function handler(req, res) {
 
   return res.status(405).json({ error: 'Method not allowed.' });
 }
+
