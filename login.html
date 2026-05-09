@@ -1,305 +1,145 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MercaDream — Sign In</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<title>MERCADREAM — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--md-black:#030508;--md-surface:#090d14;--md-surface-2:#0f1520;--md-border:rgba(255,255,255,0.06);--md-gold:#e8b86d;--md-cyan:#63b6ff;--md-violet:#a855f7;--md-text:#e8edf5;--md-text-muted:#6b7b92;--md-text-dim:#3a4557;--r-sm:8px;--r-md:14px;--r-lg:22px;--r-xl:32px;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--md-black);color:var(--md-text);font-family:'DM Sans',sans-serif;min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;}
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1;}
-
-/* LEFT PANEL */
-.left-panel{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 80px;background:var(--md-surface);border-right:1px solid var(--md-border);overflow:hidden;}
-.left-panel::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(99,182,255,.12) 0%,transparent 70%);pointer-events:none;}
-.left-panel::after{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(168,85,247,.1) 0%,transparent 70%);pointer-events:none;}
-
-/* LOGO */
-.logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:48px;align-self:flex-start;position:relative;z-index:1;}
-.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--md-cyan),var(--md-violet));border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.logo-mark::after{content:'';position:absolute;inset:2px;background:var(--md-black);border-radius:8px;}
-.logo-mark svg{position:relative;z-index:1;}
-.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.02em;background:linear-gradient(90deg,#fff 40%,var(--md-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-
-/* FORM CARD */
-.form-wrap{width:100%;max-width:400px;position:relative;z-index:1;}
-.form-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:6px;}
-.form-sub{font-size:15px;color:var(--md-text-muted);font-weight:300;margin-bottom:36px;}
-.form-sub a{color:var(--md-cyan);text-decoration:none;font-weight:500;}
-.form-sub a:hover{text-decoration:underline;}
-
-/* SOCIAL BTNS */
-.social-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;}
-.social-btn{padding:11px;border:1px solid var(--md-border);border-radius:var(--r-md);background:transparent;color:var(--md-text-muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
-.social-btn:hover{border-color:rgba(255,255,255,.15);color:var(--md-text);background:rgba(255,255,255,.04);}
-.social-btn svg{flex-shrink:0;}
-
-/* DIVIDER */
-.or-divider{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
-.or-line{flex:1;height:1px;background:var(--md-border);}
-.or-text{font-size:12px;color:var(--md-text-dim);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
-
-/* INPUTS */
-.field{margin-bottom:18px;}
-.field-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
-.field-label span{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--md-text-muted);}
-.field-label a{font-size:12px;color:var(--md-cyan);text-decoration:none;font-weight:500;}
-.input-wrap{position:relative;}
-.input-wrap .material-symbols-outlined{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--md-text-dim);}
-input[type=email],input[type=password],input[type=text]{width:100%;background:var(--md-surface-2);border:1px solid var(--md-border);border-radius:var(--r-md);padding:13px 16px 13px 44px;color:var(--md-text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .2s;font-weight:400;}
-input[type=email]:focus,input[type=password]:focus,input[type=text]:focus{border-color:rgba(99,182,255,.35);box-shadow:0 0 0 3px rgba(99,182,255,.06);}
-input::placeholder{color:var(--md-text-dim);}
-.pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--md-text-dim);cursor:pointer;padding:2px;display:flex;}
-.pw-toggle:hover{color:var(--md-text-muted);}
-.pw-toggle .material-symbols-outlined{font-size:18px;}
-
-/* REMEMBER */
-.remember-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
-.custom-checkbox{width:18px;height:18px;border:1px solid var(--md-border);border-radius:4px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
-.custom-checkbox.checked{background:linear-gradient(135deg,var(--md-cyan),var(--md-violet));border:none;}
-.custom-checkbox .material-symbols-outlined{font-size:13px;color:#fff;font-variation-settings:'FILL' 1,'wght' 600,'GRAD' 0,'opsz' 24;}
-.remember-row span{font-size:13px;color:var(--md-text-muted);}
-
-/* SUBMIT */
-.btn-submit{width:100%;padding:15px;background:linear-gradient(135deg,var(--md-cyan),var(--md-violet));border:none;border-radius:var(--r-md);color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.02em;transition:all .3s;box-shadow:0 4px 24px rgba(99,182,255,.2);margin-bottom:20px;}
-.btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(99,182,255,.35);}
-.btn-submit:active{transform:translateY(0);}
-
-/* FOOTER TEXT */
-.form-footer{text-align:center;font-size:13px;color:var(--md-text-muted);}
-.form-footer a{color:var(--md-cyan);text-decoration:none;font-weight:500;}
-
-/* ERROR / SUCCESS */
-.alert{padding:12px 16px;border-radius:var(--r-sm);font-size:13px;display:flex;align-items:center;gap:10px;margin-bottom:18px;}
-.alert-error{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#f87171;}
-.alert-success{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:#4ade80;}
-.alert .material-symbols-outlined{font-size:18px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;}
-
-/* RIGHT PANEL — VISUAL */
-.right-panel{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--md-black);}
-.rp-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(99,182,255,.1) 0%,transparent 55%),radial-gradient(ellipse at 70% 70%,rgba(168,85,247,.1) 0%,transparent 55%);}
-.rp-content{position:relative;z-index:1;text-align:center;padding:40px;}
-
-/* VISUAL MOCKUP */
-.visual-card{background:rgba(9,13,20,.8);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-xl);padding:32px;width:380px;backdrop-filter:blur(20px);position:relative;}
-.visual-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--md-cyan),var(--md-violet),transparent);}
-.vc-header{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
-.vc-dot{width:8px;height:8px;border-radius:50%;}
-.vc-dot:nth-child(1){background:#f87171;}
-.vc-dot:nth-child(2){background:#fbbf24;}
-.vc-dot:nth-child(3){background:#4ade80;}
-.vc-screen{background:var(--md-surface-2);border-radius:var(--r-md);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:20px;overflow:hidden;position:relative;}
-
-/* Animated waveform in card */
-.wv-bars{display:flex;align-items:center;gap:3px;height:60px;}
-.wv-bar{width:4px;border-radius:3px;background:linear-gradient(180deg,var(--md-cyan),var(--md-violet));animation:wv .9s ease-in-out infinite;}
-@keyframes wv{0%,100%{transform:scaleY(.25);}50%{transform:scaleY(1);}}
-
-.vc-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--md-text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;text-align:left;}
-.vc-progress{height:3px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;margin-bottom:6px;}
-.vc-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--md-cyan),var(--md-violet));animation:grow 3s ease-in-out infinite alternate;}
-@keyframes grow{from{width:30%}to{width:80%}}
-.vc-progress-text{display:flex;justify-content:space-between;font-size:11px;color:var(--md-text-dim);font-family:'JetBrains Mono',monospace;}
-
-/* Tags below card */
-.rp-tags{display:flex;gap:10px;justify-content:center;margin-top:28px;flex-wrap:wrap;}
-.rp-tag{padding:6px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:100px;font-size:12px;color:var(--md-text-muted);font-weight:500;}
-.rp-tag.cyan{border-color:rgba(99,182,255,.2);color:var(--md-cyan);}
-.rp-tag.violet{border-color:rgba(168,85,247,.2);color:var(--md-violet);}
-.rp-tag.gold{border-color:rgba(232,184,109,.2);color:var(--md-gold);}
-
-/* Floating badges */
-.float-badge{position:absolute;background:rgba(9,13,20,.9);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-md);padding:12px 16px;backdrop-filter:blur(12px);white-space:nowrap;}
-.fb-1{top:15%;left:5%;animation:fb 6s ease-in-out infinite;}
-.fb-2{bottom:20%;right:5%;animation:fb 6s ease-in-out infinite 3s;}
-@keyframes fb{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.fb-row{display:flex;align-items:center;gap:8px;}
-.fb-dot{width:7px;height:7px;border-radius:50%;}
-.fb-dot.green{background:#4ade80;box-shadow:0 0 6px #4ade80;}
-.fb-dot.cyan{background:var(--md-cyan);box-shadow:0 0 6px var(--md-cyan);}
-.fb-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--md-text-muted);}
-.fb-val{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-top:3px;}
-
-/* Quote */
-.rp-quote{margin-top:32px;font-size:14px;color:var(--md-text-muted);font-style:italic;font-weight:300;line-height:1.7;max-width:340px;margin-left:auto;margin-right:auto;}
-
-@media(max-width:900px){body{grid-template-columns:1fr;}.right-panel{display:none;}.left-panel{padding:40px 32px;min-height:100dvh;}}
-@media(max-width:480px){.left-panel{padding:28px 20px;}.social-row{grid-template-columns:1fr;}}
+:root{--acid:#c8ff00;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060606;color:var(--text);font-family:'Inter',sans-serif;min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+body.lang-ar{direction:rtl;font-family:'Cairo',sans-serif}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.left{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 60px;background:var(--s2);border-right:1px solid var(--border);overflow-y:auto;position:relative;z-index:1}
+.left-inner{width:100%;max-width:380px}
+.right{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.orb{position:absolute;border-radius:50%;filter:blur(130px);pointer-events:none}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,255,0,0.04),transparent);top:-100px;right:-80px}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(255,186,63,0.025),transparent);bottom:-80px;left:-80px}
+.right-content{position:relative;z-index:2;padding:40px;max-width:440px;width:100%}
+.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:32px}
+.logo-mark{width:30px;height:30px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04);font-family:var(--display);font-size:7px;font-weight:900;color:var(--acid);letter-spacing:1px}
+.logo-name{font-family:var(--display);font-size:13px;font-weight:900;color:var(--text-bright);letter-spacing:3px}
+.logo-name span{color:var(--acid)}
+.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px;margin-bottom:28px}
+.lb{font-family:var(--mono);font-size:8px;padding:4px 9px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.lb.on{background:var(--acid);color:#000;font-weight:700}
+.form-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);letter-spacing:1px;margin-bottom:4px}
+.form-sub{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:.5px;margin-bottom:24px}
+.form-sub a{color:var(--acid);text-decoration:none}
+.field{margin-bottom:14px}
+.field-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;display:block;text-transform:uppercase}
+.field-wrap{position:relative}
+.fi{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-dim)}
+input{width:100%;background:var(--s3);border:1px solid var(--border);padding:10px 12px 10px 34px;color:var(--text-bright);font-family:var(--mono);font-size:11px;letter-spacing:1px;outline:none;transition:border-color .2s}
+input:focus{border-color:var(--border-b)}
+input::placeholder{color:var(--text-dim)}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0}
+.divider-line{flex:1;height:1px;background:var(--border)}
+.divider-text{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim)}
+.btn-google{width:100%;padding:11px;background:transparent;border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+.btn-google:hover{border-color:var(--border-b);color:var(--text-bright)}
+.btn-submit{width:100%;padding:12px;background:var(--acid);color:#000;border:none;font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;margin-bottom:12px;clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
+.btn-submit:hover{background:#d4ff1a}
+.btn-submit:disabled{background:var(--s4);color:var(--text-dim);cursor:not-allowed}
+.btn-text{width:100%;padding:8px;background:transparent;border:none;font-family:var(--mono);font-size:9px;color:var(--text-dim);cursor:pointer;transition:color .2s}
+.btn-text:hover{color:var(--acid)}
+.alert{padding:8px 12px;border:1px solid rgba(255,80,80,0.3);background:rgba(255,80,80,0.06);font-family:var(--mono);font-size:9px;color:#ff5050;margin-bottom:12px;display:none}
+.alert.show{display:block}
+.alert.ok{border-color:rgba(200,255,0,0.3);background:rgba(200,255,0,0.04);color:var(--acid)}
+.rp-dot{width:5px;height:5px;border-radius:50%;background:var(--acid);animation:blink 1.4s infinite;display:inline-block;margin-right:8px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.rp-title{font-family:var(--display);font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--text-bright);line-height:1.1;margin-bottom:12px;margin-top:20px}
+.rp-title span{color:var(--acid)}
+.rp-sub{font-size:13px;color:var(--text);line-height:1.75;margin-bottom:24px;font-weight:300}
+.feat-list{background:var(--s3);border:1px solid var(--border);padding:16px}
+.feat-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px}
+.feat-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(200,255,0,0.04);font-size:12px;color:var(--text)}
+.feat-item:last-child{border-bottom:none;padding-bottom:0}
+.feat-item::before{content:'✓';color:var(--acid);font-family:var(--mono);font-size:10px;flex-shrink:0}
+@media(max-width:900px){body{grid-template-columns:1fr}.right{display:none}.left{padding:24px 16px;min-height:100dvh}}
 </style>
 </head>
-<body>
-
-<!-- LEFT: FORM -->
-<div class="left-panel">
-
-  <a href="index.html" class="logo-wrap">
-    <div class="logo-mark">
-      <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
-        <path d="M9 2L15 9L9 16L3 9Z" fill="url(#llg)"/>
-        <circle cx="9" cy="9" r="3" fill="url(#llg2)"/>
-        <defs>
-          <linearGradient id="llg" x1="3" y1="2" x2="15" y2="16"><stop stop-color="#63b6ff"/><stop offset="1" stop-color="#a855f7"/></linearGradient>
-          <linearGradient id="llg2" x1="6" y1="6" x2="12" y2="12"><stop stop-color="#e8b86d"/><stop offset="1" stop-color="#63b6ff"/></linearGradient>
-        </defs>
-      </svg>
+<body class="lang-en">
+<div class="left">
+  <div class="left-inner">
+    <a href="index.html" class="logo-wrap">
+      <div class="logo-mark">MD</div>
+      <span class="logo-name">MERCA<span>DREAM</span></span>
+    </a>
+    <div class="lang-sw">
+      <button class="lb on" onclick="setLang('en')">EN</button>
+      <button class="lb" onclick="setLang('es')">ES</button>
+      <button class="lb" onclick="setLang('ar')">AR</button>
     </div>
-    <span class="logo-text">MercaDream.</span>
-  </a>
-
-  <div class="form-wrap">
-    <div class="form-title">Welcome back</div>
-    <div class="form-sub">New to MercaDream? <a href="register.html">Create an account</a></div>
-
-    <!-- Alert (hidden by default) -->
-    <div class="alert alert-error" id="alertBox" style="display:none;">
-      <span class="material-symbols-outlined">error</span>
-      <span id="alertMsg">Invalid email or password.</span>
-    </div>
-
-    <!-- Social Login -->
-    <div class="social-row">
-      <button class="social-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Google
-      </button>
-      <button class="social-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.11 7.5h-1.86c-.22 0-.46.29-.46.68v1.34h2.32l-.3 2.4h-2.02V20h-2.49v-6.08H10.8V11.5h1.5V9.93c0-2.04 1.26-3.15 3.07-3.15.87 0 1.74.07 2.6.21V8.5h-.86z"/></svg>
-        GitHub
-      </button>
-    </div>
-
-    <div class="or-divider">
-      <div class="or-line"></div>
-      <div class="or-text">or continue with email</div>
-      <div class="or-line"></div>
-    </div>
-
-    <!-- Email -->
+    <div class="form-title" id="ttl">SIGN IN</div>
+    <div class="form-sub" id="sub">New here? <a href="register.html">Create account →</a></div>
+    <div class="alert" id="alert"></div>
+    <button class="btn-google" onclick="signInGoogle()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      <span id="gBtn">Continue with Google</span>
+    </button>
+    <div class="divider"><div class="divider-line"></div><div class="divider-text" id="orTxt">OR</div><div class="divider-line"></div></div>
     <div class="field">
-      <div class="field-label"><span>Email</span></div>
-      <div class="input-wrap">
-        <span class="material-symbols-outlined">mail</span>
-        <input type="email" id="emailInput" placeholder="you@mercadream.com"/>
-      </div>
+      <label class="field-label" id="emLbl">EMAIL</label>
+      <div class="field-wrap"><span class="fi">✉</span><input type="email" id="em" placeholder="you@mercadream.com"/></div>
     </div>
-
-    <!-- Password -->
     <div class="field">
-      <div class="field-label">
-        <span>Password</span>
-        <a href="#">Forgot password?</a>
-      </div>
-      <div class="input-wrap">
-        <span class="material-symbols-outlined">lock</span>
-        <input type="password" id="passInput" placeholder="••••••••••" id="pwInput"/>
-        <button class="pw-toggle" onclick="togglePw()" type="button">
-          <span class="material-symbols-outlined" id="pwIcon">visibility_off</span>
-        </button>
-      </div>
+      <label class="field-label" id="pwLbl">PASSWORD</label>
+      <div class="field-wrap"><span class="fi">🔒</span><input type="password" id="pw" placeholder="••••••••"/></div>
     </div>
-
-    <!-- Remember -->
-    <div class="remember-row">
-      <div class="custom-checkbox" id="rememberBox" onclick="toggleRemember()">
-        <span class="material-symbols-outlined" style="display:none" id="checkIcon">check</span>
-      </div>
-      <span>Remember me for 30 days</span>
-    </div>
-
-    <!-- Submit -->
-    <button class="btn-submit" onclick="handleLogin()">Sign In to MercaDream</button>
-
-    <div class="form-footer">
-      By signing in you agree to our <a href="index.html">Terms</a> & <a href="#">Privacy Policy</a>
+    <button class="btn-submit" id="subBtn" onclick="signInEmail()"><span id="subTxt">SIGN IN →</span></button>
+    <button class="btn-text" id="fgtBtn" onclick="forgotPw()">Forgot password?</button>
+  </div>
+</div>
+<div class="right">
+  <div class="orb orb1"></div><div class="orb orb2"></div>
+  <div class="right-content">
+    <div><div class="rp-dot"></div><span style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid)">AI CINEMA STUDIO</span></div>
+    <div class="rp-title">Welcome<br><span>Back.</span></div>
+    <p class="rp-sub">Your projects, your vault, your films — all waiting for you.</p>
+    <div class="feat-list">
+      <div class="feat-title">YOUR ACCOUNT INCLUDES</div>
+      <div class="feat-item">Dream Extractor™ PhD Edition</div>
+      <div class="feat-item">6-scene cinematic film generation</div>
+      <div class="feat-item">Assembly Room & film vault</div>
+      <div class="feat-item">Credit balance & history</div>
     </div>
   </div>
 </div>
-
-<!-- RIGHT: VISUAL -->
-<div class="right-panel">
-  <div class="rp-bg"></div>
-
-  <!-- Floating badges -->
-  <div class="float-badge fb-1">
-    <div class="fb-row"><div class="fb-dot green"></div><div class="fb-label">Neural Engine</div></div>
-    <div class="fb-val">Ready</div>
-  </div>
-  <div class="float-badge fb-2">
-    <div class="fb-row"><div class="fb-dot cyan"></div><div class="fb-label">GPU Cluster</div></div>
-    <div class="fb-val">H100 × 8</div>
-  </div>
-
-  <div class="rp-content">
-    <!-- Visual Card -->
-    <div class="visual-card">
-      <div class="vc-header">
-        <div class="vc-dot"></div>
-        <div class="vc-dot"></div>
-        <div class="vc-dot"></div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--md-text-dim);margin-left:auto;">mercadream.com/studio</div>
-      </div>
-
-      <div class="vc-screen">
-        <div class="wv-bars">
-          <script>
-            const heights=[20,38,55,42,60,35,48,28,52,44,30,56,40,24,50,36,60,28,44,38,55,20,48,35,60];
-            document.write(heights.map((h,i)=>`<div class="wv-bar" style="height:${h}px;animation-delay:-${(i*0.09).toFixed(2)}s;"></div>`).join(''));
-          </script>
-        </div>
-      </div>
-
-      <div class="vc-label">Rendering: Neon Horizon · 4K Cinematic</div>
-      <div class="vc-progress"><div class="vc-progress-fill"></div></div>
-      <div class="vc-progress-text"><span>Processing frames…</span><span style="color:var(--md-cyan);">76%</span></div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px;">
-        <div style="background:rgba(99,182,255,.05);border:1px solid rgba(99,182,255,.1);border-radius:var(--r-sm);padding:10px;text-align:center;">
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;">4K</div>
-          <div style="font-size:10px;color:var(--md-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;">Quality</div>
-        </div>
-        <div style="background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.1);border-radius:var(--r-sm);padding:10px;text-align:center;">
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;">30s</div>
-          <div style="font-size:10px;color:var(--md-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;">Duration</div>
-        </div>
-        <div style="background:rgba(232,184,109,.05);border:1px solid rgba(232,184,109,.1);border-radius:var(--r-sm);padding:10px;text-align:center;">
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;">120</div>
-          <div style="font-size:10px;color:var(--md-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;">FPS</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="rp-tags">
-      <div class="rp-tag cyan">8K Output</div>
-      <div class="rp-tag violet">Voice Cloning</div>
-      <div class="rp-tag gold">Unlimited</div>
-      <div class="rp-tag">50K+ Creators</div>
-    </div>
-
-    <div class="rp-quote">"MercaDream has transformed how we create. What used to take weeks now takes minutes."<br><strong style="color:var(--md-text);font-style:normal;font-weight:600;">— Elena Vance, Vance AI Studios</strong></div>
-  </div>
-</div>
-
 <script>
-function togglePw(){const i=document.getElementById('passInput')||document.querySelector('input[type=password]');const icon=document.getElementById('pwIcon');if(!i)return;if(i.type==='password'){i.type='text';icon.textContent='visibility';}else{i.type='password';icon.textContent='visibility_off';}}
-let remembered=false;
-function toggleRemember(){remembered=!remembered;document.getElementById('rememberBox').classList.toggle('checked',remembered);document.getElementById('checkIcon').style.display=remembered?'flex':'none';}
-function handleLogin(){
-  const email=document.getElementById('emailInput').value;
-  const pass=document.getElementById('passInput')||document.querySelector('input[type=password]');
-  const alertBox=document.getElementById('alertBox');
-  if(!email||!email.includes('@')){alertBox.style.display='flex';document.getElementById('alertMsg').textContent='Please enter a valid email address.';return;}
-  if(!pass||pass.value.length<6){alertBox.style.display='flex';document.getElementById('alertMsg').textContent='Password must be at least 6 characters.';return;}
-  alertBox.style.display='none';
-  const btn=document.querySelector('.btn-submit');
-  btn.textContent='Signing in…';
-  btn.style.opacity='.7';
-  setTimeout(()=>{window.location.href='studio.html';},1600);
+const SURL='https://xvkxogrmewnzwhtghuiz.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
+const sb=supabase.createClient(SURL,SKEY);
+sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='studio.html';});
+async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/studio.html'}});if(error)showAlert(error.message);}
+async function signInEmail(){
+  const em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value;
+  if(!em||!pw)return showAlert('Please enter email and password.');
+  const btn=document.getElementById('subBtn');btn.disabled=true;document.getElementById('subTxt').textContent='SIGNING IN...';
+  const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
+  if(error){btn.disabled=false;document.getElementById('subTxt').textContent=I18N[lang].submit;return showAlert(error.message);}
+  await fetch('/api/credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'check',email:em})});
+  window.location.href='studio.html';
 }
-// Enter key
-document.addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();});
+async function forgotPw(){
+  const em=document.getElementById('em').value.trim();
+  if(!em)return showAlert('Enter your email first.');
+  const{error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:window.location.origin+'/register.html?reset=true'});
+  if(error)return showAlert(error.message);
+  showAlert('Check your email for a reset link.','ok');
+}
+function showAlert(msg,type='err'){const b=document.getElementById('alert');b.textContent=msg;b.className='alert show'+(type==='ok'?' ok':'');}
+const I18N={
+  en:{ttl:'SIGN IN',sub:'New here? <a href="register.html">Create account →</a>',gBtn:'Continue with Google',or:'OR',emLbl:'EMAIL',pwLbl:'PASSWORD',submit:'SIGN IN →',fgt:'Forgot password?'},
+  es:{ttl:'INICIAR SESIÓN',sub:'¿Nuevo? <a href="register.html">Crear cuenta →</a>',gBtn:'Continuar con Google',or:'O',emLbl:'CORREO',pwLbl:'CONTRASEÑA',submit:'INICIAR SESIÓN →',fgt:'¿Olvidaste tu contraseña?'},
+  ar:{ttl:'تسجيل الدخول',sub:'جديد؟ <a href="register.html">إنشاء حساب →</a>',gBtn:'المتابعة مع Google',or:'أو',emLbl:'البريد الإلكتروني',pwLbl:'كلمة المرور',submit:'دخول →',fgt:'نسيت كلمة المرور؟'}
+};
+let lang='en';
+function setLang(l){lang=l;document.documentElement.lang=l;document.body.className=l==='ar'?'lang-ar':'lang-en';document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));const tx=I18N[l];document.getElementById('ttl').textContent=tx.ttl;document.getElementById('sub').innerHTML=tx.sub;document.getElementById('gBtn').textContent=tx.gBtn;document.getElementById('orTxt').textContent=tx.or;document.getElementById('emLbl').textContent=tx.emLbl;document.getElementById('pwLbl').textContent=tx.pwLbl;document.getElementById('subTxt').textContent=tx.submit;document.getElementById('fgtBtn').textContent=tx.fgt;localStorage.setItem('md_lang',l);}
+window.onload=()=>setLang(localStorage.getItem('md_lang')||'en');
 </script>
 </body>
 </html>
