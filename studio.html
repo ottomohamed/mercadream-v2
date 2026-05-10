@@ -753,21 +753,109 @@ function paywallContinue(){
   window.location.href = 'register.html?plan=' + selectedPaywallPlan;
 }
 
+let projectType = null;
+
 async function startSession(){
   setPhase(1);
-  const trigger={
-    en:"Hello, I want to create a 60-second film with 6 scenes, each 10 seconds",
-    es:"Hola, quiero crear una película de 60 segundos con 6 escenas, cada una de 10 segundos",
-    ar:"مرحباً، أريد إنشاء فيلم مدته 60 ثانية من 6 مشاهد، كل مشهد 10 ثوانٍ"
-  };
-  const welcome={
-    en:"Welcome. I am your screenplay writer at MercaDream.\n\nI will work with you to transform your idea into a professional cinematic screenplay — scene by scene.\n\nOnce you approve it, we hand it to our director to bring it to life.\n\nSo — what idea is on your mind?",
-    es:"Bienvenido. Soy el guionista de MercaDream.\n\nTrabajaré contigo para transformar tu idea en un guión cinematográfico profesional.\n\nCuando lo apruebes, lo enviamos al director.\n\n¿Qué idea tienes en mente?",
-    ar:"مرحباً. أنا كاتب السيناريو في MercaDream.\n\nسأتعاون معك لتحويل فكرتك إلى سيناريو سينمائي احترافي.\n\nبعد موافقتك نسلّمه للمخرج لتجسيده.\n\nأخبرني — ما الفكرة التي تدور في ذهنك؟"
-  };
-  addMsg('bot', welcome[lang], true);
-  history.push({role:'assistant', content:welcome[lang]});
   log('Dream Extractor™ session started (6-scene film mode)','ok');
+  showProjectTypeSelector();
+}
+
+function showProjectTypeSelector(){
+  const msgs = document.getElementById('messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot';
+  wrap.id = 'typeSelector';
+
+  const welcome = {
+    en: 'Welcome. What type of project are you creating?',
+    es: 'Bienvenido. ¿Qué tipo de proyecto estás creando?',
+    ar: 'مرحباً. ما نوع مشروعك؟'
+  };
+
+  const types = {
+    en: [
+      { id:'film', icon:'🎬', label:'Film / Personal Story' },
+      { id:'ad', icon:'📢', label:'Advertisement / Commercial' },
+      { id:'music', icon:'🎵', label:'Music Video' },
+      { id:'doc', icon:'📹', label:'Documentary' }
+    ],
+    es: [
+      { id:'film', icon:'🎬', label:'Película / Historia personal' },
+      { id:'ad', icon:'📢', label:'Anuncio / Comercial' },
+      { id:'music', icon:'🎵', label:'Videoclip musical' },
+      { id:'doc', icon:'📹', label:'Documental' }
+    ],
+    ar: [
+      { id:'film', icon:'🎬', label:'فيلم / قصة شخصية' },
+      { id:'ad', icon:'📢', label:'إعلان / محتوى تجاري' },
+      { id:'music', icon:'🎵', label:'كليب موسيقي' },
+      { id:'doc', icon:'📹', label:'وثائقي' }
+    ]
+  };
+
+  const av = document.createElement('div');
+  av.className = 'avatar bot-av';
+  av.textContent = 'AI';
+
+  const bbl = document.createElement('div');
+  bbl.className = 'bot-bubble';
+  bbl.style.maxWidth = '85%';
+
+  let html = `<div style="margin-bottom:12px;font-size:13px">${welcome[lang]}</div>`;
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">`;
+  types[lang].forEach(type => {
+    html += `<button onclick="selectProjectType('${type.id}')" style="
+      padding:10px 14px;background:var(--s3);border:1px solid var(--border);
+      color:var(--text-bright);font-family:var(--mono);font-size:10px;
+      letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:left;
+      display:flex;align-items:center;gap:8px;
+    " onmouseover="this.style.borderColor='var(--border-b)';this.style.color='var(--acid)'"
+       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-bright)'">
+      <span style="font-size:16px">${type.icon}</span>
+      <span>${type.label}</span>
+    </button>`;
+  });
+  html += `</div>`;
+
+  bbl.innerHTML = html;
+  wrap.appendChild(av);
+  wrap.appendChild(bbl);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function selectProjectType(type){
+  projectType = type;
+
+  // Remove selector
+  const sel = document.getElementById('typeSelector');
+  if(sel) sel.remove();
+
+  // Show selected + first question
+  const typeLabels = {
+    film: {en:'Film / Personal Story', es:'Película', ar:'فيلم / قصة شخصية'},
+    ad:   {en:'Advertisement', es:'Anuncio', ar:'إعلان'},
+    music:{en:'Music Video', es:'Videoclip', ar:'كليب موسيقي'},
+    doc:  {en:'Documentary', es:'Documental', ar:'وثائقي'}
+  };
+
+  const firstQ = {
+    film:  {en:'What is your story about?', es:'¿De qué trata tu historia?', ar:'عمَّ تدور قصتك؟'},
+    ad:    {en:'What product or service?', es:'¿Qué producto o servicio?', ar:'ما المنتج أو الخدمة؟'},
+    music: {en:'What is the song about?', es:'¿De qué trata la canción?', ar:'عمَّ تتحدث الأغنية؟'},
+    doc:   {en:'What subject are you documenting?', es:'¿Qué tema documentas?', ar:'ما الموضوع الذي توثقه؟'}
+  };
+
+  const label = typeLabels[type][lang];
+  const q = firstQ[type][lang];
+
+  addMsg('user', label, false);
+  addMsg('bot', q, true);
+  history.push({role:'assistant', content: q});
+
+  // Set context in system prompt based on type
+  localStorage.setItem('md_project_type', type);
 }
 
 async function sendMessage(){
@@ -913,8 +1001,25 @@ function setLang(l){
 function buildCrewSystem(baseSystem){
   const crewRoles = localStorage.getItem('md_crew_roles') || '';
   const crewNames = localStorage.getItem('md_crew_names') || '';
-  if(!crewRoles) return baseSystem;
-  return `Active production crew: ${crewNames}\n\nCrew roles:\n${crewRoles}\n\n${baseSystem}`;
+  const pType = projectType || localStorage.getItem('md_project_type') || 'film';
+
+  const typeContext = {
+    film:  'PROJECT TYPE: Personal film / narrative story. Ask about emotions, characters, transformation.',
+    ad:    'PROJECT TYPE: Advertisement / commercial. Ask only: product, target audience, key message. Keep it practical and brief. Max 3 questions then DREAM_CAPTURED.',
+    music: 'PROJECT TYPE: Music video. Ask about the song mood, artist style, key visual concept.',
+    doc:   'PROJECT TYPE: Documentary. Ask about the subject, the angle, what truth to reveal.'
+  };
+
+  let system = `${typeContext[pType]}
+
+${baseSystem}`;
+  if(crewRoles) system = `Active production crew: ${crewNames}
+
+Crew roles:
+${crewRoles}
+
+${system}`;
+  return system;
 }
 
 function showCrewBadge(){
