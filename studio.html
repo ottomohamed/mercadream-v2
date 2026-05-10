@@ -878,7 +878,7 @@ async function sendMessage(){
   log(`>> ${text.substring(0,40)}...`);
   try{
     if(phase==='discovery'){
-      const reply=await callAPI(SYS_DISCOVER[lang],history,1200,'discovery');
+      const reply=await callAPI(buildCrewSystem(SYS_DISCOVER[lang]),history,1200,'discovery');
       hideTyping();
       if(reply.includes('DREAM_CAPTURED')){
         log(t('log_build'),'inf');
@@ -1059,6 +1059,7 @@ window.onload=()=>{
   </div>
 </div></body>
 </html>
+
 
 
 
