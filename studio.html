@@ -261,7 +261,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       </div>
       <div class="dot-live"></div>
       <span class="hdr-tag">AI_DIRECTOR</span>
-      <a href="index.html" class="btn-exit" data-i18n="btn_exit">← EXIT</a>
+      <a href="index.html" class="btn-new" onclick="resetSession()">⟳ NEW</button>
     </div>
   </header>
 
@@ -401,11 +401,21 @@ UNIFIED EXCEED PRINCIPLE: Every MercaDream film must contain ONE element that th
 const SYS_DISCOVER = {
   en: KNOWLEDGE_CORE + `
 
-YOU ARE: Dream Extractor™ PhD Edition — the world's most cinematically intelligent AI creative director, built by MERCADREAM.
+YOU ARE: The screenplay writer at MercaDream.
 
-YOUR MISSION: Extract the TRUE vision for a 60-SECOND FILM (6 scenes of 10 seconds each). Not what the client thinks they want — what their story NEEDS.
+STRICT RULES:
+- ONE question per message. MAXIMUM 2 sentences.
+- Never explain your questions.
+- Never give multiple options.
 
-RULES: One question per message. Maximum 2 sentences. Never explain. Never list options. Examples: advertisement=What product? love story=Who are the two people? vague=Tell me more. When you understand enough output EXACTLY: DREAM_CAPTURED TONE: Listen twice as much as you speak.`,
+For ADVERTISEMENTS: ask product, target audience, key message. After 3 answers output DREAM_CAPTURED immediately.
+For MUSIC VIDEO: ask song mood, artist style, key visual. After 3 answers output DREAM_CAPTURED.
+For DOCUMENTARY: ask subject, angle, central truth. After 3 answers output DREAM_CAPTURED.
+For FILM/STORY: ask about emotion, character, transformation. Take 4-6 exchanges.
+
+Output EXACTLY when done: DREAM_CAPTURED
+
+TONE: Listen twice as much as you speak.`,
 
   es: KNOWLEDGE_CORE + `
 
@@ -753,109 +763,21 @@ function paywallContinue(){
   window.location.href = 'register.html?plan=' + selectedPaywallPlan;
 }
 
-let projectType = null;
-
 async function startSession(){
   setPhase(1);
+  const trigger={
+    en:"Hello, I want to create a 60-second film with 6 scenes, each 10 seconds",
+    es:"Hola, quiero crear una película de 60 segundos con 6 escenas, cada una de 10 segundos",
+    ar:"مرحباً، أريد إنشاء فيلم مدته 60 ثانية من 6 مشاهد، كل مشهد 10 ثوانٍ"
+  };
+  const welcome={
+    en:"Welcome. I am your screenplay writer at MercaDream.\n\nI will work with you to transform your idea into a professional cinematic screenplay — scene by scene.\n\nOnce you approve it, we hand it to our director to bring it to life.\n\nSo — what idea is on your mind?",
+    es:"Bienvenido. Soy el guionista de MercaDream.\n\nTrabajaré contigo para transformar tu idea en un guión cinematográfico profesional.\n\nCuando lo apruebes, lo enviamos al director.\n\n¿Qué idea tienes en mente?",
+    ar:"مرحباً. أنا كاتب السيناريو في MercaDream.\n\nسأتعاون معك لتحويل فكرتك إلى سيناريو سينمائي احترافي.\n\nبعد موافقتك نسلّمه للمخرج لتجسيده.\n\nأخبرني — ما الفكرة التي تدور في ذهنك؟"
+  };
+  addMsg('bot', welcome[lang], true);
+  history.push({role:'assistant', content:welcome[lang]});
   log('Dream Extractor™ session started (6-scene film mode)','ok');
-  showProjectTypeSelector();
-}
-
-function showProjectTypeSelector(){
-  const msgs = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg bot';
-  wrap.id = 'typeSelector';
-
-  const welcome = {
-    en: 'Welcome. What type of project are you creating?',
-    es: 'Bienvenido. ¿Qué tipo de proyecto estás creando?',
-    ar: 'مرحباً. ما نوع مشروعك؟'
-  };
-
-  const types = {
-    en: [
-      { id:'film', icon:'🎬', label:'Film / Personal Story' },
-      { id:'ad', icon:'📢', label:'Advertisement / Commercial' },
-      { id:'music', icon:'🎵', label:'Music Video' },
-      { id:'doc', icon:'📹', label:'Documentary' }
-    ],
-    es: [
-      { id:'film', icon:'🎬', label:'Película / Historia personal' },
-      { id:'ad', icon:'📢', label:'Anuncio / Comercial' },
-      { id:'music', icon:'🎵', label:'Videoclip musical' },
-      { id:'doc', icon:'📹', label:'Documental' }
-    ],
-    ar: [
-      { id:'film', icon:'🎬', label:'فيلم / قصة شخصية' },
-      { id:'ad', icon:'📢', label:'إعلان / محتوى تجاري' },
-      { id:'music', icon:'🎵', label:'كليب موسيقي' },
-      { id:'doc', icon:'📹', label:'وثائقي' }
-    ]
-  };
-
-  const av = document.createElement('div');
-  av.className = 'avatar bot-av';
-  av.textContent = 'AI';
-
-  const bbl = document.createElement('div');
-  bbl.className = 'bot-bubble';
-  bbl.style.maxWidth = '85%';
-
-  let html = `<div style="margin-bottom:12px;font-size:13px">${welcome[lang]}</div>`;
-  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">`;
-  types[lang].forEach(type => {
-    html += `<button onclick="selectProjectType('${type.id}')" style="
-      padding:10px 14px;background:var(--s3);border:1px solid var(--border);
-      color:var(--text-bright);font-family:var(--mono);font-size:10px;
-      letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:left;
-      display:flex;align-items:center;gap:8px;
-    " onmouseover="this.style.borderColor='var(--border-b)';this.style.color='var(--acid)'"
-       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-bright)'">
-      <span style="font-size:16px">${type.icon}</span>
-      <span>${type.label}</span>
-    </button>`;
-  });
-  html += `</div>`;
-
-  bbl.innerHTML = html;
-  wrap.appendChild(av);
-  wrap.appendChild(bbl);
-  msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function selectProjectType(type){
-  projectType = type;
-
-  // Remove selector
-  const sel = document.getElementById('typeSelector');
-  if(sel) sel.remove();
-
-  // Show selected + first question
-  const typeLabels = {
-    film: {en:'Film / Personal Story', es:'Película', ar:'فيلم / قصة شخصية'},
-    ad:   {en:'Advertisement', es:'Anuncio', ar:'إعلان'},
-    music:{en:'Music Video', es:'Videoclip', ar:'كليب موسيقي'},
-    doc:  {en:'Documentary', es:'Documental', ar:'وثائقي'}
-  };
-
-  const firstQ = {
-    film:  {en:'What is your story about?', es:'¿De qué trata tu historia?', ar:'عمَّ تدور قصتك؟'},
-    ad:    {en:'What product or service?', es:'¿Qué producto o servicio?', ar:'ما المنتج أو الخدمة؟'},
-    music: {en:'What is the song about?', es:'¿De qué trata la canción?', ar:'عمَّ تتحدث الأغنية؟'},
-    doc:   {en:'What subject are you documenting?', es:'¿Qué tema documentas?', ar:'ما الموضوع الذي توثقه؟'}
-  };
-
-  const label = typeLabels[type][lang];
-  const q = firstQ[type][lang];
-
-  addMsg('user', label, false);
-  addMsg('bot', q, true);
-  history.push({role:'assistant', content: q});
-
-  // Set context in system prompt based on type
-  localStorage.setItem('md_project_type', type);
 }
 
 async function sendMessage(){
@@ -878,7 +800,7 @@ async function sendMessage(){
   log(`>> ${text.substring(0,40)}...`);
   try{
     if(phase==='discovery'){
-      const reply=await callAPI(buildCrewSystem(SYS_DISCOVER[lang]),history,1200,'discovery');
+      const reply=await callAPI(getSystem(),history,1200,'discovery');
       hideTyping();
       if(reply.includes('DREAM_CAPTURED')){
         log(t('log_build'),'inf');
@@ -1001,31 +923,36 @@ function setLang(l){
 function buildCrewSystem(baseSystem){
   const crewRoles = localStorage.getItem('md_crew_roles') || '';
   const crewNames = localStorage.getItem('md_crew_names') || '';
-  const pType = projectType || localStorage.getItem('md_project_type') || 'film';
+  if(!crewRoles) return baseSystem;
+  return `Active production crew: ${crewNames}\n\nCrew roles:\n${crewRoles}\n\n${baseSystem}`;
+}
 
-  const typeContext = {
-    film:  'PROJECT TYPE: Personal film / narrative story. Ask about emotions, characters, transformation.',
-    ad:    'PROJECT TYPE: Advertisement / commercial. Ask only: product, target audience, key message. Keep it practical and brief. Max 3 questions then DREAM_CAPTURED.',
-    music: 'PROJECT TYPE: Music video. Ask about the song mood, artist style, key visual concept.',
-    doc:   'PROJECT TYPE: Documentary. Ask about the subject, the angle, what truth to reveal.'
-  };
-
-  let system = `${typeContext[pType]}
-
-${baseSystem}`;
-  if(crewRoles) system = `Active production crew: ${crewNames}
-
-Crew roles:
-${crewRoles}
-
-${system}`;
-  return system;
+function getSystem(){
+  const simpleAd = 'You are a commercial scriptwriter at MercaDream. Ask ONLY 3 questions one at a time: 1) what is the product or service, 2) who is the target audience, 3) what is the key message. After all 3 answers output DREAM_CAPTURED immediately. Keep every response under 2 sentences. Never ask philosophical or emotional questions.';
+  const simpleMu = 'You are a music video scriptwriter at MercaDream. Ask ONLY 3 questions one at a time: 1) song mood and genre, 2) artist visual style, 3) key image or concept. After 3 answers output DREAM_CAPTURED. Be brief.';
+  const simpleDo = 'You are a documentary scriptwriter at MercaDream. Ask ONLY 3 questions one at a time: 1) the subject, 2) the angle or perspective, 3) the central truth to reveal. After 3 answers output DREAM_CAPTURED. Be brief.';
+  const pt = projectType || localStorage.getItem('md_project_type') || 'film';
+  if(pt === 'ad') return simpleAd;
+  if(pt === 'music') return simpleMu;
+  if(pt === 'doc') return simpleDo;
+  return buildCrewSystem(SYS_DISCOVER[lang] || SYS_DISCOVER.en);
 }
 
 function showCrewBadge(){
   const names = localStorage.getItem('md_crew_names') || '';
   if(!names) return;
   addMsg('bot', `🎬 **${names}** — ready. Tell me your story.`, true);
+}
+
+function resetSession(){
+  phase='discovery'; history=[]; brief=null; actionTriggered=false; projectType=null;
+  document.getElementById('messages').innerHTML='';
+  document.getElementById('logTerm').innerHTML='<div class="log-l inf">// MERCADREAM — Session reset</div>';
+  document.getElementById('screenContent').innerHTML='<div class="screen-icon">🎬</div><div class="screen-lbl">AWAITING_BRIEFING</div>';
+  document.getElementById('engStat').textContent='STANDBY'; document.getElementById('engStat').style.color='';
+  ['sceneProgress','goAssembly'].forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});
+  for(let i=1;i<=5;i++){document.getElementById('st'+i).className='stage';document.getElementById('st'+i+'b').style.width='0%';document.getElementById('st'+i+'t').textContent='—';}
+  setPhase(1); showProjectTypeSelector(); log('New session','ok');
 }
 
 window.onload=()=>{
@@ -1059,7 +986,6 @@ window.onload=()=>{
   </div>
 </div></body>
 </html>
-
 
 
 
