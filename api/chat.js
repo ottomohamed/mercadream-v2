@@ -85,6 +85,8 @@ async function callGemini(req, res, messages, system, maxTokens) {
     );
 
     if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      console.error("Gemini HTTP error:", response.status, JSON.stringify(errData));
       return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
     }
 
@@ -141,4 +143,5 @@ async function callClaude(req, res, messages, system, maxTokens, model = 'claude
     return res.status(500).json({ error: err.message });
   }
 }
+
 
