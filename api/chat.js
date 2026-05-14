@@ -1,92 +1,73 @@
 // ═══════════════════════════════════════════════════════
 // MERCADREAM — /api/chat.js
-// Dual AI Strategy:
-//   Discovery (conversation) → Gemini Flash 2.0 (FREE)
-//   Scene Generation         → Claude Sonnet (PAID, once)
-// ═══════════════════════════════════════════════════════
-// SETUP — Vercel Environment Variables:
-//   ANTHROPIC_API_KEY = sk-ant-...
-//   GEMINI_API_KEY    = AIza...  (free from aistudio.google.com)
+// 3-Stage AI Pipeline:
+//   Stage 1: Discovery    → Gemini Flash 2.0 (FREE)
+//   Stage 2: Screenplay   → Claude Haiku (classify + write)
+//   Stage 3: Direction    → Claude Sonnet (specialist director)
 // ═══════════════════════════════════════════════════════
 
 export default async function handler(req, res) {
 
-  // ── CORS ──
-  const origin = req.headers.origin || '';
-  const allowed = [
-    'https://www.mercadream.com',
-    'https://mercadream.com',
-    'https://mercadream-v2.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:5500',
-    'http://127.0.0.1:5500'
-  ];
-  const corsOrigin = allowed.includes(origin) ? origin : '*';
-  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST.' });
 
-  // ── PARSE REQUEST ──
   const {
     messages,
     system = '',
     max_tokens = 800,
-    mode = 'auto'   // 'discovery' | 'generate' | 'auto'
+    mode = 'auto'
   } = req.body || {};
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ error: 'messages array required.' });
   }
 
-  const safeTokens = Math.min(Math.max(parseInt(max_tokens) || 800, 50), 2500);
+  const safeTokens = Math.min(Math.max(parseInt(max_tokens) || 800, 50), 3000);
 
-  // ── ROUTING LOGIC ──
-  // 'generate' mode = scene generation → always use Claude (PhD quality)
-  // 'discovery' mode = conversation → use Gemini (free)
-  // 'auto' = detect from system prompt content
+  // ── ROUTING ──
+  // Stage 3: Scene generation by specialist director → Claude Sonnet
   const isGeneration = mode === 'generate'
     || system.includes('Scene Architect')
-    || system.includes('OUTPUT FORMAT')
     || system.includes('JSON array')
-    || system.includes('SYS_6SCENES')
-    || system.includes('Analysis Engine');
+    || system.includes('OUTPUT FORMAT');
+
+  // Stage 2: Screenplay writing + classification → Claude Haiku
+  const isScreenplay = mode === 'screenplay'
+    || system.includes('SCREENPLAY_WRITER')
+    || system.includes('classify');
 
   if (isGeneration) {
-    return await callClaude(req, res, messages, system, safeTokens);
+    return await callClaude(req, res, messages, system, safeTokens, 'claude-sonnet-4-20250514');
+  } else if (isScreenplay) {
+    return await callClaude(req, res, messages, system, safeTokens, 'claude-haiku-4-5-20251001');
   } else {
     return await callGemini(req, res, messages, system, safeTokens);
   }
 }
 
-
 // ═══════════════════════════════════════════════════════
-// GEMINI FLASH 2.0 — Discovery & Conversation (FREE)
+// STAGE 1 — GEMINI FLASH 2.0 (Discovery / FREE)
 // ═══════════════════════════════════════════════════════
 async function callGemini(req, res, messages, system, maxTokens) {
-
   const apiKey = process.env.GEMINI_API_KEY;
 
-  // Fallback to Claude if no Gemini key
   if (!apiKey) {
-    console.log('No GEMINI_API_KEY — falling back to Claude');
-    return await callClaude(req, res, messages, system, maxTokens);
+    return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
   }
 
   try {
-    // Convert messages to Gemini format
     const geminiMessages = messages.map(m => ({
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
 
-    // Add system prompt as first user message if present
     const contents = system
       ? [
           { role: 'user', parts: [{ text: system }] },
-          { role: 'model', parts: [{ text: 'Understood. I am ready.' }] },
+          { role: 'model', parts: [{ text: 'Understood. Ready.' }] },
           ...geminiMessages
         ]
       : geminiMessages;
@@ -98,56 +79,37 @@ async function callGemini(req, res, messages, system, maxTokens) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents,
-          generationConfig: {
-            maxOutputTokens: maxTokens,
-            temperature: 0.85,
-            topP: 0.95
-          }
+          generationConfig: { maxOutputTokens: maxTokens, temperature: 0.85, topP: 0.95 }
         })
       }
     );
 
     if (!response.ok) {
-      const e = await response.json().catch(() => ({}));
-      console.error('Gemini error:', response.status, e);
-      // Fallback to Claude on Gemini failure
-      console.log('Gemini failed — falling back to Claude');
-      return await callClaude(req, res, messages, system, maxTokens);
+      return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
     }
 
     const data = await response.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     if (!text) {
-      console.log('Gemini empty response — falling back to Claude');
-      return await callClaude(req, res, messages, system, maxTokens);
+      return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
     }
 
-    return res.status(200).json({
-      text,
-      model: 'gemini-2.0-flash',
-      usage: null
-    });
+    return res.status(200).json({ text, model: 'gemini-2.0-flash', usage: null });
 
   } catch (err) {
-    console.error('Gemini error:', err.message);
-    // Always fallback to Claude
-    return await callClaude(req, res, messages, system, maxTokens);
+    return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
   }
 }
 
-
 // ═══════════════════════════════════════════════════════
-// CLAUDE SONNET — Scene Generation (PhD Quality)
+// STAGE 2 & 3 — CLAUDE (Haiku or Sonnet)
 // ═══════════════════════════════════════════════════════
-async function callClaude(req, res, messages, system, maxTokens) {
-
+async function callClaude(req, res, messages, system, maxTokens, model = 'claude-sonnet-4-20250514') {
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey || !apiKey.startsWith('sk-')) {
-    return res.status(500).json({
-      error: 'ANTHROPIC_API_KEY not configured in Vercel environment variables.'
-    });
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured.' });
   }
 
   try {
@@ -158,36 +120,24 @@ async function callClaude(req, res, messages, system, maxTokens) {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01'
       },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: maxTokens,
-        system,
-        messages
-      })
+      body: JSON.stringify({ model, max_tokens: maxTokens, system, messages })
     });
 
     if (!response.ok) {
       const e = await response.json().catch(() => ({}));
-      const msg = e?.error?.message || `Anthropic HTTP ${response.status}`;
-      console.error('Claude error:', response.status, msg);
+      const msg = e?.error?.message || `HTTP ${response.status}`;
       if (response.status === 401) return res.status(500).json({ error: 'Invalid API key.' });
-      if (response.status === 429) return res.status(429).json({ error: 'Rate limit — retry in a moment.' });
+      if (response.status === 429) return res.status(429).json({ error: 'Rate limit — retry.' });
       return res.status(response.status).json({ error: msg });
     }
 
     const data = await response.json();
     const text = data?.content?.[0]?.text || '';
+    if (!text) return res.status(500).json({ error: 'Empty response.' });
 
-    if (!text) return res.status(500).json({ error: 'Empty response from Claude.' });
-
-    return res.status(200).json({
-      text,
-      model: 'claude-sonnet-4',
-      usage: data.usage || null
-    });
+    return res.status(200).json({ text, model, usage: data.usage || null });
 
   } catch (err) {
-    console.error('Claude error:', err.message);
-    return res.status(500).json({ error: 'Internal server error.', details: err.message });
+    return res.status(500).json({ error: err.message });
   }
 }
