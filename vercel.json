@@ -1,1 +1,87 @@
-{"version":2,"builds":[{"src":"api/chat.js","use":"@vercel/node"},{"src":"api/video.js","use":"@vercel/node"},{"src":"api/upscale.js","use":"@vercel/node"},{"src":"api/credits.js","use":"@vercel/node"},{"src":"api/director.js","use":"@vercel/node"},{"src":"*.html","use":"@vercel/static"},{"src":"public/**","use":"@vercel/static"},{"src":"*.mp4","use":"@vercel/static"}],"routes":[{"src":"/api/chat","dest":"/api/chat.js"},{"src":"/api/video","dest":"/api/video.js"},{"src":"/api/upscale","dest":"/api/upscale.js"},{"src":"/api/credits","dest":"/api/credits.js"},{"src":"/api/director","dest":"/api/director.js"},{"src":"/hero1.mp4","dest":"/public/hero1.mp4"},{"src":"/hero2.mp4","dest":"/public/hero2.mp4"},{"src":"/hero3.mp4","dest":"/public/hero3.mp4"},{"src":"/","dest":"/index.html"},{"src":"/(.*).html","dest":"/$1.html"},{"src":"/(.*)","dest":"/$1"}]}
+{
+    "version":  2,
+    "builds":  [
+                   {
+                       "src":  "api/chat.js",
+                       "use":  "@vercel/node"
+                   },
+                   {
+                       "src":  "api/video.js",
+                       "use":  "@vercel/node"
+                   },
+                   {
+                       "src":  "api/upscale.js",
+                       "use":  "@vercel/node"
+                   },
+                   {
+                       "src":  "api/credits.js",
+                       "use":  "@vercel/node"
+                   },
+                   {
+                       "src":  "api/director.js",
+                       "use":  "@vercel/node"
+                   },
+                   {
+                       "src":  "*.html",
+                       "use":  "@vercel/static"
+                   },
+                   {
+                       "src":  "public/**",
+                       "use":  "@vercel/static"
+                   },
+                   {
+                       "src":  "*.mp4",
+                       "use":  "@vercel/static"
+                   },
+                   {
+                       "src":  "media/**",
+                       "use":  "@vercel/static"
+                   }
+               ],
+    "routes":  [
+                   {
+                       "src":  "/api/chat",
+                       "dest":  "/api/chat.js"
+                   },
+                   {
+                       "src":  "/api/video",
+                       "dest":  "/api/video.js"
+                   },
+                   {
+                       "src":  "/api/upscale",
+                       "dest":  "/api/upscale.js"
+                   },
+                   {
+                       "src":  "/api/credits",
+                       "dest":  "/api/credits.js"
+                   },
+                   {
+                       "src":  "/api/director",
+                       "dest":  "/api/director.js"
+                   },
+                   {
+                       "src":  "/hero1.mp4",
+                       "dest":  "/public/hero1.mp4"
+                   },
+                   {
+                       "src":  "/hero2.mp4",
+                       "dest":  "/public/hero2.mp4"
+                   },
+                   {
+                       "src":  "/hero3.mp4",
+                       "dest":  "/public/hero3.mp4"
+                   },
+                   {
+                       "src":  "/",
+                       "dest":  "/index.html"
+                   },
+                   {
+                       "src":  "/(.*).html",
+                       "dest":  "/$1.html"
+                   },
+                   {
+                       "src":  "/(.*)",
+                       "dest":  "/$1"
+                   }
+               ]
+}
