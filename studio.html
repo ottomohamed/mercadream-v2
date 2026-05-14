@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -673,8 +673,7 @@ function addMessage(role, html) {
         <span class="font-technical-sm text-technical-sm text-on-surface-variant">${time}</span>
       </div>
       <div class="bg-surface-container border-l-4 border-surface-tint p-6">
-        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/
-/g,'<br>').replace(/\*\*([^\*]+)\*\*/g,'<strong>$1</strong>')}</p>
+        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/\\n/g,'<br>').replace(/\*\*([^\*]+)\*\*/g,'<strong>$1</strong>')}</p>
       </div>`;
   } else {
     wrap.innerHTML = `
@@ -683,8 +682,7 @@ function addMessage(role, html) {
         <span class="font-label-caps text-label-caps text-secondary uppercase">You</span>
       </div>
       <div class="bg-[#a8d700]/10 border border-surface-tint/30 p-6 backdrop-blur-sm">
-        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/
-/g,'<br>')}</p>
+        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/\\n/g,'<br>')}</p>
       </div>`;
   }
   // Remove typing indicator if present
