@@ -121,7 +121,12 @@
 <!-- 100vh Hero Section -->
 <section class="relative h-screen w-full overflow-hidden flex items-center justify-center bg-black">
 <div class="scanline"></div>
-<img alt="Hero Background" class="absolute inset-0 w-full h-full object-cover opacity-60 scale-105 hover:scale-100 transition-transform duration-[20s]" src="https://lh3.googleusercontent.com/aida/ADBb0uiEUQK8vzo_1w0EOvN3oqlTLSAfpe6qMJYwVoIbtwBb0N6LcLLA3pn39pDgYVkF2YR5y0VMonSohnkWv2EucWS_9o6qSA1YC9LJDhw-lKeEdcB4sm-su6qN4AoXP8MCLrOeJLnll_Zx_8SFTa5cGWtpOcVJsSI23PgK27Rpw5IvH9SBfbgmOf6jsVNiNUgkyV9xXd8kG0FtSEQ8pGWZGe8AZUf3AcqWJpZuJPiPhxNCv2UQwsGciLwxik"/>
+<video id="hero-video" autoplay muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-70" style="transition:opacity 0.8s ease"><source src="/media/hero1.mp4" type="video/mp4"/></video>
+<div class="absolute bottom-6 left-1/2 z-10 flex gap-3" style="transform:translateX(-50%)">
+  <div class="video-dot" data-i="0" style="width:32px;height:2px;background:#c8ff00;transition:all .3s"></div>
+  <div class="video-dot" data-i="1" style="width:8px;height:2px;background:rgba(255,255,255,0.2);transition:all .3s"></div>
+  <div class="video-dot" data-i="2" style="width:8px;height:2px;background:rgba(255,255,255,0.2);transition:all .3s"></div>
+</div>
 <div class="absolute inset-0 hero-vignette"></div>
 <div class="absolute inset-0 p-10 flex flex-col justify-between pointer-events-none font-technical text-[10px] text-white/40 uppercase tracking-[0.2em]">
 <div class="flex justify-between mt-20">
@@ -582,4 +587,15 @@
             }
         });
     </script>
-</body></html>
+<script>
+const VIDS=["/media/hero1.mp4","/media/hero2.mp4","/media/hero3.mp4"];
+let cur=0;
+const vid=document.getElementById("hero-video");
+const dots=document.querySelectorAll(".video-dot");
+function updateDots(i){dots.forEach((d,j)=>{d.style.width=j===i?"32px":"8px";d.style.background=j===i?"#c8ff00":"rgba(255,255,255,0.2)";});}
+function next(){vid.style.opacity="0";setTimeout(()=>{cur=(cur+1)%VIDS.length;vid.src=VIDS[cur];vid.load();vid.play();vid.style.opacity="0.7";updateDots(cur);},800);}
+vid.addEventListener("ended",next);
+vid.addEventListener("error",()=>setTimeout(next,3000));
+updateDots(0);vid.play();
+</script></body></html>
+
