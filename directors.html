@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark" dir="ltr" lang="en"><head>
 <meta charset="utf-8"/>
@@ -134,7 +134,7 @@
 <video id="hero-video" autoplay muted playsinline
   class="absolute inset-0 w-full h-full object-cover opacity-70"
   style="transition: opacity 0.8s ease">
-  <source src="/public/hero1.mp4" type="video/mp4"/>
+  <source src="/hero1.mp4" type="video/mp4"/>
 </video>
 <!-- Progress dots -->
 <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10">
@@ -659,7 +659,7 @@
 // ═══════════════════════════════════════════════════════
 // HERO VIDEO CAROUSEL
 // ═══════════════════════════════════════════════════════
-const VIDEOS = ['/public/hero1.mp4', '/public/hero2.mp4', '/public/hero3.mp4'];
+const VIDEOS = ['/hero1.mp4', '/hero2.mp4', '/hero3.mp4'];
 let currentVideo = 0;
 const videoEl = document.getElementById('hero-video');
 const dots = document.querySelectorAll('.video-dot');
