@@ -1,977 +1,1073 @@
-﻿<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><polygon points=%228,1 15,13 1,13%22 fill=%22%23c8ff00%22/></svg>"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Neural Studio (6-Scene Film)</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | Production Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;--cyan:#00e5ff;
-  --surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--s5:#242424;
-  --border:rgba(200,255,0,0.1);--border-b:rgba(200,255,0,0.38);
-  --text:#b8b8b8;--text-dim:#3e3e3e;--text-bright:#f0f0f0;
-  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{background:var(--surface);color:var(--text);font-family:var(--body)}
-body.lang-ar{direction:rtl;font-family:'Cairo',var(--body)}
-body.lang-ar .msg.bot{flex-direction:row-reverse}
-body.lang-ar .msg.user{flex-direction:row}
-body.lang-ar .bot-bubble{border-right:none;border-left:2px solid var(--acid)}
-body.lang-ar .user-bubble{text-align:left}
-body.lang-ar .summary-card{border-right:none;border-left:3px solid var(--acid)}
-body.lang-ar .result-box{border-right:none;border-left:3px solid var(--acid)}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.015) 3px,rgba(0,0,0,0.015) 4px);pointer-events:none;z-index:9999}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-.app{height:100vh;display:flex;flex-direction:column}
-.hdr{
-  height:56px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;background:rgba(6,6,6,0.95);border-bottom:1px solid var(--border);
-  flex-shrink:0;z-index:50;position:relative
-}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-mark{width:28px;height:28px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.05)}
-.logo-mark svg{width:14px;height:14px}
-.logo-name{font-family:var(--display);font-size:11px;font-weight:700;color:var(--acid);letter-spacing:3px}
-.hdr-mid{display:flex;align-items:center;gap:8px}
-.phase-pill{
-  display:flex;align-items:center;gap:6px;
-  font-family:var(--mono);font-size:8px;letter-spacing:1px;
-  padding:4px 10px;border:1px solid var(--border);color:var(--text-dim);
-  transition:all .3s
-}
-.phase-pill.on{color:var(--acid);border-color:var(--border-b);background:rgba(200,255,0,0.04)}
-.phase-pill.done{color:var(--acid-dim);border-color:rgba(138,173,0,0.3)}
-.phase-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
-.phase-arrow{color:var(--text-dim);font-size:10px;margin:0 2px}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
-.lb{font-family:var(--mono);font-size:8px;padding:4px 8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.lb.on{background:var(--acid);color:#000;font-weight:700}
-.lb:hover:not(.on){color:var(--acid)}
-.dot-live{width:6px;height:6px;border-radius:50%;background:var(--acid);box-shadow:0 0 8px var(--acid);animation:blink 1.4s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-.hdr-tag{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:2px}
-.btn-exit{font-family:var(--mono);font-size:8px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;text-decoration:none;transition:all .2s}
-.btn-exit:hover{color:var(--acid);border-color:var(--border-b)}
-.workspace{flex:1;display:grid;grid-template-columns:1fr 340px;overflow:hidden;position:relative;z-index:1}
-.chat-zone{display:flex;flex-direction:column;border-inline-end:1px solid var(--border);overflow:hidden}
-.messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
-.messages::-webkit-scrollbar{width:2px}
-.messages::-webkit-scrollbar-thumb{background:var(--border-b);border-radius:1px}
-.msg{display:flex;gap:10px;animation:fadeUp .3s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.msg.bot{flex-direction:row}
-.msg.user{flex-direction:row-reverse}
-.avatar{
-  width:30px;height:30px;border-radius:2px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--display);font-size:7px;font-weight:700;letter-spacing:1px
-}
-.bot-av{background:rgba(200,255,0,0.06);border:1px solid var(--border-b);color:var(--acid)}
-.user-av{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text-dim)}
-.bot-bubble{
-  max-width:78%;padding:12px 16px;font-size:13px;line-height:1.7;
-  background:var(--s3);border:1px solid var(--border);
-  border-right:2px solid var(--acid);color:var(--text-bright)
-}
-.user-bubble{
-  max-width:78%;padding:12px 16px;font-size:13px;line-height:1.7;
-  background:rgba(200,255,0,0.04);border:1px solid rgba(200,255,0,0.15);
-  color:var(--text-bright)
-}
-.typing{display:flex;gap:5px;align-items:center;padding:4px 0}
-.td{width:5px;height:5px;border-radius:50%;background:var(--acid);animation:tb 1.2s infinite}
-.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
-@keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-6px);opacity:1}}
-.summary-card{
-  background:var(--s2);border:1px solid var(--border-b);
-  border-right:3px solid var(--acid);padding:16px;
-  width:100%;animation:fadeUp .4s ease
-}
-.sc-title{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:12px}
-.sc-row{display:grid;grid-template-columns:110px 1fr;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:12px}
-.sc-row:last-of-type{border-bottom:none}
-.sc-label{color:var(--text-dim);font-family:var(--mono);font-size:10px}
-.sc-val{color:var(--text-bright)}
-.confirm-row{display:flex;gap:8px;margin-top:16px}
-.btn-yes{flex:1;padding:10px;font-family:var(--mono);font-size:9px;letter-spacing:2px;cursor:pointer;border:none;background:var(--acid);color:#000;font-weight:700;transition:all .2s}
-.btn-yes:hover{background:#d4ff1a;box-shadow:0 0 20px rgba(200,255,0,0.3)}
-.btn-yes:disabled{opacity:.5;cursor:not-allowed}
-.btn-no{padding:10px 16px;font-family:var(--mono);font-size:9px;letter-spacing:1px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-dim);transition:all .2s}
-.btn-no:hover{border-color:var(--red);color:var(--red)}
-.btn-no:disabled{opacity:.5;cursor:not-allowed}
-.input-zone{padding:16px 24px;background:var(--s2);border-top:1px solid var(--border);flex-shrink:0}
-.input-row{display:flex;gap:8px;align-items:flex-end}
-.input-box{
-  flex:1;background:var(--s3);border:1px solid var(--border);color:var(--text-bright);
-  font-family:var(--body);font-size:13px;padding:10px 14px;resize:none;outline:none;
-  max-height:100px;transition:border-color .2s;line-height:1.5
-}
-.input-box:focus{border-color:var(--border-b)}
-.input-box::placeholder{color:var(--text-dim)}
-.btn-send{width:40px;height:40px;background:var(--acid);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#000;font-size:14px;transition:all .2s;flex-shrink:0}
-.btn-send:hover{background:#d4ff1a;box-shadow:0 0 15px rgba(200,255,0,0.3)}
-.btn-send:disabled{background:var(--s5);color:var(--text-dim);cursor:not-allowed}
-.btn-action{
-  width:auto;
-  padding:0 16px;
-  background:var(--gold);
-  border:none;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#000;
-  font-family:var(--mono);
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:2px;
-  transition:all .2s;
-  flex-shrink:0;
-  height:40px;
-  gap:6px;
-}
-.btn-action:hover{background:#ffd060;box-shadow:0 0 15px rgba(255,186,63,0.3)}
-.prod-panel{display:flex;flex-direction:column;background:var(--s2);overflow:hidden}
-.panel-hdr{padding:12px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.engine-status{font-size:8px;letter-spacing:1px;color:var(--text-dim);font-family:var(--mono)}
-.cockpit-screen{aspect-ratio:16/9;background:#000;border-bottom:1px solid var(--border);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.corner{position:absolute;width:18px;height:18px;border-color:rgba(200,255,0,0.35);border-style:solid}
-.tl{top:8px;left:8px;border-width:2px 0 0 2px}
-.tr{top:8px;right:8px;border-width:2px 2px 0 0}
-.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
-.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
-.screen-inner{text-align:center}
-.screen-icon{font-size:30px;opacity:.2;margin-bottom:8px}
-.screen-lbl{font-family:var(--mono);font-size:8px;color:var(--acid);letter-spacing:2px;opacity:.4}
-.pipeline{flex:1;padding:14px;overflow-y:auto}
-.pipeline-title{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:2px;margin-bottom:10px}
-.stage{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:3px;background:var(--s3);border:1px solid transparent;transition:all .4s;position:relative;overflow:hidden}
-.stage.run{border-color:rgba(200,255,0,0.2);background:rgba(200,255,0,0.025)}
-.stage.done{opacity:.6}
-.stage-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--acid);width:0;box-shadow:0 0 6px var(--acid)}
-.stage-led{width:7px;height:7px;border-radius:50%;background:var(--s5);border:1px solid var(--border);flex-shrink:0;transition:all .3s}
-.stage.run .stage-led{background:var(--acid);box-shadow:0 0 10px var(--acid);animation:blink .7s infinite}
-.stage.done .stage-led{background:var(--acid-dim);box-shadow:0 0 4px var(--acid-dim);animation:none}
-.stage-info{flex:1}
-.stage-name{font-family:var(--mono);font-size:9px;color:var(--text);letter-spacing:.5px}
-.stage-desc{font-size:9px;color:var(--text-dim);margin-top:1px}
-.stage-time{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
-.log-term{padding:10px 14px;background:#030303;border-top:1px solid var(--border);height:88px;overflow-y:auto;flex-shrink:0}
-.log-term::-webkit-scrollbar{width:2px}
-.log-l{font-family:var(--mono);font-size:7.5px;color:var(--text-dim);line-height:1.9;animation:fadeUp .2s}
-.log-l.ok{color:var(--acid-dim)}.log-l.err{color:var(--red)}.log-l.inf{color:var(--cyan)}
-.panel-result{flex:1;padding:14px;overflow-y:auto}
-@media(max-width:768px){.workspace{grid-template-columns:1fr}.prod-panel{display:none}}
-
-/* 6-Scene Progress */
-.scene-progress{
-  background:var(--s2);
-  border:1px solid var(--border-b);
-  padding:12px 16px;
-  margin:10px 14px;
-  border-radius:4px;
-}
-.scene-progress-title{
-  font-family:var(--mono);
-  font-size:8px;
-  letter-spacing:2px;
-  color:var(--acid);
-  margin-bottom:8px;
-}
-.scene-bars{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-.scene-bar{
-  flex:1;
-  height:4px;
-  background:var(--s4);
-  border-radius:2px;
-  overflow:hidden;
-  position:relative;
-}
-.scene-bar-fill{
-  height:100%;
-  width:0%;
-  background:var(--acid);
-  transition:width .3s;
-  box-shadow:0 0 4px var(--acid);
-}
-.scene-bar.completed .scene-bar-fill{
-  width:100%;
-  background:var(--acid-dim);
-}
-.scene-bar-label{
-  font-family:var(--mono);
-  font-size:7px;
-  color:var(--text-dim);
-  text-align:center;
-  margin-top:3px;
-}
-
-
-.pw-close{position:absolute;top:12px;right:14px;background:transparent;border:none;color:#444;cursor:pointer;font-size:18px;transition:color .2s}
-.pw-close:hover{color:#c8ff00}
-
-.pw-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px}
-.pw-overlay.show{display:flex}
-.pw-box{background:#0d0d0d;border:1px solid rgba(200,255,0,.35);max-width:480px;width:100%;position:relative;overflow:hidden;padding:32px}
-.pw-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c8ff00,transparent)}
-.pw-title{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:#f0f0f0;margin-bottom:8px;text-align:center}
-.pw-title span{color:#c8ff00}
-.pw-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#b0b0b0;text-align:center;margin-bottom:24px;letter-spacing:1px;line-height:1.6}
-.pw-cost{background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.2);padding:14px;text-align:center;margin-bottom:20px}
-.pw-cost-val{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:#c8ff00}
-.pw-cost-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#444;letter-spacing:2px;margin-top:3px}
-.pw-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pw-btn{padding:12px;border:none;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .3s}
-.pw-btn.primary{background:#c8ff00;color:#000}
-.pw-btn.primary:hover{background:#d4ff1a}
-.pw-btn.secondary{background:transparent;border:1px solid rgba(200,255,0,.3);color:#b0b0b0}
-.pw-btn.secondary:hover{border-color:rgba(200,255,0,.6);color:#c8ff00}
-.pw-close{position:absolute;top:12px;right:14px;background:transparent;border:none;color:#444;cursor:pointer;font-size:18px}
-.pw-close:hover{color:#c8ff00}</style>
+        body {
+            background-color: #060606;
+            color: #e5e2e1;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-acid {
+            box-shadow: 0px 0px 12px rgba(168, 215, 0, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0d0d0d;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #353534;
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 2px;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #a8d700;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#a8d700",
+                      "on-error": "#690005",
+                      "surface-dim": "#131313",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#1c1b1b",
+                      "surface-variant": "#353534",
+                      "on-primary": "#273500",
+                      "tertiary": "#ffffff",
+                      "tertiary-fixed-dim": "#c9c6c5",
+                      "surface-container-lowest": "#0e0e0e",
+                      "secondary-container": "#c48800",
+                      "inverse-primary": "#4f6600",
+                      "surface-container-high": "#2a2a2a",
+                      "on-primary-container": "#546d00",
+                      "on-tertiary-fixed": "#1c1b1b",
+                      "secondary-fixed": "#ffdeae",
+                      "on-secondary-fixed-variant": "#604100",
+                      "error-container": "#93000a",
+                      "primary-container": "#c0f500",
+                      "on-surface": "#e5e2e1",
+                      "surface-bright": "#393939",
+                      "on-error-container": "#ffdad6",
+                      "on-surface-variant": "#c4caac",
+                      "inverse-on-surface": "#313030",
+                      "primary": "#ffffff",
+                      "surface-container": "#201f1f",
+                      "on-secondary-fixed": "#281900",
+                      "on-secondary-container": "#3e2800",
+                      "surface-container-highest": "#353534",
+                      "inverse-surface": "#e5e2e1",
+                      "on-background": "#e5e2e1",
+                      "on-primary-fixed": "#161f00",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "outline": "#8e9479",
+                      "primary-fixed": "#c0f500",
+                      "on-tertiary-container": "#656464",
+                      "on-tertiary": "#313030",
+                      "tertiary-container": "#e5e2e1",
+                      "secondary-fixed-dim": "#ffba3f",
+                      "surface": "#131313",
+                      "outline-variant": "#434933",
+                      "tertiary-fixed": "#e5e2e1",
+                      "primary-fixed-dim": "#a8d700",
+                      "on-tertiary-fixed-variant": "#474646",
+                      "on-secondary": "#432c00",
+                      "secondary": "#ffba3f",
+                      "background": "#131313"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "40px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Orbitron"],
+                      "label-caps": ["IBM Plex Mono"],
+                      "technical-md": ["IBM Plex Mono"],
+                      "technical-sm": ["IBM Plex Mono"],
+                      "headline-lg": ["Orbitron"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "label-caps": ["10px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "technical-md": ["14px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                      "technical-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
 </head>
-<body class="lang-en">
-<div class="app">
-
-  <header class="hdr">
-    <a href="index.html" class="logo">
-      <div class="logo-mark"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
-      <span class="logo-name">MERCADREAM</span>
-    </a>
-    <div class="hdr-mid">
-      <div class="phase-pill on" id="ph1"><div class="phase-dot"></div><span id="ph1l">DISCOVERY</span></div>
-      <span class="phase-arrow">›</span>
-      <div class="phase-pill" id="ph2"><div class="phase-dot"></div><span id="ph2l">CONFIRMATION</span></div>
-      <span class="phase-arrow">›</span>
-      <div class="phase-pill" id="ph3"><div class="phase-dot"></div><span id="ph3l">PRODUCTION</span></div>
-    </div>
-    <div class="hdr-right">
-      <div class="lang-sw">
-        <button class="lb on" onclick="setLang('en')">EN</button>
-        <button class="lb" onclick="setLang('es')">ES</button>
-        <button class="lb" onclick="setLang('ar')">AR</button>
-      </div>
-      <div class="dot-live"></div>
-      <span class="hdr-tag">AI_DIRECTOR</span>
-      <a href="index.html" class="btn-exit" data-i18n="btn_exit">← EXIT</a>
-    </div>
-  </header>
-
-  <div class="workspace">
-    <div class="chat-zone">
-      <div class="messages" id="messages"></div>
-      <div class="input-zone">
-        <div class="input-row">
-          <button class="btn-send" id="sendBtn" onclick="sendMessage()">➤</button>
-          <textarea class="input-box" id="userInput" rows="1"
-            placeholder="Describe your vision... or type 'ACTION' to start production immediately"
-            onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
-          <button class="btn-action" id="actionBtn" onclick="triggerActionFromButton()" title="Start Production Now">⚡ ACTION</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="prod-panel">
-      <div class="panel-hdr">
-        <span>PRODUCTION_ENGINE</span>
-        <span class="engine-status" id="engStat">STANDBY</span>
-      </div>
-      <div class="cockpit-screen">
-        <div class="corner tl"></div><div class="corner tr"></div>
-        <div class="corner bl"></div><div class="corner br"></div>
-        <div class="screen-inner" id="screenContent">
-          <div class="screen-icon">🎬</div>
-          <div class="screen-lbl" id="screenLbl">AWAITING_BRIEFING</div>
-        </div>
-      </div>
-      <div class="pipeline" id="pipelineContainer">
-        <div class="pipeline-title">DREAM_EXTRACTOR™ PIPELINE</div>
-        <div class="stage" id="st1"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">01 / EMOTION_SCAN</div><div class="stage-desc" id="st1d">Scanning emotional frequencies</div></div><div class="stage-time" id="st1t">—</div><div class="stage-bar" id="st1b"></div></div>
-        <div class="stage" id="st2"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">02 / DREAM_DECODE</div><div class="stage-desc" id="st2d">Decoding subconscious layers</div></div><div class="stage-time" id="st2t">—</div><div class="stage-bar" id="st2b"></div></div>
-        <div class="stage" id="st3"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">03 / VISUAL_SYNTHESIS</div><div class="stage-desc" id="st3d">Synthesizing visual narrative</div></div><div class="stage-time" id="st3t">—</div><div class="stage-bar" id="st3b"></div></div>
-        <div class="stage" id="st4"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">04 / SCENE_BREAKDOWN</div><div class="stage-desc" id="st4d">Dividing into 6 scenes (10s each)</div></div><div class="stage-time" id="st4t">—</div><div class="stage-bar" id="st4b"></div></div>
-        <div class="stage" id="st5"><div class="stage-led"></div><div class="stage-info"><div class="stage-name">05 / EXCEED_PROTOCOL</div><div class="stage-desc" id="st5d">Exceeding original vision</div></div><div class="stage-time" id="st5t">—</div><div class="stage-bar" id="st5b"></div></div>
-      </div>
-      <div class="log-term" id="logTerm">
-        <div class="log-l inf">// MERCADREAM DREAM_EXTRACTOR™ v6.0 (6-Scene Film Mode)</div>
-        <div class="log-l">// Type ACTION or press the ⚡ button to start production immediately</div>
-      </div>
-    </div>
-  </div>
+<body class="flex flex-col font-arabic-body">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-b border-outline-variant">
+<div class="flex items-center gap-8">
+<span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span><span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v1.0.4</span>
+<nav class="hidden md:flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer">
+<span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span>
+<span class="font-technical-md text-technical-md uppercase">Discovery</span>
 </div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md hover:bg-surface-variant hover:text-surface-tint transition-colors cursor-pointer active:opacity-80">
+<span class="font-technical-md text-technical-md uppercase">Screenplay</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md hover:bg-surface-variant hover:text-surface-tint transition-colors cursor-pointer active:opacity-80">
+<span class="font-technical-md text-technical-md uppercase">Production</span>
+</div>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-outline-variant">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
+<span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits-value">2,400</span> ●</span>
+</div>
+<div class="flex items-center gap-2 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-surface-tint cursor-pointer">EN</span>
+<span class="opacity-30">|</span>
+<span class="hover:text-surface-tint cursor-pointer">ES</span>
+<span class="opacity-30">|</span>
+<span class="hover:text-surface-tint cursor-pointer">AR</span>
+</div>
+<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group">
+<span class="material-symbols-outlined text-sm group-hover:text-black">refresh</span>
+<span class="font-technical-md text-technical-md uppercase">New Session</span>
+</button>
+<span class="material-symbols-outlined text-surface-tint cursor-pointer">account_balance_wallet</span>
+</div>
+</header>
+<!-- Main Layout Container -->
+<main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden rtl:flex-row-reverse">
+<!-- Left Column: SideNavBar (Crew Panel) -->
+<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container border-r border-outline-variant flex flex-col z-40 rtl:left-auto rtl:right-0 rtl:border-r-0 rtl:border-l">
+<div class="p-6 border-b border-outline-variant">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-display-lg text-headline-lg-mobile text-on-surface uppercase">Crew Panel</h2>
+<span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">Active Session</span>
+</div>
+<div class="space-y-4 crew-cards">
+<!-- Crew Card 1 -->
+<div class="bg-surface-variant border-l-2 border-surface-tint p-4 flex items-center gap-3 cursor-pointer">
+<div class="relative">
+<img alt="Gemini Avatar" class="w-10 h-10 bg-surface-container-highest border border-surface-tint" data-alt="A stylized, glowing cyberpunk robotic avatar with neon green circuits and sleek black chrome plating, presented as a circular profile icon against a dark, tech-oriented backdrop with subtle geometric patterns." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]"></div>
+</div>
+<div>
+<p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Screenplay Writer</p>
+<div class="mt-3 space-y-2"> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-surface-tint/70"><span>CREATIVITY</span><span>98%</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-surface-tint w-[98%]"></div></div> </div> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-surface-tint/70"><span>SYNC SPEED</span><span>1.2ms</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-surface-tint w-[85%]"></div></div> </div> </div></div>
+</div>
+<!-- Crew Card 2 -->
+<div class="bg-surface-container-low border border-outline-variant p-4 flex items-center gap-3 cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="relative">
+<img alt="Marco Avatar" class="w-10 h-10 bg-surface-container-highest border border-outline-variant" data-alt="A professional portrait of a male film director with short dark hair and a focused expression, wearing a minimalist black tactical jacket, rendered in a high-contrast cinematic style with cool blue and deep shadow lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK4XnID2-EDt2zouF_9PX9LWdR2HnrzOCjt4N6pSBPIjqDVWMAukvVvLkYMjFJqWtozvT5l8tjcVACYprW2eexWMdspAsVRNN-acM7Rx_HFiGCciBuE9Ta5OzAPC7qtNjLvRSjJ4dg16JA_FYoXlHiqBv9HUJ3DJ3LyTtwniSXTmcqPbAZLjCx5SWbrvJ5r772n1Jv_05RvvF8Pn50AGwXUqUzigdXdj1Ci_2gzmnAZyjHCwK9uGBmKdWgkF5aCRCezBSn_-Taldk"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-neutral-600 rounded-full border-2 border-surface-variant"></div>
+</div>
+<div>
+<p class="font-display-lg text-body-md text-on-surface leading-none">MARCO VISCONTI</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Director</p>
+<div class="mt-3 space-y-2"> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-on-surface-variant/70"><span>CREATIVITY</span><span>--%</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-outline-variant w-0"></div></div> </div> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-on-surface-variant/70"><span>SYNC SPEED</span><span>--ms</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-outline-variant w-0"></div></div> </div> </div></div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-6 bg-surface-container-low border-t border-outline-variant">
+<div class="mb-4">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Production Cost</p>
+<div class="flex justify-between items-end">
+<span class="font-display-lg text-headline-lg text-secondary">$ 1,240.00</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant mb-1">EST. TOTAL</span>
+</div>
+</div>
+<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all active:scale-[0.98]">
+                    + Recharge
+                </button>
+</div>
+</aside>
+<!-- Center Column: Content Canvas (Chat Interface) -->
+<section class="ml-[280px] mr-[340px] flex-1 flex flex-col bg-background relative rtl:ml-\[340px\] rtl:mr-\[280px\]"><div class="absolute top-20 right-8 pointer-events-none z-10 flex flex-col items-end opacity-30"> <div class="font-technical-sm text-[10px] text-surface-tint">LATENCY: 24ms</div> <div class="font-technical-sm text-[10px] text-surface-tint">BUFFER: 100%</div> <div class="font-technical-sm text-[10px] text-surface-tint">RESOLUTION: 4K</div> </div>
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<div>
+<h1 class="font-display-lg text-headline-lg text-on-surface">Phase 1: Discovery</h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">Active Task: Screenplay Concept Generation</p>
+</div>
+<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-4 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-colors">
+<span class="material-symbols-outlined">bolt</span> Action
+                </button>
+</div>
+<!-- Chat Area -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+<!-- AI Bubble -->
+<div class="flex flex-col gap-2 max-w-[80%]">
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-surface-tint uppercase">Mercadream Engine</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">14:02:11</span>
+</div>
+<div class="bg-surface-container border-l-4 border-surface-tint p-6">
+<p class="font-body-md text-body-md leading-relaxed text-on-surface">
+                            Initializing Dream Engine... Environment variables loaded. Creative parameters calibrated for Hard Sci-Fi Noir. 
+                            <br/><br/>
+                            How can I assist with your screenplay today, Director Visconti? I am ready to generate initial character manifests or map out the first act conflict arcs.
+                        </p>
+</div>
+</div>
+<!-- User Bubble -->
+<div class="flex flex-col gap-2 max-w-[80%] ml-auto items-end">
+<div class="flex items-center gap-2">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">14:04:45</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase">Marco Visconti</span>
+</div>
+<div class="bg-[#a8d700]/10 border border-surface-tint/30 p-6 backdrop-blur-sm">
+<p class="font-body-md text-body-md leading-relaxed text-on-surface">
+                            Let's start by establishing the protagonist. I want a disgraced orbital mechanic who stumbles upon a derelict freighter carrying something non-biological.
+                        </p>
+</div>
+</div>
+<!-- AI Typing Indicator -->
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce"></span>
+<span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.2s]"></span>
+<span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.4s]"></span>
+<span class="font-technical-sm text-technical-sm ml-2">System processing creative brief...</span>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-6 bg-surface-container-lowest border-t border-outline-variant">
+<div class="relative group">
+<textarea class="w-full bg-surface-container border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pr-32 resize-none h-20 transition-all" placeholder="Type your creative directive here..."></textarea>
+<div class="absolute right-4 bottom-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-surface-tint">attach_file</span>
+<button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid">
+                            Send
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Production Engine -->
+<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container border-l border-outline-variant flex flex-col z-40 rtl:right-auto rtl:left-0 rtl:border-l-0 rtl:border-r">
+<!-- Cockpit Screen -->
+<div class="p-4">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Cockpit Screen</p>
+<div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center">
+<!-- Screen Overlays -->
+<div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
+<div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
+<div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
+<div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
+<div class="text-center">
+<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">AWAITING_BRIEFING</span>
+<span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
+</div>
+<!-- Scanline effect -->
+<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]"></div>
+<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-end gap-[2px] h-6"> <div class="w-[3px] bg-surface-tint h-[30%] animate-pulse"></div> <div class="w-[3px] bg-surface-tint h-[60%] animate-bounce"></div> <div class="w-[3px] bg-surface-tint h-[40%] animate-pulse"></div> <div class="w-[3px] bg-surface-tint h-[90%] animate-bounce"></div> <div class="w-[3px] bg-surface-tint h-[50%] animate-pulse"></div> <div class="w-[3px] bg-surface-tint h-[75%] animate-bounce"></div> <div class="w-[3px] bg-surface-tint h-[20%] animate-pulse"></div> </div></div>
+</div>
+<!-- Pipeline Stages -->
+<div class="p-4 flex-1">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Pipeline Stages</p>
+<div class="space-y-4">
+<!-- Stage 1 -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-surface-tint">01/SCREENPLAY_WRITE</span>
+<span class="font-label-caps text-[10px] text-surface-tint px-1 bg-surface-tint/10">ACTIVE</span>
+</div>
+<div class="h-1 bg-surface-variant w-full">
+<div class="h-full bg-surface-tint w-[65%] glow-acid"></div>
+</div>
+</div>
+<!-- Stage 2 -->
+<div class="space-y-2 opacity-50">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface">02/SCENE_CLASSIFY</span>
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+</div>
+<div class="h-1 bg-surface-variant w-full"></div>
+</div>
+<!-- Stage 3 -->
+<div class="space-y-2 opacity-50">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface">03/SET_DESIGN_GEN</span>
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+</div>
+<div class="h-1 bg-surface-variant w-full"></div>
+</div>
+<!-- Stage 4 -->
+<div class="space-y-2 opacity-50">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface">04/CHARACTER_VO_CLONE</span>
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+</div>
+<div class="h-1 bg-surface-variant w-full"></div>
+</div>
+</div>
+</div>
+<!-- Live Log Terminal -->
+<div class="h-[200px] bg-black border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col">
+<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1">
+<span class="text-on-surface-variant uppercase">Live Log</span>
+<span class="text-surface-tint uppercase">Buffer: 4096KB</span>
+</div>
+<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1">
+<p class="leading-tight"><span class="opacity-50">[14:02:11]</span> SYSTEM: Initializing render engine core...</p>
+<p class="leading-tight"><span class="opacity-50">[14:02:15]</span> INFO: Connection to crew node 'GEMINI' established.</p>
+<p class="leading-tight"><span class="opacity-50">[14:03:01]</span> WARN: High latency detected on local proxy.</p>
+<p class="leading-tight"><span class="opacity-50">[14:04:45]</span> INPUT: Directive received from UID_VISCONTI.</p>
+<p class="leading-tight"><span class="opacity-50">[14:04:46]</span> PROMPT: Parsing thematic keywords: [orbital, derelict, non-biological].</p>
+<p class="leading-tight text-secondary"><span class="opacity-50">[14:04:47]</span> CACHE: Fetching asset library for 'Sci-Fi Noir'.</p>
+<p class="leading-tight animate-pulse underline">&gt;</p>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer: Action Bar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-t border-outline-variant">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
+<span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits-value">240</span> ●</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Team:</span>
+<div class="flex -space-x-2">
+<img alt="Marco" class="w-6 h-6 rounded-full border border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDc7SGkXIhQRtTiEmspoFVDPaeBC8uXT0EcTvRBYO4AjzK_mySwbWOD7L_uMfStU-lHJ9HbG9l4IEq-nJhyXoAfADmr8SICBocxBze5X4iLRNNL0LQu0Xd8DfyM3wKO-y7EjpPKypqj5c2NvRwtvDdMSp3sf3wcjmAbi3wjBLZh6o2PVa4arqqKc4nnZVqL340y2clDs-VzlUypWJnrJ6rXKrhhjwIb6MXwGYZwC8rclzVJ42pmHv05zmO6p1lZr2ox7i6UOiyqPQ"/>
+<img alt="Elena" class="w-6 h-6 rounded-full border border-black" data-alt="A portrait of a female creative producer with sleek blonde hair and a smart, professional outfit, set against a dark architectural background with subtle orange glowing highlights in a high-contrast cinematic photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx5r_OW0UYKdLtq-5ljXckkpyYflw24oBu_v-NGHcgW-WigHE_qUE7drDt7d9hXU0V_QFWsbDaegUl7NIzxTy4RnUpHXTJAbmMlOBK6bDA0idNhmWTCv-NdebBznigHq-0F_tu6gVx90B5JXNmZc_Zbju-gF2pG-DxBigQvfnBesOxGQuBW1_vyKa9Cfe66qfngUa-QZRI0kVXZrxM9XnbtAs1713STsULluuJcLm3sk7a0eQI0v3r7tSWucGaQEMnAEltjY9i8gQ"/>
+</div>
+<span class="font-technical-sm text-technical-sm text-on-surface">Marco + Elena</span>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<button class="hidden bg-[#c8ff00] h-[44px] px-6 flex items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all" id="assembly-room-btn"> <span class="material-symbols-outlined">factory</span> Send to Assembly Room </button><div class="flex flex-col items-end">
+<span class="font-label-caps text-[9px] text-surface-tint uppercase tracking-[0.2em]">MERCADREAM ENGINE v2.4.0</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">System Status: <span class="text-surface-tint">Active</span></span>
+</div>
+<div class="flex border border-outline-variant h-[44px] rounded overflow-hidden font-technical-sm"> <button class="px-3 bg-surface-tint text-black font-bold uppercase">Auto</button> <button class="px-3 text-on-surface-variant hover:text-surface-tint uppercase transition-colors">Manual</button> </div><button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid">
+<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest">Generate</span>
+<span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</footer>
 
 <script>
-const API = "/api/chat";
+// ═══════════════════════════════════════════════════════
+// MERCADREAM STUDIO v3.0
+// Pipeline: Gemini (discovery) → Haiku (screenplay) → Sonnet (director)
+// ═══════════════════════════════════════════════════════
 
+const API_CHAT     = '/api/chat';
+const API_DIRECTOR = '/api/director';
+const COST_PER_FILM = 10;
+
+// ── TRANSLATIONS ──
 const TX = {
-  en:{
-    ph1:"DISCOVERY",ph2:"CONFIRMATION",ph3:"PRODUCTION",
-    placeholder:"Describe your vision... or type 'ACTION' to start production immediately",
-    btn_exit:"← EXIT",
-    av_bot:"AI",av_user:"YOU",
-    btn_yes:"✓ CONFIRM — GENERATE 6 SCENES",btn_no:"✎ REFINE",
-    sc_title:"// FILM_ANALYSIS_COMPLETE",
-    screen_ready:"6 SCENES READY",
-    prod_start:"🚀 Dream Extractor™ engaged — forging 6 cinematic scenes (10s each)...",
-    edit_msg:"Tell me what to refine. Every detail matters.",
-    done_msg:"✅ **Your 6-scene film is ready!**\n\nEach 10-second scene will be generated and sent to the Assembly Room automatically.\n\n🎬 The Assembly Room will combine all 6 scenes into one 60-second masterpiece.",
-    st1d:"Scanning emotional frequencies",st2d:"Decoding subconscious layers",st3d:"Synthesizing visual narrative",st4d:"Breaking into 6 scenes (10s each)",st5d:"Exceeding original vision",
-    log_build:"Running Dream Extractor™ algorithm...",
-    api_err:"⚠️ Connection lost. Verify /api/chat is deployed on Vercel with ANTHROPIC_API_KEY set.",
-    scene_prefix:"Scene",
-    generating:"Generating scene",
-    completed:"Completed",
-    all_complete:"All 6 scenes generated and sent to Assembly Room!",
-    action_trigger:"🎬 ACTION command received! Starting production immediately...",
-    action_production:"⚡ PRODUCTION STARTED - Generating 6 scenes based on conversation so far"
+  en: {
+    phase1: 'Discovery', phase2: 'Screenplay', phase3: 'Production',
+    crew_panel: 'Crew Panel', active_session: 'Active Session',
+    screenplay_writer: 'Screenplay Writer', director: 'Director',
+    production_cost: 'Production Cost', recharge: '+ Recharge',
+    phase1_title: 'Phase 1: Discovery',
+    phase1_sub: 'Active Task: Screenplay Concept Generation',
+    phase2_title: 'Phase 2: Screenplay',
+    phase2_sub: 'Active Task: Script Analysis & Scene Breakdown',
+    phase3_title: 'Phase 3: Production',
+    phase3_sub: 'Active Task: Director Generating Scenes',
+    placeholder: 'Type your creative directive here...',
+    send: 'Send', action: 'Action',
+    new_session: 'New Session',
+    generate: 'Generate',
+    assembly: 'Send to Assembly Room',
+    auto: 'Auto', manual: 'Manual',
+    credits_label: 'Credits:', team_label: 'Team:',
+    confirm_title: 'Ready to Generate?',
+    confirm_sub: 'YOUR SCREENPLAY IS COMPLETE',
+    confirm_cost: 'CREDITS',
+    confirm_cancel: 'CANCEL',
+    confirm_go: 'GENERATE →',
+    low_credits: 'Insufficient credits',
+    low_credits_sub: 'You need more credits to generate this film.',
+    welcome: 'Welcome. What type of project are you creating?',
+    types: [
+      {id:'film', icon:'🎬', label:'Film / Personal Story'},
+      {id:'ad',   icon:'📢', label:'Advertisement'},
+      {id:'music',icon:'🎵', label:'Music Video'},
+      {id:'doc',  icon:'📹', label:'Documentary'}
+    ],
+    firstQ: {
+      film:  'What is your story about?',
+      ad:    'What product or service?',
+      music: 'What is the song about?',
+      doc:   'What subject are you documenting?'
+    },
+    done: '✅ Your 6-scene film is ready. Go to the Assembly Room to export.',
+    api_err: '⚠️ Connection error. Check /api/chat on Vercel.'
   },
-  es:{
-    ph1:"DESCUBRIMIENTO",ph2:"CONFIRMACIÓN",ph3:"PRODUCCIÓN",
-    placeholder:"Describe tu visión... o escribe 'ACCIÓN' para iniciar producción",
-    btn_exit:"← SALIR",
-    av_bot:"IA",av_user:"TÚ",
-    btn_yes:"✓ CONFIRMAR — GENERAR 6 ESCENAS",btn_no:"✎ REFINAR",
-    sc_title:"// ANÁLISIS_DE_PELÍCULA_COMPLETO",
-    screen_ready:"6 ESCENAS LISTAS",
-    prod_start:"🚀 Dream Extractor™ activado — forjando 6 escenas cinematográficas (10s cada una)...",
-    edit_msg:"Dime qué refinar. Cada detalle importa.",
-    done_msg:"✅ **¡Tu película de 6 escenas está lista!**\n\nCada escena de 10 segundos se generará y enviará automáticamente a la Sala de Montaje.\n\n🎬 La Sala de Montaje combinará las 6 escenas en una obra maestra de 60 segundos.",
-    st1d:"Escaneando frecuencias emocionales",st2d:"Decodificando capas subconscientes",st3d:"Sintetizando narrativa visual",st4d:"Dividiendo en 6 escenas (10s cada una)",st5d:"Superando visión original",
-    log_build:"Ejecutando algoritmo Dream Extractor™...",
-    api_err:"⚠️ Conexión perdida. Verifica que /api/chat esté desplegado en Vercel con ANTHROPIC_API_KEY configurado.",
-    scene_prefix:"Escena",
-    generating:"Generando escena",
-    completed:"Completada",
-    all_complete:"¡Las 6 escenas generadas y enviadas a la Sala de Montaje!",
-    action_trigger:"🎬 ¡Comando ACCIÓN recibido! Iniciando producción inmediatamente...",
-    action_production:"⚡ PRODUCCIÓN INICIADA - Generando 6 escenas basadas en la conversación"
+  es: {
+    phase1: 'Descubrimiento', phase2: 'Guión', phase3: 'Producción',
+    crew_panel: 'Panel de Equipo', active_session: 'Sesión Activa',
+    screenplay_writer: 'Guionista', director: 'Director',
+    production_cost: 'Costo de Producción', recharge: '+ Recargar',
+    phase1_title: 'Fase 1: Descubrimiento',
+    phase1_sub: 'Tarea Activa: Generación de Concepto',
+    phase2_title: 'Fase 2: Guión',
+    phase2_sub: 'Tarea Activa: Análisis y Desglose de Escenas',
+    phase3_title: 'Fase 3: Producción',
+    phase3_sub: 'Tarea Activa: Director Generando Escenas',
+    placeholder: 'Escribe tu directiva creativa aquí...',
+    send: 'Enviar', action: 'Acción',
+    new_session: 'Nueva Sesión',
+    generate: 'Generar',
+    assembly: 'Enviar a Sala de Montaje',
+    auto: 'Auto', manual: 'Manual',
+    credits_label: 'Créditos:', team_label: 'Equipo:',
+    confirm_title: '¿Listo para Generar?',
+    confirm_sub: 'TU GUIÓN ESTÁ COMPLETO',
+    confirm_cost: 'CRÉDITOS',
+    confirm_cancel: 'CANCELAR',
+    confirm_go: 'GENERAR →',
+    low_credits: 'Créditos insuficientes',
+    low_credits_sub: 'Necesitas más créditos para generar este film.',
+    welcome: 'Bienvenido. ¿Qué tipo de proyecto creas?',
+    types: [
+      {id:'film', icon:'🎬', label:'Película / Historia'},
+      {id:'ad',   icon:'📢', label:'Anuncio'},
+      {id:'music',icon:'🎵', label:'Videoclip'},
+      {id:'doc',  icon:'📹', label:'Documental'}
+    ],
+    firstQ: {
+      film:  '¿De qué trata tu historia?',
+      ad:    '¿Qué producto o servicio?',
+      music: '¿De qué trata la canción?',
+      doc:   '¿Qué tema documentas?'
+    },
+    done: '✅ Tu película de 6 escenas está lista.',
+    api_err: '⚠️ Error de conexión. Verifica /api/chat en Vercel.'
   },
-  ar:{
-    ph1:"الاستكشاف",ph2:"التأكيد",ph3:"الإنتاج",
-    placeholder:"صف رؤيتك... أو اكتب 'ACTION' لبدء الإنتاج فوراً",
-    btn_exit:"خروج ←",
-    av_bot:"AI",av_user:"أنت",
-    btn_yes:"✓ تأكيد — توليد 6 مشاهد",btn_no:"✎ تحسين",
-    sc_title:"// تحليل_الفيلم_مكتمل",
-    screen_ready:"6 مشاهد جاهزة",
-    prod_start:"🚀 Dream Extractor™ يعمل — يصنع 6 مشاهد سينمائية (10 ثوانٍ لكل مشهد)...",
-    edit_msg:"أخبرني ما تريد تحسينه. كل تفصيلة مهمة.",
-    done_msg:"✅ **فيلمك المكون من 6 مشاهد جاهز!**\n\nسيتم توليد كل مشهد (10 ثوانٍ) وإرساله تلقائياً إلى غرفة المونتاج.\n\n🎬 ستدمج غرفة المونتاج المشاهد الستة في عمل سينمائي واحد مدته 60 ثانية.",
-    st1d:"فحص الترددات العاطفية",st2d:"فك شفرة الطبقات اللاواعية",st3d:"تركيب السرد البصري",st4d:"تقسيم إلى 6 مشاهد (10 ثوانٍ لكل مشهد)",st5d:"تجاوز الرؤية الأصلية",
-    log_build:"تشغيل خوارزمية Dream Extractor™...",
-    api_err:"⚠️ انقطع الاتصال. تحقق من نشر /api/chat على Vercel مع ANTHROPIC_API_KEY.",
-    scene_prefix:"المشهد",
-    generating:"جاري توليد",
-    completed:"تم",
-    all_complete:"تم توليد جميع المشاهد الستة وإرسالها إلى غرفة المونتاج!",
-    action_trigger:"🎬 تم استلام أمر ACTION! بدء الإنتاج فوراً...",
-    action_production:"⚡ بدأ الإنتاج - جاري توليد 6 مشاهد بناءً على المحادثة"
+  ar: {
+    phase1: 'الاستكشاف', phase2: 'السيناريو', phase3: 'الإنتاج',
+    crew_panel: 'لوحة الفريق', active_session: 'جلسة نشطة',
+    screenplay_writer: 'كاتب السيناريو', director: 'المخرج',
+    production_cost: 'تكلفة الإنتاج', recharge: '+ شحن رصيد',
+    phase1_title: 'المرحلة 1: الاستكشاف',
+    phase1_sub: 'المهمة الحالية: توليد المفهوم الإبداعي',
+    phase2_title: 'المرحلة 2: السيناريو',
+    phase2_sub: 'المهمة الحالية: تحليل السيناريو وتقسيم المشاهد',
+    phase3_title: 'المرحلة 3: الإنتاج',
+    phase3_sub: 'المهمة الحالية: المخرج يولّد المشاهد',
+    placeholder: 'اكتب توجيهاتك الإبداعية هنا...',
+    send: 'إرسال', action: 'إجراء',
+    new_session: 'جلسة جديدة',
+    generate: 'توليد',
+    assembly: 'إرسال لغرفة المونتاج',
+    auto: 'تلقائي', manual: 'يدوي',
+    credits_label: 'رصيد:', team_label: 'الفريق:',
+    confirm_title: 'جاهز للتوليد؟',
+    confirm_sub: 'سيناريوك مكتمل',
+    confirm_cost: 'نقطة',
+    confirm_cancel: 'إلغاء',
+    confirm_go: 'توليد ←',
+    low_credits: 'رصيد غير كافٍ',
+    low_credits_sub: 'تحتاج إلى رصيد أكثر لتوليد هذا الفيلم.',
+    welcome: 'مرحباً. ما نوع مشروعك؟',
+    types: [
+      {id:'film', icon:'🎬', label:'فيلم / قصة شخصية'},
+      {id:'ad',   icon:'📢', label:'إعلان تجاري'},
+      {id:'music',icon:'🎵', label:'كليب موسيقي'},
+      {id:'doc',  icon:'📹', label:'وثائقي'}
+    ],
+    firstQ: {
+      film:  'عمَّ تدور قصتك؟',
+      ad:    'ما المنتج أو الخدمة؟',
+      music: 'عمَّ تتحدث الأغنية؟',
+      doc:   'ما الموضوع الذي توثقه؟'
+    },
+    done: '✅ فيلمك المكون من 6 مشاهد جاهز.',
+    api_err: '⚠️ مشكلة في الاتصال. تحقق من /api/chat على Vercel.'
   }
 };
 
+// ── SCREENWRITER PROMPTS (no KNOWLEDGE_CORE) ──
+const SCREENWRITER = {
+  film: `You are the screenplay writer at MercaDream.
+ONE question per message. Maximum 2 sentences. Never explain.
+Ask about: pulse/energy, character, transformation, world.
+After 4-6 exchanges output EXACTLY: DREAM_CAPTURED`,
 
-// ── SYSTEM PROMPTS — PhD EDITION ──
+  ad: `You are a commercial scriptwriter at MercaDream.
+Ask ONLY 3 questions one at a time: 1) product, 2) target audience, 3) key message.
+After 3 answers output EXACTLY: DREAM_CAPTURED`,
 
-const KNOWLEDGE_CORE = `
-You have been trained with the equivalent of six PhDs in cinema.
+  music: `You are a music video scriptwriter at MercaDream.
+Ask ONLY 3 questions: 1) song mood/genre, 2) artist visual style, 3) key visual concept.
+After 3 answers output EXACTLY: DREAM_CAPTURED`,
 
-PhD 1 DIRECTING: Every shot answers what this moment looks like emotionally. Camera angles carry moral meaning: high angle=weak, low angle=power, eye level=truth. Dolly in=revelation, pull back=loss, handheld=instability. Kubrick: Symmetry creates unease. Tarkovsky: Slow down to reveal what fast cinema hides. Wong Kar-Wai: The space between people carries more emotion than contact. EXCEED: Every film must contain ONE element the client didnt ask for but immediately recognizes as exactly what was needed.
-
-PhD 2 SCREENWRITING: Characters have WOUND (formative trauma) then BELIEF (the lie they tell themselves) then NEED (what would heal them) then WANT (what they think will heal them, usually wrong). Story is not plot. Plot=external events. Story=internal transformation. Hemingway Iceberg: Write 10 percent. The other 90 gives the 10 its weight. Mamet: Characters never say what they mean. They say what will get them what they want. Every scene must end differently than it began. The 6-scene emotional arc: Scene 1 establish wound, 2 complicate, 3 escalate, 4 THE HINGE everything changes, 5 transform, 6 new self. EXCEED: Every film must contain ONE moment where a character almost says the truest thing and does not. That unsaid truth is the emotional core.
-
-PhD 3 SOUND: Sound is 50 percent of cinema. Audiences accept bad image with good sound, not the reverse. Three layers: Dialogue (conscious) + Ambience (felt) + Music (followed unconsciously). Murch Rule of Six priority: Emotion then Story then Rhythm then Eye-trace then 2D plane then 3D space. Emotion ALWAYS wins. Counterpoint (Kubrick): Happy music over dark image creates more complexity than sad music over sad image. Leitmotif: One musical theme, introduced fragmented in Scene 1, fully realized in Scene 6. The transformation of the theme IS the emotional resolution. Bresson: Silence is not the absence of sound. It is the presence of what sound has been taken from.
-
-PhD 4 CINEMATOGRAPHY: Light is not illumination, it is meaning. Shot size psychology: ECU=obsession and truth, CU=the moment that changes everything, MCU=emotion beginning to matter, MS=dialogue and neutral, WS=character in world, EWS=isolation and scale. Focal length: Wide (14-28mm)=immersed and overwhelmed, Normal (50mm)=documentary truth, Telephoto (135mm+)=surveilled and longing. Focus: Deep focus=everything matters equally, Shallow focus=only this person exists. Deakins: Find the motivated source. Build everything from that single truth. Storaro: Assign each color a meaning. Use it consistently. Willis: What you do NOT show is always more powerful than what you do. EXCEED: The exceed visual appears transformed in both Scene 1 and Scene 6.
-
-PhD 5 EDITING: The Kuleshov Effect: Meaning is BETWEEN shots, not in them. Eisenstein: Shot A plus Shot B equals Third Meaning that neither contains. THE HINGE cut Scene 3 to 4: The most important edit in every MercaDream film. The audience must feel it physically. Scale journey rule: Begin wide then move closer then ECU then return to wide transformed. Mirror scenes: Scene 1 and Scene 6 must RHYME, same visual element transformed meaning. Rhythm rule: More cuts=urgency, fewer cuts=weight. Transition grammar: Hard cut=reality continues, Dissolve=time and memory, Smash cut=violence of contrast, Match cut=universe rhymes with itself. EXCEED: The exceed cut creates a Third Meaning that the audience feels but cannot name.
-
-PhD 6 LIGHTING: Light is not illumination, it is meaning. Every light source tells a story. The source you show is not the light you use. Moral grammar of light: Side light=character between light and dark=moral complexity, Top light=judgment or grace, Back light=the mythic, Front light=nothing hidden, Under light=the grotesque. Chiaroscuro: The most interesting characters stand AT THE EDGE of light and shadow. Color temperature story: Cold to Warm=character moving from isolation to belonging, Warm to Cold=loss. The eye light: Without it the character is dead and absent. With it the character is alive. This is the minimum of light required to signal humanity. Caravaggio grammar: Single source, high, directional, subject emerging from black=transcendence. EXCEED: The exceed light reveals a truth the scene itself cannot speak.
-
-UNIFIED EXCEED PRINCIPLE: Every MercaDream film must contain ONE element that the client did NOT request, could NOT have been predicted from the brief, is immediately recognized as the HEART of the film, and creates a feeling the audience cannot name. This element must appear across ALL dimensions simultaneously: visual, sound, edit, light, and story. The exceed element is the difference between competent and unforgettable.
-`;
-
-const SYS_DISCOVER = {
-  en: KNOWLEDGE_CORE + `
-
-YOU ARE: Dream Extractor™ PhD Edition — the world's most cinematically intelligent AI creative director, built by MERCADREAM.
-
-YOUR MISSION: Extract the TRUE vision for a 60-SECOND FILM (6 scenes of 10 seconds each). Not what the client thinks they want — what their story NEEDS.
-
-THE DISCOVERY PROTOCOL: Ask ONE question per message. Each question comes from your PhD knowledge — not generic questions. You are conducting a creative excavation, not filling a form.
-
-ASK IN THIS ORDER, ONE AT A TIME:
-
-QUESTION 1 — EMOTION: "If this film makes someone cry — what are they crying ABOUT? Not the plot. The feeling beneath the plot."
-
-QUESTION 2 — CHARACTER: "Who is the most important person in this story? And what is the one thing they cannot admit — even to themselves?"
-
-QUESTION 3 — WORLD: "Where does this story live — and what does that place PREVENT people from being free?"
-
-QUESTION 4 — TRANSFORMATION: "At the end of this film — what has changed that can NEVER go back?"
-
-QUESTION 5 — ONE FRAME: "If the entire film could be reduced to ONE IMAGE — what would the audience see?"
-
-READING BETWEEN THE LINES: When client says dramatic=they want to feel SEEN. Action=they want to feel POWERFUL. Romantic=they want to believe in CONNECTION. Success=they want VALIDATION. The film they ask for is always about the film they NEED. Deliver both.
-
-After 4-6 exchanges, when you have the emotional truth and visual world, output EXACTLY: DREAM_CAPTURED
-
-TONE: You are a master filmmaker talking to a collaborator. Not a chatbot filling a form. Every question should make the client feel that someone TRULY sees their vision.`,
-
-  es: KNOWLEDGE_CORE + `
-
-ERES: Dream Extractor™ Edición PhD — el director creativo de IA más cinematográficamente inteligente del mundo, construido por MERCADREAM.
-
-TU MISIÓN: Extraer la visión VERDADERA para una PELÍCULA DE 60 SEGUNDOS (6 escenas de 10 segundos cada una). No lo que el cliente cree que quiere — lo que su historia NECESITA.
-
-PROTOCOLO: Una pregunta poderosa por mensaje, en este orden:
-1. EMOCIÓN: "Si esta película hace llorar a alguien — ¿sobre qué lloran? No la trama. El sentimiento debajo."
-2. PERSONAJE: "¿Quién es la persona más importante? ¿Y qué es lo que no puede admitir ni a sí mismo?"
-3. MUNDO: "¿Dónde vive esta historia — y qué IMPIDE ese lugar que las personas sean libres?"
-4. TRANSFORMACIÓN: "Al final — ¿qué ha cambiado que NUNCA puede volver?"
-5. UN FOTOGRAMA: "Si toda la película se redujera a UNA IMAGEN — ¿qué vería el público?"
-
-Después de 4-6 intercambios escribe EXACTAMENTE: DREAM_CAPTURED`,
-
-  ar: KNOWLEDGE_CORE + `
-
-أنت: Dream Extractor™ إصدار الدكتوراه — أكثر مخرج إبداعي للذكاء الاصطناعي ذكاءً سينمائياً في العالم، من صنع MERCADREAM.
-
-مهمتك: استخراج الرؤية الحقيقية لفيلم مدته 60 ثانية (6 مشاهد × 10 ثوانٍ).
-
-البروتوكول — سؤال واحد قوي في كل رسالة بهذا الترتيب:
-1. المشاعر: "إذا أبكى هذا الفيلم شخصاً — عمَّ يبكي؟ ليس الحبكة. المشاعر تحتها."
-2. الشخصية: "من الشخص الأهم؟ وما الذي لا يستطيع الاعتراف به حتى لنفسه؟"
-3. العالم: "أين تعيش هذه القصة — وما الذي يمنع ذلك المكان الناس من أن يكونوا أحراراً؟"
-4. التحول: "في النهاية — ما الذي تغيّر ولا يمكن أن يعود أبداً؟"
-5. الإطار الواحد: "إذا اختُزل الفيلم في صورة واحدة — ماذا سيرى الجمهور؟"
-
-بعد 4-6 تبادلات اكتب بالضبط: DREAM_CAPTURED`
+  doc: `You are a documentary scriptwriter at MercaDream.
+Ask ONLY 3 questions: 1) subject, 2) angle/perspective, 3) central truth to reveal.
+After 3 answers output EXACTLY: DREAM_CAPTURED`
 };
 
-const SYS_6SCENES = KNOWLEDGE_CORE + `
-
-YOU ARE: Dream Extractor™ Scene Architect — PhD Edition
-
-Generate EXACTLY 6 scenes of 10 seconds each forming a complete 60-second film using ALL SIX PhD disciplines.
-
-MANDATORY ARCHITECTURE RULES:
-
-SCALE JOURNEY: Scene 1=Wide (establish world), Scenes 2-3=Medium (approach character), Scene 4=CU or ECU (truth revealed), Scene 5=Medium (transformation settling), Scene 6=Wide (transformed world echoing Scene 1).
-
-EMOTIONAL ARC: Scene 1=Wound visible in world, Scene 2=Wound tested, Scene 3=Maximum pressure, Scene 4=THE HINGE (irreversible change), Scene 5=New self emerging, Scene 6=New equilibrium.
-
-COLOR TEMPERATURE: Begin with temperature reflecting the characters starting state. End with opposite — or same temperature transformed in meaning.
-
-MIRROR STRUCTURE: Scene 1 and Scene 6 must use the same visual element — with transformed meaning.
-
-THE HINGE (Scene 3 to 4): The most important cut. Must be felt physically by the audience.
-
-OUTPUT FORMAT — Valid JSON array ONLY. No text before or after. No markdown backticks.
-
-[
-  {
-    "scene": 1,
-    "title": "Scene Title",
-    "prompt": "COMPLETE AI VIDEO GENERATION PROMPT using PhD visual language. Include: SHOT SIZE + SUBJECT in PRECISE ENVIRONMENT + CAMERA MOVEMENT with emotional justification + LIGHTING (source, direction, color temperature in Kelvin, contrast ratio, shadow description) + COLOR PALETTE + ONE MEANINGFUL ACTION + ATMOSPHERIC DETAIL. Minimum 80 words.",
-    "visual": "The defining image of this scene in one sentence",
-    "camera": "Specific camera movement with emotional justification",
-    "lighting": "Light source + direction + color temperature + what it reveals morally",
-    "sound": "Room tone + music element + key sound + silence note",
-    "edit_note": "Rhythm of cuts within this scene + transition type to next scene + emotional statement of that transition",
-    "emotional_beat": "What the audience FEELS at the end of this scene",
-    "motif": "How the films central visual motif appears or transforms here",
-    "transition": "Type of cut to next scene + why this specific transition serves the story"
-  }
-]
-
-Scene 4 MUST include this additional field:
-"exceed": "The unexpected element across visual + sound + edit + light + story that makes this scene the emotional center. Explain why it could not have been predicted — and why it is immediately felt as necessary."
-`;
-
-const SYS_ANALYZE = {
-  en: KNOWLEDGE_CORE + `
-You are the Dream Extractor™ Analysis Engine — PhD Edition.
-
-Based on the full conversation, produce a complete creative brief using all six PhD disciplines.
-
-Output EXACTLY this structure:
-
-**EMOTIONAL TRUTH:** [The real subject — the wound and its transformation]
-
-**CHARACTER ARCHITECTURE:**
-- Wound: [The formative pain]
-- Belief: [The lie they tell themselves]
-- Need: [What would truly heal them]
-- Want: [What they think will heal them]
-
-**VISUAL WORLD:**
-- Location: [Where + what this place prevents]
-- Color temperature journey: [Cold to Warm, or reversed]
-- Dominant visual motif: [The recurring image carrying meaning]
-
-**CINEMATIC LANGUAGE:**
-- Shot size arc: [Begins at ___ ends at ___]
-- Camera movement: [Type and psychological reason]
-- Contrast journey: [High to Low, or reversed]
-
-**AUDIO ARCHITECTURE:**
-- Room tone: [The acoustic identity of this world]
-- Musical leitmotif: [How it begins and transforms]
-- The silence: [When and what it contains]
-
-**EDITORIAL LOGIC:**
-- Rhythm arc: [How cutting pace changes]
-- The HINGE cut: [What makes Scene 3 to 4 pivotal]
-- Mirror structure: [How Scene 1 and Scene 6 rhyme]
-
-**LIGHTING PHILOSOPHY:**
-- Key source: [What light gives permission]
-- Moral lighting: [What it communicates morally]
-- Eye light intention: [When alive vs absent]
-
-**THE EXCEED ELEMENTS:**
-- Exceed visual: [The unexpected image]
-- Exceed sound: [The unexpected sonic element]
-- Exceed edit: [The cut creating a third meaning]
-- Exceed light: [The light revealing what the character doesnt know about themselves]
-- Exceed story moment: [The moment almost said — and not]
-
-**FINAL EMOTIONAL SIGNATURE:** [What the audience carries out — in one sentence]`,
-
-  es: KNOWLEDGE_CORE + `
-Eres el motor de análisis Dream Extractor™ PhD. Produce un brief creativo completo en español incluyendo: Verdad emocional, Arquitectura del personaje (herida, creencia, necesidad, deseo), Mundo visual, Lenguaje cinematográfico, Arquitectura de audio, Lógica editorial, Filosofía de iluminación, Los cinco elementos EXCEED, y la Firma emocional final.`,
-
-  ar: KNOWLEDGE_CORE + `
-أنت محرك تحليل Dream Extractor™ إصدار الدكتوراه. أنتج إحاطة إبداعية كاملة باللغة العربية تتضمن: الحقيقة العاطفية، بنية الشخصية (الجرح والمعتقد والحاجة والرغبة)، العالم البصري، اللغة السينمائية، البنية الصوتية، منطق المونتاج، فلسفة الإضاءة، عناصر EXCEED الخمسة، والبصمة العاطفية النهائية.`
+// ── DIRECTOR MAPPING ──
+const PROJECT_TO_DIRECTOR = {
+  film: 'drama', ad: 'ads', music: 'music', doc: 'doc'
 };
 
-
-let lang = 'en';
+// ── STATE ──
+let lang = localStorage.getItem('md_lang') || 'en';
 let phase = 'discovery';
 let history = [];
 let brief = null;
-let scenesData = null;
-let actionTriggered = false;
+let projectType = null;
+let distributionMode = 'auto'; // 'auto' | 'manual'
+let isBusy = false;
+let scenes = null;
 
-function t(k){ return TX[lang][k] || TX.en[k] || k; }
+// ── HELPERS ──
+const t = k => TX[lang][k] || TX.en[k] || k;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-function addMsg(role, html, skipHist=false){
-  const msgs = document.getElementById('messages');
+function getCredits() { return parseInt(localStorage.getItem('md_credits') || '0'); }
+function setCredits(v) {
+  localStorage.setItem('md_credits', v);
+  document.getElementById('header-credits-value').textContent = v.toLocaleString();
+  document.getElementById('footer-credits-value').textContent = v.toLocaleString();
+}
+
+function log(msg, type = 'info') {
+  const term = document.querySelector('.terminal-scroll');
+  if (!term) return;
+  const colors = { ok: '#a8d700', err: '#ffb4ab', warn: '#ffba3f', info: 'rgba(168,215,0,0.6)' };
+  const p = document.createElement('p');
+  p.className = 'leading-tight';
+  p.innerHTML = `<span class="opacity-50">[${new Date().toLocaleTimeString('en',{hour12:false})}]</span> <span style="color:${colors[type]||colors.info}">${msg}</span>`;
+  term.insertBefore(p, term.firstChild);
+  if (term.children.length > 50) term.removeChild(term.lastChild);
+}
+
+function updatePhaseUI(p) {
+  const phases = ['discovery','screenplay','production'];
+  const idx = phases.indexOf(p);
+  const titles = [t('phase1_title'), t('phase2_title'), t('phase3_title')];
+  const subs   = [t('phase1_sub'),   t('phase2_sub'),   t('phase3_sub')];
+  document.querySelector('h1.font-display-lg').textContent = titles[idx] || titles[0];
+  document.querySelector('h1.font-display-lg + p').textContent = subs[idx] || subs[0];
+}
+
+function updatePipelineStage(stageNum, status) {
+  // status: 'idle' | 'active' | 'done'
+  const stages = document.querySelectorAll('.pipeline .space-y-2');
+  stages.forEach((s, i) => {
+    const bar = s.querySelector('.h-1 div');
+    const dot = s.querySelector('.rounded-full');
+    const label = s.querySelector('span:last-child');
+    if (i + 1 === stageNum) {
+      s.classList.remove('opacity-50');
+      if (bar) { bar.style.width = status === 'done' ? '100%' : '65%'; bar.style.background = '#a8d700'; }
+      if (dot) { dot.style.background = '#a8d700'; dot.classList.add('animate-pulse'); }
+      if (label && label.tagName === 'SPAN') { label.textContent = status === 'done' ? 'DONE' : 'ACTIVE'; label.style.color = '#a8d700'; }
+    } else if (i + 1 < stageNum) {
+      s.classList.remove('opacity-50');
+      if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; }
+    } else {
+      s.classList.add('opacity-50');
+    }
+  });
+}
+
+// ── CREW PANEL ──
+function loadCrew() {
+  const directors = JSON.parse(localStorage.getItem('md_selected_directors') || '[]');
+  const names     = JSON.parse(localStorage.getItem('md_director_names')     || '[]');
+  const images    = JSON.parse(localStorage.getItem('md_director_images')    || '[]');
+  const crewList  = document.querySelector('.crew-cards');
+  if (!crewList) return;
+
+  directors.forEach((type, i) => {
+    const name  = names[i]  || type.toUpperCase();
+    const image = images[i] || '';
+    const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'bg-surface-container-low border border-outline-variant p-4 flex items-center gap-3 cursor-pointer hover:bg-surface-container-high transition-colors crew-director-card';
+    card.dataset.director = type;
+    card.innerHTML = `
+      <div class="relative">
+        ${image
+          ? `<img src="${image}" alt="${name}" class="w-10 h-10 bg-surface-container-highest border border-outline-variant object-cover">`
+          : `<div class="w-10 h-10 bg-surface-container-highest border border-outline-variant flex items-center justify-center font-display-lg text-body-sm text-surface-tint">${initials}</div>`
+        }
+        <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-neutral-600 rounded-full border-2 border-surface-variant director-status-dot"></div>
+      </div>
+      <div>
+        <p class="font-display-lg text-body-md text-on-surface leading-none">${name}</p>
+        <p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">${t('director')}</p>
+      </div>`;
+    crewList.appendChild(card);
+  });
+
+  // Update footer team
+  updateFooterTeam(names, images);
+}
+
+function updateFooterTeam(names, images) {
+  const teamImgs = document.querySelector('.flex.-space-x-2');
+  const teamName = teamImgs?.nextElementSibling;
+  if (!teamImgs) return;
+  teamImgs.innerHTML = images.slice(0, 3).map((img, i) =>
+    img
+      ? `<img src="${img}" alt="${names[i]||''}" class="w-6 h-6 rounded-full border border-black object-cover">`
+      : `<div class="w-6 h-6 rounded-full border border-black bg-surface-variant flex items-center justify-center text-[8px] text-surface-tint font-bold">${(names[i]||'?')[0]}</div>`
+  ).join('');
+  if (teamName) teamName.textContent = names.slice(0, 2).join(' + ') || 'No crew selected';
+}
+
+function setDirectorStatus(type, status) {
+  // status: 'standby' | 'active' | 'done'
+  const card = document.querySelector(`.crew-director-card[data-director="${type}"]`);
+  if (!card) return;
+  const dot = card.querySelector('.director-status-dot');
+  if (!dot) return;
+  const colors = { standby: '#525252', active: '#a8d700', done: '#4ade80' };
+  dot.style.background = colors[status] || colors.standby;
+  if (status === 'active') dot.classList.add('animate-pulse');
+  else dot.classList.remove('animate-pulse');
+}
+
+// ── CHAT ──
+function addMessage(role, html) {
+  const area = document.querySelector('.custom-scrollbar');
+  if (!area) return;
+  const time = new Date().toLocaleTimeString('en', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  const isBot = role === 'bot';
   const wrap = document.createElement('div');
-  wrap.className = `msg ${role}`;
-  const av = document.createElement('div');
-  av.className = `avatar ${role}-av`;
-  av.textContent = role==='bot' ? t('av_bot') : t('av_user');
-  const bbl = document.createElement('div');
-  bbl.className = `${role}-bubble`;
-  bbl.innerHTML = html.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  wrap.appendChild(av); wrap.appendChild(bbl);
-  msgs.appendChild(wrap); msgs.scrollTop = msgs.scrollHeight;
-  if(!skipHist) history.push({role: role==='bot'?'assistant':'user', content: html});
+  wrap.className = `flex flex-col gap-2 ${isBot ? 'max-w-[80%]' : 'max-w-[80%] ml-auto items-end'}`;
+  if (isBot) {
+    wrap.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span class="font-label-caps text-label-caps text-surface-tint uppercase">Mercadream Engine</span>
+        <span class="font-technical-sm text-technical-sm text-on-surface-variant">${time}</span>
+      </div>
+      <div class="bg-surface-container border-l-4 border-surface-tint p-6">
+        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/
+/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>
+      </div>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span class="font-technical-sm text-technical-sm text-on-surface-variant">${time}</span>
+        <span class="font-label-caps text-label-caps text-secondary uppercase">You</span>
+      </div>
+      <div class="bg-[#a8d700]/10 border border-surface-tint/30 p-6 backdrop-blur-sm">
+        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/
+/g,'<br>')}</p>
+      </div>`;
+  }
+  // Remove typing indicator if present
+  const typing = document.getElementById('typing-indicator');
+  if (typing) typing.remove();
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+  if (!isBot) history.push({role:'user', content: html});
+  else history.push({role:'assistant', content: html});
 }
 
-function showTyping(){
-  const msgs = document.getElementById('messages');
+function showTyping() {
+  const area = document.querySelector('.custom-scrollbar');
+  if (!area || document.getElementById('typing-indicator')) return;
   const d = document.createElement('div');
-  d.className='msg bot'; d.id='typing';
-  d.innerHTML=`<div class="avatar bot-av">${t('av_bot')}</div><div class="bot-bubble"><div class="typing"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
-}
-function hideTyping(){ const el=document.getElementById('typing'); if(el) el.remove(); }
-
-function log(txt, cls=''){
-  const term = document.getElementById('logTerm');
-  const line = document.createElement('div');
-  line.className = `log-l ${cls}`;
-  line.textContent = `[${new Date().toLocaleTimeString('en',{hour12:false})}] ${txt}`;
-  term.prepend(line);
+  d.id = 'typing-indicator';
+  d.className = 'flex items-center gap-2 text-on-surface-variant';
+  d.innerHTML = `
+    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce"></span>
+    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.2s]"></span>
+    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.4s]"></span>
+    <span class="font-technical-sm text-technical-sm ml-2">Processing...</span>`;
+  area.appendChild(d);
+  area.scrollTop = area.scrollHeight;
 }
 
-function setPhase(n){
-  [1,2,3].forEach(i=>{
-    const el=document.getElementById(`ph${i}`);
-    el.className='phase-pill'+(i<n?' done':i===n?' on':'');
+function hideTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function showProjectTypeSelector() {
+  const types = t('types');
+  const html = `
+    <div style="margin-bottom:12px">${t('welcome')}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      ${types.map(type => `
+        <button onclick="selectType('${type.id}')"
+          style="padding:10px 14px;background:#1e1e1e;border:1px solid #434933;color:#e5e2e1;
+                 font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;
+                 cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;
+                 transition:all .2s"
+          onmouseover="this.style.borderColor='#a8d700';this.style.color='#a8d700'"
+          onmouseout="this.style.borderColor='#434933';this.style.color='#e5e2e1'">
+          <span style="font-size:16px">${type.icon}</span>
+          <span>${type.label}</span>
+        </button>`).join('')}
+    </div>`;
+  addMessage('bot', html);
+  history.pop(); // don't add to history
+}
+
+function selectType(type) {
+  projectType = type;
+  localStorage.setItem('md_project_type', type);
+  const q = t('firstQ')[type];
+  history.push({role:'assistant', content: q});
+  addMessage('bot', q);
+  history.pop(); // already added above
+  log(`Project type: ${type}`, 'ok');
+}
+
+async function callAPI(system, messages, maxTokens, mode) {
+  const res = await fetch(API_CHAT, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({system, messages, max_tokens: maxTokens, mode})
   });
+  if (!res.ok) { const b = await res.json().catch(()=>({})); throw new Error(b.error||`HTTP ${res.status}`); }
+  const data = await res.json();
+  return data.text || '';
 }
 
-function activateStage(id){
-  const el=document.getElementById(`st${id}`);
-  el.className='stage run';
-  document.getElementById('engStat').textContent='RUNNING';
-  document.getElementById('engStat').style.color='var(--acid)';
-  const bar=document.getElementById(`st${id}b`);
-  let w=0;
-  const iv=setInterval(()=>{w+=1.8;bar.style.width=w+'%';if(w>=94)clearInterval(iv);},55);
-  return iv;
-}
-function doneStage(id,iv,ts){
-  clearInterval(iv);
-  document.getElementById(`st${id}`).className='stage done';
-  document.getElementById(`st${id}b`).style.width='100%';
-  document.getElementById(`st${id}t`).textContent=ts;
-}
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-async function callAPI(system, messages, maxTokens=1200, mode='discovery'){
-  let res;
-  try{
-    res = await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system, messages, max_tokens:maxTokens, mode})
-    });
-  }catch(e){ throw new Error('Network: '+e.message); }
-  if(!res.ok){
-    let msg=`HTTP ${res.status}`;
-    try{const b=await res.json();msg=b.error||msg;}catch(_){}
-    throw new Error(msg);
-  }
-  const data=await res.json();
-  return data.text||'';
+function getScreenwriterSystem() {
+  const pt = projectType || 'film';
+  return SCREENWRITER[pt] || SCREENWRITER.film;
 }
 
-function showSummaryCard(text){
-  const msgs=document.getElementById('messages');
-  const wrap=document.createElement('div');
-  wrap.className='msg bot';
-  const av=document.createElement('div');
-  av.className='avatar bot-av';
-  av.textContent=t('av_bot');
-  const bbl=document.createElement('div');
-  bbl.className='bot-bubble';
-  bbl.style.maxWidth='92%';
-  const card=document.createElement('div');
-  card.className='summary-card';
-  card.innerHTML=`<div class="sc-title">${t('sc_title')}</div>${text.replace(/\n/g,'<br>')}`;
-  const row=document.createElement('div');
-  row.className='confirm-row';
-  const btnY=document.createElement('button');
-  btnY.className='btn-yes';btnY.textContent=t('btn_yes');btnY.onclick=startProduction;
-  const btnN=document.createElement('button');
-  btnN.className='btn-no';btnN.textContent=t('btn_no');btnN.onclick=requestRefine;
-  row.appendChild(btnY);row.appendChild(btnN);
-  card.appendChild(row);
-  bbl.appendChild(card);wrap.appendChild(av);wrap.appendChild(bbl);
-  msgs.appendChild(wrap);msgs.scrollTop=msgs.scrollHeight;
-  brief=text;
-}
+async function sendMessage() {
+  if (isBusy) return;
+  const input = document.querySelector('textarea');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
 
-// ✅ دالة حفظ مشهد فردي في غرفة المونتاج
-function saveSceneToAssembly(scenePrompt, sceneNum, totalScenes=6){
-  let videos = JSON.parse(localStorage.getItem('md_assembly_videos') || '[]');
-  videos.push({
-    id: Date.now() + sceneNum,
-    url: null,
-    prompt: scenePrompt.substring(0, 500),
-    timestamp: new Date().toISOString(),
-    duration: 10,
-    title: `${t('scene_prefix')} ${sceneNum}/6: ${scenePrompt.substring(0, 40)}...`,
-    sceneNumber: sceneNum,
-    status: 'pending'
-  });
-  localStorage.setItem('md_assembly_videos', JSON.stringify(videos));
-  log(`✓ Scene ${sceneNum}/6 saved to Assembly Room`, 'ok');
-  updateSceneProgress(sceneNum, totalScenes);
-}
-
-function updateSceneProgress(currentScene, totalScenes){
-  let progressDiv = document.getElementById('sceneProgress');
-  if(!progressDiv){
-    const container = document.getElementById('pipelineContainer');
-    progressDiv = document.createElement('div');
-    progressDiv.className = 'scene-progress';
-    progressDiv.id = 'sceneProgress';
-    progressDiv.innerHTML = `
-      <div class="scene-progress-title">🎬 6-SCENE FILM PROGRESS (10s each → 60s total)</div>
-      <div class="scene-bars" id="sceneBars"></div>
-    `;
-    container.appendChild(progressDiv);
-  }
-  
-  const barsContainer = document.getElementById('sceneBars');
-  if(barsContainer){
-    barsContainer.innerHTML = '';
-    for(let i=1; i<=totalScenes; i++){
-      const completed = i <= currentScene;
-      barsContainer.innerHTML += `
-        <div class="scene-bar ${completed ? 'completed' : ''}">
-          <div class="scene-bar-fill" style="width: ${completed ? '100%' : '0%'}"></div>
-          <div class="scene-bar-label">${i}/6</div>
-        </div>
-      `;
-    }
-  }
-}
-
-// ✅ دالة التحقق من أمر ACTION
-function checkForActionCommand(text){
-  const lowerText = text.toLowerCase().trim();
-  const actionWords = ['action', 'اكشن', 'إجراء', 'start', 'ابدأ', 'انتج', 'produce', 'generate', 'صنع', 'go'];
-  for(let word of actionWords){
-    if(lowerText === word || lowerText === word + '!' || lowerText.startsWith(word + ' ')){
-      return true;
-    }
-  }
-  return false;
-}
-
-// ✅ دالة بدء الإنتاج فوراً (ACTION)
-async function triggerActionProduction(){
-  if(actionTriggered) return;
-  actionTriggered = true;
-  
-  log(t('action_trigger'), 'inf');
-  addMsg('bot', `**⚡ ACTION!**\n\n${t('action_production')}`, true);
-  
-  // Create summary from conversation
-  const conversationText = history.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
-  const forcedBrief = `**CONVERSATION SUMMARY:**\n${conversationText}\n\n**ACTION:** Immediate production. Generate 6 scenes (10 seconds each) based on this conversation.`;
-  
-  brief = forcedBrief;
-  setPhase(2);
-  phase = 'confirmation';
-  
-  // Start production immediately
-  await startProduction();
-}
-
-// ✅ زر ACTION
-function triggerActionFromButton(){
-  triggerActionProduction();
-}
-
-function showPaywall(){
-  
-  document.getElementById('paywallOverlay').classList.add('show');
-}
-
-function closePaywall(){
-  document.getElementById('paywallOverlay').classList.remove('show');
-}
-
-function selectPlan(plan){
-  selectedPaywallPlan = plan;
-  document.querySelectorAll('.pw-plan').forEach(p => p.style.borderColor = '');
-  event.currentTarget.style.outline = '1px solid #c8ff00';
-}
-
-function paywallContinue(){
-  // Save plan and story to localStorage
-  localStorage.setItem('md_selected_plan', selectedPaywallPlan);
-  localStorage.setItem('md_story_history', JSON.stringify(history));
-  // Redirect to register
-  window.location.href = 'register.html?plan=' + selectedPaywallPlan;
-}
-
-async function startSession(){
-  setPhase(1);
-  const trigger={
-    en:"Hello, I want to create a 60-second film with 6 scenes, each 10 seconds",
-    es:"Hola, quiero crear una película de 60 segundos con 6 escenas, cada una de 10 segundos",
-    ar:"مرحباً، أريد إنشاء فيلم مدته 60 ثانية من 6 مشاهد، كل مشهد 10 ثوانٍ"
-  };
-  const welcome={
-    en:"Welcome. I am your screenplay writer at MercaDream.\n\nI will work with you to transform your idea into a professional cinematic screenplay — scene by scene.\n\nOnce you approve it, we hand it to our director to bring it to life.\n\nSo — what idea is on your mind?",
-    es:"Bienvenido. Soy el guionista de MercaDream.\n\nTrabajaré contigo para transformar tu idea en un guión cinematográfico profesional.\n\nCuando lo apruebes, lo enviamos al director.\n\n¿Qué idea tienes en mente?",
-    ar:"مرحباً. أنا كاتب السيناريو في MercaDream.\n\nسأتعاون معك لتحويل فكرتك إلى سيناريو سينمائي احترافي.\n\nبعد موافقتك نسلّمه للمخرج لتجسيده.\n\nأخبرني — ما الفكرة التي تدور في ذهنك؟"
-  };
-  addMsg('bot', welcome[lang], true);
-  history.push({role:'assistant', content:welcome[lang]});
-  log('Dream Extractor™ session started (6-scene film mode)','ok');
-}
-
-async function sendMessage(){
-  const input=document.getElementById('userInput');
-  const text=input.value.trim();
-  if(!text) return;
-  
-  // ✅ التحقق من أمر ACTION
-  if(checkForActionCommand(text)){
-    input.value='';
-    await triggerActionProduction();
-    document.getElementById('sendBtn').disabled=false;
+  // ACTION shortcut
+  if (/^(action|start|go|generate|انتج|ابدأ)$/i.test(text)) {
+    input.value = '';
+    await triggerAction();
     return;
   }
-  
-  input.value='';input.style.height='auto';
-  document.getElementById('sendBtn').disabled=true;
-  addMsg('user',text);
+
+  input.value = '';
+  input.style.height = 'auto';
+  isBusy = true;
+  addMessage('user', text);
   showTyping();
-  log(`>> ${text.substring(0,40)}...`);
-  try{
-    if(phase==='discovery'){
-      const reply=await callAPI(SYS_DISCOVER[lang],history,1200,'discovery');
+  log(`>> ${text.substring(0,50)}`);
+
+  try {
+    if (phase === 'discovery') {
+      const reply = await callAPI(getScreenwriterSystem(), history, 800, 'discovery');
       hideTyping();
-      if(reply.includes('DREAM_CAPTURED')){
-        log(t('log_build'),'inf');
-        const analysisHistory=[...history,{role:'assistant',content:reply.replace('DREAM_CAPTURED','')}];
-        const analysis=await callAPI(SYS_ANALYZE[lang],analysisHistory,1500,'discovery');
-        showSummaryCard(analysis);
-        setPhase(2);phase='confirmation';
-        history.push({role:'assistant',content:reply});
-        log('Dream captured — ready for 6-scene breakdown','ok');
-      }else{
-        addMsg('bot',reply,true);
-        history.push({role:'assistant',content:reply});
+      if (reply.includes('DREAM_CAPTURED')) {
+        const clean = reply.replace('DREAM_CAPTURED','').trim();
+        brief = clean || history.map(m => m.content).join('
+');
+        if (clean) addMessage('bot', clean);
+        await showConfirmModal();
+      } else {
+        addMessage('bot', reply);
       }
     }
-  }catch(e){
+  } catch(e) {
     hideTyping();
-    addMsg('bot',t('api_err'),true);
-    log('ERR: '+e.message,'err');
+    addMessage('bot', t('api_err'));
+    log('ERR: ' + e.message, 'err');
   }
-  document.getElementById('sendBtn').disabled=false;
+  isBusy = false;
 }
 
-async function startProduction(){
-  phase='production';setPhase(3);
-  document.querySelectorAll('.btn-yes,.btn-no').forEach(b=>b.disabled=true);
-  addMsg('bot',t('prod_start'),true);
-  log('DREAM_EXTRACTOR™ ACTIVATED - 6 SCENE MODE','ok');
-  document.getElementById('screenContent').innerHTML=`<div style="font-family:var(--mono);font-size:9px;color:var(--acid);letter-spacing:2px;animation:blink 1s infinite">CREATING_6_SCENES...</div>`;
+async function triggerAction() {
+  brief = history.map(m => `${m.role}: ${m.content}`).join('
 
-  const conversationText = history.map(msg => `${msg.role.toUpperCase()}: ${msg.content}`).join('\n\n');
-  const fullContext = `CONVERSATION:\n${conversationText}\n\n---\nBRIEF:\n${brief}\n\n---\nGenerate 6 scenes (10 seconds each) for a 60-second film. Output as JSON array.`;
+');
+  await showConfirmModal();
+}
 
-  let scenes = [];
+// ── CONFIRM MODAL ──
+async function showConfirmModal() {
+  const credits = getCredits();
+  const modal = document.createElement('div');
+  modal.id = 'confirm-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:#0d0d0d;border:1px solid rgba(168,215,0,.35);max-width:440px;width:100%;position:relative;overflow:hidden;padding:32px">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#a8d700,transparent)"></div>
+      <button onclick="document.getElementById('confirm-modal').remove()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;color:#666;cursor:pointer;font-size:18px">✕</button>
+      <h2 style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:#f0f0f0;text-align:center;margin-bottom:6px">${t('confirm_title')}</h2>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#666;text-align:center;margin-bottom:20px;letter-spacing:1px">${t('confirm_sub')}</p>
+      <div style="background:rgba(168,215,0,.05);border:1px solid rgba(168,215,0,.18);padding:16px;text-align:center;margin-bottom:20px">
+        <div style="font-family:Orbitron,monospace;font-size:44px;font-weight:900;color:#a8d700;line-height:1">${COST_PER_FILM}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:#666;letter-spacing:2px;margin-top:4px">${t('confirm_cost')}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:${credits >= COST_PER_FILM ? '#a8d700' : '#ffb4ab'};margin-top:6px">
+          ${t('credits_label')} ${credits}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button onclick="document.getElementById('confirm-modal').remove()"
+          style="padding:12px;background:transparent;border:1px solid rgba(168,215,0,.25);color:#b0b0b0;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">
+          ${t('confirm_cancel')}
+        </button>
+        <button onclick="document.getElementById('confirm-modal').remove(); ${credits >= COST_PER_FILM ? 'startProduction()' : 'showRecharge()'}"
+          style="padding:12px;background:${credits >= COST_PER_FILM ? '#a8d700' : '#ffb4ab'};color:#000;border:none;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">
+          ${credits >= COST_PER_FILM ? t('confirm_go') : '+ ' + t('recharge')}
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function showRecharge() { window.location.href = 'directors.html'; }
+
+// ── PRODUCTION ──
+async function startProduction() {
+  phase = 'production';
+  updatePhaseUI('production');
+  isBusy = true;
+  log('PIPELINE ACTIVATED', 'ok');
+
+  // Deduct credits
+  setCredits(getCredits() - COST_PER_FILM);
+
+  // Stage 1: Screenplay
+  updatePipelineStage(1, 'active');
+  addMessage('bot', 'Screenplay complete. Assigning director...');
+  await sleep(500);
+  updatePipelineStage(1, 'done');
+
+  // Stage 2: Classify
+  updatePipelineStage(2, 'active');
+  const directorType = PROJECT_TO_DIRECTOR[projectType || 'film'] || 'drama';
+  log(`Director assigned: ${directorType}`, 'ok');
+  await sleep(400);
+  updatePipelineStage(2, 'done');
+
+  // Stage 3: Director generates
+  updatePipelineStage(3, 'active');
+  setDirectorStatus(directorType, 'active');
+
+  // Update cockpit
+  const cockpit = document.querySelector('.cockpit-screen .text-center');
+  if (cockpit) cockpit.innerHTML = `<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">GENERATING_6_SCENES...</span>`;
+
+  const convText = history.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('
+
+');
+
   try {
-    const scenesJSON = await callAPI(SYS_6SCENES, [{role:'user', content:fullContext}], 2000,'generate');
-    const jsonMatch = scenesJSON.match(/\[[\s\S]*\]/);
-    if(jsonMatch){
-      scenes = JSON.parse(jsonMatch[0]);
+    const res = await fetch(API_DIRECTOR, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({type: directorType, conversation: convText, brief: brief || convText})
+    });
+
+    if (!res.ok) throw new Error(`Director API HTTP ${res.status}`);
+    const data = await res.json();
+    scenes = data.scenes;
+
+    updatePipelineStage(3, 'done');
+    updatePipelineStage(4, 'done');
+    updatePipelineStage(5, 'done');
+    setDirectorStatus(directorType, 'done');
+
+    // Save to assembly
+    localStorage.setItem('md_6scenes', JSON.stringify(scenes));
+    let videos = [];
+    scenes.forEach((s, i) => {
+      videos.push({
+        id: Date.now() + i, url: null,
+        prompt: (s.prompt || '').substring(0, 500),
+        timestamp: new Date().toISOString(),
+        duration: 10,
+        title: `Scene ${i+1}/6: ${(s.title||'').substring(0,40)}`,
+        sceneNumber: i+1, status: 'pending'
+      });
+      log(`✓ Scene ${i+1}/6: ${s.title}`, 'ok');
+    });
+    localStorage.setItem('md_assembly_videos', JSON.stringify(videos));
+
+    // Update cockpit
+    if (cockpit) cockpit.innerHTML = `<div style="font-size:26px;margin-bottom:6px">✅</div><span class="font-technical-sm text-surface-tint" style="opacity:1">6 SCENES READY</span>`;
+
+    addMessage('bot', t('done'));
+
+    // Show assembly button
+    const assemblyBtn = document.getElementById('assembly-room-btn');
+    if (assemblyBtn) assemblyBtn.classList.remove('hidden');
+
+    log('Production complete!', 'ok');
+
+  } catch(e) {
+    log('Director error: ' + e.message, 'err');
+    addMessage('bot', '⚠️ Production error: ' + e.message);
+    updatePipelineStage(3, 'idle');
+    setDirectorStatus(directorType, 'standby');
+  }
+
+  isBusy = false;
+}
+
+// ── DISTRIBUTION MODE ──
+function setDistributionMode(mode) {
+  distributionMode = mode;
+  const btns = document.querySelectorAll('.distribution-btn');
+  btns.forEach(b => {
+    if (b.dataset.mode === mode) {
+      b.style.background = '#a8d700';
+      b.style.color = '#000';
+      b.style.fontWeight = '700';
+    } else {
+      b.style.background = 'transparent';
+      b.style.color = '#c4caac';
+      b.style.fontWeight = '400';
     }
-  } catch(e){
-    log(`Scene generation error: ${e.message}`, 'err');
-    scenes = [
-      {scene:1, title:"Opening", prompt:"Establishing shot of the impossible world", visual:"Wide landscape", camera:"Slow dolly in", transition:"Dissolve"},
-      {scene:2, title:"Discovery", prompt:"Character discovers the impossible", visual:"Close up reaction", camera:"Push in", transition:"Cut"},
-      {scene:3, title:"Journey", prompt:"Movement through the impossible space", visual:"Tracking shot", camera:"Drone follow", transition:"Wipe"},
-      {scene:4, title:"Revelation", prompt:"The impossible truth revealed", visual:"Mirror reflection", camera:"Slow zoom", transition:"Dissolve"},
-      {scene:5, title:"Connection", prompt:"Emotional peak of the film", visual:"Eyes meeting", camera:"Static close up", transition:"Fade"},
-      {scene:6, title:"Resolution", prompt:"Closing shot that lingers", visual:"Wide pull back", camera:"Slow crane up", transition:"Fade to black"}
-    ];
-  }
-
-  scenesData = scenes;
-  localStorage.setItem('md_6scenes', JSON.stringify(scenes));
-  
-  for(let i=0; i<scenes.length; i++){
-    const scene = scenes[i];
-    const scenePrompt = scene.prompt || `Scene ${i+1}: ${scene.title}`;
-    saveSceneToAssembly(scenePrompt, i+1, scenes.length);
-    log(`Scene ${i+1}/6 prepared: ${scene.title}`, 'ok');
-    await sleep(500);
-  }
-  
-  updateSceneProgress(scenes.length, scenes.length);
-  log(t('all_complete'), 'ok');
-  
-  addMsg('bot',t('done_msg'),true);
-  document.getElementById('screenContent').innerHTML=`<div style="font-size:26px;margin-bottom:6px">✅</div><div class="screen-lbl" style="color:var(--acid);opacity:1">6 SCENES READY</div>`;
-  document.getElementById('engStat').textContent='COMPLETE';
-  document.getElementById('engStat').style.color='var(--acid)';
-  
-  const container = document.getElementById('pipelineContainer');
-  const goBtn = document.createElement('button');
-  goBtn.textContent = '🎬 GO TO ASSEMBLY ROOM →';
-  goBtn.style.cssText = 'display:block;width:calc(100% - 28px);margin:14px;padding:12px;font-family:var(--mono);font-size:10px;letter-spacing:2px;cursor:pointer;border:none;background:var(--acid);color:#000;font-weight:700;transition:all .2s;text-align:center';
-  goBtn.onclick = () => { window.location.href = 'assembly.html'; };
-  container.appendChild(goBtn);
-}
-
-function requestRefine(){
-  phase='discovery';setPhase(1);
-  document.querySelectorAll('.btn-yes,.btn-no').forEach(b=>b.disabled=true);
-  addMsg('bot',t('edit_msg'),true);
-  history.push({role:'assistant',content:t('edit_msg')});
-  log('Refinement requested — re-entering discovery','inf');
-}
-
-function handleKey(e){ 
-  if(e.key==='Enter'&&!e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  } 
-}
-function autoGrow(el){ el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'; }
-
-function setLang(l){
-  lang=l;
-  document.documentElement.lang=l;
-  document.body.className=l==='ar'?'lang-ar':'lang-en';
-  document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));
-  document.getElementById('ph1l').textContent=TX[l].ph1;
-  document.getElementById('ph2l').textContent=TX[l].ph2;
-  document.getElementById('ph3l').textContent=TX[l].ph3;
-  document.getElementById('userInput').placeholder=TX[l].placeholder;
-  document.getElementById('userInput').dir=l==='ar'?'rtl':'ltr';
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    if(TX[l][k]) el.textContent=TX[l][k];
   });
-  for(let i=1;i<=5;i++){
-    const el=document.getElementById(`st${i}d`);
-    if(el) el.textContent=TX[l][`st${i}d`]||el.textContent;
-  }
-  if(document.getElementById('messages').children.length===0){
-    showCrewBadge();
-    startSession();
-  }
-  localStorage.setItem('md_lang',l);
+  log(`Distribution mode: ${mode}`, 'info');
 }
 
-function buildCrewSystem(baseSystem){
-  const crewRoles = localStorage.getItem('md_crew_roles') || '';
-  const crewNames = localStorage.getItem('md_crew_names') || '';
-  if(!crewRoles) return baseSystem;
-  return `Active production crew: ${crewNames}\n\nCrew roles:\n${crewRoles}\n\n${baseSystem}`;
+// ── LANGUAGE ──
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('md_lang', l);
+  const isRTL = l === 'ar';
+  document.documentElement.lang = l;
+  document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+  document.body.style.fontFamily = isRTL ? "'Cairo', sans-serif" : "";
+  document.querySelector('textarea').placeholder = t('placeholder');
+  updatePhaseUI(phase);
+  // Update language buttons
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.style.color = b.dataset.lang === l ? '#a8d700' : '#c4caac';
+  });
 }
 
-function showCrewBadge(){
-  const names = localStorage.getItem('md_crew_names') || '';
-  if(!names) return;
-  addMsg('bot', `🎬 **${names}** — ready. Tell me your story.`, true);
+// ── RESET ──
+function resetSession() {
+  phase = 'discovery'; history = []; brief = null;
+  projectType = null; isBusy = false; scenes = null;
+  const area = document.querySelector('.custom-scrollbar');
+  if (area) area.innerHTML = '';
+  const assemblyBtn = document.getElementById('assembly-room-btn');
+  if (assemblyBtn) assemblyBtn.classList.add('hidden');
+  updatePhaseUI('discovery');
+  updatePipelineStage(1, 'idle');
+  const cockpit = document.querySelector('.cockpit-screen .text-center');
+  if (cockpit) cockpit.innerHTML = `<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">AWAITING_BRIEFING</span><span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>`;
+  log('Session reset', 'ok');
+  showProjectTypeSelector();
 }
 
-window.onload=()=>{
-  log('MERCADREAM DREAM_EXTRACTOR™ v7.0 - ACTION MODE','inf');
-  log('Each scene: 10 seconds → Total: 60 seconds','inf');
-  log('⚡ Type "ACTION" or press the yellow button to start production immediately','inf');
-  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'Reply: OK',messages:[{role:'user',content:'ping'}],max_tokens:5})})
-    .then(r=>log(r.ok?'✓ /api/chat connected':'✗ /api/chat HTTP '+r.status,r.ok?'ok':'err'))
-    .catch(e=>log('✗ /api/chat unreachable — deploy api/chat.js on Vercel','err'));
-  const saved=localStorage.getItem('md_lang')||'en';
-  setLang(saved);
-  startSession();
+// ── WIRE UP BUTTONS ──
+function wireButtons() {
+  // Send button
+  document.querySelector('.bg-surface-tint.text-black.px-6')
+    ?.addEventListener('click', sendMessage);
+
+  // Textarea enter key
+  document.querySelector('textarea')
+    ?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+  document.querySelector('textarea')
+    ?.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+  // Action button
+  document.querySelector('.border.border-surface-tint')
+    ?.addEventListener('click', triggerAction);
+
+  // New session button
+  document.querySelector('.hover\:bg-surface-tint.hover\:text-black')
+    ?.addEventListener('click', resetSession);
+
+  // Generate button
+  document.querySelector('.bg-secondary')
+    ?.addEventListener('click', () => showConfirmModal());
+
+  // Assembly room button
+  document.getElementById('assembly-room-btn')
+    ?.addEventListener('click', () => window.location.href = 'assembly.html');
+
+  // Recharge button
+  document.querySelectorAll('button').forEach(b => {
+    if (b.textContent.includes('Recharge') || b.textContent.includes('Recargar') || b.textContent.includes('شحن')) {
+      b.addEventListener('click', showRecharge);
+    }
+  });
+
+  // Distribution mode buttons
+  document.querySelectorAll('.flex.border.border-outline-variant button').forEach(b => {
+    b.classList.add('distribution-btn');
+    b.dataset.mode = b.textContent.trim().toLowerCase() === 'auto' || b.textContent.trim() === 'تلقائي' ? 'auto' : 'manual';
+    b.addEventListener('click', () => setDistributionMode(b.dataset.mode));
+  });
+
+  // Language buttons
+  document.querySelectorAll('.font-technical-sm.text-technical-sm.text-on-surface-variant span').forEach(b => {
+    const lMap = { 'EN': 'en', 'ES': 'es', 'AR': 'ar' };
+    if (lMap[b.textContent]) {
+      b.classList.add('lang-btn');
+      b.dataset.lang = lMap[b.textContent];
+      b.style.cursor = 'pointer';
+      b.addEventListener('click', () => setLang(b.dataset.lang));
+    }
+  });
+
+  // Wallet icon
+  document.querySelector('.material-symbols-outlined.text-surface-tint.cursor-pointer')
+    ?.addEventListener('click', showRecharge);
+}
+
+// ── INIT ──
+window.onload = () => {
+  setCredits(getCredits());
+  loadCrew();
+  wireButtons();
+  setLang(lang);
+
+  // Test API
+  fetch(API_CHAT, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({system:'reply ok', messages:[{role:'user',content:'ping'}], max_tokens:5})})
+    .then(r => log(r.ok ? '✓ /api/chat connected' : '✗ /api/chat error', r.ok ? 'ok' : 'err'))
+    .catch(() => log('✗ /api/chat unreachable', 'err'));
+
+  // Clear demo content and start
+  const area = document.querySelector('.custom-scrollbar');
+  if (area) area.innerHTML = '';
+  showProjectTypeSelector();
+  log('MERCADREAM STUDIO v3.0 — Ready', 'ok');
 };
 </script>
 
-
-
-<div class="pw-overlay" id="pwOverlay">
-  <div class="pw-box">
-    <button class="pw-close" onclick="closePw()">x</button>
-    <div class="pw-title">Ready to <span>Generate?</span></div>
-    <div class="pw-sub">YOUR SCREENPLAY IS COMPLETE<br>GENERATING YOUR 6-SCENE FILM REQUIRES</div>
-    <div class="pw-cost">
-      <div class="pw-cost-val">10</div>
-      <div class="pw-cost-lbl">CREDITS</div>
-    </div>
-    <div class="pw-btns">
-      <button class="pw-btn secondary" onclick="closePw()">BACK</button>
-      <button class="pw-btn primary" onclick="pwContinue()">GET CREDITS +</button>
-    </div>
-  </div>
-</div></body>
-</html>
-
-
-
+</body></html>
