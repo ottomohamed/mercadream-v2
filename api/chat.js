@@ -1,4 +1,4 @@
-// ═══════════════════════════════════════════════════════
+﻿// ═══════════════════════════════════════════════════════
 // MERCADREAM — /api/chat.js
 // 3-Stage AI Pipeline:
 //   Stage 1: Discovery    → Gemini Flash 2.0 (FREE)
@@ -73,7 +73,7 @@ async function callGemini(req, res, messages, system, maxTokens) {
       : geminiMessages;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -95,7 +95,7 @@ async function callGemini(req, res, messages, system, maxTokens) {
       return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
     }
 
-    return res.status(200).json({ text, model: 'gemini-2.0-flash', usage: null });
+    return res.status(200).json({ text, model: 'gemini-1.5-flash', usage: null });
 
   } catch (err) {
     return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
@@ -141,3 +141,4 @@ async function callClaude(req, res, messages, system, maxTokens, model = 'claude
     return res.status(500).json({ error: err.message });
   }
 }
+
