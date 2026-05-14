@@ -674,7 +674,7 @@ function addMessage(role, html) {
       </div>
       <div class="bg-surface-container border-l-4 border-surface-tint p-6">
         <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/
-/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</p>
+/g,'<br>').replace(/\*\*([^\*]+)\*\*/g,'<strong>$1</strong>')}</p>
       </div>`;
   } else {
     wrap.innerHTML = `
@@ -771,7 +771,8 @@ async function sendMessage() {
   if (!text) return;
 
   // ACTION shortcut
-  if (/^(action|start|go|generate|انتج|ابدأ)$/i.test(text)) {
+  const actionWords = ['action','start','go','generate'];
+  if (actionWords.includes(text.toLowerCase())) {
     input.value = '';
     await triggerAction();
     return;
