@@ -1,539 +1,772 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
-<html dir="rtl" lang="ar"><head>
+<html class="dark" dir="ltr" lang="en"><head>
 <meta charset="utf-8"/>
-<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22&gt;&lt;polygon points=%228,1 15,13 1,13%22 fill=%22%23c8ff00%22/&gt;&lt;/svg&gt;" rel="icon"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM — Select Your Crew</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<title>MERCADREAM | Production Command Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&amp;family=IBM+Plex+Mono:wght@400;500;700&amp;family=Inter:wght@400;600&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffffff",
+                        "primary-fixed": "#c8ff00",
+                        "on-primary-fixed": "#060606",
+                        "background": "#060606",
+                        "surface": "#131313",
+                        "surface-container": "#1A1A1A",
+                        "outline": "#434933",
+                        "outline-variant": "#2a2a2a",
+                        "secondary": "#ffba3f",
+                        "on-surface": "#e5e2e1",
+                        "on-surface-variant": "#c4caac"
+                    },
+                    "fontFamily": {
+                        "cairo": ["Cairo", "sans-serif"],
+                        "technical": ["IBM Plex Mono", "monospace"],
+                        "display": ["Orbitron", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
 <style>
-:root{
-  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;--cyan:#00e5ff;--purple:#b06aff;
-  --surface:#060606;--s2:#0d0d0d;--s3:#141414;--s4:#1c1c1c;--s5:#242424;
-  --border:rgba(200,255,0,0.09);--border-b:rgba(200,255,0,0.35);
-  --text:#aaa;--text-dim:#3a3a3a;--text-bright:#f0f0f0;
-  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--surface);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden}
-
-/* GRID & FX */
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.018) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
-
-.orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;z-index:0}
-.orb1{width:700px;height:700px;background:radial-gradient(circle,rgba(200,255,0,0.035),transparent);top:-200px;right:-200px}
-.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,229,255,0.025),transparent);bottom:-100px;left:-100px}
-
-/* HEADER */
-header{
-  position:fixed;top:0;left:0;right:0;height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 32px;background:rgba(6,6,6,0.95);
-  backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
-  z-index:1000
-}
-.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
-.logo-m{width:32px;height:32px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04);position:relative}
-.logo-m svg{width:16px;height:16px}
-.logo-n{font-family:var(--display);font-size:12px;font-weight:900;color:var(--acid);letter-spacing:4px;text-shadow:0 0 16px rgba(200,255,0,0.3)}
-
-.hdr-r{display:flex;align-items:center;gap:24px}
-.credits-wrap{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px}
-.credits-val{color:var(--acid);font-weight:700}
-
-.lang-sw{display:flex;gap:4px;background:rgba(200,255,0,0.03);border:1px solid var(--border);padding:3px}
-.lb{font-family:var(--mono);font-size:9px;padding:4px 10px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.lb.on{background:var(--acid);color:#000;font-weight:700}
-
-/* PAGE CONTAINER */
-.page{max-width:1200px;margin:0 auto;padding:100px 32px 80px;position:relative;z-index:1}
-
-/* COMPACT CREDIT HERO BAR */
-.credit-hero-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--s2); border: 1px solid var(--border-b);
-  padding: 12px 24px; margin-bottom: 24px; position: relative;
-  overflow: hidden;
-}
-.credit-hero-bar::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--acid);
-}
-.chb-left { display: flex; align-items: center; gap: 16px; }
-.chb-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
-.chb-value { font-family: var(--display); font-size: 18px; color: var(--acid); font-weight: 700; }
-.chb-btn {
-  background: transparent; border: 1px solid var(--border-b); color: var(--acid);
-  padding: 6px 16px; font-family: var(--mono); font-size: 9px; font-weight: 700;
-  cursor: pointer; transition: all 0.3s;
-}
-.chb-btn:hover { background: var(--acid); color: #000; }
-
-/* NEURAL STATUS DASHBOARD */
-.neural-dashboard {
-  background: rgba(13,13,13,0.6); border: 1px solid var(--border);
-  margin-bottom: 48px; padding: 24px; display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
-  backdrop-filter: blur(10px);
-}
-.nd-status { display: flex; flex-direction: column; gap: 12px; }
-.nd-title { font-family: var(--display); font-size: 11px; color: var(--acid); letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
-.pulse-dot { width: 8px; height: 8px; background: var(--acid); border-radius: 50%; box-shadow: 0 0 10px var(--acid); animation: pulse 2s infinite; }
-@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-.nd-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.nd-stat-box { border: 1px solid rgba(200,255,0,0.1); padding: 12px; background: rgba(0,0,0,0.2); }
-.nd-stat-label { font-family: var(--mono); font-size: 8px; color: var(--text-dim); text-transform: uppercase; }
-.nd-stat-val { font-family: var(--display); font-size: 14px; color: var(--text-bright); margin-top: 4px; }
-
-.nd-feed { border-right: 1px solid var(--border); padding-right: 24px; overflow: hidden; position: relative; height: 120px; }
-.feed-scroll { animation: scroll-up 20s linear infinite; }
-@keyframes scroll-up { 0% { transform: translateY(0); } 100% { transform: translateY(-100%); } }
-.feed-item { font-family: var(--mono); font-size: 10px; color: var(--acid-dim); margin-bottom: 8px; white-space: nowrap; }
-.feed-item span { color: var(--text-dim); }
-
-/* SECTION HEADERS */
-.section-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;border-bottom:1px solid var(--border);padding-bottom:16px}
-.sh-left h2{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);letter-spacing:2px}
-.sh-right{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px}
-
-/* CREW GRID */
-.crew-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-  gap:24px;margin-bottom:48px
-}
-
-/* CREW CARD */
-.crew-card{
-  background:var(--s2);border:1px solid var(--border);
-  position:relative;overflow:hidden;transition:all .4s ease;
-  display:flex;flex-direction:column
-}
-.crew-card:hover{border-color:var(--border-b);transform:translateY(-4px)}
-.crew-card.selected{border-color:var(--acid);background:rgba(200,255,0,0.02)}
-.cc-visual{height:220px;position:relative;overflow:hidden}
-.cc-img{width:100%;height:100%;object-fit:cover;transition:all .6s ease;filter:grayscale(30%)}
-.cc-gradient{position:absolute;inset:0;background:linear-gradient(to top, var(--s2) 0%, transparent 60%)}
-.cc-body{padding:24px;flex:1;display:flex;flex-direction:column}
-.cc-role{font-family:var(--mono);font-size:9px;color:var(--acid);letter-spacing:2px;margin-bottom:8px}
-.cc-name{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);margin-bottom:12px}
-.cc-desc{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:24px;flex:1}
-.cc-btn{
-  width: 100%; padding:12px; font-family:var(--mono); font-size:10px; font-weight:700;
-  letter-spacing:1px; border:1px solid var(--border-b); background:transparent;
-  color:var(--text-bright); cursor:pointer; transition:all .2s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.cc-btn:hover:not(:disabled){background:rgba(200,255,0,0.1);border-color:var(--acid);color:var(--acid)}
-.cc-btn.active{background:var(--acid);color:#000;border-color:var(--acid)}
-
-/* CREDIT SUMMARY BAR */
-.plan-info-bar{
-  display:flex;align-items:center;gap:32px;padding:24px 32px;
-  background:var(--s2);border:1px solid var(--border-b);
-  margin-bottom:32px;border-right:4px solid var(--acid);
-}
-.pib-item{display:flex;flex-direction:column;gap:4px}
-.pib-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:2px}
-.pib-val{font-family:var(--display);font-size:14px;color:var(--acid);font-weight:700}
-
-/* STICKY FOOTER */
-.sticky-cta{
-  position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,6,0.95);
-  backdrop-filter:blur(20px);border-top:1px solid var(--border-b);
-  padding:16px 32px;z-index:500;display:flex;align-items:center;justify-content:space-between
-}
-.sc-left{display:flex;align-items:center;gap:16px}
-.sc-summary-label{font-family:var(--mono);font-size:9px;color:var(--text-dim)}
-.sc-crew-chips{display:flex;gap:8px}
-.crew-chip{
-  background:rgba(200,255,0,0.1);border:1px solid var(--border-b);
-  padding:6px 12px;font-family:var(--mono);font-size:9px;color:var(--acid);
-  display:flex;align-items:center;gap:8px
-}
-.chip-remove{cursor:pointer;opacity:.6;transition:opacity .2s}
-.btn-launch{
-  background:var(--acid);color:#000;padding:12px 48px;
-  font-family:var(--display);font-size:12px;font-weight:900;
-  border:none;cursor:pointer;letter-spacing:2px;transition:all .3s
-}
-.btn-launch:disabled{background:var(--s4);color:var(--text-dim);cursor:not-allowed}
-
-/* MODAL */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000;
-  display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
-}
-.modal-overlay.open { display: flex; }
-.modal-content {
-  width: 90%; max-width: 500px; background: var(--s2); border: 1px solid var(--acid);
-  padding: 40px; position: relative;
-}
-.modal-close {
-  position: absolute; top: 16px; left: 16px; color: var(--text-dim); cursor: pointer; font-size: 20px;
-}
-.modal-title { font-family: var(--display); color: var(--acid); font-size: 18px; margin-bottom: 24px; text-align: center; }
-.tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.tier-card {
-  border: 1px solid var(--border-b); padding: 20px; text-align: center; cursor: pointer; transition: 0.3s;
-}
-.tier-card:hover { border-color: var(--acid); background: rgba(200,255,0,0.05); }
-.tier-price { font-family: var(--display); font-size: 20px; color: var(--text-bright); margin-bottom: 4px; }
-.tier-pts { font-family: var(--mono); font-size: 11px; color: var(--acid); }
-.tier-bonus { font-size: 9px; color: var(--gold); margin-top: 4px; display: block; font-weight: 700; }
-
-/* GUIDE SECTION */
-.guide-section { background: var(--s2); border: 1px solid var(--border); padding: 32px; margin-bottom: 48px; }
-.guide-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.guide-step { display: flex; flex-direction: column; gap: 8px; }
-.step-num { font-family: var(--display); color: var(--acid); font-size: 24px; font-weight: 900; opacity: 0.5; }
-.guide-step p { font-size: 13px; line-height: 1.6; }
-.directors-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px; }
-
-/* PRODUCTION SHOWCASE */
-.production-showcase { margin-top: 64px; margin-bottom: 120px; }
-.showcase-player {
-  position: relative; aspect-ratio: 21/9; border: 1px solid var(--border-b);
-  overflow: hidden; background: #000;
-}
-.showcase-player img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: saturate(0.2); }
-.showcase-overlay {
-  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(circle, transparent 0%, rgba(0,0,0,0.6) 100%);
-}
-.play-btn-large {
-  width: 100px; height: 100px; border: 1px solid var(--acid); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; cursor: pointer;
-  background: rgba(200,255,0,0.05); transition: 0.4s;
-}
-.play-btn-large:hover { transform: scale(1.1); background: var(--acid); color: #000; }
-.showcase-labels {
-  position: absolute; bottom: 24px; left: 24px; right: 24px; display: flex; justify-content: space-between; align-items: flex-end;
-}
-.sl-left { text-align: right; }
-.sl-tag { font-family: var(--mono); font-size: 9px; color: var(--acid); margin-bottom: 8px; }
-.sl-title { font-family: var(--display); font-size: 24px; color: var(--text-bright); }
-
-@media(max-width:768px){
-  .credit-hero-bar { flex-direction: column; align-items: stretch; gap: 12px; }
-  .neural-dashboard { grid-template-columns: 1fr; }
-  .nd-feed { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 16px; margin-bottom: 16px; }
-  .crew-grid, .directors-row, .guide-steps { grid-template-columns: 1fr; }
-  .sticky-cta{flex-direction:column;gap:16px;padding:24px 16px}
-  .showcase-player { aspect-ratio: 16/9; }
-}
-
-.cc-preview-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--acid); color: var(--acid); padding: 4px 8px; font-family: var(--mono); font-size: 8px; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; z-index: 5; }
-.cc-preview-btn:hover { background: var(--acid); color: #000; }
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/></head>
-<body class="lang-ar">
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<header>
-<a class="logo" href="index.html">
-<div class="logo-m">
-<svg fill="none" viewbox="0 0 16 16"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5"></polygon><circle cx="8" cy="8" fill="#c8ff00" r="1.5"></circle></svg>
+        body {
+            background-color: #060606;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        [dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .grid-overlay {
+            background-image: linear-gradient(rgba(200, 255, 0, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(200, 255, 0, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .service-card, .crew-card, .console-panel {
+            background: #131313;
+            border: 1px solid #2a2a2a;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .service-card:hover, .crew-card:hover {
+            border-color: #c8ff00;
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(200, 255, 0, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 5;
+            background: linear-gradient(0deg, rgba(200,255,0,0) 0%, rgba(200,255,0,0.05) 50%, rgba(200,255,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+        .hero-vignette {
+            background: radial-gradient(circle, transparent 20%, #060606 100%);
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(200, 255, 0, 0.3);
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 40s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body class="selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
+<div class="fixed inset-0 grid-overlay pointer-events-none z-0"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex flex-row justify-between items-center px-6 md:px-10 h-20 border-b border-white/5 bg-black/60 backdrop-blur-xl transition-all duration-300">
+<div class="flex flex-row items-center gap-10">
+<span class="font-display text-2xl font-bold text-white tracking-[0.2em] cursor-default">MERCADREAM</span>
+<nav class="hidden lg:flex flex-row gap-8 items-center font-technical text-[10px] uppercase tracking-widest">
+<a class="text-white hover:text-primary-fixed transition-colors" href="#">Project_Archive</a>
+<a class="text-white/40 hover:text-white transition-colors" href="#">Neural_Network</a>
+<a class="text-primary-fixed border-b border-primary-fixed pb-1" href="#">Studio_Core</a>
+</nav>
 </div>
-<span class="logo-n">MERCADREAM</span>
-</a>
-<div class="hdr-r">
-<div class="credits-wrap">
-<span data-i18n="hdr_credits">الرصيد</span>
-<span class="credits-val" id="topCredits">1,240</span>
+<div class="flex flex-row items-center gap-6">
+<div class="flex flex-row items-center gap-3 bg-surface-container border border-outline-variant px-4 py-2 rounded-sm group cursor-help transition-all hover:border-primary-fixed/30" id="header-credits">
+<span class="font-technical text-primary-fixed text-xs font-bold tracking-tighter">240.00 CRD</span>
+<span class="w-1.5 h-1.5 bg-primary-fixed rounded-full animate-pulse shadow-[0_0_8px_#c8ff00]"></span>
 </div>
-<div class="lang-sw">
-<button class="lb" onclick="setLang('en')">EN</button>
-<button class="lb" onclick="setLang('es')">ES</button>
-<button class="lb on" onclick="setLang('ar')">AR</button>
+<div class="hidden sm:flex flex-row items-center gap-4 font-technical text-[11px] border-x border-white/10 px-6">
+<button class="hover:text-primary-fixed transition-colors" id="btn-lang-toggle">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</button>
+<div class="flex gap-3">
+<button class="text-primary-fixed font-bold" id="lang-en">EN</button>
+<button class="hover:text-primary-fixed transition-colors text-white/40" id="lang-es">ES</button>
+<button class="hover:text-primary-fixed transition-colors text-white/40" id="lang-ar">AR</button>
 </div>
-<div class="dot-live" style="width:6px;height:6px;background:var(--acid);border-radius:50%;box-shadow:0 0 8px var(--acid)"></div>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(200,255,0,0.2)]" id="btn-new-session">
+            New Session
+        </button>
 </div>
 </header>
-<div class="page">
-<!-- COMPACT CREDIT HERO BAR -->
-<div class="credit-hero-bar">
-<div class="chb-left"><span class="chb-label" data-i18n="current_balance">الرصيد:</span>
-<span class="chb-value" id="heroCredits">1,240</span></div>
-<button class="chb-btn" data-i18n="btn_add" onclick="openModal()">[+ إضافة رصيد]</button>
+<main class="relative z-10">
+<!-- 100vh Hero Section -->
+<section class="relative h-screen w-full overflow-hidden flex items-center justify-center bg-black">
+<div class="scanline"></div>
+<!-- Video Carousel -->
+<video id="hero-video" autoplay muted playsinline
+  class="absolute inset-0 w-full h-full object-cover opacity-70"
+  style="transition: opacity 0.8s ease">
+  <source src="/public/hero1.mp4" type="video/mp4"/>
+</video>
+<!-- Progress dots -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+  <div class="video-dot w-8 h-0.5 bg-primary-fixed transition-all duration-300" data-index="0"></div>
+  <div class="video-dot w-2 h-0.5 bg-white/20 transition-all duration-300" data-index="1"></div>
+  <div class="video-dot w-2 h-0.5 bg-white/20 transition-all duration-300" data-index="2"></div>
 </div>
-<!-- NEURAL INTELLIGENCE DASHBOARD -->
-<div class="neural-dashboard">
-<div class="nd-feed">
-<div class="feed-scroll">
-<div class="feed-item"><span>[SYS]:</span> NEURAL_ENGINE_V4_ONLINE</div>
-<div class="feed-item"><span>[LOC]:</span> GLOBAL_RENDER_FARM_09</div>
-<div class="feed-item"><span>[ACT]:</span> SYNTHESIZING_SCENE_772</div>
-<div class="feed-item"><span>[MEM]:</span> 128TB_VRAM_ALLOCATED</div>
-<div class="feed-item"><span>[LAT]:</span> 0.04ms_SYNC</div>
-<div class="feed-item"><span>[SYS]:</span> NEURAL_ENGINE_V4_ONLINE</div>
-<div class="feed-item"><span>[LOC]:</span> GLOBAL_RENDER_FARM_09</div>
-<div class="feed-item"><span>[ACT]:</span> SYNTHESIZING_SCENE_772</div>
-<div class="feed-item"><span>[MEM]:</span> 128TB_VRAM_ALLOCATED</div>
-<div class="feed-item"><span>[LAT]:</span> 0.04ms_SYNC</div>
+<div class="absolute inset-0 hero-vignette"></div>
+<div class="absolute inset-0 p-10 flex flex-col justify-between pointer-events-none font-technical text-[10px] text-white/40 uppercase tracking-[0.2em]">
+<div class="flex justify-between mt-20">
+<div class="flex flex-col gap-1">
+<p>System // <span class="text-primary-fixed">Active</span></p>
+<p>Stream // 48.4 GBPS</p>
+<p>Buffer // 0.002ms</p>
+</div>
+<div class="text-right flex flex-col gap-1">
+<p>Frame_Index // 14.829</p>
+<p>Relighting_Engine // v4.2</p>
+<p>Render_Task // ID_9982</p>
 </div>
 </div>
-<div class="nd-status"><div class="nd-title">
-<div class="pulse-dot"></div>
-<span data-i18n="neural_status">حالة الذكاء العصبي: نظام نشط</span>
+<div class="flex flex-col items-center gap-6 mb-32">
+<div class="group pointer-events-auto cursor-pointer flex flex-col items-center gap-6">
+<div class="w-24 h-24 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-sm group-hover:border-primary-fixed group-hover:bg-primary-fixed/5 transition-all duration-700">
+<span class="material-symbols-outlined text-4xl text-white group-hover:text-primary-fixed transition-colors">play_arrow</span>
 </div>
-<div class="nd-stat-grid">
-<div class="nd-stat-box">
-<div class="nd-stat-label" data-i18n="proc_power">قوة المعالجة</div>
-<div class="nd-stat-val">98.4 PFLOPS</div>
-</div>
-<div class="nd-stat-box">
-<div class="nd-stat-label" data-i18n="prod_activity">نشاط الإنتاج العالمي</div>
-<div class="nd-stat-val">12,402 <span data-i18n="projects_unit">مشروع</span></div>
-</div>
-</div></div>
-</div>
-<div class="guide-section">
-<div class="sh-left" style="margin-bottom: 16px;">
-<h2 data-i18n="guide_title">كيفية بناء فريقك</h2>
-</div>
-<div class="guide-steps">
-<div class="guide-step">
-<span class="step-num">01</span>
-<p data-i18n="step_1">اختر المتخصصين بناءً على احتياجات مشروعك.</p>
-</div>
-<div class="guide-step">
-<span class="step-num">02</span>
-<p data-i18n="step_2">افتح قفل العناصر المختارة باستخدام رصيدك.</p>
-</div>
-<div class="guide-step">
-<span class="step-num">03</span>
-<p data-i18n="step_3">ادخل إلى الأستوديو لبدء عملية الإنتاج.</p>
+<div class="text-center">
+<h1 class="font-display text-5xl md:text-7xl text-white font-bold glow-text tracking-tighter mb-4">ORBITAL MECHANIC</h1>
+<p class="text-primary-fixed/80 text-sm font-bold flex items-center justify-center gap-4">
+<span class="w-12 h-px bg-primary-fixed/30"></span>
+                            SHOWCASE CINEMATIC VISION
+                            <span class="w-12 h-px bg-primary-fixed/30"></span>
+</p>
 </div>
 </div>
 </div>
-<!-- FEATURED DIRECTOR -->
-<div class="featured-crew-wrap" id="featuredContainer">
-<div class="section-hdr">
-<div class="sh-left">
-<h2 data-i18n="sec_directors">المخرجون الرائدون</h2>
+<div class="flex justify-between items-end">
+<div class="bg-white/5 backdrop-blur-md border border-white/10 p-4 flex flex-col gap-2">
+<div class="flex gap-2">
+<span class="w-1 h-1 bg-primary-fixed"></span>
+<span class="w-1 h-1 bg-white/20"></span>
+<span class="w-1 h-1 bg-white/20"></span>
 </div>
+<p class="text-[9px]">Lat: 34.0522 N // Long: 118.2437 W</p>
 </div>
-<div class="directors-row" id="leadDirectorsGrid"></div>
-</div>
-<!-- CREDIT SUMMARY BAR -->
-<div class="plan-info-bar"><div class="pib-item">
-<span class="pib-label" data-i18n="pib_cost">تكلفة الفريق</span>
-<span class="pib-val" id="crewCost">0 رصيد</span>
-</div>
-<div style="width:1px;height:30px;background:var(--border)"></div>
-<div class="pib-item">
-<span class="pib-label" data-i18n="pib_balance">الرصيد الكلي</span>
-<span class="pib-val" id="balanceVal">1,240</span>
-</div>
-<div style="width:1px;height:30px;background:var(--border)"></div>
-<div class="pib-item">
-<span class="pib-label" data-i18n="pib_remaining">المتبقي</span>
-<span class="pib-val" id="remainingVal">1,240</span>
-</div></div>
-<!-- CREW SECTION -->
-<div class="section-hdr">
-<div class="sh-left">
-<h2 data-i18n="sec_specialists">متخصصو الفريق</h2>
-</div>
-<div class="sh-right" id="slotCounter">تم اختيار 0 متخصصين</div>
-</div>
-<div class="crew-grid" id="crewGrid"></div>
-<!-- PRODUCTION SHOWCASE SECTION -->
-<div class="production-showcase"><div class="section-hdr">
-<div class="sh-left">
-<h2 data-i18n="showcase_hdr">معرض الإنتاج: الأعمال المميزة</h2>
-</div>
-</div>
-<div class="showcase-player">
-<img alt="Showcase" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxM9QfRAERGXUYWyXOt3UV-IjZQe98o32vxg6G5WpafBXEBghZQyNZ5y7UH9Fo2c41HzTx_ddzIOYfWLlIlmfHKLouaf2HzVifqsztZi_nfZiafCVWeM2ETbD-DzYuq8Nk7F8xBiFFCsK5hAhBvBFSfvMp4BWMwcWsitLmZ9t8ICHwKQP_ecjraeFamaotk6gZ5cUsgqOybhvonA7i36IQ0Jbj8T3Ny4wp1V7WxKwnVqaedsp3-bO6tArQsX5lBE-2i-qSayDL7J8"/>
-<div class="showcase-overlay">
-<div class="play-btn-large">
-<span class="material-symbols-outlined" style="font-size: 56px;">play_arrow</span>
-</div>
-</div>
-<div class="showcase-labels">
-<div class="sl-left">
-<div class="sl-tag" data-i18n="feat_project">مشروع مميز / نظام عصبي 2.0</div>
-<div class="sl-title" data-i18n="feat_title">أطلال السايبربانك: نهضة الماكينة</div>
-</div>
-<div class="sl-right" style="font-family: var(--mono); font-size: 10px; color: var(--text-dim);">
-[4K HDR] • [120FPS] • [NEURAL_GEN]
-</div>
-</div>
-</div></div>
-</div>
-<!-- STICKY FOOTER -->
-<div class="sticky-cta">
-<div class="sc-left">
-<span class="sc-summary-label" data-i18n="cs_label">الفريق المختار:</span>
-<div class="sc-crew-chips" id="crewSummary">
-<span data-i18n="cs_empty" style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">لم يتم اختيار أحد</span>
-</div>
-</div>
-<button class="btn-launch" id="launchBtn" onclick="launchStudio()">دخول الأستوديو ← (0 رصيد)</button>
-</div>
-<!-- MODAL -->
-<div class="modal-overlay" id="creditModal" onclick="closeModal()">
-<div class="modal-content" onclick="event.stopPropagation()">
-<span class="modal-close" onclick="closeModal()">✕</span>
-<h3 class="modal-title">إضافة رصيد للإنتاج</h3>
-<div class="tier-grid">
-<div class="tier-card">
-<div class="tier-price">$10</div>
-<div class="tier-pts">100 نقطة</div>
-</div>
-<div class="tier-card">
-<div class="tier-price">$25</div>
-<div class="tier-pts">300 نقطة</div>
-<span class="tier-bonus">+ 50 مجاناً</span>
-</div>
-<div class="tier-card">
-<div class="tier-price">$50</div>
-<div class="tier-pts">700 نقطة</div>
-<span class="tier-bonus">+ 200 مجاناً</span>
-</div>
-<div class="tier-card">
-<div class="tier-price">$100</div>
-<div class="tier-pts">1500 نقطة</div>
-<span class="tier-bonus">+ 500 مجاناً</span>
+<div class="text-right flex flex-col items-center">
+<p class="text-white/60 mb-2">Scroll to Access Supermarket</p>
+<div class="w-0.5 h-12 bg-gradient-to-b from-primary-fixed to-transparent"></div>
 </div>
 </div>
 </div>
+</section>
+<!-- Telemetry Ticker -->
+<div class="w-full bg-surface border-y border-primary-fixed/20 py-3 overflow-hidden">
+<div class="marquee-track flex gap-20 items-center font-technical text-[10px] uppercase tracking-widest text-white/40">
+<div class="flex gap-10">
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Active Nodes: <span class="text-primary-fixed">1,024</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> GPU Load: <span class="text-primary-fixed">84%</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Render Latency: <span class="text-primary-fixed">12ms</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Market Pulse: <span class="text-primary-fixed">High Activity</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Uplink Status: <span class="text-primary-fixed">Stable</span></span>
 </div>
-<script>const I18N = {
-  en: {
-    hdr_credits: 'CREDITS', btn_add: '[+ ADD CREDITS]', current_balance: 'CREDITS:', sec_specialists: 'CREW SPECIALISTS', slot_counter: '{{n}} SPECIALISTS SELECTED', footer_label: 'SELECTED CREW:', footer_empty: 'NONE SELECTED', pib_cost: 'CREW COST', pib_balance: 'TOTAL BALANCE', pib_remaining: 'REMAINING', btn_launch: 'ENTER STUDIO ← ({{cost}} CREDITS)', btn_launching: 'INITIALIZING ENGINE...', modal_title: 'ADD PRODUCTION CREDITS', unlock_msg: 'REQUIRES 10 CREDITS TO UNLOCK', btn_assign: 'ASSIGN SPECIALIST', btn_selected: '✓ SELECTED', btn_unlock: '10 CREDITS ← UNLOCK', guide_title: 'How to Build Your Crew', step_1: 'Choose specialists based on your project needs.', step_2: 'Unlock them using credits.', step_3: 'Enter the studio to begin production.', sec_directors: 'LEAD DIRECTORS', preview: 'PREVIEW REEL',
-    neural_status: 'NEURAL STATUS: SYSTEM ACTIVE', proc_power: 'PROCESSING POWER', prod_activity: 'GLOBAL PRODUCTION ACTIVITY', showcase_hdr: 'PRODUCTION SHOWCASE: FEATURED WORKS', feat_project: 'FEATURED PROJECT / NEURAL ENGINE 2.0', feat_title: 'CYBERPUNK RUINS: RISE OF THE MACHINE', projects_unit: 'PROJECTS'
-  },
-  es: {
-    hdr_credits: 'CRÉDITOS', btn_add: '[+ AÑADIR CRÉDITOS]', current_balance: 'CRÉDITOS:', sec_specialists: 'ESPECIALISTAS', slot_counter: '{{n}} SELECCIONADOS', footer_label: 'EQUIPO SELECCIONADO:', footer_empty: 'NINGUNO SELECCIONADO', pib_cost: 'COSTE DEL EQUIPO', pib_balance: 'SALDO TOTAL', pib_remaining: 'RESTANTE', btn_launch: 'ENTRAR AL ESTUDIO ← ({{cost}} CRÉDITOS)', btn_launching: 'INICIALIZANDO MOTOR...', modal_title: 'AÑADIR CRÉDITOS', unlock_msg: 'REQUIERE 10 CRÉDITOS PARA DESBLOQUEAR', btn_assign: 'ASIGNAR ESPECIALISTA', btn_selected: '✓ SELECCIONADO', btn_unlock: '10 CRÉDITOS ← DESBLOQUEAR', guide_title: 'Cómo construir tu equipo', step_1: 'Elige especialistas según las necesidades de tu proyecto.', step_2: 'Desbloquéalos usando créditos.', step_3: 'Entra al estudio para comenzar la producción.', sec_directors: 'DIRECTORES LÍDERES', preview: 'VER DEMO',
-    neural_status: 'ESTADO NEURAL: SISTEMA ACTIVO', proc_power: 'POTENCIA DE PROCESO', prod_activity: 'ACTIVIDAD DE PRODUCCIÓN GLOBAL', showcase_hdr: 'EXPOSICIÓN DE PRODUCCIÓN: TRABAJOS DESTACADOS', feat_project: 'PROYECTO DESTACADO / MOTOR NEURAL 2.0', feat_title: 'RUINAS CYBERPUNK: EL DESPERTAR DE LA MÁQUINA', projects_unit: 'PROYECTOS'
-  },
-  ar: {
-    hdr_credits: 'الرصيد', btn_add: '[+ إضافة رصيد]', current_balance: 'الرصيد:', sec_specialists: 'متخصصو الفريق', slot_counter: 'تم اختيار {{n}} متخصصين', footer_label: 'الفريق المختار:', footer_empty: 'لم يتم اختيار أحد', pib_cost: 'تكلفة الفريق', pib_balance: 'الرصيد الكلي', pib_remaining: 'المتبقي', btn_launch: 'دخول الأستوديو ← ({{cost}} رصيد)', btn_launching: 'جاري تهيئة محرك الإنتاج...', modal_title: 'إضافة رصيد للإنتاج', unlock_msg: 'يتطلب 10 رصيد لفتح هذا المتخصص', btn_assign: 'اختيار المتخصص', btn_selected: '✓ تم الاختيار', btn_unlock: '10 رصيد ← فتح القفل', guide_title: 'كيفية بناء فريقك', step_1: 'اختر المتخصصين بناءً على احتياجات مشروعك.', step_2: 'افتح قفل العناصر المختارة باستخدام رصيدك.', step_3: 'ادخل إلى الأستوديو لبدء عملية الإنتاج.', sec_directors: 'المخرجون الرائدون', preview: 'عرض تشويقي',
-    neural_status: 'حالة الذكاء العصبي: نظام نشط', proc_power: 'قوة المعالجة', prod_activity: 'نشاط الإنتاج العالمي', showcase_hdr: 'معرض الإنتاج: الأعمال المميزة', feat_project: 'مشروع مميز / نظام عصبي 2.0', feat_title: 'أطلال السايبربانك: نهضة الماكينة', projects_unit: 'مشروع'
-  }
-};
+<div class="flex gap-10">
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Active Nodes: <span class="text-primary-fixed">1,024</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> GPU Load: <span class="text-primary-fixed">84%</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Render Latency: <span class="text-primary-fixed">12ms</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Market Pulse: <span class="text-primary-fixed">High Activity</span></span>
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary-fixed"></span> Uplink Status: <span class="text-primary-fixed">Stable</span></span>
+</div>
+</div>
+</div>
+<!-- Services Section -->
+<section class="max-w-[1440px] mx-auto px-6 md:px-16 py-24 relative" id="supermarket">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 border-b border-white/10 pb-12">
+<div class="max-w-2xl">
+<h2 class="font-display text-4xl text-white mb-4 uppercase tracking-tight">Hollywood Supermarket</h2>
+<p class="font-technical text-primary-fixed text-xs tracking-[0.4em] uppercase mb-6">High-Density Neural Micro-Services</p>
+<p class="text-white/40 text-sm leading-relaxed font-cairo" data-lang-ar="أدوات ذكاء اصطناعي بمواصفات استوديوهات هوليوود، متاحة الآن لكل صانع أفلام. كفاءة معمارية، دقة فيزيائية، وسرعة معالجة غير مسبوقة.">
+                    Hollywood-spec AI tools, now accessible to every filmmaker. Architectural efficiency, physical precision, and unprecedented processing speeds.
+                </p>
+</div>
+<div class="flex gap-4 font-technical text-[9px] uppercase">
+<div class="border border-white/10 px-4 py-2 bg-white/5">
+<span class="text-primary-fixed">Status:</span> Nominal
+                </div>
+<div class="border border-white/10 px-4 py-2 bg-white/5">
+<span class="text-primary-fixed">Load:</span> 14%
+                </div>
+</div>
+</div>
+<div class="flex flex-col xl:flex-row gap-8">
+<!-- Quick Action Console -->
+<aside class="xl:w-72 flex flex-col gap-4">
+<div class="console-panel p-5 border-l-4 border-l-primary-fixed">
+<h4 class="font-technical text-[11px] text-primary-fixed uppercase tracking-[0.2em] mb-4">Quick_Action_Console</h4>
+<div class="flex flex-col gap-2">
+<button class="w-full text-left p-3 border border-white/5 hover:border-primary-fixed/40 bg-white/[0.02] hover:bg-white/[0.05] transition-all group">
+<span class="block font-technical text-[10px] text-white/40 uppercase mb-1">Bundle_01</span>
+<span class="block text-xs font-bold text-white group-hover:text-primary-fixed">Cinematic Short</span>
+</button>
+<button class="w-full text-left p-3 border border-white/5 hover:border-primary-fixed/40 bg-white/[0.02] hover:bg-white/[0.05] transition-all group">
+<span class="block font-technical text-[10px] text-white/40 uppercase mb-1">Bundle_02</span>
+<span class="block text-xs font-bold text-white group-hover:text-primary-fixed">Music Video Pro</span>
+</button>
+<button class="w-full text-left p-3 border border-white/5 hover:border-primary-fixed/40 bg-white/[0.02] hover:bg-white/[0.05] transition-all group">
+<span class="block font-technical text-[10px] text-white/40 uppercase mb-1">Bundle_03</span>
+<span class="block text-xs font-bold text-white group-hover:text-primary-fixed">Commercial Grade</span>
+</button>
+</div>
+</div>
+<div class="console-panel p-5 flex flex-col gap-4">
+<div class="flex items-center gap-2 text-[10px] font-technical text-white/40 uppercase">
+<span class="material-symbols-outlined text-sm">settings_input_component</span>
+                        Auto_Config_Link
+                    </div>
+<div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="w-1/3 h-full bg-primary-fixed"></div>
+</div>
+</div>
+</aside>
+<!-- Service Grid -->
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Service 1 -->
+<div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-deaging">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: NR-001</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed animate-pulse"></span>
+<span class="font-technical text-[9px] text-white/40 uppercase">Ready</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">face_retouching_natural</span>
+</div>
+<div>
+<h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="تصغير العمر الرقمي">Digital De-aging</h3>
+<p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="استعادة ملامح الشباب بدقة مسامية للجلد وحفاظ كامل على الأداء العاطفي.">Restore youthful features with pore-level skin accuracy and full emotional performance retention.</p>
+</div>
+<div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+<span class="font-technical text-sm text-secondary font-bold">45 ◆</span>
+<button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Service 2 -->
+<div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-relighting">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: RT-042</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+<span class="font-technical text-[9px] text-white/40 uppercase">Ready</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">light_mode</span>
+</div>
+<div>
+<h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="إعادة إضاءة شعاعية">Ray-traced Relighting</h3>
+<p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="تغيير بيئة الإضاءة بالكامل مع حساب دقيق لارتداد الضوء على الأسطح.">Completely alter lighting environments with precise surface light bounce calculation.</p>
+</div>
+<div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+<span class="font-technical text-sm text-secondary font-bold">30 ◆</span>
+<button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Service 3 -->
+<div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-volumetric">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: VC-099</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-technical text-[9px] text-white/40 uppercase">Computing</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">3d_rotation</span>
+</div>
+<div>
+<h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="التقاط حجمي AI">AI Volumetric Capture</h3>
+<p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="تحويل فيديو ثنائي الأبعاد إلى نموذج ثلاثي الأبعاد متكامل فائق الدقة.">Convert 2D video into a fully integrated high-fidelity 3D model.</p>
+</div>
+<div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+<span class="font-technical text-sm text-secondary font-bold">120 ◆</span>
+<button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Service 4 -->
+<div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-script">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: SA-015</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+<span class="font-technical text-[9px] text-white/40 uppercase">Ready</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">psychology</span>
+</div>
+<div>
+<h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="تحليل سيمانتك للدراما">Dramatic Semantic Analysis</h3>
+<p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="تحليل عميق لإيقاع المشاهد، تطور الشخصيات، وقوة الحوار درامياً.">Deep analysis of scene pacing, character evolution, and dialogue strength.</p>
+</div>
+<div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+<span class="font-technical text-sm text-secondary font-bold">15 ◆</span>
+<button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Service 5 -->
+<div class="service-card p-6 flex flex-col gap-6 group cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: LP-882</span>
+<div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="font-technical text-[9px] text-white/40">Ready</span></div>
+</div>
+<span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">record_voice_over</span>
+</div>
+<div>
+<h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="مزامنة شفاه كونية">Universal Lip Sync</h3>
+<p class="text-[13px] text-white/50 leading-relaxed" data-lang-ar="تحريك مخارج الحروف لأي لغة بدقة ميكرومترية تناسب الشاشات العملاقة.">Animate mouth movements for any language with micrometer precision for giant screens.</p>
+</div>
+<div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+<span class="font-technical text-sm text-secondary font-bold">25 ◆</span>
+<button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+</div>
+<!-- Service 6 -->
+<div class="service-card p-6 flex flex-col gap-6 group cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: CR-007</span>
+<div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="font-technical text-[9px] text-white/40">Ready</span></div>
+</div>
+<span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">groups</span>
+</div>
+<div>
+<h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="توليد حشود ذكية">Smart Crowd Generation</h3>
+<p class="text-[13px] text-white/50 leading-relaxed" data-lang-ar="إنشاء آلاف الكومبارس الافتراضي بسلوكيات متنوعة وتفاعل بيئي حقيقي.">Create thousands of virtual extras with diverse behaviors and real environmental interaction.</p>
+</div>
+<div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+<span class="font-technical text-sm text-secondary font-bold">85 ◆</span>
+<button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Production Crew Section -->
+<section class="max-w-[1440px] mx-auto px-6 md:px-16 py-32 bg-white/[0.02] border-y border-white/5 relative overflow-hidden" id="production-crew">
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary-fixed/5 rounded-full blur-[120px] -mr-48 -mt-48"></div>
+<div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
+<div class="max-w-2xl">
+<h2 class="font-display text-4xl text-white mb-4 uppercase tracking-tight" data-lang-ar="المخرجون والتقنيون">Production Crew</h2>
+<p class="font-technical text-primary-fixed text-xs tracking-[0.4em] uppercase mb-6">Neural Talent Management</p>
+<p class="text-white/40 text-sm leading-relaxed font-cairo" data-lang-ar="نخبة من المتخصصين الرقميين لإدارة إنتاجك السينمائي بأعلى المعايير التقنية.">A digital elite of specialists to manage your cinematic production with the highest technical standards.</p>
+</div>
+<div class="flex flex-col items-end gap-2 font-technical text-[10px] uppercase">
+<div class="flex gap-4">
+<span class="text-white/40">Total_Nodes: <span class="text-primary-fixed">1,024</span></span>
+<span class="text-white/40">Active_Lease: <span class="text-primary-fixed">12</span></span>
+</div>
+<div class="w-32 h-1 bg-white/5 overflow-hidden">
+<div class="w-2/3 h-full bg-primary-fixed"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+<!-- Sound Engineer -->
+<div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+<div class="flex justify-between items-center">
+<div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+<span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">equalizer</span>
+</div>
+<span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_IV</span>
+</div>
+<div>
+<h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: SE_992</h4>
+<h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مهندس صوت">Sound Engineer</h3>
+<p class="text-[11px] text-white/40 uppercase font-technical mb-3">Specialty: Acoustic Ray Tracing</p>
+<div class="flex gap-1">
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7r3SHuTrZuKFJkLzlr0lfJDJDl6jphHkGx_tMGuR-KtzCm8ZlTnt8iu5lAaFj0_qcvWWYgR0aJbuPC0lFb82xffH4Q4A84_BdueroWPfwuD-B5bWoKH2e1_1rlfGOZy0JvgZ9xU84OP0LBrkkuhYKPvAO-nx1scsKzMcOtouo-81X5FLj8wDmVywT7nEN6LytvmwBdgKPUZTEh8GjZvnXETjTszcdz8v2lrojDESjvzLVPZFvP6awHBj9jYv2YTxRLugOHz5tAi8"/></div>
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5c0koQiI23GqxwYf7bqGiKRLoEbsP85nmbFdrB-Xi-3GAMdLiFR3DuIPr64eqIECn10FCYGmlTLm1BUa1EtvNlhr8FPCtSf3MdRjF8dU1Uvvor8NbQZYaSH1eGInWZVhklqWGdaa5f5AULlpAdzH0UT1VY8z5y0ln0aB6_2nZ_78WO-1Z9gzn9HhZsvAdlptfDo9NrMMNoqRRhnoGnrSgXz27GEME4r6FgMcUIBgEc4-_TEO5X33ZE-rSaC5-9jGKzjc-g98Uu4A"/></div>
+<div class="w-8 h-8 bg-white/10 flex items-center justify-center text-[10px] text-white/40">+4</div>
+</div>
+</div>
+<div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+<span class="font-technical text-[9px] text-white/60">ONLINE</span>
+</div>
+<span class="font-technical text-xs text-secondary font-bold">12 ◆/hr</span>
+</div>
+</div>
+<!-- Lighting Director -->
+<div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+<div class="flex justify-between items-center">
+<div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+<span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">fluorescent</span>
+</div>
+<span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_VI</span>
+</div>
+<div>
+<h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: LD_045</h4>
+<h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مهندس إضاءة">Lighting Director</h3>
+<p class="text-[11px] text-white/40 uppercase font-technical mb-3">Specialty: Global Illumination</p>
+<div class="flex gap-1">
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoDTqI1pUJ2-UaknyVgzW-dEmqNQ9dHCknHF-DVT6a5nUnkIiEA36vbSNODM859SfMFYdp2cEkivk0DxyhjtrHSHzYxj2jzWxPEf7wuP33-_tGAPjfWmR5_ANkGcjTDi3wGunlbrCNmLTmVv0mfPE6m2k2Mw8ugHtGXGhF9rIob6Va-ayJa84gOU8_XCNrr9H_-aC19QxKi_4UDq5ZvliqCDdGrLgqzIr-9RvYvNkG2urQfLa57mwwcNV3_odpwLAngGUAg2dozWA"/></div>
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1fTOUtHxv6RocaNZXXCBCRKgfjrXAhDnJsquI9mZLnnBJnfe_X-6dNIL61MEL4JTcTroGrJHnpC1W_zByvLYaPZCbQ58ayLhLVAscSxdkXhntbENIQeE0tzoZBDP5wZezbBLSC8ezSTwUR9sElaGbO-fe85GdnpDRW7vNR-wfgpTTg9fcsmAZVyzyeIe3y9Cth_1bUAXdS7DxdrdNK_osR2vb6ZoXnTyuud2yUKxj-Dvgo5DKv4dFULSPLzBHjYplYvt3B8ObynI"/></div>
+<div class="w-8 h-8 bg-white/10 flex items-center justify-center text-[10px] text-white/40">+12</div>
+</div>
+</div>
+<div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+<span class="font-technical text-[9px] text-white/60">ONLINE</span>
+</div>
+<span class="font-technical text-xs text-secondary font-bold">18 ◆/hr</span>
+</div>
+</div>
+<!-- Screenwriter -->
+<div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+<div class="flex justify-between items-center">
+<div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+<span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">history_edu</span>
+</div>
+<span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_V</span>
+</div>
+<div>
+<h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: SW_712</h4>
+<h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="سيناريست">Screenwriter</h3>
+<p class="text-[11px] text-white/40 uppercase font-technical mb-3">Specialty: Narrative Geometry</p>
+<div class="flex gap-1">
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDptYIiKlkui7Lo9xhTEL-wV3GnCOZzSuDWo58WV5bay9jDOpYO9Qp0PyhKxVyc4cIRuppntb_HA7lvRApzIXuliHMkZKKHZ3F3Dc6eDx4kQdZp5wxbpz6TFq9-l6D14-Dd9v0VpBeJ_EEKje3fHaFS_JSDntpQMtIy83qOJYuf-MzOnDO9c5ftdlKEVoCo87WzCl3jpnXbxDUAAIJ-Q0WNbm3mSxBRnrKpDvadWgefY-xvdLlmZrsQ0FqzmQZhOPzml9DSQCt0OpU"/></div>
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcwj4Dq3oZe87z4Z-00y8rBWIGV7TYg0sTNdmFwWEEITghp2jZzTvKFmiwz5ZlDIIxSzLjb4k0Jty_bFtFMhrnE_F2AhLvyC77DX9EzjgDrmd7iRUV2F5QiDBT2TzR10pZj5Af047JkrxTBXIEbkppX9_EwsFEeJBXe5bT358tbmJYmWAH7K7oNPSKQw14SeG1pyn5sQUhednICE35itaxBQDUeRtY0D6jTdQTiXbTfEYzQEJCfl1NrWdzRgHHK32WP4GNHPOGqfQ"/></div>
+<div class="w-8 h-8 bg-white/10 flex items-center justify-center text-[10px] text-white/40">+8</div>
+</div>
+</div>
+<div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-technical text-[9px] text-white/60 uppercase">Thinking</span>
+</div>
+<span class="font-technical text-xs text-secondary font-bold">15 ◆/hr</span>
+</div>
+</div>
+<!-- VFX Supervisor -->
+<div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+<div class="flex justify-between items-center">
+<div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+<span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">auto_fix_high</span>
+</div>
+<span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_VIII</span>
+</div>
+<div>
+<h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: VX_110</h4>
+<h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مشرف مؤثرات بصرية">VFX Supervisor</h3>
+<p class="text-[11px] text-white/40 uppercase font-technical mb-3">Specialty: Reality Morphing</p>
+<div class="flex gap-1">
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCkMUsV-lB_c9O_BI0n4AiKhNYlx_xfL85NL1DquBlFzZlbf8mSlQ6OhP-u8cbhF4NDGAM8TD-gCe1tI34HN1Drfv_QEEXOGG1UiilyCe5rdPnNws62sxsALQPgfCK8b2T7SGj0dbcEp59G2yd6ygFUIQLK8MWLjATbr74e7PP_utLnAQjxb6pMpdRguOg2e9sDuhfpyrdSZySevDrgffx5Z4goVtLmLWBV6jMh7F_GwMSgsk3s0n7QTxIYIgQWTQktukpqG238cM"/></div>
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJh6FvtkbRQM_QuVwG6PEVuJdOs8P9Q2qCA45Z68qCtTrQ7td3DbRoGccxuzp1LozjatuIWCH3IiJOTdVoUkRHJnPegc7Sw6lSNYQIIdKmuAiLYdJePtgtb1hr9a1N3Y1XItHOQ6Xkl4qdd7T83FqbnXT-J0ZslGfeMYx8UlUbiCiy0m3eAA6MbJb5p92ouDrqT6pTJ3UtrMaIDaLJeJi6PvddkHUiFzMHTb3j5dUSCBUyyTPXDAwkhFkjExFNzcua-5_jNJShQ2I"/></div>
+<div class="w-8 h-8 bg-white/10 flex items-center justify-center text-[10px] text-white/40">+24</div>
+</div>
+</div>
+<div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+<span class="font-technical text-[9px] text-white/60">ONLINE</span>
+</div>
+<span class="font-technical text-xs text-secondary font-bold">25 ◆/hr</span>
+</div>
+</div>
+<!-- Art Director -->
+<div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+<div class="flex justify-between items-center">
+<div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+<span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">palette</span>
+</div>
+<span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_VII</span>
+</div>
+<div>
+<h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: AD_300</h4>
+<h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مدير فني">Art Director</h3>
+<p class="text-[11px] text-white/40 uppercase font-technical mb-3">Specialty: Aesthetic Cohesion</p>
+<div class="flex gap-1">
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p1" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ3_h9oMouDvQ7vnnsMXzdOJ3t08HA-AWcF95_Sj9aD67Og4-5UF0PQHG7frT_XSbqnim0x-OhS4HNtaNcx9tjj8QKrvLNKvKDV0kb_9jxEVMAjkHXt0Z_NNbSkKgS9jXQ_SNKVnmHMAdSaPsclMSY8yGiQCa55lnfNb0n6xcywwmaN73O728ubTk9CBFJyDaOTHMwfE7HZiDCn58PhIMzZh-JG0maDBRUbrYoZxhe0407Y3HKQHV7Uoi-n5qiltMBpmZGd3jDYYU"/></div>
+<div class="w-8 h-8 bg-white/10 rounded-sm overflow-hidden"><img alt="p2" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgn9xTLTlc8SF08nt6iqhOeYMxF9wtDKYV7MV17DYQWkjf07WOzZYtmbTb_VjRJIRwUcimk0KnW45dbp7mVpYCtq-VlPAPNsK3qmlXIuaKe08vZnq_NOZHiot_UqEtbLgD8bp0Bw9cNPrK9bMa-Bu4IDD-r9UHxsC3Fwl-T2SFSY-VHiWtw0SoADwuCAeue-iriY0T_B0D6QgCr1a15gCFCGMszOfqKvGxmG_SFncmcmVvc83BlUEdQ7mX6B3dahwaUFq-3CVCers"/></div>
+<div class="w-8 h-8 bg-white/10 flex items-center justify-center text-[10px] text-white/40">+15</div>
+</div>
+</div>
+<div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+<span class="font-technical text-[9px] text-white/60">ONLINE</span>
+</div>
+<span class="font-technical text-xs text-secondary font-bold">22 ◆/hr</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Project Assembly Footer -->
+<footer class="sticky bottom-0 w-full z-40 h-28 bg-surface-container/95 backdrop-blur-2xl border-t border-primary-fixed/30 flex flex-row items-center justify-between px-8 md:px-16 shadow-[0_-15px_50px_rgba(0,0,0,0.8)]">
+<div class="flex flex-col">
+<span class="font-technical text-[10px] text-white/40 uppercase tracking-widest mb-1">Estimated_Cost_Matrix</span>
+<div class="flex flex-row items-center gap-3">
+<span class="font-display text-5xl text-primary-fixed leading-none glow-text" id="footer-credits">0</span>
+<span class="font-technical text-3xl text-secondary">◆</span>
+</div>
+</div>
+<div class="flex flex-row items-center gap-6">
+<button class="hidden sm:block border border-white/10 px-8 py-4 font-technical text-[11px] uppercase tracking-[0.2em] hover:bg-white/5 transition-all text-white/60 hover:text-white" id="btn-assembly">
+                Project_Review
+            </button>
+<button class="relative bg-primary-fixed text-on-primary-fixed px-12 py-5 font-display text-[14px] font-bold uppercase tracking-[0.25em] flex items-center gap-4 hover:brightness-125 active:scale-95 transition-all shadow-[0_0_40px_rgba(200,255,0,0.4)] group overflow-hidden" id="btn-generate">
+<div class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
+<span data-lang-ar="بدء الإنتاج الذكي">Start Production</span>
+<span class="material-symbols-outlined text-[24px] group-hover:rotate-12 transition-transform">bolt</span>
+</button>
+</div>
+</footer>
+</main>
+<script>
+    // Language Toggle Interactivity
+    const langBtns = {
+        'en': document.getElementById('lang-en'),
+        'es': document.getElementById('lang-es'),
+        'ar': document.getElementById('lang-ar')
+    };
+    const globeBtn = document.getElementById('btn-lang-toggle');
+    const htmlTag = document.documentElement;
 
-const LEAD_DIRECTORS = [
-  { id: 'dir_narrative', isDirector: true, role: { en: 'NARRATIVE DIRECTOR', es: 'DIRECTOR NARRATIVO', ar: 'مخرج سردي' }, name: { en: 'Aria Thorne', es: 'Aria Thorne', ar: 'آريا ثورن' }, spec: { en: 'Focus on story and dialogue depth.', es: 'Foco en la profundidad de la historia y el diálogo.', ar: 'التركيز على عمق القصة والحوار.' }, img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80&auto=format&fit=crop' },
-  { id: 'dir_visual', isDirector: true, role: { en: 'VISUAL DIRECTOR', es: 'DIRECTOR VISUAL', ar: 'مخرج بصري' }, name: { en: 'Julian Vane', es: 'Julian Vane', ar: 'جوليان فاين' }, spec: { en: 'Focus on cinematography and lighting.', es: 'Foco en cinematografía e iluminación.', ar: 'التركيز على التصوير السينمائي والإضاءة.' }, img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80&auto=format&fit=crop' },
-  { id: 'dir_action', isDirector: true, role: { en: 'ACTION DIRECTOR', es: 'DIRECTOR DE ACCIÓN', ar: 'مخرج أكشن' }, name: { en: 'Serafina Nix', es: 'Serafina Nix', ar: 'سيرافينا نيكس' }, spec: { en: 'Focus on pacing and VFX integration.', es: 'Foco en el ritmo y la integración de VFX.', ar: 'التركيز على الإيقاع ودمج المؤثرات البصرية.' }, img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80&auto=format&fit=crop' }
-];
+    Object.keys(langBtns).forEach(key => {
+        langBtns[key].addEventListener('click', () => {
+            Object.values(langBtns).forEach(btn => {
+                btn.classList.remove('text-primary-fixed', 'font-bold', 'text-white/40');
+                btn.classList.add('text-white/40');
+            });
+            langBtns[key].classList.add('text-primary-fixed', 'font-bold');
+            langBtns[key].classList.remove('text-white/40');
 
-const CREW = [
-  { id: 'adam_vance', role: { en: 'ELITE VISIONARY', es: 'VISIONARIO ELITE', ar: 'الرؤيوي النخبة' }, name: { en: 'Adam Vance', es: 'Adam Vance', ar: 'آدم فانس' }, spec: { en: 'Architect of human-neural cinematic generation.', es: 'Arquitecto de la generación cinematográfica humano-neural.', ar: 'مهندس التوليد السينمائي البشري العصبي.' }, img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80&auto=format&fit=crop' },
-  { id: 'marco', role: { en: 'DRAMA SPECIALIST', es: 'ESPECIALISTA EN DRAMA', ar: 'متخصص دراما' }, name: { en: 'Marco Visconti', es: 'Marco Visconti', ar: 'ماركو فيسكونتي' }, spec: { en: 'Expert in emotional gravity and character studies.', es: 'Experto en gravedad emocional y estudios de personajes.', ar: 'خبير في الجاذبية العاطفية ودراسات الشخصية.' }, img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=80&auto=format&fit=crop' },
-  { id: 'elena', role: { en: 'COMEDY DIRECTOR', es: 'DIRECTORA DE COMEDIA', ar: 'مخرجة كوميدية' }, name: { en: 'Elena Bright', es: 'Elena Bright', ar: 'إيلينا برايت' }, spec: { en: 'Specialist in timing and vibrant color palettes.', es: 'Especialista en ritmo y paletas de colores vibrantes.', ar: 'متخصصة في التوقيت والألوان النابضة.' }, img: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=500&q=80&auto=format&fit=crop' },
-  { id: 'kai', role: { en: 'MV PRO', es: 'PRO DE VIDEOCLIPS', ar: 'محترف فيديو كليب' }, name: { en: 'Kai Neon', es: 'Kai Neon', ar: 'كاي نيون' }, spec: { en: 'Rhythmic editing styles and neon aesthetics.', es: 'Estilos de edición rítmicos y estética neón.', ar: 'أنماط تحرير إيقاعية وجماليات النيون.' }, img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80&auto=format&fit=crop' },
-  { id: 'sara', role: { en: 'DOCUMENTARY LEAD', es: 'LÍDER DOCUMENTAL', ar: 'رائدة وثائقية' }, name: { en: 'Sara Truth', es: 'Sara Truth', ar: 'سارة تروث' }, spec: { en: 'Ultra-realistic grain and natural lighting.', es: 'Grano ultra realista e iluminación natural.', ar: 'حبيبات واقعية وإضاءة طبيعية.' }, img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80&auto=format&fit=crop' },
-  { id: 'rex', role: { en: 'ACTION ARCHITECT', es: 'ARQUITECTO DE ACCIÓN', ar: 'مهندس أكشن' }, name: { en: 'Rex Storm', es: 'Rex Storm', ar: 'ريكس ستورم' }, spec: { en: 'Dynamic camera movement and high-contrast.', es: 'Movimiento de cámara dinámico y alto contraste.', ar: 'حركة كاميرا ديناميكية وتباين عالي.' }, img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80&auto=format&fit=crop' },
-  { id: 'nova', role: { en: 'COMMERCIAL GENIUS', es: 'GENIO COMERCIAL', ar: 'عبقري تجاري' }, name: { en: 'Nova Brand', es: 'Nova Brand', ar: 'نوفا براند' }, spec: { en: 'Polished product focus and luxury grading.', es: 'Enfoque de producto pulido y gradación de lujo.', ar: 'تركيز منتج مصقول ولغة بصرية طموحة.' }, img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80&auto=format&fit=crop' }
-];
+            if (key === 'ar') {
+                htmlTag.setAttribute('dir', 'rtl');
+                htmlTag.setAttribute('lang', 'ar');
+                document.getElementById('btn-new-session').textContent = 'جلسة جديدة';
+            } else {
+                htmlTag.setAttribute('dir', 'ltr');
+                htmlTag.setAttribute('lang', key);
+                document.getElementById('btn-new-session').textContent = 'New Session';
+            }
+        });
+    });
 
-let currentLang = 'ar';
-let userCredits = 1240;
-let unlockedIds = ['dir_narrative'];
-let selectedIds = [];
+    globeBtn.addEventListener('click', () => {
+        globeBtn.classList.toggle('text-primary-fixed');
+    });
 
-function setLang(lang) {
-  currentLang = lang;
-  const html = document.documentElement;
-  html.setAttribute('lang', lang);
-  html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-  document.body.className = `lang-${lang}`;
-  document.querySelectorAll('.lang-sw .lb').forEach(b => b.classList.toggle('on', b.getAttribute('onclick').includes(lang)));
-  const t = I18N[lang];
-  
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[key]) el.textContent = t[key];
-  });
+    // Credit Calculation Mockup
+    let totalCredits = 0;
+    const footerCounter = document.getElementById('footer-credits');
+    const cards = document.querySelectorAll('.service-card, .crew-card');
 
-  const slLeft = document.querySelector('.sl-left');
-  if (slLeft) slLeft.style.textAlign = lang === 'ar' ? 'right' : 'left';
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            const creditStr = card.querySelector('.font-bold.text-secondary').textContent;
+            const credits = parseInt(creditStr);
+            
+            if (card.classList.contains('active-item')) {
+                card.classList.remove('active-item');
+                card.style.borderColor = '#2a2a2a';
+                card.style.background = '#131313';
+                totalCredits -= credits;
+            } else {
+                card.classList.add('active-item');
+                card.style.borderColor = '#c8ff00';
+                card.style.background = '#1a1a1a';
+                totalCredits += credits;
+            }
+            
+            footerCounter.textContent = totalCredits;
+            footerCounter.classList.add('scale-110');
+            setTimeout(() => {
+                footerCounter.classList.remove('scale-110');
+            }, 200);
+        });
+    });
 
-  renderAll();
-}
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+            header.classList.add('h-16', 'bg-black/95', 'border-primary-fixed/20');
+            header.classList.remove('h-20', 'bg-black/60');
+        } else {
+            header.classList.add('h-20', 'bg-black/60');
+            header.classList.remove('h-16', 'bg-black/95', 'border-primary-fixed/20');
+        }
+    });
 
-function toggleSelection(id) {
-  if (!unlockedIds.includes(id)) {
-    if (userCredits >= 10) {
-      unlockedIds.push(id); selectedIds.push(id);
+    // Console Bundle Interaction Simulation
+    const bundleBtns = document.querySelectorAll('.console-panel button');
+    bundleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            bundleBtns.forEach(b => b.classList.remove('border-primary-fixed/60', 'bg-primary-fixed/5'));
+            btn.classList.add('border-primary-fixed/60', 'bg-primary-fixed/5');
+            // Mock visual feedback for selection
+            console.log("Bundle selected: " + btn.querySelector('span:last-child').textContent);
+        });
+    });
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// HERO VIDEO CAROUSEL
+// ═══════════════════════════════════════════════════════
+const VIDEOS = ['/public/hero1.mp4', '/public/hero2.mp4', '/public/hero3.mp4'];
+let currentVideo = 0;
+const videoEl = document.getElementById('hero-video');
+const dots = document.querySelectorAll('.video-dot');
+
+function updateDots(idx) {
+  dots.forEach((d, i) => {
+    if (i === idx) {
+      d.style.width = '32px';
+      d.style.background = '#c8ff00';
     } else {
-      alert(currentLang === 'ar' ? 'رصيد غير كافٍ' : (currentLang === 'es' ? 'Créditos insuficientes' : 'Insufficient credits')); return;
+      d.style.width = '8px';
+      d.style.background = 'rgba(255,255,255,0.2)';
     }
-  } else {
-    const idx = selectedIds.indexOf(id);
-    if (idx > -1) selectedIds.splice(idx, 1); else selectedIds.push(id);
+  });
+}
+
+function nextVideo() {
+  // Fade out
+  videoEl.style.opacity = '0';
+  setTimeout(() => {
+    currentVideo = (currentVideo + 1) % VIDEOS.length;
+    videoEl.src = VIDEOS[currentVideo];
+    videoEl.load();
+    videoEl.play().catch(() => {});
+    videoEl.style.opacity = '0.7';
+    updateDots(currentVideo);
+  }, 800);
+}
+
+// On video end → next
+videoEl.addEventListener('ended', nextVideo);
+
+// On video load error → next after 10s
+videoEl.addEventListener('error', () => {
+  setTimeout(nextVideo, 10000);
+});
+
+// Init
+updateDots(0);
+videoEl.play().catch(() => {});
+
+// ── MARKETPLACE JS CONNECTIONS ──
+function updateCredits() {
+  const credits = parseInt(localStorage.getItem('md_credits') || '0');
+  const el = document.getElementById('header-credits');
+  if (el) {
+    const span = el.querySelector('span');
+    if (span) span.textContent = credits.toLocaleString() + ' CRD';
   }
-  renderAll();
+  const footer = document.getElementById('footer-credits');
+  if (footer) footer.style.color = credits < 10 ? '#ffb4ab' : '#c8ff00';
 }
 
-function renderAll() {
-  const cost = selectedIds.length * 10; const remaining = userCredits - cost; const t = I18N[currentLang];
-  document.getElementById('topCredits').textContent = userCredits.toLocaleString();
-  document.getElementById('heroCredits').textContent = userCredits.toLocaleString();
-  document.getElementById('crewCost').textContent = `${cost} ${currentLang === 'ar' ? 'رصيد' : 'CREDITS'}`;
-  document.getElementById('balanceVal').textContent = userCredits.toLocaleString();
-  document.getElementById('remainingVal').textContent = remaining.toLocaleString();
-  const launchBtn = document.getElementById('launchBtn');
-  launchBtn.textContent = t.btn_launch.replace('{{cost}}', cost);
-  launchBtn.disabled = selectedIds.length === 0;
-  renderDirectors(); renderGrid(); renderSummary();
+// Navigation
+const btnNew = document.getElementById('btn-new-session');
+if (btnNew) btnNew.addEventListener('click', () => window.location.href = 'studio.html');
+
+// Generate → save + go to studio
+const btnGen = document.getElementById('btn-generate');
+if (btnGen) {
+  btnGen.addEventListener('click', () => {
+    const services = [...document.querySelectorAll('.service-card.active-item')].map(el => ({
+      id: el.id || '',
+      name: el.querySelector('h3')?.textContent?.trim() || '',
+      credits: parseInt(el.querySelector('.text-secondary')?.textContent || '0')
+    }));
+    if (services.length) localStorage.setItem('md_selected_services', JSON.stringify(services));
+
+    const dirs = [], names = [], imgs = [];
+    document.querySelectorAll('.crew-card.active-item').forEach(card => {
+      dirs.push(card.dataset.director || '');
+      names.push(card.querySelector('h3')?.textContent?.trim() || '');
+      const img = card.querySelector('img');
+      imgs.push(img ? img.src : '');
+    });
+    if (dirs.length) {
+      localStorage.setItem('md_selected_directors', JSON.stringify(dirs));
+      localStorage.setItem('md_director_names',     JSON.stringify(names));
+      localStorage.setItem('md_director_images',    JSON.stringify(imgs));
+    }
+    window.location.href = 'studio.html';
+  });
 }
 
-function renderDirectors() {
-  const container = document.getElementById('leadDirectorsGrid');
-  container.innerHTML = LEAD_DIRECTORS.map(m => renderCard(m)).join('');
-}
+const btnAssembly = document.getElementById('btn-assembly');
+if (btnAssembly) btnAssembly.addEventListener('click', () => window.location.href = 'assembly.html');
 
-function renderGrid() {
-  const container = document.getElementById('crewGrid');
-  container.innerHTML = CREW.map(m => renderCard(m)).join('');
-}
+// Crew card toggle
+document.querySelectorAll('.crew-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('active-item');
+    if (card.classList.contains('active-item')) {
+      card.style.borderColor = '#ffba3f';
+      card.style.background  = '#1a1a0a';
+    } else {
+      card.style.borderColor = '#2a2a2a';
+      card.style.background  = '#131313';
+    }
+  });
+});
 
-function renderCard(m) {
-  const t = I18N[currentLang];
-  const isUnlocked = unlockedIds.includes(m.id);
-  const isSelected = selectedIds.includes(m.id);
-  const btnText = isSelected ? t.btn_selected : (isUnlocked ? t.btn_assign : `<span class="material-symbols-outlined" style="font-size:16px; margin-${currentLang==='ar'?'left':'right'}:4px">lock</span>` + t.btn_unlock);
-  const previewBtn = m.isDirector ? `<div class="cc-preview-btn"><span class="material-symbols-outlined" style="font-size:12px">movie</span>${t.preview}</div>` : '';
-  
-  return `
-    <div class="crew-card ${isSelected?'selected':''}">
-<div class="cc-visual"><img class="cc-img" src="${m.img}"/><div class="cc-gradient"></div>${previewBtn}</div>
-<div class="cc-body">
-<div class="cc-role">${m.role[currentLang]}</div>
-<div class="cc-name">${m.name[currentLang]}</div>
-<p class="cc-desc">${m.spec[currentLang]}</p>
-<button class="cc-btn ${isSelected?'active':''}" onclick="toggleSelection('${m.id}')">${btnText}</button>
-</div>
-</div>`;
-}
+// Lang persistence
+document.querySelectorAll('#lang-en, #lang-es, #lang-ar').forEach(btn => {
+  btn.addEventListener('click', () => localStorage.setItem('md_lang', btn.id.replace('lang-', '')));
+});
 
-function renderSummary() {
-  const container = document.getElementById('crewSummary');
-  const counter = document.getElementById('slotCounter');
-  const t = I18N[currentLang];
-  counter.textContent = t.slot_counter.replace('{{n}}', selectedIds.length);
-  if(selectedIds.length === 0) { container.innerHTML = `<span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${t.footer_empty}</span>`; return; }
-  container.innerHTML = selectedIds.map(id => {
-    const m = [...LEAD_DIRECTORS, ...CREW].find(c => c.id === id);
-    return `<div class="crew-chip"><span>${m.name[currentLang]}</span><span class="chip-remove" onclick="toggleSelection('${id}')">✕</span></div>`;
-  }).join('');
-}
+updateCredits();
+</script>
 
-function openModal() { document.getElementById('creditModal').classList.add('open'); }
-function closeModal() { document.getElementById('creditModal').classList.remove('open'); }
-function launchStudio() {
-  const cost = selectedIds.length * 10; const t = I18N[currentLang];
-  if(userCredits >= cost) {
-    userCredits -= cost;
-    const btn = document.getElementById('launchBtn'); btn.textContent = t.btn_launching; btn.style.opacity = '0.7';
-    setTimeout(() => { window.location.href = 'studio.html'; }, 1200);
-  }
-}
-window.onload = () => setLang('ar');</script>
 </body></html>
