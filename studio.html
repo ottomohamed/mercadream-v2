@@ -1,200 +1,73 @@
-﻿<!DOCTYPE html>
-
+<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM | Production Interface</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
-        body {
-            background-color: #060606;
-            color: #e5e2e1;
-            overflow: hidden;
-            height: 100vh;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glow-acid {
-            box-shadow: 0px 0px 12px rgba(168, 215, 0, 0.2);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0d0d0d;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #353534;
-        }
-        .terminal-scroll::-webkit-scrollbar {
-            width: 2px;
-        }
-        .terminal-scroll::-webkit-scrollbar-thumb {
-            background: #a8d700;
-        }
-    </style>
+body{background-color:#060606;color:#e5e2e1;overflow:hidden;height:100vh}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.glow-acid{box-shadow:0px 0px 12px rgba(168,215,0,0.2)}
+.custom-scrollbar::-webkit-scrollbar{width:4px}
+.custom-scrollbar::-webkit-scrollbar-track{background:#0d0d0d}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:#353534}
+.terminal-scroll::-webkit-scrollbar{width:2px}
+.terminal-scroll::-webkit-scrollbar-thumb{background:#a8d700}
+</style>
 <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "surface-tint": "#a8d700",
-                      "on-error": "#690005",
-                      "surface-dim": "#131313",
-                      "error": "#ffb4ab",
-                      "surface-container-low": "#1c1b1b",
-                      "surface-variant": "#353534",
-                      "on-primary": "#273500",
-                      "tertiary": "#ffffff",
-                      "tertiary-fixed-dim": "#c9c6c5",
-                      "surface-container-lowest": "#0e0e0e",
-                      "secondary-container": "#c48800",
-                      "inverse-primary": "#4f6600",
-                      "surface-container-high": "#2a2a2a",
-                      "on-primary-container": "#546d00",
-                      "on-tertiary-fixed": "#1c1b1b",
-                      "secondary-fixed": "#ffdeae",
-                      "on-secondary-fixed-variant": "#604100",
-                      "error-container": "#93000a",
-                      "primary-container": "#c0f500",
-                      "on-surface": "#e5e2e1",
-                      "surface-bright": "#393939",
-                      "on-error-container": "#ffdad6",
-                      "on-surface-variant": "#c4caac",
-                      "inverse-on-surface": "#313030",
-                      "primary": "#ffffff",
-                      "surface-container": "#201f1f",
-                      "on-secondary-fixed": "#281900",
-                      "on-secondary-container": "#3e2800",
-                      "surface-container-highest": "#353534",
-                      "inverse-surface": "#e5e2e1",
-                      "on-background": "#e5e2e1",
-                      "on-primary-fixed": "#161f00",
-                      "on-primary-fixed-variant": "#3b4d00",
-                      "outline": "#8e9479",
-                      "primary-fixed": "#c0f500",
-                      "on-tertiary-container": "#656464",
-                      "on-tertiary": "#313030",
-                      "tertiary-container": "#e5e2e1",
-                      "secondary-fixed-dim": "#ffba3f",
-                      "surface": "#131313",
-                      "outline-variant": "#434933",
-                      "tertiary-fixed": "#e5e2e1",
-                      "primary-fixed-dim": "#a8d700",
-                      "on-tertiary-fixed-variant": "#474646",
-                      "on-secondary": "#432c00",
-                      "secondary": "#ffba3f",
-                      "background": "#131313"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "container-max": "1440px",
-                      "gutter": "24px",
-                      "margin-mobile": "16px",
-                      "margin-desktop": "40px",
-                      "unit": "4px"
-              },
-              "fontFamily": {
-                      "display-lg": ["Orbitron"],
-                      "label-caps": ["IBM Plex Mono"],
-                      "technical-md": ["IBM Plex Mono"],
-                      "technical-sm": ["IBM Plex Mono"],
-                      "headline-lg": ["Orbitron"],
-                      "body-md": ["Inter"],
-                      "body-sm": ["Inter"]
-              },
-              "fontSize": {
-                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                      "label-caps": ["10px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
-                      "technical-md": ["14px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
-                      "technical-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
-                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
-                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
-              }
-            },
-          },
-        }
-      </script>
+tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d700","surface-container-low":"#1c1b1b","surface-variant":"#353534","surface-container-lowest":"#0e0e0e","secondary-container":"#c48800","surface-container-high":"#2a2a2a","error-container":"#93000a","primary-container":"#c0f500","on-surface":"#e5e2e1","surface-bright":"#393939","on-surface-variant":"#c4caac","primary":"#ffffff","surface-container":"#201f1f","surface-container-highest":"#353534","inverse-surface":"#e5e2e1","on-background":"#e5e2e1","outline":"#8e9479","primary-fixed":"#c0f500","on-tertiary":"#313030","tertiary-container":"#e5e2e1","surface":"#131313","outline-variant":"#434933","secondary-fixed-dim":"#ffba3f","primary-fixed-dim":"#a8d700","on-secondary":"#432c00","secondary":"#ffba3f","background":"#131313"},"fontFamily":{"display-lg":["Orbitron"],"label-caps":["IBM Plex Mono"],"technical-md":["IBM Plex Mono"],"technical-sm":["IBM Plex Mono"],"headline-lg":["Orbitron"],"body-md":["Inter"],"body-sm":["Inter"]},"fontSize":{"display-lg":["48px",{"lineHeight":"1.1","letterSpacing":"0.05em","fontWeight":"700"}],"label-caps":["10px",{"lineHeight":"1","letterSpacing":"0.1em","fontWeight":"700"}],"technical-md":["14px",{"lineHeight":"1.6","letterSpacing":"0.01em","fontWeight":"400"}],"technical-sm":["12px",{"lineHeight":"1.4","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"1.2","letterSpacing":"0.02em","fontWeight":"600"}],"body-md":["16px",{"lineHeight":"1.6","fontWeight":"400"}],"body-sm":["14px",{"lineHeight":"1.5","fontWeight":"400"}]}}}}
+</script>
 </head>
-<body class="flex flex-col font-arabic-body">
-<!-- TopAppBar -->
+<body class="flex flex-col">
 <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-b border-outline-variant">
 <div class="flex items-center gap-8">
-<span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span><span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v1.0.4</span>
+<span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span>
+<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v3.0</span>
 <nav class="hidden md:flex items-center gap-4">
-<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer">
-<span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span>
-<span class="font-technical-md text-technical-md uppercase">Discovery</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md hover:bg-surface-variant hover:text-surface-tint transition-colors cursor-pointer active:opacity-80">
-<span class="font-technical-md text-technical-md uppercase">Screenplay</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md hover:bg-surface-variant hover:text-surface-tint transition-colors cursor-pointer active:opacity-80">
-<span class="font-technical-md text-technical-md uppercase">Production</span>
-</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery"><span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span><span class="font-technical-md text-technical-md uppercase">Discovery</span></div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer" id="nav-screenplay"><span class="font-technical-md text-technical-md uppercase">Screenplay</span></div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer" id="nav-production"><span class="font-technical-md text-technical-md uppercase">Production</span></div>
 </nav>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-outline-variant">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
-<span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits-value">2,400</span> ●</span>
+<span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits">0</span> ●</span>
 </div>
 <div class="flex items-center gap-2 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-surface-tint cursor-pointer">EN</span>
+<span class="text-surface-tint cursor-pointer" id="lang-en">EN</span>
 <span class="opacity-30">|</span>
-<span class="hover:text-surface-tint cursor-pointer">ES</span>
+<span class="hover:text-surface-tint cursor-pointer" id="lang-es">ES</span>
 <span class="opacity-30">|</span>
-<span class="hover:text-surface-tint cursor-pointer">AR</span>
+<span class="hover:text-surface-tint cursor-pointer" id="lang-ar">AR</span>
 </div>
-<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group">
+<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group" id="btn-new-session">
 <span class="material-symbols-outlined text-sm group-hover:text-black">refresh</span>
 <span class="font-technical-md text-technical-md uppercase">New Session</span>
 </button>
-<span class="material-symbols-outlined text-surface-tint cursor-pointer">account_balance_wallet</span>
+<span class="material-symbols-outlined text-surface-tint cursor-pointer" id="btn-wallet">account_balance_wallet</span>
 </div>
 </header>
-<!-- Main Layout Container -->
-<main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden rtl:flex-row-reverse">
-<!-- Left Column: SideNavBar (Crew Panel) -->
-<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container border-r border-outline-variant flex flex-col z-40 rtl:left-auto rtl:right-0 rtl:border-r-0 rtl:border-l">
+
+<main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden">
+<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container border-r border-outline-variant flex flex-col z-40">
 <div class="p-6 border-b border-outline-variant">
 <div class="flex items-center justify-between mb-4">
-<h2 class="font-display-lg text-headline-lg-mobile text-on-surface uppercase">Crew Panel</h2>
+<h2 class="font-display-lg text-on-surface uppercase" style="font-size:14px">Crew Panel</h2>
 <span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">Active Session</span>
 </div>
-<div class="space-y-4 crew-cards">
-<!-- Crew Card 1 -->
-<div class="bg-surface-variant border-l-2 border-surface-tint p-4 flex items-center gap-3 cursor-pointer">
+<div class="space-y-4" id="crew-cards">
+<div class="bg-surface-variant border-l-2 border-surface-tint p-4 flex items-center gap-3">
 <div class="relative">
-<img alt="Gemini Avatar" class="w-10 h-10 bg-surface-container-highest border border-surface-tint" data-alt="A stylized, glowing cyberpunk robotic avatar with neon green circuits and sleek black chrome plating, presented as a circular profile icon against a dark, tech-oriented backdrop with subtle geometric patterns." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
-<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]"></div>
+<img alt="Gemini" class="w-10 h-10 border border-surface-tint object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]" id="gemini-status"></div>
 </div>
 <div>
 <p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
 <p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Screenplay Writer</p>
-<div class="mt-3 space-y-2"> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-surface-tint/70"><span>CREATIVITY</span><span>98%</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-surface-tint w-[98%]"></div></div> </div> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-surface-tint/70"><span>SYNC SPEED</span><span>1.2ms</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-surface-tint w-[85%]"></div></div> </div> </div></div>
 </div>
-<!-- Crew Card 2 -->
-<div class="bg-surface-container-low border border-outline-variant p-4 flex items-center gap-3 cursor-pointer hover:bg-surface-container-high transition-colors">
-<div class="relative">
-<img alt="Marco Avatar" class="w-10 h-10 bg-surface-container-highest border border-outline-variant" data-alt="A professional portrait of a male film director with short dark hair and a focused expression, wearing a minimalist black tactical jacket, rendered in a high-contrast cinematic style with cool blue and deep shadow lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK4XnID2-EDt2zouF_9PX9LWdR2HnrzOCjt4N6pSBPIjqDVWMAukvVvLkYMjFJqWtozvT5l8tjcVACYprW2eexWMdspAsVRNN-acM7Rx_HFiGCciBuE9Ta5OzAPC7qtNjLvRSjJ4dg16JA_FYoXlHiqBv9HUJ3DJ3LyTtwniSXTmcqPbAZLjCx5SWbrvJ5r772n1Jv_05RvvF8Pn50AGwXUqUzigdXdj1Ci_2gzmnAZyjHCwK9uGBmKdWgkF5aCRCezBSn_-Taldk"/>
-<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-neutral-600 rounded-full border-2 border-surface-variant"></div>
-</div>
-<div>
-<p class="font-display-lg text-body-md text-on-surface leading-none">MARCO VISCONTI</p>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Director</p>
-<div class="mt-3 space-y-2"> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-on-surface-variant/70"><span>CREATIVITY</span><span>--%</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-outline-variant w-0"></div></div> </div> <div class="flex flex-col gap-1"> <div class="flex justify-between font-label-caps text-[8px] text-on-surface-variant/70"><span>SYNC SPEED</span><span>--ms</span></div> <div class="h-0.5 bg-surface-container-highest w-full"><div class="h-full bg-outline-variant w-0"></div></div> </div> </div></div>
 </div>
 </div>
 </div>
@@ -202,174 +75,113 @@
 <div class="mb-4">
 <p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Production Cost</p>
 <div class="flex justify-between items-end">
-<span class="font-display-lg text-headline-lg text-secondary">$ 1,240.00</span>
-<span class="font-technical-sm text-technical-sm text-on-surface-variant mb-1">EST. TOTAL</span>
+<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">10 credits</span>
 </div>
 </div>
-<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all active:scale-[0.98]">
-                    + Recharge
-                </button>
+<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all" id="btn-recharge">+ Recharge</button>
 </div>
 </aside>
-<!-- Center Column: Content Canvas (Chat Interface) -->
-<section class="ml-[280px] mr-[340px] flex-1 flex flex-col bg-background relative rtl:ml-\[340px\] rtl:mr-\[280px\]"><div class="absolute top-20 right-8 pointer-events-none z-10 flex flex-col items-end opacity-30"> <div class="font-technical-sm text-[10px] text-surface-tint">LATENCY: 24ms</div> <div class="font-technical-sm text-[10px] text-surface-tint">BUFFER: 100%</div> <div class="font-technical-sm text-[10px] text-surface-tint">RESOLUTION: 4K</div> </div>
+
+<section class="ml-[280px] mr-[340px] flex-1 flex flex-col bg-background relative">
 <div class="p-6 border-b border-outline-variant flex items-center justify-between">
 <div>
-<h1 class="font-display-lg text-headline-lg text-on-surface">Phase 1: Discovery</h1>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant">Active Task: Screenplay Concept Generation</p>
+<h1 class="font-display-lg text-headline-lg text-on-surface" id="phase-title">Phase 1: Discovery</h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Task: Screenplay Concept Generation</p>
 </div>
-<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-4 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-colors">
+<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-4 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-colors" id="btn-action">
 <span class="material-symbols-outlined">bolt</span> Action
-                </button>
+</button>
 </div>
-<!-- Chat Area -->
-<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
-<!-- AI Bubble -->
-<div class="flex flex-col gap-2 max-w-[80%]">
-<div class="flex items-center gap-2">
-<span class="font-label-caps text-label-caps text-surface-tint uppercase">Mercadream Engine</span>
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">14:02:11</span>
-</div>
-<div class="bg-surface-container border-l-4 border-surface-tint p-6">
-<p class="font-body-md text-body-md leading-relaxed text-on-surface">
-                            Initializing Dream Engine... Environment variables loaded. Creative parameters calibrated for Hard Sci-Fi Noir. 
-                            <br/><br/>
-                            How can I assist with your screenplay today, Director Visconti? I am ready to generate initial character manifests or map out the first act conflict arcs.
-                        </p>
-</div>
-</div>
-<!-- User Bubble -->
-<div class="flex flex-col gap-2 max-w-[80%] ml-auto items-end">
-<div class="flex items-center gap-2">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">14:04:45</span>
-<span class="font-label-caps text-label-caps text-secondary uppercase">Marco Visconti</span>
-</div>
-<div class="bg-[#a8d700]/10 border border-surface-tint/30 p-6 backdrop-blur-sm">
-<p class="font-body-md text-body-md leading-relaxed text-on-surface">
-                            Let's start by establishing the protagonist. I want a disgraced orbital mechanic who stumbles upon a derelict freighter carrying something non-biological.
-                        </p>
-</div>
-</div>
-<!-- AI Typing Indicator -->
-<div class="flex items-center gap-2 text-on-surface-variant">
-<span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce"></span>
-<span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.2s]"></span>
-<span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.4s]"></span>
-<span class="font-technical-sm text-technical-sm ml-2">System processing creative brief...</span>
-</div>
-</div>
-<!-- Input Area -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar" id="chat-messages"></div>
 <div class="p-6 bg-surface-container-lowest border-t border-outline-variant">
 <div class="relative group">
-<textarea class="w-full bg-surface-container border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pr-32 resize-none h-20 transition-all" placeholder="Type your creative directive here..."></textarea>
+<textarea class="w-full bg-surface-container border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pr-32 resize-none h-20 transition-all" id="chat-input" placeholder="Type your creative directive here..."></textarea>
 <div class="absolute right-4 bottom-4 flex items-center gap-4">
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-surface-tint">attach_file</span>
-<button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid">
-                            Send
-                        </button>
+<button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid" id="btn-send">Send</button>
 </div>
 </div>
 </div>
 </section>
-<!-- Right Column: Production Engine -->
-<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container border-l border-outline-variant flex flex-col z-40 rtl:right-auto rtl:left-0 rtl:border-l-0 rtl:border-r">
-<!-- Cockpit Screen -->
+
+<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container border-l border-outline-variant flex flex-col z-40">
 <div class="p-4">
 <p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Cockpit Screen</p>
-<div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center">
-<!-- Screen Overlays -->
+<div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center" id="cockpit-screen">
 <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
 <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
 <div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
 <div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
-<div class="text-center">
+<div class="text-center" id="cockpit-inner">
 <span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">AWAITING_BRIEFING</span>
 <span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
 </div>
-<!-- Scanline effect -->
-<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%]"></div>
-<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-end gap-[2px] h-6"> <div class="w-[3px] bg-surface-tint h-[30%] animate-pulse"></div> <div class="w-[3px] bg-surface-tint h-[60%] animate-bounce"></div> <div class="w-[3px] bg-surface-tint h-[40%] animate-pulse"></div> <div class="w-[3px] bg-surface-tint h-[90%] animate-bounce"></div> <div class="w-[3px] bg-surface-tint h-[50%] animate-pulse"></div> <div class="w-[3px] bg-surface-tint h-[75%] animate-bounce"></div> <div class="w-[3px] bg-surface-tint h-[20%] animate-pulse"></div> </div></div>
+<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]"></div>
 </div>
-<!-- Pipeline Stages -->
-<div class="p-4 flex-1">
+</div>
+<div class="p-4 flex-1 overflow-y-auto">
 <p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Pipeline Stages</p>
-<div class="space-y-4">
-<!-- Stage 1 -->
-<div class="space-y-2">
+<div class="space-y-4" id="pipeline-stages">
+<div class="stage-item space-y-2" data-stage="1">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-surface-tint">01/SCREENPLAY_WRITE</span>
-<span class="font-label-caps text-[10px] text-surface-tint px-1 bg-surface-tint/10">ACTIVE</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">01/SCREENPLAY_WRITE</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
-<div class="h-1 bg-surface-variant w-full">
-<div class="h-full bg-surface-tint w-[65%] glow-acid"></div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
-</div>
-<!-- Stage 2 -->
-<div class="space-y-2 opacity-50">
+<div class="stage-item space-y-2 opacity-50" data-stage="2">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface">02/SCENE_CLASSIFY</span>
-<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">02/SCENE_CLASSIFY</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
-<div class="h-1 bg-surface-variant w-full"></div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
-<!-- Stage 3 -->
-<div class="space-y-2 opacity-50">
+<div class="stage-item space-y-2 opacity-50" data-stage="3">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface">03/SET_DESIGN_GEN</span>
-<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">03/DIRECTOR_ASSIGN</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
-<div class="h-1 bg-surface-variant w-full"></div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
-<!-- Stage 4 -->
-<div class="space-y-2 opacity-50">
+<div class="stage-item space-y-2 opacity-50" data-stage="4">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface">04/CHARACTER_VO_CLONE</span>
-<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">04/VIDEO_GENERATE</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
-<div class="h-1 bg-surface-variant w-full"></div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 </div>
 </div>
-<!-- Live Log Terminal -->
-<div class="h-[200px] bg-black border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col">
+<div class="bg-black border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col" style="height:160px" id="log-terminal">
 <div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1">
 <span class="text-on-surface-variant uppercase">Live Log</span>
-<span class="text-surface-tint uppercase">Buffer: 4096KB</span>
+<span class="text-surface-tint uppercase">v3.0</span>
 </div>
-<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1">
-<p class="leading-tight"><span class="opacity-50">[14:02:11]</span> SYSTEM: Initializing render engine core...</p>
-<p class="leading-tight"><span class="opacity-50">[14:02:15]</span> INFO: Connection to crew node 'GEMINI' established.</p>
-<p class="leading-tight"><span class="opacity-50">[14:03:01]</span> WARN: High latency detected on local proxy.</p>
-<p class="leading-tight"><span class="opacity-50">[14:04:45]</span> INPUT: Directive received from UID_VISCONTI.</p>
-<p class="leading-tight"><span class="opacity-50">[14:04:46]</span> PROMPT: Parsing thematic keywords: [orbital, derelict, non-biological].</p>
-<p class="leading-tight text-secondary"><span class="opacity-50">[14:04:47]</span> CACHE: Fetching asset library for 'Sci-Fi Noir'.</p>
-<p class="leading-tight animate-pulse underline">&gt;</p>
-</div>
+<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1" id="log-lines"></div>
 </div>
 </aside>
 </main>
-<!-- Footer: Action Bar -->
+
 <footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-t border-outline-variant">
 <div class="flex items-center gap-10">
 <div class="flex items-center gap-3">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
-<span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits-value">240</span> ●</span>
+<span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits">0</span> ●</span>
 </div>
 <div class="flex items-center gap-3">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Team:</span>
-<div class="flex -space-x-2">
-<img alt="Marco" class="w-6 h-6 rounded-full border border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDc7SGkXIhQRtTiEmspoFVDPaeBC8uXT0EcTvRBYO4AjzK_mySwbWOD7L_uMfStU-lHJ9HbG9l4IEq-nJhyXoAfADmr8SICBocxBze5X4iLRNNL0LQu0Xd8DfyM3wKO-y7EjpPKypqj5c2NvRwtvDdMSp3sf3wcjmAbi3wjBLZh6o2PVa4arqqKc4nnZVqL340y2clDs-VzlUypWJnrJ6rXKrhhjwIb6MXwGYZwC8rclzVJ42pmHv05zmO6p1lZr2ox7i6UOiyqPQ"/>
-<img alt="Elena" class="w-6 h-6 rounded-full border border-black" data-alt="A portrait of a female creative producer with sleek blonde hair and a smart, professional outfit, set against a dark architectural background with subtle orange glowing highlights in a high-contrast cinematic photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx5r_OW0UYKdLtq-5ljXckkpyYflw24oBu_v-NGHcgW-WigHE_qUE7drDt7d9hXU0V_QFWsbDaegUl7NIzxTy4RnUpHXTJAbmMlOBK6bDA0idNhmWTCv-NdebBznigHq-0F_tu6gVx90B5JXNmZc_Zbju-gF2pG-DxBigQvfnBesOxGQuBW1_vyKa9Cfe66qfngUa-QZRI0kVXZrxM9XnbtAs1713STsULluuJcLm3sk7a0eQI0v3r7tSWucGaQEMnAEltjY9i8gQ"/>
-</div>
-<span class="font-technical-sm text-technical-sm text-on-surface">Marco + Elena</span>
+<div class="flex -space-x-2" id="footer-team-images"></div>
+<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-team-names">No crew selected</span>
 </div>
 </div>
-<div class="flex items-center gap-8">
-<button class="hidden bg-[#c8ff00] h-[44px] px-6 flex items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all" id="assembly-room-btn"> <span class="material-symbols-outlined">factory</span> Send to Assembly Room </button><div class="flex flex-col items-end">
-<span class="font-label-caps text-[9px] text-surface-tint uppercase tracking-[0.2em]">MERCADREAM ENGINE v2.4.0</span>
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">System Status: <span class="text-surface-tint">Active</span></span>
+<div class="flex items-center gap-4">
+<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all" id="btn-assembly">
+<span class="material-symbols-outlined">factory</span> Send to Assembly Room
+</button>
+<div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm">
+<button class="px-4 bg-surface-tint text-black font-bold uppercase" id="btn-auto">Auto</button>
+<button class="px-4 text-on-surface-variant hover:text-surface-tint uppercase transition-colors" id="btn-manual">Manual</button>
 </div>
-<div class="flex border border-outline-variant h-[44px] rounded overflow-hidden font-technical-sm"> <button class="px-3 bg-surface-tint text-black font-bold uppercase">Auto</button> <button class="px-3 text-on-surface-variant hover:text-surface-tint uppercase transition-colors">Manual</button> </div><button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid">
+<button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid" id="btn-generate">
 <span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest">Generate</span>
 <span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
 </button>
@@ -378,695 +190,441 @@
 
 <script>
 // ═══════════════════════════════════════════════════════
-// MERCADREAM STUDIO v3.0
-// Pipeline: Gemini (discovery) → Haiku (screenplay) → Sonnet (director)
+// MERCADREAM STUDIO v3.0 — Full Pipeline
 // ═══════════════════════════════════════════════════════
-
 const API_CHAT     = '/api/chat';
 const API_DIRECTOR = '/api/director';
-const COST_PER_FILM = 10;
+const COST         = 10;
 
-// ── TRANSLATIONS ──
 const TX = {
   en: {
-    phase1: 'Discovery', phase2: 'Screenplay', phase3: 'Production',
-    crew_panel: 'Crew Panel', active_session: 'Active Session',
-    screenplay_writer: 'Screenplay Writer', director: 'Director',
-    production_cost: 'Production Cost', recharge: '+ Recharge',
-    phase1_title: 'Phase 1: Discovery',
-    phase1_sub: 'Active Task: Screenplay Concept Generation',
-    phase2_title: 'Phase 2: Screenplay',
-    phase2_sub: 'Active Task: Script Analysis & Scene Breakdown',
-    phase3_title: 'Phase 3: Production',
-    phase3_sub: 'Active Task: Director Generating Scenes',
-    placeholder: 'Type your creative directive here...',
-    send: 'Send', action: 'Action',
-    new_session: 'New Session',
-    generate: 'Generate',
-    assembly: 'Send to Assembly Room',
-    auto: 'Auto', manual: 'Manual',
-    credits_label: 'Credits:', team_label: 'Team:',
-    confirm_title: 'Ready to Generate?',
-    confirm_sub: 'YOUR SCREENPLAY IS COMPLETE',
-    confirm_cost: 'CREDITS',
-    confirm_cancel: 'CANCEL',
-    confirm_go: 'GENERATE →',
-    low_credits: 'Insufficient credits',
-    low_credits_sub: 'You need more credits to generate this film.',
-    welcome: 'Welcome. What type of project are you creating?',
-    types: [
-      {id:'film', icon:'🎬', label:'Film / Personal Story'},
-      {id:'ad',   icon:'📢', label:'Advertisement'},
-      {id:'music',icon:'🎵', label:'Music Video'},
-      {id:'doc',  icon:'📹', label:'Documentary'}
-    ],
-    firstQ: {
-      film:  'What is your story about?',
-      ad:    'What product or service?',
-      music: 'What is the song about?',
-      doc:   'What subject are you documenting?'
-    },
-    done: '✅ Your 6-scene film is ready. Go to the Assembly Room to export.',
-    api_err: '⚠️ Connection error. Check /api/chat on Vercel.'
+    ph1:'Phase 1: Discovery', ph2:'Phase 2: Screenplay', ph3:'Phase 3: Production',
+    sub1:'Screenplay Concept Generation', sub2:'Script Analysis', sub3:'Director Generating Scenes',
+    placeholder:'Type your creative directive here...',
+    send:'Send', action:'Action', new_session:'New Session', generate:'Generate',
+    assembly:'Send to Assembly Room', auto:'Auto', manual:'Manual',
+    welcome:'Welcome. What type of project are you creating?',
+    types:[{id:'film',icon:'🎬',label:'Film / Story'},{id:'ad',icon:'📢',label:'Advertisement'},{id:'music',icon:'🎵',label:'Music Video'},{id:'doc',icon:'📹',label:'Documentary'}],
+    firstQ:{film:'What is your story about?',ad:'What product or service?',music:'What is the song about?',doc:'What subject are you documenting?'},
+    done:'Your 6-scene film is ready. Go to Assembly Room to export.',
+    err:'Connection error. Check /api/chat on Vercel.',
+    confirm_yes:'GENERATE', confirm_no:'CANCEL'
   },
   es: {
-    phase1: 'Descubrimiento', phase2: 'Guión', phase3: 'Producción',
-    crew_panel: 'Panel de Equipo', active_session: 'Sesión Activa',
-    screenplay_writer: 'Guionista', director: 'Director',
-    production_cost: 'Costo de Producción', recharge: '+ Recargar',
-    phase1_title: 'Fase 1: Descubrimiento',
-    phase1_sub: 'Tarea Activa: Generación de Concepto',
-    phase2_title: 'Fase 2: Guión',
-    phase2_sub: 'Tarea Activa: Análisis y Desglose de Escenas',
-    phase3_title: 'Fase 3: Producción',
-    phase3_sub: 'Tarea Activa: Director Generando Escenas',
-    placeholder: 'Escribe tu directiva creativa aquí...',
-    send: 'Enviar', action: 'Acción',
-    new_session: 'Nueva Sesión',
-    generate: 'Generar',
-    assembly: 'Enviar a Sala de Montaje',
-    auto: 'Auto', manual: 'Manual',
-    credits_label: 'Créditos:', team_label: 'Equipo:',
-    confirm_title: '¿Listo para Generar?',
-    confirm_sub: 'TU GUIÓN ESTÁ COMPLETO',
-    confirm_cost: 'CRÉDITOS',
-    confirm_cancel: 'CANCELAR',
-    confirm_go: 'GENERAR →',
-    low_credits: 'Créditos insuficientes',
-    low_credits_sub: 'Necesitas más créditos para generar este film.',
-    welcome: 'Bienvenido. ¿Qué tipo de proyecto creas?',
-    types: [
-      {id:'film', icon:'🎬', label:'Película / Historia'},
-      {id:'ad',   icon:'📢', label:'Anuncio'},
-      {id:'music',icon:'🎵', label:'Videoclip'},
-      {id:'doc',  icon:'📹', label:'Documental'}
-    ],
-    firstQ: {
-      film:  '¿De qué trata tu historia?',
-      ad:    '¿Qué producto o servicio?',
-      music: '¿De qué trata la canción?',
-      doc:   '¿Qué tema documentas?'
-    },
-    done: '✅ Tu película de 6 escenas está lista.',
-    api_err: '⚠️ Error de conexión. Verifica /api/chat en Vercel.'
+    ph1:'Fase 1: Descubrimiento', ph2:'Fase 2: Guión', ph3:'Fase 3: Producción',
+    sub1:'Generación de Concepto', sub2:'Análisis del Guión', sub3:'Director Generando Escenas',
+    placeholder:'Escribe tu directiva creativa...',
+    send:'Enviar', action:'Acción', new_session:'Nueva Sesión', generate:'Generar',
+    assembly:'Enviar a Sala de Montaje', auto:'Auto', manual:'Manual',
+    welcome:'Bienvenido. ¿Qué tipo de proyecto creas?',
+    types:[{id:'film',icon:'🎬',label:'Película'},{id:'ad',icon:'📢',label:'Anuncio'},{id:'music',icon:'🎵',label:'Videoclip'},{id:'doc',icon:'📹',label:'Documental'}],
+    firstQ:{film:'¿De qué trata tu historia?',ad:'¿Qué producto?',music:'¿De qué trata la canción?',doc:'¿Qué tema documentas?'},
+    done:'Tu película está lista.',
+    err:'Error de conexión.',
+    confirm_yes:'GENERAR', confirm_no:'CANCELAR'
   },
   ar: {
-    phase1: 'الاستكشاف', phase2: 'السيناريو', phase3: 'الإنتاج',
-    crew_panel: 'لوحة الفريق', active_session: 'جلسة نشطة',
-    screenplay_writer: 'كاتب السيناريو', director: 'المخرج',
-    production_cost: 'تكلفة الإنتاج', recharge: '+ شحن رصيد',
-    phase1_title: 'المرحلة 1: الاستكشاف',
-    phase1_sub: 'المهمة الحالية: توليد المفهوم الإبداعي',
-    phase2_title: 'المرحلة 2: السيناريو',
-    phase2_sub: 'المهمة الحالية: تحليل السيناريو وتقسيم المشاهد',
-    phase3_title: 'المرحلة 3: الإنتاج',
-    phase3_sub: 'المهمة الحالية: المخرج يولّد المشاهد',
-    placeholder: 'اكتب توجيهاتك الإبداعية هنا...',
-    send: 'إرسال', action: 'إجراء',
-    new_session: 'جلسة جديدة',
-    generate: 'توليد',
-    assembly: 'إرسال لغرفة المونتاج',
-    auto: 'تلقائي', manual: 'يدوي',
-    credits_label: 'رصيد:', team_label: 'الفريق:',
-    confirm_title: 'جاهز للتوليد؟',
-    confirm_sub: 'سيناريوك مكتمل',
-    confirm_cost: 'نقطة',
-    confirm_cancel: 'إلغاء',
-    confirm_go: 'توليد ←',
-    low_credits: 'رصيد غير كافٍ',
-    low_credits_sub: 'تحتاج إلى رصيد أكثر لتوليد هذا الفيلم.',
-    welcome: 'مرحباً. ما نوع مشروعك؟',
-    types: [
-      {id:'film', icon:'🎬', label:'فيلم / قصة شخصية'},
-      {id:'ad',   icon:'📢', label:'إعلان تجاري'},
-      {id:'music',icon:'🎵', label:'كليب موسيقي'},
-      {id:'doc',  icon:'📹', label:'وثائقي'}
-    ],
-    firstQ: {
-      film:  'عمَّ تدور قصتك؟',
-      ad:    'ما المنتج أو الخدمة؟',
-      music: 'عمَّ تتحدث الأغنية؟',
-      doc:   'ما الموضوع الذي توثقه؟'
-    },
-    done: '✅ فيلمك المكون من 6 مشاهد جاهز.',
-    api_err: '⚠️ مشكلة في الاتصال. تحقق من /api/chat على Vercel.'
+    ph1:'المرحلة 1: الاستكشاف', ph2:'المرحلة 2: السيناريو', ph3:'المرحلة 3: الإنتاج',
+    sub1:'توليد المفهوم الإبداعي', sub2:'تحليل السيناريو', sub3:'المخرج يولّد المشاهد',
+    placeholder:'اكتب توجيهاتك الإبداعية هنا...',
+    send:'إرسال', action:'إجراء', new_session:'جلسة جديدة', generate:'توليد',
+    assembly:'إرسال لغرفة المونتاج', auto:'تلقائي', manual:'يدوي',
+    welcome:'مرحباً. ما نوع مشروعك؟',
+    types:[{id:'film',icon:'🎬',label:'فيلم / قصة'},{id:'ad',icon:'📢',label:'إعلان'},{id:'music',icon:'🎵',label:'كليب'},{id:'doc',icon:'📹',label:'وثائقي'}],
+    firstQ:{film:'عمَّ تدور قصتك؟',ad:'ما المنتج أو الخدمة؟',music:'عمَّ تتحدث الأغنية؟',doc:'ما الموضوع الذي توثقه؟'},
+    done:'فيلمك جاهز. انتقل لغرفة المونتاج.',
+    err:'مشكلة في الاتصال.',
+    confirm_yes:'توليد', confirm_no:'إلغاء'
   }
 };
 
-// ── SCREENWRITER PROMPTS (no KNOWLEDGE_CORE) ──
 const SCREENWRITER = {
-  film: `You are the screenplay writer at MercaDream.
-ONE question per message. Maximum 2 sentences. Never explain.
-Ask about: pulse/energy, character, transformation, world.
-After 4-6 exchanges output EXACTLY: DREAM_CAPTURED`,
-
-  ad: `You are a commercial scriptwriter at MercaDream.
-Ask ONLY 3 questions one at a time: 1) product, 2) target audience, 3) key message.
-After 3 answers output EXACTLY: DREAM_CAPTURED`,
-
-  music: `You are a music video scriptwriter at MercaDream.
-Ask ONLY 3 questions: 1) song mood/genre, 2) artist visual style, 3) key visual concept.
-After 3 answers output EXACTLY: DREAM_CAPTURED`,
-
-  doc: `You are a documentary scriptwriter at MercaDream.
-Ask ONLY 3 questions: 1) subject, 2) angle/perspective, 3) central truth to reveal.
-After 3 answers output EXACTLY: DREAM_CAPTURED`
+  film:`You are the screenplay writer at MercaDream. ONE question per message, max 2 sentences. Ask about: energy/vibe, character, transformation, world. After 4-6 exchanges output EXACTLY: DREAM_CAPTURED`,
+  ad:`You are a commercial scriptwriter at MercaDream. Ask ONE question at a time: 1) product, 2) target audience, 3) key message. After 3 answers output EXACTLY: DREAM_CAPTURED`,
+  music:`You are a music video scriptwriter. Ask ONE question at a time: 1) song mood/genre, 2) artist visual style, 3) key visual concept. After 3 answers output EXACTLY: DREAM_CAPTURED`,
+  doc:`You are a documentary scriptwriter. Ask ONE question at a time: 1) subject, 2) angle, 3) central truth. After 3 answers output EXACTLY: DREAM_CAPTURED`
 };
 
-// ── DIRECTOR MAPPING ──
-const PROJECT_TO_DIRECTOR = {
-  film: 'drama', ad: 'ads', music: 'music', doc: 'doc'
-};
+const DIR_MAP = {film:'drama', ad:'ads', music:'music', doc:'doc'};
 
-// ── STATE ──
+// STATE
 let lang = localStorage.getItem('md_lang') || 'en';
 let phase = 'discovery';
 let history = [];
 let brief = null;
 let projectType = null;
-let distributionMode = 'auto'; // 'auto' | 'manual'
 let isBusy = false;
-let scenes = null;
+const $ = id => document.getElementById(id);
 
-// ── HELPERS ──
-const t = k => TX[lang][k] || TX.en[k] || k;
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-function getCredits() { return parseInt(localStorage.getItem('md_credits') || '0'); }
-function setCredits(v) {
+// ── CREDITS ──
+function getCredits(){ return parseInt(localStorage.getItem('md_credits')||'0'); }
+function setCredits(v){
   localStorage.setItem('md_credits', v);
-  document.getElementById('header-credits-value').textContent = v.toLocaleString();
-  document.getElementById('footer-credits-value').textContent = v.toLocaleString();
+  $('header-credits').textContent = v.toLocaleString();
+  $('footer-credits').textContent = v.toLocaleString();
 }
 
-function log(msg, type = 'info') {
-  const term = document.querySelector('.terminal-scroll');
-  if (!term) return;
-  const colors = { ok: '#a8d700', err: '#ffb4ab', warn: '#ffba3f', info: 'rgba(168,215,0,0.6)' };
+// ── LOG ──
+function log(msg, type='info'){
+  const lines = $('log-lines');
+  if(!lines) return;
+  const colors = {ok:'#a8d700', err:'#ffb4ab', warn:'#ffba3f', info:'rgba(168,215,0,0.6)'};
   const p = document.createElement('p');
   p.className = 'leading-tight';
-  p.innerHTML = `<span class="opacity-50">[${new Date().toLocaleTimeString('en',{hour12:false})}]</span> <span style="color:${colors[type]||colors.info}">${msg}</span>`;
-  term.insertBefore(p, term.firstChild);
-  if (term.children.length > 50) term.removeChild(term.lastChild);
+  const time = new Date().toLocaleTimeString('en',{hour12:false});
+  p.innerHTML = `<span style="opacity:.5">[${time}]</span> <span style="color:${colors[type]||colors.info}">${msg}</span>`;
+  lines.insertBefore(p, lines.firstChild);
 }
 
-function updatePhaseUI(p) {
-  const phases = ['discovery','screenplay','production'];
-  const idx = phases.indexOf(p);
-  const titles = [t('phase1_title'), t('phase2_title'), t('phase3_title')];
-  const subs   = [t('phase1_sub'),   t('phase2_sub'),   t('phase3_sub')];
-  document.querySelector('h1.font-display-lg').textContent = titles[idx] || titles[0];
-  document.querySelector('h1.font-display-lg + p').textContent = subs[idx] || subs[0];
-}
-
-function updatePipelineStage(stageNum, status) {
-  // status: 'idle' | 'active' | 'done'
-  const stages = document.querySelectorAll('.pipeline .space-y-2');
-  stages.forEach((s, i) => {
-    const bar = s.querySelector('.h-1 div');
-    const dot = s.querySelector('.rounded-full');
-    const label = s.querySelector('span:last-child');
-    if (i + 1 === stageNum) {
-      s.classList.remove('opacity-50');
-      if (bar) { bar.style.width = status === 'done' ? '100%' : '65%'; bar.style.background = '#a8d700'; }
-      if (dot) { dot.style.background = '#a8d700'; dot.classList.add('animate-pulse'); }
-      if (label && label.tagName === 'SPAN') { label.textContent = status === 'done' ? 'DONE' : 'ACTIVE'; label.style.color = '#a8d700'; }
-    } else if (i + 1 < stageNum) {
-      s.classList.remove('opacity-50');
-      if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; }
-    } else {
-      s.classList.add('opacity-50');
+// ── PIPELINE ──
+function setStage(num, status){
+  // status: idle | active | done
+  document.querySelectorAll('.stage-item').forEach((el,i) => {
+    const n = i+1;
+    const bar = el.querySelector('.stage-bar');
+    const lbl = el.querySelector('.stage-status');
+    if(n < num){ el.classList.remove('opacity-50'); if(bar){bar.style.width='100%';bar.style.background='#a8d700';} if(lbl){lbl.textContent='DONE';lbl.style.color='#a8d700';} }
+    else if(n === num){
+      el.classList.remove('opacity-50');
+      if(status==='active'){ if(bar){bar.style.width='65%';bar.style.background='#a8d700';} if(lbl){lbl.textContent='ACTIVE';lbl.style.color='#a8d700';} }
+      else if(status==='done'){ if(bar){bar.style.width='100%';bar.style.background='#a8d700';} if(lbl){lbl.textContent='DONE';lbl.style.color='#a8d700';} }
     }
+    else{ el.classList.add('opacity-50'); if(bar){bar.style.width='0';} if(lbl){lbl.textContent='IDLE';lbl.style.color='';} }
   });
 }
 
-// ── CREW PANEL ──
-function loadCrew() {
-  const directors = JSON.parse(localStorage.getItem('md_selected_directors') || '[]');
-  const names     = JSON.parse(localStorage.getItem('md_director_names')     || '[]');
-  const images    = JSON.parse(localStorage.getItem('md_director_images')    || '[]');
-  const crewList  = document.querySelector('.crew-cards');
-  if (!crewList) return;
+function setCockpit(html){ $('cockpit-inner').innerHTML = html; }
 
-  directors.forEach((type, i) => {
-    const name  = names[i]  || type.toUpperCase();
-    const image = images[i] || '';
-    const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+// ── CREW ──
+function loadCrew(){
+  const dirs  = JSON.parse(localStorage.getItem('md_selected_directors')||'[]');
+  const names = JSON.parse(localStorage.getItem('md_director_names')||'[]');
+  const imgs  = JSON.parse(localStorage.getItem('md_director_images')||'[]');
+  const cards = $('crew-cards');
+
+  dirs.forEach((type,i) => {
+    const name = names[i] || type;
+    const img  = imgs[i]  || '';
+    const init = name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
     const card = document.createElement('div');
-    card.className = 'bg-surface-container-low border border-outline-variant p-4 flex items-center gap-3 cursor-pointer hover:bg-surface-container-high transition-colors crew-director-card';
+    card.className = 'bg-surface-container-low border border-outline-variant p-4 flex items-center gap-3';
     card.dataset.director = type;
     card.innerHTML = `
       <div class="relative">
-        ${image
-          ? `<img src="${image}" alt="${name}" class="w-10 h-10 bg-surface-container-highest border border-outline-variant object-cover">`
-          : `<div class="w-10 h-10 bg-surface-container-highest border border-outline-variant flex items-center justify-center font-display-lg text-body-sm text-surface-tint">${initials}</div>`
-        }
-        <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-neutral-600 rounded-full border-2 border-surface-variant director-status-dot"></div>
+        ${img ? `<img src="${img}" alt="${name}" class="w-10 h-10 border border-outline-variant object-cover">` :
+                `<div class="w-10 h-10 border border-outline-variant flex items-center justify-center bg-surface-variant" style="font-family:Orbitron,monospace;font-size:10px;color:#a8d700">${init}</div>`}
+        <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-surface-variant director-dot" style="background:#525252"></div>
       </div>
       <div>
-        <p class="font-display-lg text-body-md text-on-surface leading-none">${name}</p>
-        <p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">${t('director')}</p>
+        <p style="font-family:Orbitron,monospace;font-size:12px;color:#e5e2e1">${name}</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#c4caac;text-transform:uppercase;margin-top:4px">Director</p>
       </div>`;
-    crewList.appendChild(card);
+    cards.appendChild(card);
   });
 
-  // Update footer team
-  updateFooterTeam(names, images);
-}
-
-function updateFooterTeam(names, images) {
-  const teamImgs = document.querySelector('.flex.-space-x-2');
-  const teamName = teamImgs?.nextElementSibling;
-  if (!teamImgs) return;
-  teamImgs.innerHTML = images.slice(0, 3).map((img, i) =>
-    img
-      ? `<img src="${img}" alt="${names[i]||''}" class="w-6 h-6 rounded-full border border-black object-cover">`
-      : `<div class="w-6 h-6 rounded-full border border-black bg-surface-variant flex items-center justify-center text-[8px] text-surface-tint font-bold">${(names[i]||'?')[0]}</div>`
+  // Footer team
+  const teamImgs  = $('footer-team-images');
+  const teamNames = $('footer-team-names');
+  if(teamImgs) teamImgs.innerHTML = imgs.slice(0,3).map((img,i) =>
+    img ? `<img src="${img}" class="w-6 h-6 rounded-full border border-black object-cover" alt="${names[i]||''}">` :
+          `<div class="w-6 h-6 rounded-full border border-black bg-surface-variant flex items-center justify-center" style="font-size:8px;color:#a8d700">${(names[i]||'?')[0]}</div>`
   ).join('');
-  if (teamName) teamName.textContent = names.slice(0, 2).join(' + ') || 'No crew selected';
+  if(teamNames) teamNames.textContent = names.slice(0,2).join(' + ') || 'No crew selected';
 }
 
-function setDirectorStatus(type, status) {
-  // status: 'standby' | 'active' | 'done'
-  const card = document.querySelector(`.crew-director-card[data-director="${type}"]`);
-  if (!card) return;
-  const dot = card.querySelector('.director-status-dot');
-  if (!dot) return;
-  const colors = { standby: '#525252', active: '#a8d700', done: '#4ade80' };
-  dot.style.background = colors[status] || colors.standby;
-  if (status === 'active') dot.classList.add('animate-pulse');
-  else dot.classList.remove('animate-pulse');
+function setDirectorStatus(type, status){
+  const card = document.querySelector(`[data-director="${type}"]`);
+  if(!card) return;
+  const dot = card.querySelector('.director-dot');
+  if(!dot) return;
+  const c = {standby:'#525252', active:'#a8d700', done:'#4ade80'};
+  dot.style.background = c[status]||c.standby;
+  if(status==='active') dot.style.boxShadow='0 0 8px #a8d700'; else dot.style.boxShadow='';
 }
 
 // ── CHAT ──
-function addMessage(role, html) {
-  const area = document.querySelector('.custom-scrollbar');
-  if (!area) return;
-  const time = new Date().toLocaleTimeString('en', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  const isBot = role === 'bot';
-  const wrap = document.createElement('div');
-  wrap.className = `flex flex-col gap-2 ${isBot ? 'max-w-[80%]' : 'max-w-[80%] ml-auto items-end'}`;
-  if (isBot) {
-    wrap.innerHTML = `
-      <div class="flex items-center gap-2">
-        <span class="font-label-caps text-label-caps text-surface-tint uppercase">Mercadream Engine</span>
-        <span class="font-technical-sm text-technical-sm text-on-surface-variant">${time}</span>
-      </div>
-      <div class="bg-surface-container border-l-4 border-surface-tint p-6">
-        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/\\n/g,'<br>').replace(/\*\*([^\*]+)\*\*/g,'<strong>$1</strong>')}</p>
-      </div>`;
-  } else {
-    wrap.innerHTML = `
-      <div class="flex items-center gap-2">
-        <span class="font-technical-sm text-technical-sm text-on-surface-variant">${time}</span>
-        <span class="font-label-caps text-label-caps text-secondary uppercase">You</span>
-      </div>
-      <div class="bg-[#a8d700]/10 border border-surface-tint/30 p-6 backdrop-blur-sm">
-        <p class="font-body-md text-body-md leading-relaxed text-on-surface">${html.replace(/\\n/g,'<br>')}</p>
-      </div>`;
-  }
-  // Remove typing indicator if present
-  const typing = document.getElementById('typing-indicator');
-  if (typing) typing.remove();
-  area.appendChild(wrap);
-  area.scrollTop = area.scrollHeight;
-  if (!isBot) history.push({role:'user', content: html});
-  else history.push({role:'assistant', content: html});
-}
-
-function showTyping() {
-  const area = document.querySelector('.custom-scrollbar');
-  if (!area || document.getElementById('typing-indicator')) return;
-  const d = document.createElement('div');
-  d.id = 'typing-indicator';
-  d.className = 'flex items-center gap-2 text-on-surface-variant';
-  d.innerHTML = `
-    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce"></span>
-    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.2s]"></span>
-    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce [animation-delay:0.4s]"></span>
-    <span class="font-technical-sm text-technical-sm ml-2">Processing...</span>`;
-  area.appendChild(d);
-  area.scrollTop = area.scrollHeight;
-}
-
-function hideTyping() {
-  const el = document.getElementById('typing-indicator');
-  if (el) el.remove();
-}
-
-function showProjectTypeSelector() {
-  const types = t('types');
-  const html = `
-    <div style="margin-bottom:12px">${t('welcome')}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-      ${types.map(type => `
-        <button onclick="selectType('${type.id}')"
-          style="padding:10px 14px;background:#1e1e1e;border:1px solid #434933;color:#e5e2e1;
-                 font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;
-                 cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;
-                 transition:all .2s"
-          onmouseover="this.style.borderColor='#a8d700';this.style.color='#a8d700'"
-          onmouseout="this.style.borderColor='#434933';this.style.color='#e5e2e1'">
-          <span style="font-size:16px">${type.icon}</span>
-          <span>${type.label}</span>
-        </button>`).join('')}
+function addBot(html){
+  const area = $('chat-messages');
+  const time = new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const div = document.createElement('div');
+  div.className = 'flex flex-col gap-2 max-w-[80%]';
+  div.innerHTML = `
+    <div class="flex items-center gap-2">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a8d700;letter-spacing:.1em;text-transform:uppercase">Mercadream Engine</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c4caac">${time}</span>
+    </div>
+    <div class="bg-surface-container p-6" style="border-left:4px solid #a8d700">
+      <div style="font-size:15px;line-height:1.7;color:#e5e2e1">${html}</div>
     </div>`;
-  addMessage('bot', html);
-  history.pop(); // don't add to history
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  history.push({role:'assistant', content: div.querySelector('div[style]').innerText});
 }
 
-function selectType(type) {
+function addUser(text){
+  const area = $('chat-messages');
+  const time = new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const div = document.createElement('div');
+  div.className = 'flex flex-col gap-2 max-w-[80%] ml-auto items-end';
+  div.innerHTML = `
+    <div class="flex items-center gap-2">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c4caac">${time}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#ffba3f;letter-spacing:.1em;text-transform:uppercase">You</span>
+    </div>
+    <div class="p-6" style="background:rgba(168,215,0,0.08);border:1px solid rgba(168,215,0,0.25)">
+      <p style="font-size:15px;line-height:1.7;color:#e5e2e1">${text}</p>
+    </div>`;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  history.push({role:'user', content: text});
+}
+
+function showTyping(){
+  removeTyping();
+  const area = $('chat-messages');
+  const div = document.createElement('div');
+  div.id = 'typing-ind';
+  div.className = 'flex items-center gap-2';
+  div.style.color = '#c4caac';
+  div.innerHTML = `
+    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce"></span>
+    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce" style="animation-delay:.2s"></span>
+    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce" style="animation-delay:.4s"></span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;margin-left:8px">Processing...</span>`;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+function removeTyping(){ const el = $('typing-ind'); if(el) el.remove(); }
+
+// ── PROJECT TYPE SELECTOR ──
+function showTypeSelector(){
+  const types = TX[lang].types;
+  const grid = types.map(t =>
+    `<button onclick="selectType('${t.id}')" style="padding:10px 14px;background:#1e1e1e;border:1px solid #434933;color:#e5e2e1;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;transition:all .2s;width:100%" onmouseover="this.style.borderColor='#a8d700';this.style.color='#a8d700'" onmouseout="this.style.borderColor='#434933';this.style.color='#e5e2e1'">
+      <span style="font-size:16px">${t.icon}</span><span>${t.label}</span>
+    </button>`
+  ).join('');
+  const html = `<div style="margin-bottom:10px">${TX[lang].welcome}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">${grid}</div>`;
+  // Add directly without pushing to history
+  const area = $('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'flex flex-col gap-2 max-w-[80%]';
+  div.innerHTML = `
+    <div class="flex items-center gap-2">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a8d700;letter-spacing:.1em;text-transform:uppercase">Mercadream Engine</span>
+    </div>
+    <div class="bg-surface-container p-6" style="border-left:4px solid #a8d700">
+      <div style="font-size:15px;line-height:1.7;color:#e5e2e1">${html}</div>
+    </div>`;
+  area.appendChild(div);
+}
+
+function selectType(type){
   projectType = type;
   localStorage.setItem('md_project_type', type);
-  const q = t('firstQ')[type];
+  const q = TX[lang].firstQ[type];
   history.push({role:'assistant', content: q});
-  addMessage('bot', q);
-  history.pop(); // already added above
-  log(`Project type: ${type}`, 'ok');
+  addBot(q);
+  history.pop(); history.pop(); // remove duplicate from addBot
+  history.push({role:'assistant', content: q});
+  log('Project type: ' + type, 'ok');
 }
 
-async function callAPI(system, messages, maxTokens, mode) {
-  const res = await fetch(API_CHAT, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({system, messages, max_tokens: maxTokens, mode})
-  });
-  if (!res.ok) { const b = await res.json().catch(()=>({})); throw new Error(b.error||`HTTP ${res.status}`); }
-  const data = await res.json();
-  return data.text || '';
+// ── API ──
+async function callAPI(system, msgs, tokens, mode){
+  const res = await fetch(API_CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system,messages:msgs,max_tokens:tokens,mode})});
+  if(!res.ok){ const b=await res.json().catch(()=>({})); throw new Error(b.error||'HTTP '+res.status); }
+  return (await res.json()).text || '';
 }
 
-function getScreenwriterSystem() {
-  const pt = projectType || 'film';
-  return SCREENWRITER[pt] || SCREENWRITER.film;
-}
-
-async function sendMessage() {
-  if (isBusy) return;
-  const input = document.querySelector('textarea');
-  if (!input) return;
+// ── SEND ──
+async function sendMessage(){
+  if(isBusy) return;
+  const input = $('chat-input');
   const text = input.value.trim();
-  if (!text) return;
+  if(!text) return;
 
-  // ACTION shortcut
-  const actionWords = ['action','start','go','generate'];
-  if (actionWords.includes(text.toLowerCase())) {
-    input.value = '';
+  // Action shortcut
+  const actions = ['action','start','go','generate'];
+  if(actions.includes(text.toLowerCase())){
+    input.value='';
     await triggerAction();
     return;
   }
 
-  input.value = '';
-  input.style.height = 'auto';
-  isBusy = true;
-  addMessage('user', text);
+  input.value=''; input.style.height='auto';
+  isBusy=true;
+  addUser(text);
   showTyping();
-  log(`>> ${text.substring(0,50)}`);
+  log('>> ' + text.substring(0,50));
 
-  try {
-    if (phase === 'discovery') {
-      const reply = await callAPI(getScreenwriterSystem(), history, 800, 'discovery');
-      hideTyping();
-      if (reply.includes('DREAM_CAPTURED')) {
-        const clean = reply.replace('DREAM_CAPTURED','').trim();
-        brief = clean || history.map(m => m.content).join('
-');
-        if (clean) addMessage('bot', clean);
-        await showConfirmModal();
+  try{
+    if(phase==='discovery'){
+      const system = SCREENWRITER[projectType||'film'];
+      const reply = await callAPI(system, history, 800, 'discovery');
+      removeTyping();
+      if(reply.includes('DREAM_CAPTURED')){
+        brief = reply.replace('DREAM_CAPTURED','').trim() || history.map(m=>m.content).join('\n');
+        if(brief.length > 20) addBot(brief);
+        log('Dream captured!', 'ok');
+        showConfirm();
       } else {
-        addMessage('bot', reply);
+        addBot(reply);
       }
     }
-  } catch(e) {
-    hideTyping();
-    addMessage('bot', t('api_err'));
-    log('ERR: ' + e.message, 'err');
+  } catch(e){
+    removeTyping();
+    addBot(TX[lang].err);
+    log('ERR: '+e.message, 'err');
   }
-  isBusy = false;
+  isBusy=false;
 }
 
-async function triggerAction() {
-  brief = history.map(m => `${m.role}: ${m.content}`).join('
-
-');
-  await showConfirmModal();
+async function triggerAction(){
+  brief = history.map(m=>m.role.toUpperCase()+': '+m.content).join('\n\n');
+  showConfirm();
 }
 
 // ── CONFIRM MODAL ──
-async function showConfirmModal() {
+function showConfirm(){
   const credits = getCredits();
-  const modal = document.createElement('div');
-  modal.id = 'confirm-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
-  modal.innerHTML = `
-    <div style="background:#0d0d0d;border:1px solid rgba(168,215,0,.35);max-width:440px;width:100%;position:relative;overflow:hidden;padding:32px">
+  const canAfford = credits >= COST;
+  const el = document.createElement('div');
+  el.id='md-confirm';
+  el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  el.innerHTML=`
+    <div style="background:#0d0d0d;border:1px solid rgba(168,215,0,.35);max-width:440px;width:100%;position:relative;padding:32px;overflow:hidden">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#a8d700,transparent)"></div>
-      <button onclick="document.getElementById('confirm-modal').remove()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;color:#666;cursor:pointer;font-size:18px">✕</button>
-      <h2 style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:#f0f0f0;text-align:center;margin-bottom:6px">${t('confirm_title')}</h2>
-      <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#666;text-align:center;margin-bottom:20px;letter-spacing:1px">${t('confirm_sub')}</p>
+      <button onclick="document.getElementById('md-confirm').remove()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;color:#666;cursor:pointer;font-size:18px">✕</button>
+      <h2 style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:#f0f0f0;text-align:center;margin-bottom:6px">Ready to Generate?</h2>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#666;text-align:center;margin-bottom:20px;letter-spacing:1px">YOUR SCREENPLAY IS COMPLETE</p>
       <div style="background:rgba(168,215,0,.05);border:1px solid rgba(168,215,0,.18);padding:16px;text-align:center;margin-bottom:20px">
-        <div style="font-family:Orbitron,monospace;font-size:44px;font-weight:900;color:#a8d700;line-height:1">${COST_PER_FILM}</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:#666;letter-spacing:2px;margin-top:4px">${t('confirm_cost')}</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:${credits >= COST_PER_FILM ? '#a8d700' : '#ffb4ab'};margin-top:6px">
-          ${t('credits_label')} ${credits}
-        </div>
+        <div style="font-family:Orbitron,monospace;font-size:44px;font-weight:900;color:#a8d700;line-height:1">${COST}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:#666;letter-spacing:2px;margin-top:4px">CREDITS</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:${canAfford?'#a8d700':'#ffb4ab'};margin-top:6px">Your balance: ${credits}</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <button onclick="document.getElementById('confirm-modal').remove()"
-          style="padding:12px;background:transparent;border:1px solid rgba(168,215,0,.25);color:#b0b0b0;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">
-          ${t('confirm_cancel')}
-        </button>
-        <button onclick="document.getElementById('confirm-modal').remove(); ${credits >= COST_PER_FILM ? 'startProduction()' : 'showRecharge()'}"
-          style="padding:12px;background:${credits >= COST_PER_FILM ? '#a8d700' : '#ffb4ab'};color:#000;border:none;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">
-          ${credits >= COST_PER_FILM ? t('confirm_go') : '+ ' + t('recharge')}
-        </button>
+        <button onclick="document.getElementById('md-confirm').remove()" style="padding:12px;background:transparent;border:1px solid rgba(168,215,0,.25);color:#b0b0b0;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">${TX[lang].confirm_no}</button>
+        <button onclick="document.getElementById('md-confirm').remove();${canAfford?'startProduction()':'goRecharge()'}" style="padding:12px;background:${canAfford?'#a8d700':'#ffb4ab'};color:#000;border:none;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">${canAfford?TX[lang].confirm_yes:'+ Recharge'}</button>
       </div>
     </div>`;
-  document.body.appendChild(modal);
+  document.body.appendChild(el);
 }
 
-function showRecharge() { window.location.href = 'directors.html'; }
+function goRecharge(){ window.location.href='directors.html'; }
 
 // ── PRODUCTION ──
-async function startProduction() {
-  phase = 'production';
-  updatePhaseUI('production');
-  isBusy = true;
+async function startProduction(){
+  phase='production'; isBusy=true;
+  $('phase-title').textContent = TX[lang].ph3;
+  $('phase-subtitle').textContent = TX[lang].sub3;
+  setCredits(getCredits()-COST);
   log('PIPELINE ACTIVATED', 'ok');
+  setCockpit('<span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px;animation:pulse 1s infinite">GENERATING_6_SCENES...</span>');
 
-  // Deduct credits
-  setCredits(getCredits() - COST_PER_FILM);
+  setStage(1,'active'); await new Promise(r=>setTimeout(r,600));
+  setStage(1,'done'); log('Stage 1: Screenplay complete', 'ok');
+  setStage(2,'active'); await new Promise(r=>setTimeout(r,400));
 
-  // Stage 1: Screenplay
-  updatePipelineStage(1, 'active');
-  addMessage('bot', 'Screenplay complete. Assigning director...');
-  await sleep(500);
-  updatePipelineStage(1, 'done');
+  const dirType = DIR_MAP[projectType||'film']||'drama';
+  setStage(2,'done'); log('Stage 2: Director assigned: '+dirType, 'ok');
+  setStage(3,'active');
+  setDirectorStatus(dirType,'active');
 
-  // Stage 2: Classify
-  updatePipelineStage(2, 'active');
-  const directorType = PROJECT_TO_DIRECTOR[projectType || 'film'] || 'drama';
-  log(`Director assigned: ${directorType}`, 'ok');
-  await sleep(400);
-  updatePipelineStage(2, 'done');
+  const conv = history.map(m=>m.role.toUpperCase()+': '+m.content).join('\n\n');
 
-  // Stage 3: Director generates
-  updatePipelineStage(3, 'active');
-  setDirectorStatus(directorType, 'active');
-
-  // Update cockpit
-  const cockpit = document.querySelector('.cockpit-screen .text-center');
-  if (cockpit) cockpit.innerHTML = `<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">GENERATING_6_SCENES...</span>`;
-
-  const convText = history.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('
-
-');
-
-  try {
-    const res = await fetch(API_DIRECTOR, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({type: directorType, conversation: convText, brief: brief || convText})
-    });
-
-    if (!res.ok) throw new Error(`Director API HTTP ${res.status}`);
+  try{
+    const res = await fetch(API_DIRECTOR,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:dirType,conversation:conv,brief:brief||conv})});
+    if(!res.ok) throw new Error('Director API HTTP '+res.status);
     const data = await res.json();
-    scenes = data.scenes;
+    const scenes = data.scenes||[];
 
-    updatePipelineStage(3, 'done');
-    updatePipelineStage(4, 'done');
-    updatePipelineStage(5, 'done');
-    setDirectorStatus(directorType, 'done');
+    setStage(3,'done'); setStage(4,'done');
+    setDirectorStatus(dirType,'done');
+    log('Stage 3: '+scenes.length+' scenes generated', 'ok');
 
-    // Save to assembly
     localStorage.setItem('md_6scenes', JSON.stringify(scenes));
-    let videos = [];
-    scenes.forEach((s, i) => {
-      videos.push({
-        id: Date.now() + i, url: null,
-        prompt: (s.prompt || '').substring(0, 500),
-        timestamp: new Date().toISOString(),
-        duration: 10,
-        title: `Scene ${i+1}/6: ${(s.title||'').substring(0,40)}`,
-        sceneNumber: i+1, status: 'pending'
-      });
-      log(`✓ Scene ${i+1}/6: ${s.title}`, 'ok');
-    });
+    const videos = scenes.map((s,i)=>({id:Date.now()+i,url:null,prompt:(s.prompt||'').substring(0,500),timestamp:new Date().toISOString(),duration:10,title:'Scene '+(i+1)+'/6: '+(s.title||''),sceneNumber:i+1,status:'pending'}));
     localStorage.setItem('md_assembly_videos', JSON.stringify(videos));
+    scenes.forEach((s,i) => log('Scene '+(i+1)+': '+s.title, 'ok'));
 
-    // Update cockpit
-    if (cockpit) cockpit.innerHTML = `<div style="font-size:26px;margin-bottom:6px">✅</div><span class="font-technical-sm text-surface-tint" style="opacity:1">6 SCENES READY</span>`;
+    setCockpit('<div style="font-size:24px;margin-bottom:6px">✅</div><span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px">6 SCENES READY</span>');
+    addBot(TX[lang].done);
 
-    addMessage('bot', t('done'));
-
-    // Show assembly button
-    const assemblyBtn = document.getElementById('assembly-room-btn');
-    if (assemblyBtn) assemblyBtn.classList.remove('hidden');
-
+    const btn = $('btn-assembly');
+    if(btn){ btn.classList.remove('hidden'); btn.style.display='flex'; }
     log('Production complete!', 'ok');
 
-  } catch(e) {
-    log('Director error: ' + e.message, 'err');
-    addMessage('bot', '⚠️ Production error: ' + e.message);
-    updatePipelineStage(3, 'idle');
-    setDirectorStatus(directorType, 'standby');
+  } catch(e){
+    log('Director error: '+e.message, 'err');
+    addBot('Production error: '+e.message);
+    setDirectorStatus(dirType,'standby');
   }
-
-  isBusy = false;
-}
-
-// ── DISTRIBUTION MODE ──
-function setDistributionMode(mode) {
-  distributionMode = mode;
-  const btns = document.querySelectorAll('.distribution-btn');
-  btns.forEach(b => {
-    if (b.dataset.mode === mode) {
-      b.style.background = '#a8d700';
-      b.style.color = '#000';
-      b.style.fontWeight = '700';
-    } else {
-      b.style.background = 'transparent';
-      b.style.color = '#c4caac';
-      b.style.fontWeight = '400';
-    }
-  });
-  log(`Distribution mode: ${mode}`, 'info');
+  isBusy=false;
 }
 
 // ── LANGUAGE ──
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('md_lang', l);
-  const isRTL = l === 'ar';
-  document.documentElement.lang = l;
-  document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
-  document.body.style.fontFamily = isRTL ? "'Cairo', sans-serif" : "";
-  document.querySelector('textarea').placeholder = t('placeholder');
-  updatePhaseUI(phase);
-  // Update language buttons
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.style.color = b.dataset.lang === l ? '#a8d700' : '#c4caac';
+function setLang(l){
+  lang=l;
+  localStorage.setItem('md_lang',l);
+  const isRTL = l==='ar';
+  document.documentElement.lang=l;
+  document.documentElement.dir=isRTL?'rtl':'ltr';
+  document.body.style.fontFamily=isRTL?"'Cairo',sans-serif":'';
+  $('chat-input').placeholder = TX[l].placeholder;
+  ['en','es','ar'].forEach(code=>{
+    const el=$(('lang-'+code));
+    if(el) el.style.color = code===l?'#a8d700':'#c4caac';
   });
 }
 
 // ── RESET ──
-function resetSession() {
-  phase = 'discovery'; history = []; brief = null;
-  projectType = null; isBusy = false; scenes = null;
-  const area = document.querySelector('.custom-scrollbar');
-  if (area) area.innerHTML = '';
-  const assemblyBtn = document.getElementById('assembly-room-btn');
-  if (assemblyBtn) assemblyBtn.classList.add('hidden');
-  updatePhaseUI('discovery');
-  updatePipelineStage(1, 'idle');
-  const cockpit = document.querySelector('.cockpit-screen .text-center');
-  if (cockpit) cockpit.innerHTML = `<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">AWAITING_BRIEFING</span><span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>`;
-  log('Session reset', 'ok');
-  showProjectTypeSelector();
-}
-
-// ── WIRE UP BUTTONS ──
-function wireButtons() {
-  // Send button
-  document.querySelector('.bg-surface-tint.text-black.px-6')
-    ?.addEventListener('click', sendMessage);
-
-  // Textarea enter key
-  document.querySelector('textarea')
-    ?.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-    });
-  document.querySelector('textarea')
-    ?.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
-
-  // Action button
-  document.querySelector('.border.border-surface-tint')
-    ?.addEventListener('click', triggerAction);
-
-  // New session button
-  document.querySelector('.hover\:bg-surface-tint.hover\:text-black')
-    ?.addEventListener('click', resetSession);
-
-  // Generate button
-  document.querySelector('.bg-secondary')
-    ?.addEventListener('click', () => showConfirmModal());
-
-  // Assembly room button
-  document.getElementById('assembly-room-btn')
-    ?.addEventListener('click', () => window.location.href = 'assembly.html');
-
-  // Recharge button
-  document.querySelectorAll('button').forEach(b => {
-    if (b.textContent.includes('Recharge') || b.textContent.includes('Recargar') || b.textContent.includes('شحن')) {
-      b.addEventListener('click', showRecharge);
-    }
-  });
-
-  // Distribution mode buttons
-  document.querySelectorAll('.flex.border.border-outline-variant button').forEach(b => {
-    b.classList.add('distribution-btn');
-    b.dataset.mode = b.textContent.trim().toLowerCase() === 'auto' || b.textContent.trim() === 'تلقائي' ? 'auto' : 'manual';
-    b.addEventListener('click', () => setDistributionMode(b.dataset.mode));
-  });
-
-  // Language buttons
-  document.querySelectorAll('.font-technical-sm.text-technical-sm.text-on-surface-variant span').forEach(b => {
-    const lMap = { 'EN': 'en', 'ES': 'es', 'AR': 'ar' };
-    if (lMap[b.textContent]) {
-      b.classList.add('lang-btn');
-      b.dataset.lang = lMap[b.textContent];
-      b.style.cursor = 'pointer';
-      b.addEventListener('click', () => setLang(b.dataset.lang));
-    }
-  });
-
-  // Wallet icon
-  document.querySelector('.material-symbols-outlined.text-surface-tint.cursor-pointer')
-    ?.addEventListener('click', showRecharge);
+function resetSession(){
+  phase='discovery'; history=[]; brief=null; projectType=null; isBusy=false;
+  $('chat-messages').innerHTML='';
+  $('phase-title').textContent=TX[lang].ph1;
+  $('phase-subtitle').textContent=TX[lang].sub1;
+  setCockpit('<span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px">AWAITING_BRIEFING</span>');
+  setStage(0,'idle');
+  const btn=$('btn-assembly'); if(btn){btn.classList.add('hidden');btn.style.display='';}
+  log('Session reset','ok');
+  showTypeSelector();
 }
 
 // ── INIT ──
-window.onload = () => {
+window.onload = function(){
   setCredits(getCredits());
   loadCrew();
-  wireButtons();
   setLang(lang);
 
-  // Test API
-  fetch(API_CHAT, {method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({system:'reply ok', messages:[{role:'user',content:'ping'}], max_tokens:5})})
-    .then(r => log(r.ok ? '✓ /api/chat connected' : '✗ /api/chat error', r.ok ? 'ok' : 'err'))
-    .catch(() => log('✗ /api/chat unreachable', 'err'));
+  $('btn-send').onclick     = sendMessage;
+  $('btn-action').onclick   = triggerAction;
+  $('btn-new-session').onclick = resetSession;
+  $('btn-generate').onclick = showConfirm;
+  $('btn-assembly').onclick = ()=>{ window.location.href='assembly.html'; };
+  $('btn-wallet').onclick   = goRecharge;
+  $('btn-recharge').onclick = goRecharge;
+  $('btn-auto').onclick     = ()=>{ $('btn-auto').style.background='#a8d700'; $('btn-auto').style.color='#000'; $('btn-manual').style.background='transparent'; $('btn-manual').style.color='#c4caac'; };
+  $('btn-manual').onclick   = ()=>{ $('btn-manual').style.background='#a8d700'; $('btn-manual').style.color='#000'; $('btn-auto').style.background='transparent'; $('btn-auto').style.color='#c4caac'; };
+  $('lang-en').onclick      = ()=>setLang('en');
+  $('lang-es').onclick      = ()=>setLang('es');
+  $('lang-ar').onclick      = ()=>setLang('ar');
 
-  // Clear demo content and start
-  const area = document.querySelector('.custom-scrollbar');
-  if (area) area.innerHTML = '';
-  showProjectTypeSelector();
-  log('MERCADREAM STUDIO v3.0 — Ready', 'ok');
+  $('chat-input').addEventListener('keydown', e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+  });
+  $('chat-input').addEventListener('input', function(){
+    this.style.height='auto';
+    this.style.height=Math.min(this.scrollHeight,120)+'px';
+  });
+
+  // Test API
+  fetch(API_CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'reply ok',messages:[{role:'user',content:'ping'}],max_tokens:5})})
+    .then(r=>log(r.ok?'✓ /api/chat connected':'✗ /api/chat error', r.ok?'ok':'err'))
+    .catch(()=>log('✗ /api/chat unreachable','err'));
+
+  log('MERCADREAM STUDIO v3.0 ready','ok');
+  showTypeSelector();
 };
 </script>
-
 </body></html>
