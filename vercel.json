@@ -16,7 +16,7 @@
     { "src": "/api/credits",  "dest": "/api/credits.js"  },
     { "src": "/api/director", "dest": "/api/director.js" },
     { "src": "/",             "dest": "/index.html"      },
-    { "src": "/(.*)\\.html",  "dest": "/$1.html"         },
+    { "src": "/(.*).html",    "dest": "/$1.html"         },
     { "src": "/(.*)",         "dest": "/$1"              }
   ]
 }
