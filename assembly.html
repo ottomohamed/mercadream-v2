@@ -1102,6 +1102,7 @@ function loadScenes(){var scenes=JSON.parse(localStorage.getItem('md_6scenes')||
 var bb=document.getElementById('btn-back-studio');if(bb)bb.onclick=function(){window.location.href='studio.html';};
 document.querySelectorAll('button').forEach(function(btn){var t=btn.textContent.trim().toUpperCase();if(t.includes('EXPORT FILM'))btn.onclick=function(){var s=JSON.parse(localStorage.getItem('md_6scenes')||'[]');if(!s.length){alert('No scenes. Go to Studio first.');return;}var b=new Blob([JSON.stringify({scenes:s,total:s.length*10+'s',created:new Date().toISOString()},null,2)],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='mercadream-film.json';a.click();};if(t.includes('REGENERATE'))btn.onclick=function(){window.location.href='studio.html';};});
 updateCredits();loadScenes();
-</script></body>
+</script><script src="/js/navigation.js"></script></body>
 </html>
+
 

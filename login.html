@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"/>
@@ -141,5 +141,6 @@ let lang='en';
 function setLang(l){lang=l;document.documentElement.lang=l;document.body.className=l==='ar'?'lang-ar':'lang-en';document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));const tx=I18N[l];document.getElementById('ttl').textContent=tx.ttl;document.getElementById('sub').innerHTML=tx.sub;document.getElementById('gBtn').textContent=tx.gBtn;document.getElementById('orTxt').textContent=tx.or;document.getElementById('emLbl').textContent=tx.emLbl;document.getElementById('pwLbl').textContent=tx.pwLbl;document.getElementById('subTxt').textContent=tx.submit;document.getElementById('fgtBtn').textContent=tx.fgt;localStorage.setItem('md_lang',l);}
 window.onload=()=>setLang(localStorage.getItem('md_lang')||'en');
 </script>
-</body>
+<script src="/js/navigation.js"></script></body>
 </html>
+
