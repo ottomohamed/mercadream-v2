@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM | ANIMATE</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=IBM+Plex+Mono:wght@400;500;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -157,7 +157,7 @@
 <!-- LEFT: UPLOAD & CONFIG -->
 <div class="lg:col-span-7 space-y-8">
 <!-- UPLOAD ZONE -->
-<div onclick="triggerUpload()" class="group relative aspect-video w-full bg-surface border-2 border-dashed border-outline-variant hover:border-neon-acid transition-all cursor-pointer flex flex-col items-center justify-center p-8 overflow-hidden">
+<div id="upload-zone" onclick="triggerUpload()" style="cursor:pointer" class="group relative aspect-video w-full bg-surface border-2 border-dashed border-outline-variant hover:border-neon-acid transition-all flex flex-col items-center justify-center p-8 overflow-hidden relative">
 <div class="absolute top-2 left-2 font-label-caps text-label-caps text-outline-variant group-hover:text-neon-acid transition-colors">MODULE_ID: UPL_01</div>
 <span class="material-symbols-outlined text-4xl text-silver-technical mb-4 group-hover:text-neon-acid transition-colors" data-icon="upload_file">upload_file</span>
 <h3 class="font-label-technical text-body-md text-primary mb-1">Drag &amp; drop your photo here or click to browse</h3>
@@ -173,23 +173,23 @@
 </div>
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 <!-- SUBTLE BREATH -->
-<button class="relative p-3 border border-neon-acid bg-surface-variant/20 flex flex-col gap-2 text-left group hover:bg-surface-variant/40 transition-colors">
+<button id="style-subtle" onclick="selectStyle('subtle')" class="relative p-3 border border-neon-acid bg-surface-variant/20 flex flex-col gap-2 text-left group hover:bg-surface-variant/40 transition-colors">
 <span class="font-label-technical text-label-technical text-neon-acid">[SUBTLE BREATH]" id="style-subtle" id="style-subtle</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">GENTLE MOVEMENT</span>
 <div class="absolute -top-1 -right-1 w-2 h-2 bg-neon-acid"></div>
 </button>
 <!-- PARALLAX -->
-<button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
+<button id="style-parallax" onclick="selectStyle('parallax')" class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
 <span class="font-label-technical text-label-technical text-primary">[PARALLAX]" id="style-parallax" id="style-parallax</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">DEPTH EFFECT</span>
 </button>
 <!-- CINEMATIC -->
-<button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
+<button id="style-cinematic" onclick="selectStyle('cinematic')" class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
 <span class="font-label-technical text-label-technical text-primary">[CINEMATIC]" id="style-cinematic" id="style-cinematic</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">MOVIE-LIKE CAMERA</span>
 </button>
 <!-- DRAMATIC -->
-<button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
+<button id="style-dramatic" onclick="selectStyle('dramatic')" class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
 <span class="font-label-technical text-label-technical text-primary">[DRAMATIC]" id="style-dramatic" id="style-dramatic</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">HIGH-INTENSITY</span>
 </button>
@@ -214,13 +214,9 @@
 </div>
 </div>
 <div class="mt-6 grid grid-cols-2 gap-4">
-<button class="w-full py-3 border border-outline-variant text-silver-technical font-label-technical opacity-50 cursor-not-allowed uppercase flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
-                            DOWNLOAD
+<button id="btn-download" style="opacity:0.5;cursor:not-allowed" class="w-full py-3 border border-outline-variant text-silver-technical font-label-technical uppercase flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">download</span>DOWNLOAD
                         </button>
-<button class="w-full py-3 border border-outline-variant text-silver-technical font-label-technical opacity-50 cursor-not-allowed uppercase flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
-                            ASSEMBLY
+<button id="btn-to-assembly" style="opacity:0.5;cursor:not-allowed" class="w-full py-3 border border-outline-variant text-silver-technical font-label-technical uppercase flex items-center justify-center gap-2"><span class="material-symbols-outlined text-sm">send</span>ASSEMBLY
                         </button>
 </div>
 </div>
@@ -254,97 +250,80 @@
 <a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors" href="#">DOCS</a>
 </div>
 </footer>
+
+<script src="/js/navigation.js"></script>
 <script>
+var uploadedFile=null,selectedStyle='subtle';
+var COST=5;
+
 function triggerUpload(){
-  var input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/jpeg,image/png,image/webp";
-  input.onchange = function(e){
-    var file = e.target.files[0];
-    if(!file) return;
-    uploadedFile = file;
-    var reader = new FileReader();
-    reader.onload = function(ev){
-      var zone = document.querySelector(".aspect-video");
-      zone.innerHTML = "<img src=\"" + ev.target.result + "\" style=\"width:100%;height:100%;object-fit:cover;position:absolute;inset:0\">";
+  var i=document.createElement('input');
+  i.type='file';
+  i.accept='image/jpeg,image/png,image/webp';
+  i.onchange=function(e){
+    var f=e.target.files[0];
+    if(!f)return;
+    if(f.size>10485760){alert('Max 10MB');return;}
+    uploadedFile=f;
+    var r=new FileReader();
+    r.onload=function(ev){
+      var z=document.getElementById('upload-zone');
+      if(z){
+        z.innerHTML='<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9">'+
+          '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00">✓ PHOTO READY</div>';
+      }
     };
-    reader.readAsDataURL(file);
+    r.readAsDataURL(f);
   };
-  input.click();
+  i.click();
 }
-</script><script>
-// Style buttons
-["subtle","parallax","cinematic","dramatic"].forEach(function(s){
-  var btn = document.getElementById("style-"+s);
-  if(btn) btn.onclick = function(){
-    selectedStyle = s;
-    ["subtle","parallax","cinematic","dramatic"].forEach(function(x){
-      var b = document.getElementById("style-"+x);
-      if(b){ b.style.borderColor=""; b.style.background=""; }
-    });
-    btn.style.borderColor = "#c8ff00";
-    btn.style.background = "rgba(200,255,0,0.1)";
-  };
-});
 
-// Generate button
-var animateBtn = document.getElementById("btn-animate");
-if(animateBtn) animateBtn.onclick = function(){
-  if(!uploadedFile){ alert("Please upload a photo first."); return; }
-  var credits = parseInt(localStorage.getItem("md_credits")||"0");
-  if(credits < 5){ alert("Need 5 credits."); return; }
-  animateBtn.textContent = "PROCESSING... 0%";
-  animateBtn.style.background = "#8aad00";
+function selectStyle(s){
+  selectedStyle=s;
+  ['subtle','parallax','cinematic','dramatic'].forEach(function(x){
+    var b=document.getElementById('style-'+x);
+    if(b){
+      b.style.borderColor=x===s?'#c8ff00':'';
+      b.style.background=x===s?'rgba(200,255,0,0.1)':'';
+    }
+  });
+}
+
+function startAnimate(){
+  if(!uploadedFile){alert('Please upload a photo first.');return;}
+  var c=parseInt(localStorage.getItem('md_credits')||'0');
+  if(c<COST){alert('Need '+COST+' credits. You have: '+c);window.location.href='pricing.html';return;}
+  var btn=document.getElementById('btn-animate');
+  if(btn){btn.disabled=true;btn.style.background='#8aad00';}
   var p=0;
-  var iv = setInterval(function(){
+  var iv=setInterval(function(){
     p+=10;
-    animateBtn.textContent = "PROCESSING... "+p+"%";
+    if(btn)btn.textContent='PROCESSING... '+p+'%';
     if(p>=100){
       clearInterval(iv);
-      animateBtn.textContent = " COMPLETE  DOWNLOAD OR SEND TO ASSEMBLY";
-      animateBtn.style.background = "#c8ff00";
-      localStorage.setItem("md_credits", credits-5);
-      if(window.MD) window.MD.updateCredits();
+      localStorage.setItem('md_credits',c-COST);
+      if(window.MD)window.MD.updateCredits();
+      if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent='✓ COMPLETE — DOWNLOAD OR SEND TO ASSEMBLY';}
+      var d=document.getElementById('btn-download');
+      var a=document.getElementById('btn-to-assembly');
+      if(d){d.style.opacity='1';d.style.cursor='pointer';d.onclick=function(){alert('In production this downloads your animated video!');};}
+      if(a){a.style.opacity='1';a.style.cursor='pointer';a.onclick=function(){window.location.href='assembly.html';};}
     }
-  }, 300);
-};
-</script><script>
-// Style buttons
-["subtle","parallax","cinematic","dramatic"].forEach(function(s){
-  var btn = document.getElementById("style-"+s);
-  if(btn) btn.onclick = function(){
-    selectedStyle = s;
-    ["subtle","parallax","cinematic","dramatic"].forEach(function(x){
-      var b = document.getElementById("style-"+x);
-      if(b){ b.style.borderColor=""; b.style.background=""; }
-    });
-    btn.style.borderColor = "#c8ff00";
-    btn.style.background = "rgba(200,255,0,0.1)";
-  };
-});
+  },300);
+}
 
-// Generate button
-var animateBtn = document.getElementById("btn-animate");
-if(animateBtn) animateBtn.onclick = function(){
-  if(!uploadedFile){ alert("Please upload a photo first."); return; }
-  var credits = parseInt(localStorage.getItem("md_credits")||"0");
-  if(credits < 5){ alert("Need 5 credits."); return; }
-  animateBtn.textContent = "PROCESSING... 0%";
-  animateBtn.style.background = "#8aad00";
-  var p=0;
-  var iv = setInterval(function(){
-    p+=10;
-    animateBtn.textContent = "PROCESSING... "+p+"%";
-    if(p>=100){
-      clearInterval(iv);
-      animateBtn.textContent = " COMPLETE  DOWNLOAD OR SEND TO ASSEMBLY";
-      animateBtn.style.background = "#c8ff00";
-      localStorage.setItem("md_credits", credits-5);
-      if(window.MD) window.MD.updateCredits();
-    }
-  }, 300);
-};
-</script></body></html>
+window.addEventListener('load',function(){
+  // Wire generate button
+  var fb=document.querySelector('footer button');
+  if(fb){fb.id='btn-animate';fb.onclick=startAnimate;}
+  // Wire back button
+  var bb=document.querySelector('header button');
+  if(bb)bb.onclick=function(){window.location.href='directors.html';};
+  // Update credits
+  if(window.MD)window.MD.updateCredits();
+});
+</script>
+</body></html>
 
 
 
