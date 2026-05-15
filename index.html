@@ -129,6 +129,15 @@ if(localStorage.getItem("md_visited")){
   localStorage.setItem("md_visited","1");
 }
 </script>
+<script>
+// If user has credits or has visited before, go to marketplace
+// Otherwise stay on landing page
+if(localStorage.getItem("md_visited")){
+  window.location.href="directors.html";
+} else {
+  localStorage.setItem("md_visited","1");
+}
+</script>
 <body class="lang-en">
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
@@ -347,4 +356,5 @@ window.onload=()=>{const s=localStorage.getItem('md_lang')||'en';setLang(s);};
 </script>
 </body>
 </html>
+
 
