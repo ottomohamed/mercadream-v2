@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | FACESWAP</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&amp;family=Sora:wght@700;800&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container": "#201f1f",
+                  "surface-variant": "#353534",
+                  "primary-fixed-dim": "#a8d700",
+                  "inverse-primary": "#4f6600",
+                  "secondary-fixed": "#ffdeae",
+                  "secondary-fixed-dim": "#ffba3f",
+                  "primary": "#ffffff",
+                  "on-secondary-container": "#3e2800",
+                  "void-black": "#060606",
+                  "tertiary": "#ffffff",
+                  "outline-variant": "#434933",
+                  "on-background": "#e5e2e1",
+                  "surface-container-highest": "#353534",
+                  "on-secondary-fixed-variant": "#604100",
+                  "on-error": "#690005",
+                  "tertiary-fixed": "#d0e5f5",
+                  "on-primary-fixed": "#161f00",
+                  "secondary-container": "#c48800",
+                  "surface-bright": "#3a3939",
+                  "secondary": "#ffba3f",
+                  "on-secondary": "#432c00",
+                  "inverse-on-surface": "#313030",
+                  "surface-container-low": "#1c1b1b",
+                  "cyber-gold": "#ffba3f",
+                  "on-secondary-fixed": "#281900",
+                  "tertiary-container": "#d0e5f5",
+                  "background": "#131313",
+                  "on-tertiary-fixed-variant": "#364956",
+                  "surface-dim": "#131313",
+                  "surface": "#131313",
+                  "error-container": "#93000a",
+                  "on-surface": "#e5e2e1",
+                  "on-primary-fixed-variant": "#3b4d00",
+                  "on-tertiary": "#1f333f",
+                  "on-surface-variant": "#c4caac",
+                  "surface-container-lowest": "#0e0e0e",
+                  "on-primary-container": "#546d00",
+                  "tertiary-fixed-dim": "#b5c9d9",
+                  "primary-container": "#c0f500",
+                  "on-error-container": "#ffdad6",
+                  "primary-fixed": "#c0f500",
+                  "error": "#ffb4ab",
+                  "on-primary": "#273500",
+                  "neon-acid": "#c8ff00",
+                  "silver-technical": "#a1a1a1",
+                  "outline": "#8e9479",
+                  "inverse-surface": "#e5e2e1",
+                  "on-tertiary-container": "#536774",
+                  "surface-tint": "#a8d700",
+                  "surface-container-high": "#2a2a2a",
+                  "slate-data": "#242424",
+                  "on-tertiary-fixed": "#081e29"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "margin-desktop": "40px",
+                  "gutter": "16px",
+                  "unit": "4px",
+                  "module-padding": "12px",
+                  "margin-mobile": "16px"
+          },
+          "fontFamily": {
+                  "label-technical": ["IBM Plex Mono"],
+                  "label-caps": ["IBM Plex Mono"],
+                  "headline-xl": ["Sora"],
+                  "headline-lg-mobile": ["Sora"],
+                  "body-sm": ["Inter"],
+                  "body-md": ["Inter"],
+                  "headline-lg": ["Sora"]
+          },
+          "fontSize": {
+                  "label-technical": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                  "label-caps": ["10px", {"lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                  "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                  "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                  "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #060606;
+      background-image: 
+        linear-gradient(rgba(200, 255, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 255, 0, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .scanline {
+      width: 100%;
+      height: 100px;
+      z-index: 10;
+      background: linear-gradient(0deg, rgba(200, 255, 0, 0) 0%, rgba(200, 255, 0, 0.05) 50%, rgba(200, 255, 0, 0) 100%);
+      opacity: 0.1;
+      position: fixed;
+      pointer-events: none;
+    }
+    .technical-border {
+      border: 1px dashed rgba(200, 255, 0, 0.3);
+    }
+    .surgical-toggle input:checked ~ .dot {
+      transform: translateX(100%);
+      background-color: #c8ff00;
+    }
+    .glow-acid {
+      box-shadow: 0 0 15px rgba(200, 255, 0, 0.15);
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      background: #1c1b1b;
+      height: 4px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 16px;
+      width: 16px;
+      border-radius: 0;
+      background: #c8ff00;
+      cursor: pointer;
+      margin-top: -6px;
+      box-shadow: 0 0 10px rgba(200, 255, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="text-on-background font-body-md min-h-screen pb-32">
+<div class="scanline top-0"></div>
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-neon-acid tracking-tighter">MERCADREAM | FACESWAP</span>
+</div>
+<div class="flex items-center gap-margin-gutter">
+<div class="hidden md:flex items-center gap-unit bg-surface-container px-3 py-1.5 rounded-sm border border-outline-variant">
+<span class="material-symbols-outlined text-neon-acid text-[18px]">account_balance_wallet</span>
+<span class="font-label-technical text-label-technical text-silver-technical">9,400 CREDITS</span>
+</div>
+<button class="flex items-center gap-unit px-4 py-1.5 bg-surface-variant/20 hover:bg-neon-acid hover:text-void-black transition-all border border-outline-variant font-label-technical text-label-technical text-neon-acid">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+        BACK
+      </button>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-12">
+<!-- Hero Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-2 border-neon-acid pl-6">
+<div class="space-y-2">
+<div class="flex items-center gap-2 font-label-caps text-label-caps text-neon-acid opacity-70">
+<span class="material-symbols-outlined text-[12px]">neurology</span>
+          NEURAL_SURGERY_V2.1
+        </div>
+<h1 class="font-headline-xl text-headline-xl text-primary leading-none uppercase">REPLACE ANY FACE</h1>
+<p class="font-body-md text-silver-technical max-w-xl">
+          Advanced neural face transplantation. Surgical precision, seamless blending. Powered by MERCADREAM Core Engine.
+        </p>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant flex flex-col items-center justify-center min-w-[120px]">
+<span class="font-label-caps text-label-caps text-silver-technical mb-1">TRANSACTION_COST</span>
+<span class="font-headline-lg text-headline-lg text-neon-acid">8</span>
+<span class="font-label-technical text-label-technical text-neon-acid">CREDITS</span>
+</div>
+</section>
+<!-- Upload Zone -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Source Face -->
+<div class="bg-surface-container/40 p-module-padding border border-outline-variant flex flex-col gap-unit">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-technical text-label-technical text-neon-acid flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-neon-acid rounded-full"></span>
+            SOURCE FACE
+          </span>
+<span class="font-label-caps text-label-caps text-silver-technical opacity-40">MDR_REF_001</span>
+</div>
+<div class="technical-border aspect-video flex flex-col items-center justify-center gap-4 bg-void-black/60 cursor-pointer hover:bg-surface-variant/10 transition-colors group">
+<span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid transition-colors">face</span>
+<div class="text-center">
+<p class="font-label-technical text-label-technical text-primary">DRAG &amp; DROP / CLICK TO BROWSE</p>
+<p class="font-label-caps text-label-caps text-silver-technical mt-1">SUPPORTED: PNG, JPG, WEBP (UP TO 12MB)</p>
+</div>
+</div>
+</div>
+<!-- Target Media -->
+<div class="bg-surface-container/40 p-module-padding border border-outline-variant flex flex-col gap-unit">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-technical text-label-technical text-neon-acid flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-pulse"></span>
+            TARGET MEDIA
+          </span>
+<span class="font-label-caps text-label-caps text-silver-technical opacity-40">MDR_DST_204</span>
+</div>
+<div class="technical-border aspect-video flex flex-col items-center justify-center gap-4 bg-void-black/60 cursor-pointer hover:bg-surface-variant/10 transition-colors group">
+<span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid transition-colors">movie</span>
+<div class="text-center">
+<p class="font-label-technical text-label-technical text-primary">DRAG &amp; DROP / CLICK TO BROWSE</p>
+<p class="font-label-caps text-label-caps text-silver-technical mt-1">SUPPORTED: MP4, MOV, PHOTO (UP TO 500MB)</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Settings Panel -->
+<section class="bg-surface-container border border-outline-variant p-margin-mobile md:p-8 space-y-8 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-neon-acid/30 to-transparent"></div>
+<div class="flex items-center gap-4">
+<h2 class="font-label-caps text-label-caps text-silver-technical tracking-widest uppercase">Configuration Parameters</h2>
+<div class="h-[1px] bg-outline-variant flex-grow"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Blend Level Slider -->
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<label class="font-label-technical text-label-technical text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">gradient</span>
+              BLEND LEVEL
+            </label>
+<span class="font-label-technical text-label-technical text-neon-acid bg-neon-acid/10 px-2 py-0.5 border border-neon-acid/20">07</span>
+</div>
+<input class="w-full appearance-none bg-transparent" max="10" min="1" step="1" type="range" value="7"/>
+<div class="flex justify-between font-label-caps text-label-caps text-silver-technical opacity-40">
+<span>SOFT_MATCH</span>
+<span>SURGICAL_FIX</span>
+</div>
+</div>
+<!-- Toggles -->
+<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="flex items-center justify-between p-4 bg-void-black/40 border border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-technical text-label-technical text-primary uppercase">Skin Match</span>
+<span class="font-label-caps text-label-caps text-silver-technical">AUTO-SYNC MELANIN &amp; TEXTURE</span>
+</div>
+<label class="surgical-toggle relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-variant border border-outline-variant"></div>
+<div class="dot absolute left-1 top-1 bg-silver-technical w-3 h-3 transition-all duration-200"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4 bg-void-black/40 border border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-technical text-label-technical text-primary uppercase">Expression Preserve</span>
+<span class="font-label-caps text-label-caps text-silver-technical">MAINTAIN TARGET MICRO-GESTURES</span>
+</div>
+<label class="surgical-toggle relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-variant border border-outline-variant"></div>
+<div class="dot absolute left-1 top-1 bg-silver-technical w-3 h-3 transition-all duration-200"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Specs Bento -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-gutter opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+<div class="bg-surface-container-low p-4 border border-outline-variant">
+<p class="font-label-caps text-label-caps text-silver-technical mb-1">FPS_SYNC</p>
+<p class="font-label-technical text-label-technical text-neon-acid">LOCKED // 24.000</p>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant">
+<p class="font-label-caps text-label-caps text-silver-technical mb-1">ENCODER</p>
+<p class="font-label-technical text-label-technical text-neon-acid">PRORES_422_HQ</p>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant">
+<p class="font-label-caps text-label-caps text-silver-technical mb-1">LATENCY</p>
+<p class="font-label-technical text-label-technical text-neon-acid">140ms / SYNC</p>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant">
+<p class="font-label-caps text-label-caps text-silver-technical mb-1">SECURITY</p>
+<p class="font-label-technical text-label-technical text-neon-acid">AES-256_ENC</p>
+</div>
+</section>
+</main>
+<!-- Action Bar (Fixed Bottom) -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-void-black/95 border-t border-outline-variant backdrop-blur-xl">
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop h-20 flex flex-col md:flex-row items-center justify-between gap-4 py-2">
+<!-- Telemetry Status -->
+<div class="flex items-center gap-6 font-label-caps text-label-caps text-silver-technical">
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 bg-neon-acid rounded-full animate-ping"></span>
+          GPU_LOAD: <span class="text-neon-acid">84.2%</span>
+</div>
+<div class="flex items-center gap-2 hidden sm:flex">
+          THREAD_SYNC: <span class="text-neon-acid">OPTIMAL</span>
+</div>
+<div class="flex items-center gap-2 hidden lg:flex">
+          VRAM: <span class="text-neon-acid">16.4 / 24 GB</span>
+</div>
+</div>
+<!-- Action Button -->
+<div class="flex items-center gap-4 w-full md:w-auto">
+<button class="flex-grow md:flex-none flex items-center justify-center gap-4 bg-neon-acid px-12 py-3 font-label-technical text-[14px] font-bold text-void-black hover:bg-white transition-all active:scale-95 glow-acid">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+          SWAP FACE — 8 CREDITS
+        </button>
+</div>
+</div>
+<!-- Fine Print Footer -->
+<div class="bg-void-black border-t border-outline-variant/30 py-2 px-margin-mobile md:px-margin-desktop flex justify-between items-center">
+<span class="font-label-caps text-label-caps text-silver-technical opacity-50 uppercase">©2024 MERCADREAM OPERATING SYSTEM // CORE_V.2.0.4</span>
+<div class="flex gap-4">
+<span class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">TERMINAL</span>
+<span class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">DOCS</span>
+<span class="font-label-caps text-label-caps text-neon-acid">STATUS: OPTIMAL</span>
+</div>
+</div>
+</footer>
+<script src="/js/navigation.js"></script>
+<script>
+var sourceFile=null,targetFile=null,COST=8;
+function setupUpload(zoneEl,accept,onFile){zoneEl.style.cursor='pointer';zoneEl.onclick=function(){var i=document.createElement('input');i.type='file';i.accept=accept;i.onchange=function(e){var f=e.target.files[0];if(f)onFile(f,zoneEl);};i.click();};zoneEl.ondragover=function(e){e.preventDefault();zoneEl.style.borderColor='#c8ff00';};zoneEl.ondragleave=function(){zoneEl.style.borderColor='';};zoneEl.ondrop=function(e){e.preventDefault();zoneEl.style.borderColor='';var f=e.dataTransfer.files[0];if(f)onFile(f,zoneEl);};}
+function showPreview(file,zone){var r=new FileReader();r.onload=function(e){zone.style.position='relative';zone.innerHTML=(file.type.startsWith('video/')?'<video src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" muted></video>':'<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9">')+'<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00"> READY</div>';};r.readAsDataURL(file);}
+function startFaceSwap(){if(!sourceFile){alert('Upload SOURCE face first.');return;}if(!targetFile){alert('Upload TARGET media first.');return;}var c=parseInt(localStorage.getItem('md_credits')||'0');if(c<COST){alert('Need '+COST+' credits.');window.location.href='pricing.html';return;}var btn=document.getElementById('btn-faceswap');if(btn){btn.disabled=true;btn.style.background='#8aad00';}var p=0,iv=setInterval(function(){p+=5;if(btn)btn.textContent='PROCESSING... '+p+'%';if(p>=100){clearInterval(iv);localStorage.setItem('md_credits',c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent=' COMPLETE  SEND TO ASSEMBLY';btn.onclick=function(){window.location.href='assembly.html';};}};},200);}
+var sl=document.querySelector('input[type="range"]');if(sl)sl.oninput=function(){var d=document.querySelector('.bg-neon-acid\\/10');if(d)d.textContent=String(this.value).padStart(2,'0');};
+window.addEventListener('load',function(){var zones=document.querySelectorAll('.technical-border');if(zones[0])setupUpload(zones[0],'image/jpeg,image/png,image/webp',function(f,z){sourceFile=f;showPreview(f,z);});if(zones[1])setupUpload(zones[1],'image/*,video/mp4',function(f,z){targetFile=f;showPreview(f,z);});var btn=document.querySelector('footer button.bg-neon-acid');if(btn){btn.id='btn-faceswap';btn.onclick=startFaceSwap;}var bb=document.querySelector('header button');if(bb)bb.onclick=function(){window.location.href='directors.html';};if(window.MD)window.MD.updateCredits();});
+</script></body></html>
+
