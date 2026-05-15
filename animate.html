@@ -174,23 +174,23 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 <!-- SUBTLE BREATH -->
 <button class="relative p-3 border border-neon-acid bg-surface-variant/20 flex flex-col gap-2 text-left group hover:bg-surface-variant/40 transition-colors">
-<span class="font-label-technical text-label-technical text-neon-acid">[SUBTLE BREATH]" id="style-subtle</span>
+<span class="font-label-technical text-label-technical text-neon-acid">[SUBTLE BREATH]" id="style-subtle" id="style-subtle</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">GENTLE MOVEMENT</span>
 <div class="absolute -top-1 -right-1 w-2 h-2 bg-neon-acid"></div>
 </button>
 <!-- PARALLAX -->
 <button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
-<span class="font-label-technical text-label-technical text-primary">[PARALLAX]" id="style-parallax</span>
+<span class="font-label-technical text-label-technical text-primary">[PARALLAX]" id="style-parallax" id="style-parallax</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">DEPTH EFFECT</span>
 </button>
 <!-- CINEMATIC -->
 <button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
-<span class="font-label-technical text-label-technical text-primary">[CINEMATIC]" id="style-cinematic</span>
+<span class="font-label-technical text-label-technical text-primary">[CINEMATIC]" id="style-cinematic" id="style-cinematic</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">MOVIE-LIKE CAMERA</span>
 </button>
 <!-- DRAMATIC -->
 <button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
-<span class="font-label-technical text-label-technical text-primary">[DRAMATIC]" id="style-dramatic</span>
+<span class="font-label-technical text-label-technical text-primary">[DRAMATIC]" id="style-dramatic" id="style-dramatic</span>
 <span class="font-label-caps text-label-caps text-silver-technical leading-tight">HIGH-INTENSITY</span>
 </button>
 </div>
@@ -308,6 +308,43 @@ if(animateBtn) animateBtn.onclick = function(){
     }
   }, 300);
 };
+</script><script>
+// Style buttons
+["subtle","parallax","cinematic","dramatic"].forEach(function(s){
+  var btn = document.getElementById("style-"+s);
+  if(btn) btn.onclick = function(){
+    selectedStyle = s;
+    ["subtle","parallax","cinematic","dramatic"].forEach(function(x){
+      var b = document.getElementById("style-"+x);
+      if(b){ b.style.borderColor=""; b.style.background=""; }
+    });
+    btn.style.borderColor = "#c8ff00";
+    btn.style.background = "rgba(200,255,0,0.1)";
+  };
+});
+
+// Generate button
+var animateBtn = document.getElementById("btn-animate");
+if(animateBtn) animateBtn.onclick = function(){
+  if(!uploadedFile){ alert("Please upload a photo first."); return; }
+  var credits = parseInt(localStorage.getItem("md_credits")||"0");
+  if(credits < 5){ alert("Need 5 credits."); return; }
+  animateBtn.textContent = "PROCESSING... 0%";
+  animateBtn.style.background = "#8aad00";
+  var p=0;
+  var iv = setInterval(function(){
+    p+=10;
+    animateBtn.textContent = "PROCESSING... "+p+"%";
+    if(p>=100){
+      clearInterval(iv);
+      animateBtn.textContent = " COMPLETE  DOWNLOAD OR SEND TO ASSEMBLY";
+      animateBtn.style.background = "#c8ff00";
+      localStorage.setItem("md_credits", credits-5);
+      if(window.MD) window.MD.updateCredits();
+    }
+  }, 300);
+};
 </script></body></html>
+
 
 
