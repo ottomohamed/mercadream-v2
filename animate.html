@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | ANIMATE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=IBM+Plex+Mono:wght@400;500;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(200, 255, 0, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+        .micro-grid {
+            background-image: radial-gradient(rgba(200, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#e5e2e1",
+                    "surface-variant": "#353534",
+                    "surface-container-low": "#1c1b1b",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "surface-bright": "#3a3939",
+                    "on-tertiary-fixed": "#081e29",
+                    "surface": "#131313",
+                    "primary-fixed": "#c0f500",
+                    "surface-container": "#201f1f",
+                    "outline": "#8e9479",
+                    "inverse-primary": "#4f6600",
+                    "error-container": "#93000a",
+                    "outline-variant": "#434933",
+                    "on-background": "#e5e2e1",
+                    "secondary-container": "#c48800",
+                    "on-tertiary-fixed-variant": "#364956",
+                    "tertiary-fixed-dim": "#b5c9d9",
+                    "background": "#131313",
+                    "on-tertiary-container": "#536774",
+                    "secondary": "#ffba3f",
+                    "cyber-gold": "#ffba3f",
+                    "on-primary-container": "#546d00",
+                    "on-tertiary": "#1f333f",
+                    "on-primary-fixed": "#161f00",
+                    "secondary-fixed-dim": "#ffba3f",
+                    "on-surface": "#e5e2e1",
+                    "tertiary-container": "#d0e5f5",
+                    "on-secondary": "#432c00",
+                    "void-black": "#060606",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-surface-variant": "#c4caac",
+                    "surface-dim": "#131313",
+                    "secondary-fixed": "#ffdeae",
+                    "on-error-container": "#ffdad6",
+                    "primary-container": "#c0f500",
+                    "surface-tint": "#a8d700",
+                    "surface-container-high": "#2a2a2a",
+                    "on-secondary-container": "#3e2800",
+                    "surface-container-highest": "#353534",
+                    "primary-fixed-dim": "#a8d700",
+                    "tertiary-fixed": "#d0e5f5",
+                    "slate-data": "#242424",
+                    "on-primary": "#273500",
+                    "tertiary": "#ffffff",
+                    "neon-acid": "#c8ff00",
+                    "on-secondary-fixed": "#281900",
+                    "primary": "#ffffff",
+                    "silver-technical": "#a1a1a1",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed-variant": "#604100",
+                    "inverse-on-surface": "#313030"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "40px",
+                    "gutter": "16px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "module-padding": "12px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Sora"],
+                    "body-md": ["Inter"],
+                    "label-technical": ["IBM Plex Mono"],
+                    "label-caps": ["IBM Plex Mono"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-xl": ["Sora"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-technical": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-caps": ["10px", {"lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black">
+<!-- TOP APP BAR -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg-mobile md:font-headline-lg text-neon-acid font-bold tracking-tighter">MERCADREAM | ANIMATE</span>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant/30 border border-outline-variant rounded">
+<span class="material-symbols-outlined text-neon-acid text-sm" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-technical text-label-technical text-neon-acid">9,400 CREDITS</span>
+</div>
+<button class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-colors active:scale-95 duration-75">
+                Back
+            </button>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto micro-grid min-h-screen">
+<!-- HERO SECTION -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="space-y-2">
+<div class="inline-flex items-center px-2 py-0.5 bg-neon-acid text-void-black font-label-caps text-label-caps tracking-widest mb-2">
+                        ENGINE_v2.4
+                    </div>
+<h1 class="font-headline-xl text-headline-xl text-primary leading-none uppercase">ANIMATE YOUR PHOTO</h1>
+<p class="font-body-md text-silver-technical max-w-xl">Upload a photo. We bring it to life using surgical-grade neural camera mapping.</p>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-neon-acid opacity-60 mb-1 uppercase">ESTIMATED COST</span>
+<div class="px-6 py-2 border-2 border-neon-acid font-label-technical text-headline-lg-mobile text-neon-acid flex items-center gap-2">
+                        5 <span class="text-sm">CREDITS</span>
+</div>
+</div>
+</div>
+</section>
+<!-- TWO-COLUMN LAYOUT -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- LEFT: UPLOAD & CONFIG -->
+<div class="lg:col-span-7 space-y-8">
+<!-- UPLOAD ZONE -->
+<div class="group relative aspect-video w-full bg-surface border-2 border-dashed border-outline-variant hover:border-neon-acid transition-all cursor-pointer flex flex-col items-center justify-center p-8 overflow-hidden">
+<div class="absolute top-2 left-2 font-label-caps text-label-caps text-outline-variant group-hover:text-neon-acid transition-colors">MODULE_ID: UPL_01</div>
+<span class="material-symbols-outlined text-4xl text-silver-technical mb-4 group-hover:text-neon-acid transition-colors" data-icon="upload_file">upload_file</span>
+<h3 class="font-label-technical text-body-md text-primary mb-1">Drag &amp; drop your photo here or click to browse</h3>
+<p class="font-label-caps text-label-caps text-silver-technical uppercase">JPG, PNG, WEBP — Max 10MB</p>
+<!-- SCANNING LINE EFFECT (Decorative) -->
+<div class="absolute inset-0 scanline pointer-events-none opacity-20"></div>
+</div>
+<!-- ANIMATION STYLE SELECTION -->
+<div class="space-y-4">
+<div class="flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-neon-acid text-sm" data-icon="videocam">videocam</span>
+<h2 class="font-label-technical text-label-technical text-primary uppercase">Select Motion Profile</h2>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- SUBTLE BREATH -->
+<button class="relative p-3 border border-neon-acid bg-surface-variant/20 flex flex-col gap-2 text-left group hover:bg-surface-variant/40 transition-colors">
+<span class="font-label-technical text-label-technical text-neon-acid">[SUBTLE BREATH]</span>
+<span class="font-label-caps text-label-caps text-silver-technical leading-tight">GENTLE MOVEMENT</span>
+<div class="absolute -top-1 -right-1 w-2 h-2 bg-neon-acid"></div>
+</button>
+<!-- PARALLAX -->
+<button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
+<span class="font-label-technical text-label-technical text-primary">[PARALLAX]</span>
+<span class="font-label-caps text-label-caps text-silver-technical leading-tight">DEPTH EFFECT</span>
+</button>
+<!-- CINEMATIC -->
+<button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
+<span class="font-label-technical text-label-technical text-primary">[CINEMATIC]</span>
+<span class="font-label-caps text-label-caps text-silver-technical leading-tight">MOVIE-LIKE CAMERA</span>
+</button>
+<!-- DRAMATIC -->
+<button class="p-3 border border-outline-variant bg-surface-container flex flex-col gap-2 text-left group hover:border-silver-technical transition-colors">
+<span class="font-label-technical text-label-technical text-primary">[DRAMATIC]</span>
+<span class="font-label-caps text-label-caps text-silver-technical leading-tight">HIGH-INTENSITY</span>
+</button>
+</div>
+</div>
+</div>
+<!-- RIGHT: PREVIEW & PROCESSING -->
+<div class="lg:col-span-5 space-y-6">
+<div class="bg-surface border border-outline-variant h-full p-module-padding flex flex-col">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+<span class="font-label-technical text-label-technical text-silver-technical uppercase">Output Preview</span>
+<span class="font-label-caps text-label-caps text-cyber-gold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span>
+                            AWAITING INPUT
+                        </span>
+</div>
+<div class="flex-grow flex items-center justify-center bg-void-black border border-outline-variant/30 relative group">
+<img alt="Placeholder digital art" class="w-full h-full object-cover opacity-30 grayscale blur-sm" data-alt="A highly detailed and immersive cinematic landscape for a futuristic film. The scene features deep, moody shadows and sharp, precise light rays cutting through a minimalist digital environment. The color palette is strictly void black and neon acid green, creating a surgical-grade technical UI atmosphere. The lighting is low-key and dramatic, emphasizing textures and high-fidelity depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3HyyzzERn_Fmh-QZ6g4IeY7Cb2erRppQSVGbs6TUNRJdR3fQH_mfBHv8L4jmbFy5QRxsqG74kXNdD_9Y_JdhRoOxpHs5ZN4jaMhwE9c4nMCj1qQS_j39gYOfbnU4OzO2BACxHV6eAx48irZ4duluDICq1OESD39EZ58DAizeRJq13rLu-_KYE2DT_rJUHhmKpiserqPCWEcftNpBGHqcdpv3l9euNRHZiDZYpBSmmwlGvI7HZpXEEn6M1_T2V0WSvhpzRgY3TVHQ"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-2" data-icon="monitor_heart">monitor_heart</span>
+<p class="font-label-technical text-label-technical text-silver-technical">RENDER ENGINE INITIALIZED.<br/>UPLOAD SOURCE TO BEGIN MAPPING.</p>
+</div>
+</div>
+<div class="mt-6 grid grid-cols-2 gap-4">
+<button class="w-full py-3 border border-outline-variant text-silver-technical font-label-technical opacity-50 cursor-not-allowed uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                            DOWNLOAD
+                        </button>
+<button class="w-full py-3 border border-outline-variant text-silver-technical font-label-technical opacity-50 cursor-not-allowed uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+                            ASSEMBLY
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- HUD ELEMENTS (FLOATING DATA) -->
+<div class="hidden lg:block fixed bottom-24 right-margin-desktop space-y-2 pointer-events-none">
+<div class="bg-void-black/80 border-l-2 border-neon-acid p-2 backdrop-blur-sm">
+<div class="font-label-caps text-[8px] text-silver-technical">GPU_LOAD</div>
+<div class="font-label-technical text-label-technical text-neon-acid">84.2% // PEAK</div>
+</div>
+<div class="bg-void-black/80 border-l-2 border-cyber-gold p-2 backdrop-blur-sm">
+<div class="font-label-caps text-[8px] text-silver-technical">THREAD_SYNC</div>
+<div class="font-label-technical text-label-technical text-cyber-gold">STABLE</div>
+</div>
+</div>
+</main>
+<!-- FIXED GENERATE BAR -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-void-black border-t border-outline-variant px-margin-mobile md:px-margin-desktop py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="hidden md:flex flex-col">
+<span class="font-label-caps text-label-caps text-neon-acid">MERCADREAM OPERATING SYSTEM</span>
+<span class="font-label-technical text-label-technical text-silver-technical">CORE_V.2.0.4 // STATUS: OPTIMAL</span>
+</div>
+<button class="w-full md:w-auto px-12 py-4 bg-neon-acid text-void-black font-headline-lg-mobile md:font-label-technical font-bold flex items-center justify-center gap-3 hover:shadow-[0_0_20px_rgba(200,255,0,0.4)] transition-all active:scale-95 group">
+<span class="material-symbols-outlined" data-icon="bolt" data-weight="fill">bolt</span>
+            [⚡ ANIMATE — 5 CREDITS]
+            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<div class="hidden md:flex gap-6">
+<a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors" href="#">TERMINAL</a>
+<a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors" href="#">DOCS</a>
+</div>
+</footer>
+</body></html>
