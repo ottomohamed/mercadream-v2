@@ -554,6 +554,48 @@ function next(){vid.style.opacity="0";setTimeout(()=>{cur=(cur+1)%VIDS.length;vi
 vid.addEventListener("ended",next);
 vid.addEventListener("error",()=>setTimeout(next,3000));
 updateDots(0);vid.play();
+</script><script>
+//  BUTTONS 
+document.getElementById("btn-studio-nav").onclick = function(){ window.location.href="studio.html"; };
+document.getElementById("btn-generate").onclick = function(){
+  var sel = document.querySelectorAll(".service-card.active-item, .crew-card.active-item");
+  if(sel.length === 0){ window.location.href="studio.html"; return; }
+  var services=[], dirs=[], names=[];
+  document.querySelectorAll(".service-card.active-item").forEach(function(el){
+    services.push({name: el.querySelector("h3") ? el.querySelector("h3").textContent.trim() : ""});
+  });
+  document.querySelectorAll(".crew-card.active-item").forEach(function(el){
+    dirs.push("drama");
+    names.push(el.querySelector("h3") ? el.querySelector("h3").textContent.trim() : "");
+  });
+  if(services.length) localStorage.setItem("md_selected_services", JSON.stringify(services));
+  if(dirs.length){ localStorage.setItem("md_selected_directors", JSON.stringify(dirs)); localStorage.setItem("md_director_names", JSON.stringify(names)); }
+  window.location.href="studio.html";
+};
+document.getElementById("btn-assembly").onclick = function(){ window.location.href="assembly.html"; };
+
+//  CREDITS 
+var credits = parseInt(localStorage.getItem("md_credits") || "0");
+var hc = document.getElementById("header-credits");
+if(hc){ var sp=hc.querySelector("span"); if(sp) sp.textContent = credits.toLocaleString() + " CRD"; }
+
+//  CARD TOGGLE 
+document.querySelectorAll(".service-card, .crew-card").forEach(function(card){
+  card.addEventListener("click", function(){
+    card.classList.toggle("active-item");
+    if(card.classList.contains("active-item")){
+      card.style.borderColor="#c8ff00"; card.style.background="#1a1f0a";
+    } else {
+      card.style.borderColor="#2a2a2a"; card.style.background="#131313";
+    }
+    var total=0;
+    document.querySelectorAll(".active-item").forEach(function(el){
+      var t=el.querySelector(".text-secondary"); if(t) total+=parseInt(t.textContent)||0;
+    });
+    var fc=document.getElementById("footer-credits"); if(fc) fc.textContent=total;
+  });
+});
 </script></body></html>
+
 
 
