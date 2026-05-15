@@ -157,7 +157,7 @@
 <!-- LEFT: UPLOAD & CONFIG -->
 <div class="lg:col-span-7 space-y-8">
 <!-- UPLOAD ZONE -->
-<div class="group relative aspect-video w-full bg-surface border-2 border-dashed border-outline-variant hover:border-neon-acid transition-all cursor-pointer flex flex-col items-center justify-center p-8 overflow-hidden">
+<div onclick="triggerUpload()" class="group relative aspect-video w-full bg-surface border-2 border-dashed border-outline-variant hover:border-neon-acid transition-all cursor-pointer flex flex-col items-center justify-center p-8 overflow-hidden">
 <div class="absolute top-2 left-2 font-label-caps text-label-caps text-outline-variant group-hover:text-neon-acid transition-colors">MODULE_ID: UPL_01</div>
 <span class="material-symbols-outlined text-4xl text-silver-technical mb-4 group-hover:text-neon-acid transition-colors" data-icon="upload_file">upload_file</span>
 <h3 class="font-label-technical text-body-md text-primary mb-1">Drag &amp; drop your photo here or click to browse</h3>
@@ -254,4 +254,23 @@
 <a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors" href="#">DOCS</a>
 </div>
 </footer>
-</body></html>
+<script>
+function triggerUpload(){
+  var input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/jpeg,image/png,image/webp";
+  input.onchange = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    uploadedFile = file;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var zone = document.querySelector(".aspect-video");
+      zone.innerHTML = "<img src=\"" + ev.target.result + "\" style=\"width:100%;height:100%;object-fit:cover;position:absolute;inset:0\">";
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+</script></body></html>
+
