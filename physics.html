@@ -1,0 +1,353 @@
+﻿
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | NEURAL PHYSICS SIMULATION</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanlines {
+            position: relative;
+        }
+        .scanlines::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .surgical-border {
+            box-shadow: 0 0 0 1px #222222;
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 12px rgba(200, 255, 0, 0.3);
+            border-color: #c8ff00;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060606;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222222;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8ff00;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "neon-acid": "#c8ff00",
+                        "silver-technical": "#a1a1aa",
+                        "void-black": "#060606",
+                        "slate-data": "#222222",
+                        "cyber-gold": "#ffba3f",
+                        "on-tertiary": "#303030",
+                        "secondary-fixed-dim": "#ffba3f",
+                        "surface": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "on-secondary-fixed": "#281900",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-surface-variant": "#c4caac",
+                        "secondary": "#ffba3f",
+                        "on-primary-fixed": "#161f00",
+                        "outline-variant": "#434933",
+                        "surface-bright": "#3a3939",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "background": "#131313",
+                        "tertiary-container": "#e5e2e1",
+                        "on-primary": "#273500",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#3e2800",
+                        "primary-fixed": "#c0f500",
+                        "primary": "#ffffff",
+                        "inverse-primary": "#4f6600",
+                        "primary-fixed-dim": "#a8d700",
+                        "primary-container": "#c0f500",
+                        "on-tertiary-container": "#656464",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container-highest": "#353534",
+                        "surface-variant": "#353534",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "secondary-fixed": "#ffdeae",
+                        "secondary-container": "#c48800",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#604100",
+                        "error-container": "#93000a",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e5e2e1",
+                        "on-secondary": "#432c00",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-primary-container": "#546d00",
+                        "inverse-surface": "#e5e2e1",
+                        "tertiary": "#ffffff",
+                        "outline": "#8e9479",
+                        "surface-container": "#201f1f",
+                        "inverse-on-surface": "#313030",
+                        "surface-dim": "#131313",
+                        "on-error": "#690005",
+                        "surface-tint": "#a8d700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "margin-desktop": "32px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Sora"],
+                        "display-lg": ["Sora"],
+                        "body-md": ["Inter"],
+                        "technical-sm": ["IBM Plex Mono"],
+                        "label-xs": ["IBM Plex Mono"],
+                        "label-technical": ["IBM Plex Mono"],
+                        "label-caps": ["IBM Plex Mono"],
+                        "headline-lg-mobile": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "label-technical": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-void-black text-neon-acid font-label-technical text-label-technical border-b border-slate-data flex justify-between items-center h-16 px-margin-desktop w-full z-50 fixed top-0">
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 group hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+<span class="font-label-caps text-label-caps">BACK</span>
+</button>
+<div class="h-6 w-[1px] bg-slate-data"></div>
+<h1 class="font-headline-lg text-headline-lg font-black tracking-tighter text-primary">MERCADREAM | CORE_ENGINE</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="text-silver-technical font-label-xs">STABILITY: NOMINAL</span>
+<span class="font-label-technical text-neon-acid">99.4k QTA</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 border border-slate-data">
+<span class="material-symbols-outlined text-cyber-gold text-[18px]">account_balance_wallet</span>
+<span class="font-label-technical text-cyber-gold">60 CREDITS</span>
+</div>
+<button class="p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-100">
+<span class="material-symbols-outlined">settings_input_component</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar (Suppressed for focused task, but kept as anchor logic for structural alignment) -->
+<main class="pt-24 pb-20 px-margin-desktop max-w-container-max mx-auto grid grid-cols-12 gap-gutter">
+<!-- Hero Section -->
+<section class="col-span-12 mb-8 border-l-2 border-neon-acid pl-6">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-display-lg text-display-lg uppercase tracking-tighter text-primary">Neural Physics Simulation</h2>
+<p class="font-technical-sm text-technical-sm text-silver-technical mt-2 max-w-2xl">
+                        Simulate hair, cloth, and fluids with AI precision. Leverage neural rendering kernels for real-time volumetric solving.
+                    </p>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-silver-technical mb-1">UNIT_COST</span>
+<span class="font-display-lg text-display-lg text-neon-acid">60<span class="text-headline-lg ml-2">CREDITS</span></span>
+</div>
+</div>
+</section>
+<!-- Left Column: Upload & Preview -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-gutter">
+<!-- Upload Zone -->
+<div class="bg-surface-container-low border border-slate-data p-8 flex flex-col items-center justify-center min-h-[300px] group cursor-pointer glow-hover transition-all relative overflow-hidden">
+<div class="absolute top-2 left-2 font-label-xs text-silver-technical uppercase tracking-widest">INPUT_SOURCE_ALPHA</div>
+<div class="absolute top-2 right-2 flex gap-1">
+<div class="w-1 h-1 bg-neon-acid animate-pulse"></div>
+<div class="w-1 h-1 bg-neon-acid opacity-50"></div>
+</div>
+<span class="material-symbols-outlined text-neon-acid text-6xl mb-4 group-hover:scale-110 transition-transform">cloud_upload</span>
+<h3 class="font-headline-lg text-headline-lg text-primary mb-2">VIDEO OR 3D MODEL</h3>
+<p class="font-technical-sm text-technical-sm text-silver-technical text-center">
+                    DRAG &amp; DROP [MP4, MOV, OBJ, FBX] OR CLICK TO BROWSE<br/>
+                    MAX FILE SIZE: 2GB | GPU_ALLOCATION: RESERVED
+                </p>
+<div class="mt-8 flex gap-4">
+<div class="border border-slate-data px-4 py-2 font-label-caps text-label-caps text-silver-technical">OBJ/FBX AUTO-RIG</div>
+<div class="border border-slate-data px-4 py-2 font-label-caps text-label-caps text-silver-technical">4K VIDEO UPSCALING</div>
+</div>
+</div>
+<!-- Preview Area -->
+<div class="bg-void-black border border-slate-data relative aspect-video scanlines overflow-hidden">
+<div class="absolute top-0 left-0 w-full p-4 flex justify-between items-start z-20 pointer-events-none">
+<div class="bg-void-black/80 backdrop-blur-md border border-slate-data px-3 py-1 font-label-technical text-neon-acid flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-neon-acid animate-ping"></div>
+                        LIVE_VIEWPORT_01
+                    </div>
+<div class="bg-void-black/80 backdrop-blur-md border border-slate-data px-3 py-1 font-label-technical text-silver-technical">
+                        FPS: 60.0 | RES: 1920x1080
+                    </div>
+</div>
+<!-- Mock Simulation Visual -->
+<div class="absolute inset-0 flex items-center justify-center">
+<img class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-700" data-alt="A cinematic 3D simulation of complex golden fluid splashing in a zero-gravity void-black environment. The lighting is high-contrast, catching every micro-droplet with bright neon-acid highlights and deep surgical-black shadows. The style is hyper-realistic technical visual effect, appearing like a high-end Hollywood production engine's viewport with thin UI crosshairs overlaid." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB033hv5uBZ93b9oqkmHNfr2ZNqEFVMWI40dePMiNKNsPCWs5joAdA3SS1CEJaPvXivFzfRC4nra95gVyvEGQwxHr5e0DpXiUyPDzfouFk-qbTwklc6CJ7q2ueNvfk71Jts6ZXjaxWghKCUDSQhwqEoFCeJH4GWwPoTmUjmd3DxD_jz8hW49Doh3djFYglyJr8y4XZH1BLVko3i0mHZEBjg832_35M4tQu-gx5b6KIgTHR3twO-soIegcqx7megtIFgGsn_n87Gt4"/>
+<!-- Viewport Overlays -->
+<div class="absolute inset-0 border-[0.5px] border-neon-acid/10 pointer-events-none">
+<div class="absolute top-1/2 left-0 w-full h-[1px] bg-neon-acid/5"></div>
+<div class="absolute top-0 left-1/2 h-full w-[1px] bg-neon-acid/5"></div>
+</div>
+</div>
+<div class="absolute bottom-4 left-4 flex gap-2 z-20">
+<button class="bg-surface-container-highest/80 backdrop-blur-md p-2 border border-slate-data hover:bg-neon-acid hover:text-void-black transition-colors">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<button class="bg-surface-container-highest/80 backdrop-blur-md p-2 border border-slate-data hover:bg-neon-acid hover:text-void-black transition-colors">
+<span class="material-symbols-outlined">stop</span>
+</button>
+<button class="bg-surface-container-highest/80 backdrop-blur-md p-2 border border-slate-data hover:bg-neon-acid hover:text-void-black transition-colors">
+<span class="material-symbols-outlined">replay</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Settings Panel -->
+<aside class="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+<div class="bg-surface border border-slate-data p-6 flex flex-col gap-8 h-full">
+<!-- Simulation Type Selector -->
+<div>
+<h4 class="font-label-caps text-label-caps text-primary mb-4 border-l-2 border-neon-acid pl-2">Simulation Type</h4>
+<div class="grid grid-cols-2 gap-2">
+<button class="bg-surface-container-highest text-neon-acid border border-neon-acid p-4 font-label-caps text-label-caps flex flex-col items-center gap-2 glow-hover">
+<span class="material-symbols-outlined">face</span>
+                            [HAIR]
+                        </button>
+<button class="bg-surface-container-low text-silver-technical border border-slate-data p-4 font-label-caps text-label-caps flex flex-col items-center gap-2 hover:border-silver-technical transition-colors">
+<span class="material-symbols-outlined">checkroom</span>
+                            [CLOTH]
+                        </button>
+<button class="bg-surface-container-low text-silver-technical border border-slate-data p-4 font-label-caps text-label-caps flex flex-col items-center gap-2 hover:border-silver-technical transition-colors">
+<span class="material-symbols-outlined">opacity</span>
+                            [FLUID]
+                        </button>
+<button class="bg-surface-container-low text-silver-technical border border-slate-data p-4 font-label-caps text-label-caps flex flex-col items-center gap-2 hover:border-silver-technical transition-colors">
+<span class="material-symbols-outlined">air</span>
+                            [SMOKE]
+                        </button>
+<button class="bg-surface-container-low text-silver-technical border border-slate-data p-4 font-label-caps text-label-caps flex flex-col items-center gap-2 hover:border-silver-technical transition-colors">
+<span class="material-symbols-outlined">local_fire_department</span>
+                            [FIRE]
+                        </button>
+<button class="bg-surface-container-low text-silver-technical border border-slate-data p-4 font-label-caps text-label-caps flex flex-col items-center gap-2 hover:border-silver-technical transition-colors">
+<span class="material-symbols-outlined">grain</span>
+                            [PARTICLES]
+                        </button>
+</div>
+</div>
+<!-- Physics Sliders -->
+<div class="flex flex-col gap-6">
+<h4 class="font-label-caps text-label-caps text-primary mb-2 border-l-2 border-neon-acid pl-2">Physics Parameters</h4>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
+<span>Gravity</span>
+<span class="text-neon-acid">-9.81 m/s²</span>
+</div>
+<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" max="10" min="-10" step="0.1" type="range" value="-9.8"/>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
+<span>Wind Force</span>
+<span class="text-neon-acid">2.4</span>
+</div>
+<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" max="10" min="0" step="0.1" type="range" value="2.4"/>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
+<span>Viscosity</span>
+<span class="text-silver-technical">N/A</span>
+</div>
+<input class="w-full h-1 bg-void-black opacity-30 cursor-not-allowed" disabled="" type="range"/>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
+<span>Stiffness</span>
+<span class="text-silver-technical">N/A</span>
+</div>
+<input class="w-full h-1 bg-void-black opacity-30 cursor-not-allowed" disabled="" type="range"/>
+</div>
+</div>
+<!-- Resolution Toggle -->
+<div class="mt-auto pt-6 border-t border-slate-data">
+<h4 class="font-label-caps text-label-caps text-primary mb-4 uppercase">Solver Resolution</h4>
+<div class="flex border border-slate-data p-1 bg-surface-container-low">
+<button class="flex-1 py-2 font-label-caps text-label-caps text-silver-technical hover:text-primary transition-colors">LOW</button>
+<button class="flex-1 py-2 font-label-caps text-label-caps text-void-black bg-neon-acid">MEDIUM</button>
+<button class="flex-1 py-2 font-label-caps text-label-caps text-silver-technical hover:text-primary transition-colors">HIGH</button>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Fixed Generate Bar -->
+<footer class="fixed bottom-0 left-0 w-full h-20 bg-void-black border-t border-slate-data px-margin-desktop flex items-center justify-between z-50">
+<div class="hidden md:flex flex-col gap-1">
+<div class="flex items-center gap-4 text-silver-technical font-label-xs">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-pulse"></span> GPU_LOAD 84%</span>
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-cyber-gold rounded-full"></span> LATENCY 12ms</span>
+</div>
+<div class="font-label-caps text-[10px] text-silver-technical/50 uppercase tracking-[0.2em]">SYS_TELEMETRY: NEURAL_ORBIT_04 | ACTIVE</div>
+</div>
+<div class="flex items-center gap-6 w-full md:w-auto">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-label-technical text-silver-technical text-right">ESTIMATED_TIME: 00:04:12</span>
+<span class="font-label-technical text-neon-acid text-right">QUEUE_POS: 02</span>
+</div>
+<button class="bg-neon-acid text-void-black px-12 h-14 flex items-center gap-4 group hover:shadow-[0_0_20px_rgba(200,255,0,0.5)] transition-all active:scale-95 flex-1 md:flex-initial">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">bolt</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-black tracking-tighter">SIMULATE — 60 CREDITS</span>
+</button>
+</div>
+</footer>
+<!-- Bottom Status Bar (Shared Component Logic) -->
+<div class="fixed bottom-0 left-0 w-full h-8 flex justify-between items-center px-4 z-[60] pointer-events-none opacity-0 md:opacity-100">
+<span class="font-label-technical text-label-technical text-silver-technical">SYS_TELEMETRY: GPU_LOAD 84% | LATENCY 12ms</span>
+<div class="flex gap-4">
+<span class="font-label-technical text-label-technical text-silver-technical">ESTIMATED_TIME: 00:04:12</span>
+<span class="font-label-technical text-label-technical text-silver-technical">COMPUTE_ENGINE: NEURAL_ORBIT_04</span>
+</div>
+</div>
+<script src="/js/navigation.js"></script><script>
+var sf=null,simType="HAIR",COST=60;
+var uz=document.querySelector(".bg-surface-container-low.border.border-slate-data.p-8");
+if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="video/mp4,video/mov,.obj,.fbx";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;uz.querySelector("h3").textContent=" "+f.name.substring(0,25);uz.style.borderColor="#c8ff00";};i.click();};}
+document.querySelectorAll(".grid-cols-2 button").forEach(function(btn){btn.onclick=function(){simType=btn.textContent.replace(/[\[\]\s]/g,"").trim();document.querySelectorAll(".grid-cols-2 button").forEach(function(b){b.style.background="";b.style.color="";b.style.borderColor="";});btn.style.background="rgba(200,255,0,0.15)";btn.style.color="#c8ff00";btn.style.borderColor="#c8ff00";};});
+document.querySelectorAll(".flex.border.border-slate-data.p-1 button").forEach(function(btn){btn.onclick=function(){document.querySelectorAll(".flex.border.border-slate-data.p-1 button").forEach(function(b){b.style.background="";b.style.color="";});btn.style.background="#c8ff00";btn.style.color="#060606";};});
+var sliders=document.querySelectorAll("input[type=range]:not([disabled])");var displays=document.querySelectorAll(".text-neon-acid");if(sliders[0]&&displays[0])sliders[0].oninput=function(){displays[0].textContent=parseFloat(this.value).toFixed(2)+" m/s";};if(sliders[1]&&displays[1])sliders[1].oninput=function(){displays[1].textContent=parseFloat(this.value).toFixed(1);};
+function go(){if(!sf){alert("Upload a file first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-physics");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=2;if(btn)btn.querySelector("span:last-child").textContent="SIMULATING "+simType+"... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.querySelector("span:last-child").textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},300);}
+window.addEventListener("load",function(){var btn=document.querySelector("footer button.bg-neon-acid");if(btn){btn.id="btn-physics";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
+</script></body></html>
