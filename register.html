@@ -308,6 +308,38 @@ function setLang(l){
 }
 window.onload=()=>setLang(localStorage.getItem('md_lang')||'en');
 </script>
-<script src="/js/navigation.js"></script></body>
+<script src="/js/navigation.js"></script><script>
+var SUPA_URL='https://xvkxogrmewnzwhtghuiz.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
+var sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+async function handleRegister(e){
+  if(e)e.preventDefault();
+  var email=document.querySelector('input[type=email]').value.trim();
+  var pass=document.querySelectorAll('input[type=password]')[0].value;
+  var pass2=document.querySelectorAll('input[type=password]')[1];
+  if(pass2&&pass!==pass2.value){alert('Passwords do not match.');return;}
+  if(!email||!pass){alert('Enter email and password.');return;}
+  if(pass.length<6){alert('Password must be at least 6 characters.');return;}
+  var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
+  if(btn){btn.textContent='CREATING ACCOUNT...';btn.disabled=true;}
+  var r=await sb.auth.signUp({email:email,password:pass});
+  if(r.error){alert('Error: '+r.error.message);if(btn){btn.textContent='CREATE ACCOUNT';btn.disabled=false;}return;}
+  localStorage.setItem('md_user',JSON.stringify(r.data.user));
+  localStorage.setItem('md_email',email);
+  localStorage.setItem('sb_session','1');
+  localStorage.setItem('md_credits','100');
+  localStorage.setItem('md_plan','free');
+  alert('Account created! You have 100 free credits.');
+  window.location.href='directors.html';
+}
+window.addEventListener('load',function(){
+  if(localStorage.getItem('sb_session')){window.location.href='directors.html';return;}
+  var form=document.querySelector('form');
+  if(form)form.onsubmit=handleRegister;
+  var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
+  if(btn&&!form)btn.onclick=handleRegister;
+});
+</script></body>
 </html>
+
 
