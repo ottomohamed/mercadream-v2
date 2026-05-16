@@ -184,10 +184,10 @@ async function handleLogin(e){
   var p=await sb.from('profiles').select('credits,plan').eq('id',r.data.user.id).single();
   if(p.data){localStorage.setItem('md_credits',p.data.credits||100);localStorage.setItem('md_plan',p.data.plan||'free');}
   else{localStorage.setItem('md_credits','100');}
-  window.location.href='directors.html';
+  window.location.href='profile.html';
 }
 window.addEventListener('load',function(){
-  if(localStorage.getItem('sb_session')){window.location.href='directors.html';return;}
+  if(localStorage.getItem('sb_session')){window.location.href='profile.html';return;}
   var form=document.querySelector('form');
   if(form)form.onsubmit=handleLogin;
   var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
@@ -195,6 +195,7 @@ window.addEventListener('load',function(){
 });
 </script></body>
 </html>
+
 
 
 
