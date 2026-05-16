@@ -165,7 +165,36 @@ window.addEventListener("load",function(){
   if(form)form.onsubmit=handleLogin;
   else{var btn=document.querySelector("button");if(btn)btn.onclick=handleLogin;}
 });
+</script><script>
+var SUPA_URL='https://xvkxogrmewnzwhtghuiz.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
+var sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+async function handleLogin(e){
+  if(e)e.preventDefault();
+  var email=document.querySelector('input[type=email]').value.trim();
+  var pass=document.querySelector('input[type=password]').value;
+  if(!email||!pass){alert('Enter email and password.');return;}
+  var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
+  if(btn){btn.textContent='AUTHENTICATING...';btn.disabled=true;}
+  var r=await sb.auth.signInWithPassword({email:email,password:pass});
+  if(r.error){alert('Error: '+r.error.message);if(btn){btn.textContent='SIGN IN';btn.disabled=false;}return;}
+  localStorage.setItem('md_user',JSON.stringify(r.data.user));
+  localStorage.setItem('md_email',r.data.user.email);
+  localStorage.setItem('sb_session','1');
+  var p=await sb.from('profiles').select('credits,plan').eq('id',r.data.user.id).single();
+  if(p.data){localStorage.setItem('md_credits',p.data.credits||100);localStorage.setItem('md_plan',p.data.plan||'free');}
+  else{localStorage.setItem('md_credits','100');}
+  window.location.href='directors.html';
+}
+window.addEventListener('load',function(){
+  if(localStorage.getItem('sb_session')){window.location.href='directors.html';return;}
+  var form=document.querySelector('form');
+  if(form)form.onsubmit=handleLogin;
+  var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
+  if(btn&&!form)btn.onclick=handleLogin;
+});
 </script></body>
 </html>
+
 
 
