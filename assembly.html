@@ -1,1197 +1,680 @@
 ﻿<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
+
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Assembly Room</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM Assembly Room v2.0</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Orbitron:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container-highest": "#353534",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "surface-bright": "#3a3939",
+                        "surface-container-high": "#2a2a2a",
+                        "primary": "#ffffff",
+                        "tertiary": "#ffffff",
+                        "primary-container": "#c0f500",
+                        "on-secondary-fixed-variant": "#604100",
+                        "on-surface-variant": "#c4caac",
+                        "surface": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "on-primary": "#273500",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#8e9479",
+                        "secondary": "#ffba3f",
+                        "surface-container-low": "#1c1b1b",
+                        "inverse-primary": "#4f6600",
+                        "surface-variant": "#353534",
+                        "on-primary-container": "#546d00",
+                        "on-primary-fixed": "#161f00",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#c48800",
+                        "background": "#131313",
+                        "on-tertiary": "#303030",
+                        "on-secondary-container": "#3e2800",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "on-error": "#690005",
+                        "on-background": "#e5e2e1",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "tertiary-fixed": "#e5e2e1",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "primary-fixed-dim": "#a8d700",
+                        "surface-dim": "#131313",
+                        "secondary-fixed": "#ffdeae",
+                        "secondary-fixed-dim": "#ffba3f",
+                        "on-secondary": "#432c00",
+                        "surface-tint": "#a8d700",
+                        "primary-fixed": "#c0f500",
+                        "tertiary-container": "#e5e2e1",
+                        "on-tertiary-container": "#656464",
+                        "outline-variant": "#434933",
+                        "on-secondary-fixed": "#281900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-xs": ["IBM Plex Mono"],
+                        "headline-lg": ["Orbitron"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Orbitron"],
+                        "technical-sm": ["IBM Plex Mono"]
+                    },
+                    "fontSize": {
+                        "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
 <style>
-:root{
-  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;--cyan:#00e5ff;--purple:#b06aff;
-  --surface:#050505;--s2:#0b0b0b;--s3:#111;--s4:#181818;--s5:#222;
-  --border:rgba(200,255,0,0.09);--border-b:rgba(200,255,0,0.35);
-  --text:#aaa;--text-dim:#3a3a3a;--text-bright:#efefef;
-  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{background:var(--surface);color:var(--text);font-family:var(--body)}
-body.lang-ar{direction:rtl;font-family:'Cairo',sans-serif}
-
-/* GRID + SCANLINE */
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.018) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
-
-/* APP SHELL */
-.app{height:100vh;display:grid;grid-template-rows:52px 1fr;overflow:hidden;position:relative;z-index:1}
-
-/* ── HEADER ── */
-.hdr{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;background:rgba(5,5,5,0.96);
-  border-bottom:1px solid var(--border);z-index:50
-}
-.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
-.logo-m{width:26px;height:26px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04)}
-.logo-m svg{width:13px;height:13px}
-.logo-n{font-family:var(--display);font-size:10px;font-weight:700;color:var(--acid);letter-spacing:3px}
-.hdr-title{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text-dim)}
-.hdr-title span{color:var(--acid)}
-.hdr-r{display:flex;align-items:center;gap:10px}
-.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px}
-.lb{font-family:var(--mono);font-size:8px;padding:3px 7px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.lb.on{background:var(--acid);color:#000;font-weight:700}
-.lb:hover:not(.on){color:var(--acid)}
-.dot-live{width:5px;height:5px;border-radius:50%;background:var(--acid);box-shadow:0 0 7px var(--acid);animation:blink 1.4s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-.btn-nav{font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:5px 10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;text-decoration:none;transition:all .2s}
-.btn-nav:hover{color:var(--acid);border-color:var(--border-b)}
-.phase-track{display:flex;align-items:center;gap:4px}
-.pt-step{font-family:var(--mono);font-size:7px;letter-spacing:1px;padding:3px 8px;border:1px solid var(--border);color:var(--text-dim);transition:all .3s}
-.pt-step.done{color:var(--acid-dim);border-color:rgba(138,173,0,.25)}
-.pt-step.on{color:var(--acid);border-color:var(--border-b);background:rgba(200,255,0,0.04);box-shadow:0 0 8px rgba(200,255,0,0.1)}
-.pt-arr{color:var(--text-dim);font-size:9px}
-
-/* ── MAIN GRID ── */
-.main{display:grid;grid-template-columns:1fr 300px;grid-template-rows:1fr 180px;gap:0;overflow:hidden}
-
-/* ── PREVIEW AREA ── */
-.preview-zone{grid-column:1;grid-row:1;display:flex;flex-direction:column;border-inline-end:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
-.preview-topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
-.preview-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid)}
-.preview-meta{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
-.preview-screen{
-  flex:1;background:#000;position:relative;overflow:hidden;
-  display:flex;align-items:center;justify-content:center
-}
-.ps-corner{position:absolute;width:16px;height:16px;border-color:rgba(200,255,0,0.3);border-style:solid}
-.ps-corner.tl{top:8px;left:8px;border-width:2px 0 0 2px}
-.ps-corner.tr{top:8px;right:8px;border-width:2px 2px 0 0}
-.ps-corner.bl{bottom:8px;left:8px;border-width:0 0 2px 2px}
-.ps-corner.br{bottom:8px;right:8px;border-width:0 2px 2px 0}
-.ps-inner{text-align:center}
-.ps-icon{font-size:36px;opacity:.15;margin-bottom:8px}
-.ps-lbl{font-family:var(--mono);font-size:8px;color:var(--acid);letter-spacing:2px;opacity:.35}
-/* Active clip preview */
-.clip-preview-active{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding:24px;
-  background:radial-gradient(ellipse at center,rgba(200,255,0,0.03),transparent)
-}
-.cpa-num{font-family:var(--display);font-size:9px;color:var(--acid);letter-spacing:3px;margin-bottom:12px}
-.cpa-title{font-size:16px;font-weight:600;color:var(--text-bright);margin-bottom:8px;text-align:center}
-.cpa-desc{font-size:12px;color:var(--text);line-height:1.6;text-align:center;max-width:480px}
-.cpa-dur{margin-top:16px;font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:2px}
-.playbar{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--s4)}
-.playbar-fill{height:100%;background:linear-gradient(90deg,var(--acid-dim),var(--acid));transition:width .3s;box-shadow:0 0 8px var(--acid)}
-.hud-tc{position:absolute;top:10px;left:12px;font-family:var(--mono);font-size:8px;color:var(--acid);opacity:.5;letter-spacing:1px}
-.hud-status{position:absolute;top:10px;right:12px;font-family:var(--mono);font-size:8px;color:var(--acid);opacity:.5;letter-spacing:1px}
-
-/* TRANSPORT */
-.transport{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--s2);border-top:1px solid var(--border);flex-shrink:0}
-.transport-controls{display:flex;align-items:center;gap:8px}
-.tc-btn{width:30px;height:30px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
-.tc-btn:hover{border-color:var(--border-b);color:var(--acid)}
-.tc-btn.play-btn{width:36px;height:36px;background:rgba(200,255,0,0.08);border-color:var(--border-b);color:var(--acid)}
-.tc-btn.play-btn:hover{background:rgba(200,255,0,0.15)}
-.tc-btn.play-btn.playing{background:rgba(200,255,0,0.2)}
-.transport-info{font-family:var(--mono);font-size:9px;color:var(--text-dim)}
-.transport-info span{color:var(--acid)}
-
-/* ── TIMELINE ── */
-.timeline-zone{grid-column:1;grid-row:2;overflow:hidden;border-inline-end:1px solid var(--border);display:flex;flex-direction:column}
-.tl-topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
-.tl-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid)}
-.tl-actions{display:flex;gap:6px}
-.tl-btn{font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:4px 10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s}
-.tl-btn:hover{border-color:var(--border-b);color:var(--acid)}
-.tl-btn.primary{background:var(--acid);color:#000;border-color:var(--acid);font-weight:700}
-.tl-btn.primary:hover{background:#d4ff1a}
-.timeline-scroll{flex:1;overflow-x:auto;padding:12px 16px;display:flex;align-items:center;gap:8px}
-.timeline-scroll::-webkit-scrollbar{height:3px}
-.timeline-scroll::-webkit-scrollbar-thumb{background:var(--border-b);border-radius:1px}
-/* CLIP */
-.clip{
-  width:120px;height:100px;background:var(--s3);border:1px solid var(--border);
-  flex-shrink:0;cursor:pointer;position:relative;overflow:hidden;
-  transition:all .25s;display:flex;flex-direction:column
-}
-.clip:hover{border-color:rgba(200,255,0,0.35);background:rgba(200,255,0,0.03);transform:translateY(-2px)}
-.clip.active{border-color:var(--acid);background:rgba(200,255,0,0.05);box-shadow:0 0 16px rgba(200,255,0,0.12)}
-.clip.ai-processing{border-color:var(--cyan);animation:clipPulse .8s infinite}
-@keyframes clipPulse{0%,100%{box-shadow:0 0 8px rgba(0,229,255,0.2)}50%{box-shadow:0 0 20px rgba(0,229,255,0.5)}}
-.clip.done{border-color:var(--acid-dim)}
-.clip-thumb{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse at center,rgba(200,255,0,0.04),transparent);
-  font-size:20px;opacity:.6
-}
-.clip.active .clip-thumb{opacity:1}
-.clip-footer{padding:4px 6px;border-top:1px solid var(--border);background:var(--s2)}
-.clip-num{font-family:var(--mono);font-size:7px;color:var(--acid);letter-spacing:1px}
-.clip-ttl{font-size:8px;color:var(--text);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.clip-dur{font-family:var(--mono);font-size:7px;color:var(--text-dim);float:right}
-/* ADD CLIP button */
-.clip-add{
-  width:80px;height:100px;background:transparent;border:1px dashed var(--border);
-  flex-shrink:0;cursor:pointer;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4px;
-  color:var(--text-dim);transition:all .2s;font-family:var(--mono);font-size:8px;letter-spacing:1px
-}
-.clip-add:hover{border-color:var(--border-b);color:var(--acid)}
-/* CONNECTOR */
-.clip-connector{
-  width:28px;height:3px;background:linear-gradient(90deg,var(--acid-dim),transparent);
-  flex-shrink:0;position:relative;align-self:center
-}
-.clip-connector::after{content:'›';position:absolute;top:-7px;right:-4px;color:var(--acid-dim);font-size:12px}
-
-/* ── RIGHT PANEL ── */
-.right-panel{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;overflow:hidden}
-.rp-tab-bar{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
-.rp-tab{flex:1;font-family:var(--mono);font-size:8px;letter-spacing:1px;padding:10px 4px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;text-align:center}
-.rp-tab.on{color:var(--acid);border-bottom-color:var(--acid)}
-.rp-tab:hover:not(.on){color:var(--text)}
-.rp-content{flex:1;overflow-y:auto;overflow-x:hidden}
-.rp-content::-webkit-scrollbar{width:2px}
-.rp-content::-webkit-scrollbar-thumb{background:var(--border-b)}
-.tab-panel{display:none;padding:14px}
-.tab-panel.on{display:block}
-
-/* CLIP INSPECTOR */
-.ci-header{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px}
-.ci-empty{text-align:center;padding:40px 16px;font-size:12px;color:var(--text-dim)}
-.ci-block{margin-bottom:14px}
-.ci-label{font-family:var(--mono);font-size:8px;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px}
-.ci-value{font-size:12px;color:var(--text-bright);line-height:1.6;background:var(--s3);padding:8px 10px;border:1px solid var(--border)}
-.ci-value.prompt-text{font-family:var(--mono);font-size:10px;direction:ltr;color:var(--acid-dim);line-height:1.7}
-.ci-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.ci-stat{background:var(--s3);border:1px solid var(--border);padding:8px 10px}
-.ci-stat-val{font-family:var(--display);font-size:16px;color:var(--acid)}
-.ci-stat-lbl{font-family:var(--mono);font-size:7px;color:var(--text-dim);letter-spacing:1px;margin-top:2px}
-/* AI instructions */
-.ai-instruction{
-  background:rgba(200,255,0,0.03);border:1px solid rgba(200,255,0,0.15);
-  border-left:2px solid var(--acid);padding:10px 12px;margin-bottom:8px;
-  font-size:11px;line-height:1.65;color:var(--text-bright)
-}
-.ai-instruction .ai-tag{font-family:var(--mono);font-size:7px;color:var(--acid);letter-spacing:2px;margin-bottom:5px}
-/* TRANSITION */
-.trans-select{width:100%;background:var(--s3);border:1px solid var(--border);color:var(--text-bright);font-family:var(--mono);font-size:10px;padding:7px 10px;outline:none;cursor:pointer;transition:border-color .2s}
-.trans-select:focus{border-color:var(--border-b)}
-.trans-select option{background:var(--s3)}
-
-/* SEQUENCE PANEL */
-.seq-block{margin-bottom:16px}
-.seq-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:8px}
-.seq-stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
-.seq-stat{background:var(--s3);border:1px solid var(--border);padding:8px;text-align:center}
-.seq-stat-val{font-family:var(--display);font-size:18px;color:var(--acid)}
-.seq-stat-lbl{font-family:var(--mono);font-size:7px;color:var(--text-dim);letter-spacing:1px;margin-top:2px}
-/* MASTER PROMPT output */
-.master-prompt{
-  background:var(--s2);border:1px solid var(--border-b);border-left:3px solid var(--acid);
-  padding:12px;font-family:var(--mono);font-size:9px;line-height:1.8;
-  color:var(--acid-dim);direction:ltr;white-space:pre-wrap;
-  max-height:220px;overflow-y:auto;margin-bottom:10px
-}
-.master-prompt::-webkit-scrollbar{width:2px}
-.master-prompt::-webkit-scrollbar-thumb{background:var(--border-b)}
-.btn-export{
-  display:block;width:100%;padding:11px;
-  font-family:var(--mono);font-size:9px;letter-spacing:2px;
-  cursor:pointer;border:none;background:var(--acid);color:#000;
-  font-weight:700;transition:all .2s;text-align:center;margin-bottom:6px
-}
-.btn-export:hover{background:#d4ff1a;box-shadow:0 0 20px rgba(200,255,0,0.3)}
-.btn-export:disabled{background:var(--s5);color:var(--text-dim);cursor:not-allowed;box-shadow:none}
-.btn-export-sec{
-  display:block;width:100%;padding:9px;
-  font-family:var(--mono);font-size:9px;letter-spacing:2px;
-  cursor:pointer;border:1px solid var(--border-b);background:transparent;
-  color:var(--acid);transition:all .2s;text-align:center;margin-bottom:6px
-}
-.btn-export-sec:hover{background:rgba(200,255,0,0.06)}
-.btn-new-project{
-  display:block;width:100%;padding:9px;
-  font-family:var(--mono);font-size:9px;letter-spacing:2px;
-  cursor:pointer;border:1px solid var(--border);background:transparent;
-  color:var(--text-dim);transition:all .2s;text-align:center
-}
-.btn-new-project:hover{border-color:var(--border-b);color:var(--acid)}
-
-/* RENDER PROGRESS */
-.render-bar-wrap{margin-bottom:12px}
-.render-bar-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-bottom:4px}
-.render-bar{height:3px;background:var(--s4);position:relative;overflow:hidden}
-.render-bar-fill{height:100%;background:linear-gradient(90deg,var(--acid-dim),var(--acid));width:0;transition:width .2s;box-shadow:0 0 6px var(--acid)}
-
-/* SETTINGS PANEL */
-.setting-row{margin-bottom:14px}
-.setting-label{font-family:var(--mono);font-size:8px;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.setting-label span{color:var(--text-bright);font-size:9px}
-.range-input{width:100%;accent-color:var(--acid);cursor:pointer}
-.setting-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.setting-opt{
-  padding:7px;background:var(--s3);border:1px solid var(--border);
-  font-family:var(--mono);font-size:8px;letter-spacing:1px;color:var(--text-dim);
-  cursor:pointer;text-align:center;transition:all .2s
-}
-.setting-opt:hover{border-color:var(--border-b);color:var(--acid)}
-.setting-opt.on{background:rgba(200,255,0,0.08);border-color:var(--border-b);color:var(--acid)}
-
-/* LOG */
-.log-term{
-  grid-column:1;grid-row:2;
-  padding:8px 14px;background:#030303;border-top:1px solid var(--border);
-  height:80px;overflow-y:auto;display:none
-}
-.log-l{font-family:var(--mono);font-size:7.5px;color:var(--text-dim);line-height:1.9}
-.log-l.ok{color:var(--acid-dim)}.log-l.err{color:var(--red)}.log-l.inf{color:var(--cyan)}
-
-/* TOAST */
-.toast{
-  position:fixed;bottom:24px;right:24px;
-  background:var(--s3);border:1px solid var(--border-b);border-left:3px solid var(--acid);
-  padding:12px 20px;font-family:var(--mono);font-size:10px;color:var(--text-bright);
-  z-index:999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none
-}
-.toast.show{opacity:1;transform:translateY(0)}
-
-/* AI THINKING OVERLAY */
-.ai-thinking{
-  position:absolute;inset:0;background:rgba(5,5,5,0.92);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:12px;z-index:10;opacity:0;pointer-events:none;transition:opacity .3s
-}
-.ai-thinking.show{opacity:1;pointer-events:all}
-.ai-spinner{
-  width:40px;height:40px;border:2px solid var(--border);
-  border-top-color:var(--acid);border-radius:50%;
-  animation:spin .8s linear infinite
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ai-thinking-txt{font-family:var(--mono);font-size:9px;color:var(--acid);letter-spacing:3px;animation:blink 1.2s infinite}
-
-@media(max-width:900px){
-  .main{grid-template-columns:1fr;grid-template-rows:auto auto auto}
-  .right-panel{grid-column:1;border-top:1px solid var(--border)}
-}
-</style>
+        body { background-color: #060606; color: #e5e2e1; }
+        .surgical-border { border: 1px solid #222222; }
+        .neon-glow:hover { box-shadow: 0 0 12px #c0f500; border-color: #c0f500; }
+        .scanlines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0e0e0e; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #434933; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #c0f500; }
+    </style>
 </head>
-<body class="lang-en">
-
-<div class="app">
-  <!-- HEADER -->
-  <header class="hdr">
-    <div style="display:flex;align-items:center;gap:20px">
-      <a href="index.html" class="logo">
-        <div class="logo-m"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
-        <span class="logo-n">MERCADREAM</span>
-      </a>
-      <div class="phase-track">
-        <div class="pt-step done" id="pt1">DISCOVERY</div>
-        <span class="pt-arr">›</span>
-        <div class="pt-step done" id="pt2">CONFIRMATION</div>
-        <span class="pt-arr">›</span>
-        <div class="pt-step done" id="pt3">PRODUCTION</div>
-        <span class="pt-arr">›</span>
-        <div class="pt-step on" id="pt4" data-i18n="ph4">ASSEMBLY</div>
-      </div>
-    </div>
-    <div style="position:absolute;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--text-dim)">
-      <span data-i18n="hdr_title">ASSEMBLY ROOM</span> // <span style="color:var(--acid)" data-i18n="hdr_sub">FINAL CUT PROTOCOL</span>
-    </div>
-    <div class="hdr-r">
-      <div class="lang-sw">
-        <button class="lb on" onclick="setLang('en')">EN</button>
-        <button class="lb" onclick="setLang('es')">ES</button>
-        <button class="lb" onclick="setLang('ar')">AR</button>
-      </div>
-      <div class="dot-live"></div>
-      <a href="studio.html" class="btn-nav" data-i18n="btn_back">← STUDIO</a>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- PREVIEW ZONE -->
-    <div class="preview-zone">
-      <div class="preview-topbar">
-        <span class="preview-label" data-i18n="preview_label">MASTER_PREVIEW</span>
-        <span class="preview-meta" id="previewMeta">NO CLIP SELECTED</span>
-      </div>
-      <div class="preview-screen" id="previewScreen">
-        <div class="ps-corner tl"></div><div class="ps-corner tr"></div>
-        <div class="ps-corner bl"></div><div class="ps-corner br"></div>
-        <div class="ps-inner" id="psDefault">
-          <div class="ps-icon">🎬</div>
-          <div class="ps-lbl" data-i18n="ps_lbl">SELECT A CLIP TO PREVIEW</div>
-        </div>
-        <div class="hud-tc" id="hudTC">00:00:00</div>
-        <div class="hud-status" id="hudStatus">STANDBY</div>
-        <!-- AI thinking overlay -->
-        <div class="ai-thinking" id="aiThinking">
-          <div class="ai-spinner"></div>
-          <div class="ai-thinking-txt" data-i18n="ai_analyzing">ANALYZING CLIP...</div>
-        </div>
-      </div>
-      <div class="transport">
-        <div class="transport-controls">
-          <button class="tc-btn" onclick="prevClip()" title="Previous">◀◀</button>
-          <button class="tc-btn play-btn" id="playBtn" onclick="togglePlay()">▶</button>
-          <button class="tc-btn" onclick="nextClip()" title="Next">▶▶</button>
-          <button class="tc-btn" onclick="addClipFromStudio()" title="Add from Studio" style="width:auto;padding:0 10px;font-family:var(--mono);font-size:8px;letter-spacing:1px" data-i18n="btn_add_clip">+ ADD CLIP</button>
-        </div>
-        <div class="transport-info"><span id="tpCurrent">—</span> / <span id="tpTotal">0:00</span></div>
-      </div>
-    </div>
-
-    <!-- TIMELINE ZONE -->
-    <div class="timeline-zone">
-      <div class="tl-topbar">
-        <span class="tl-label">SCENE_TIMELINE</span>
-        <div class="tl-actions">
-          <button class="tl-btn" onclick="clearAll()" data-i18n="btn_clear">CLEAR ALL</button>
-          <button class="tl-btn" onclick="autoArrange()" data-i18n="btn_auto">AUTO-ARRANGE</button>
-          <button class="tl-btn primary" id="masterBtn" onclick="generateMaster()" data-i18n="btn_master">⚡ GENERATE MASTER</button>
-        </div>
-      </div>
-      <div class="timeline-scroll" id="timeline">
-        <!-- Clips rendered here -->
-        <div class="clip-add" onclick="addClipFromStudio()">
-          <div style="font-size:20px;opacity:.3">＋</div>
-          <span data-i18n="add_clip_lbl">ADD CLIP</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="right-panel">
-      <div class="rp-tab-bar">
-        <button class="rp-tab on" data-tab="inspector" onclick="switchTab('inspector')" data-i18n="tab_inspector">INSPECTOR</button>
-        <button class="rp-tab" data-tab="sequence" onclick="switchTab('sequence')" data-i18n="tab_sequence">SEQUENCE</button>
-        <button class="rp-tab" data-tab="settings" onclick="switchTab('settings')" data-i18n="tab_settings">SETTINGS</button>
-      </div>
-      <div class="rp-content">
-
-        <!-- INSPECTOR TAB -->
-        <div class="tab-panel on" id="tab-inspector">
-          <div class="ci-header" data-i18n="insp_title">CLIP_INSPECTOR</div>
-          <div id="inspectorContent">
-            <div class="ci-empty" data-i18n="insp_empty">Select a clip on the timeline<br>to inspect and edit</div>
-          </div>
-        </div>
-
-        <!-- SEQUENCE TAB -->
-        <div class="tab-panel" id="tab-sequence">
-          <div class="seq-block">
-            <div class="seq-title" data-i18n="seq_stats">SEQUENCE_STATS</div>
-            <div class="seq-stat-grid">
-              <div class="seq-stat"><div class="seq-stat-val" id="statClips">0</div><div class="seq-stat-lbl" data-i18n="stat_clips">CLIPS</div></div>
-              <div class="seq-stat"><div class="seq-stat-val" id="statDur">0s</div><div class="seq-stat-lbl" data-i18n="stat_dur">DURATION</div></div>
-              <div class="seq-stat"><div class="seq-stat-val" id="statFmt">—</div><div class="seq-stat-lbl" data-i18n="stat_fmt">FORMAT</div></div>
-            </div>
-          </div>
-          <div class="seq-block">
-            <div class="seq-title" data-i18n="master_title">MASTER_SEQUENCE_PROMPT</div>
-            <div id="masterPromptBox" style="font-size:11px;color:var(--text-dim);padding:12px;background:var(--s3);border:1px solid var(--border);margin-bottom:10px" data-i18n="master_empty">
-              Add clips and click ⚡ GENERATE MASTER to build the master sequence prompt.
-            </div>
-            <div class="render-bar-wrap" id="renderWrap" style="display:none">
-              <div class="render-bar-label"><span data-i18n="rendering">RENDERING...</span><span id="renderPct">0%</span></div>
-              <div class="render-bar"><div class="render-bar-fill" id="renderFill"></div></div>
-            </div>
-            <button class="btn-export" id="exportBtn" onclick="exportMaster()" disabled data-i18n="btn_export">⬇ EXPORT MASTER DOCUMENT</button>
-            <button class="btn-export-sec" id="copyMasterBtn" onclick="copyMaster()" style="display:none" data-i18n="btn_copy_master">⎘ COPY MASTER PROMPT</button>
-            <button class="btn-new-project" onclick="window.location.href='studio.html'" data-i18n="btn_new">+ NEW PROJECT</button>
-          </div>
-        </div>
-
-        <!-- SETTINGS TAB -->
-        <div class="tab-panel" id="tab-settings">
-          <div class="setting-row">
-            <div class="setting-label" data-i18n="set_aspect">ASPECT RATIO</div>
-            <div class="setting-grid" id="aspectGrid">
-              <div class="setting-opt on" onclick="setSetting('aspect',this,'16:9')">16:9</div>
-              <div class="setting-opt" onclick="setSetting('aspect',this,'9:16')">9:16</div>
-              <div class="setting-opt" onclick="setSetting('aspect',this,'1:1')">1:1</div>
-              <div class="setting-opt" onclick="setSetting('aspect',this,'21:9')">21:9</div>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-label" data-i18n="set_quality">OUTPUT QUALITY</div>
-            <div class="setting-grid" id="qualityGrid">
-              <div class="setting-opt" onclick="setSetting('quality',this,'720p')">720p</div>
-              <div class="setting-opt on" onclick="setSetting('quality',this,'1080p')">1080p</div>
-              <div class="setting-opt" onclick="setSetting('quality',this,'4K')">4K</div>
-              <div class="setting-opt" onclick="setSetting('quality',this,'8K')">8K</div>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-label" data-i18n="set_dur">CLIP DURATION <span id="durVal">10s</span></div>
-            <input type="range" class="range-input" min="5" max="30" value="10" oninput="document.getElementById('durVal').textContent=this.value+'s';settings.clipDuration=parseInt(this.value)">
-          </div>
-          <div class="setting-row">
-            <div class="setting-label" data-i18n="set_vol">MASTER VOLUME <span id="volVal">80%</span></div>
-            <input type="range" class="range-input" min="0" max="100" value="80" oninput="document.getElementById('volVal').textContent=this.value+'%';settings.volume=parseInt(this.value)">
-          </div>
-          <div class="setting-row">
-            <div class="setting-label" data-i18n="set_default_trans">DEFAULT TRANSITION</div>
-            <select class="trans-select" onchange="settings.defaultTransition=this.value">
-              <option value="cinematic_dissolve" data-i18n="trans_dissolve">Cinematic Dissolve</option>
-              <option value="hard_cut" data-i18n="trans_cut">Hard Cut</option>
-              <option value="glitch_wipe" data-i18n="trans_glitch">Glitch Wipe</option>
-              <option value="match_cut" data-i18n="trans_match">Match Cut</option>
-              <option value="smash_cut" data-i18n="trans_smash">Smash Cut</option>
-              <option value="whip_pan" data-i18n="trans_whip">Whip Pan</option>
-            </select>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
+<body class="font-body-md overflow-x-hidden pt-14 pb-12">
+<div class="fixed inset-0 scanlines z-[100]"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-14 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-[18px] text-primary-container tracking-tighter uppercase">MERCADREAM | ASSEMBLY ROOM v2</span>
 </div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
+<div class="flex items-center gap-unit">
+<button class="flex items-center gap-2 px-3 h-8 bg-surface-container-low border border-outline-variant font-technical-sm text-on-surface-variant hover:text-primary-container hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                STUDIO
+            </button>
+<div class="px-3 h-8 flex items-center bg-surface-container-highest border border-outline-variant font-technical-sm text-primary-container">
+                2,450 CR
+            </div>
+<button class="px-4 h-8 bg-primary-container text-on-primary font-technical-sm font-bold flex items-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+                BUILD FILM
+            </button>
+<div class="ml-4 flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-container">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-container">settings</span>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto p-gutter space-y-gutter relative z-10">
+<!-- SECTION 1: SCENE SELECTOR -->
+<section class="surgical-border bg-surface-container-lowest p-gutter">
+<div class="flex justify-between items-end mb-4 border-b border-outline-variant pb-2">
+<h2 class="font-headline-lg text-[20px] text-primary tracking-widest uppercase flex items-center gap-3">
+<span class="w-2 h-2 bg-primary-container"></span>
+                    SELECT YOUR CLIPS
+                </h2>
+<span class="font-technical-sm text-on-surface-variant opacity-50">SCENE_SELECTION_MATRIX_v2.0</span>
+</div>
+<div class="space-y-4">
+<!-- Scene Rows -->
+<!-- Scene 01 -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center group">
+<div class="font-technical-sm text-on-surface-variant py-2 border-l-2 border-primary-container pl-3">SCENE_01</div>
+<div class="md:col-span-3 grid grid-cols-3 gap-3">
+<div class="relative surgical-border border-secondary group/thumb cursor-pointer">
+<img class="w-full aspect-video object-cover grayscale group-hover/thumb:grayscale-0 transition-all" data-alt="A high-tech cinematic wide shot of a futuristic cyberpunk city skyline at night, featuring neon green and gold holographic advertisements reflecting off wet asphalt streets. The scene is rendered in ultra-high definition with surgical precision, showing intricate mechanical details of a hovering drone in the foreground. Deep blacks provide intense contrast against the luminescent neon acid accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoSpqV2lhpj2YaMaE9ojDaOPo45gVdsLwcspScT-Ri1wX9bJwUD1UpC6-Vz5E7jM9x1a54xuILHuqylgBVj281foaeK4yY5q4Mowxs60g7II5JYhEx0Qqko6h9S2tDXHd2e9uhko6qWFRfKFg4oQwNgW38IL-sTJBF3Vd-_ArVGxNoRCMpA2NlBuK7Hmgn7BvnSkeUNH4mrcOOIoEsEPEbVEX1NIx1lM_REYqfFK8Ajwq8Lzgx2DijH_IbUyRVt1ybXK5TBHkddyc"/>
+<div class="absolute top-1 right-1 bg-secondary text-on-secondary px-1 text-[9px] font-bold">SELECTED</div>
+<div class="absolute bottom-0 left-0 right-0 bg-black/60 p-1 flex justify-between items-center">
+<span class="font-technical-sm text-[10px] text-white">10s ▶</span>
+<button class="bg-secondary text-on-secondary text-[9px] px-2 py-0.5 font-bold uppercase">✓ SELECTED</button>
+</div>
+</div>
+<div class="relative surgical-border border-outline-variant hover:border-primary-container transition-all cursor-pointer group/thumb">
+<img class="w-full aspect-video object-cover opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all" data-alt="Intricate close-up of a futuristic CPU core glowing with pulsating neon acid light. The hardware components are sharp and metallic, reflecting a high-end surgical cyberpunk aesthetic. The lighting is low-key, focusing on the emissive green circuits that slice through the dark shadows of the internal computer structure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrjnDXGePVLXBmc_Clc-yBDHXOkM9GK87LiKp2dJQ59uADq3wZZug7LwUGbyKkFPfINw8jtmCmTSeJpbl7Xja6usPo2TJSuPAoU1Oe7bVgBE4guo5imBjlotzDEAXf8oJHU4a6SnD7D9FvtQi6WMVxqvn9htrnuvuK5ic7N85L1Xs_woyIfeCN8dv_I7tnmoLPFSLFNLlW2XOe-nQswyeskc1-gDj4OBOC8oTnZ7eg0ASzlgTd82AcGVOkpXUMSv4RDnkkwm3TJmQ"/>
+<div class="absolute bottom-0 left-0 right-0 bg-black/60 p-1 flex justify-between items-center opacity-0 group-hover/thumb:opacity-100">
+<span class="font-technical-sm text-[10px] text-white">10s ▶</span>
+<button class="bg-primary-container text-on-primary text-[9px] px-2 py-0.5 font-bold uppercase">SELECT</button>
+</div>
+</div>
+<div class="relative surgical-border border-outline-variant hover:border-primary-container transition-all cursor-pointer group/thumb">
+<img class="w-full aspect-video object-cover opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all" data-alt="A cosmic cinematic shot of a digital nebula with swirling patterns of gold and black energy. Technical telemetry data overlays the visual in a crisp, surgical white font. The scene feels like a high-end AI rendering from a luxury production console, emphasizing scale and mathematical precision in the void of space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRd0WpnEsfIHW27QI57HYpw2zdSO3NSwGbBS4egMp4bzgoJalSZGWCWQSDDSJ4HpVB-pr2yBgUDpLjsqX_Q8RWbB2-6fr9j7a0sxB1ClzIub4seE6BL5xLP3PZ8YfuDJeTzCHbXkl6w_9GVAZWGJlzAp-KFDRPWkrrwJjeinWVu_AlO-HS-PV6mW6YB4EDsLPEZYA19xNBPRuBQUUT1inSKj3y36gKxNcgUEA3fTxEiG9DARk_bZVAFmoh2mOEVrxxuZN1t58WuOs"/>
+<div class="absolute bottom-0 left-0 right-0 bg-black/60 p-1 flex justify-between items-center opacity-0 group-hover/thumb:opacity-100">
+<span class="font-technical-sm text-[10px] text-white">10s ▶</span>
+<button class="bg-primary-container text-on-primary text-[9px] px-2 py-0.5 font-bold uppercase">SELECT</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Repeat for Scenes 02-06 with varied selections -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center group pt-4 border-t border-outline-variant/30">
+<div class="font-technical-sm text-on-surface-variant py-2 border-l-2 border-outline-variant pl-3">SCENE_02</div>
+<div class="md:col-span-3 grid grid-cols-3 gap-3">
+<div class="relative surgical-border border-outline-variant neon-glow cursor-pointer group/thumb">
+<img class="w-full aspect-video object-cover grayscale opacity-60" data-alt="Dark atmospheric scene of a high-tech data center with rows of server racks emitting a faint gold glow. The floor is polished and reflects the symmetrical lines of the machinery. Surgical precision in every edge, following a strict 4px grid aesthetic with technical brutally." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAfHlSAW_lSli7ZtllRzedomT_hCdd7fRyav_WNxbLLQXu9aHrQ575hJWQc9bPEzsv8n1gDSEQwzrxYQD6IShrzaQX8G2YJnstOU3yoZopLPeVbdwQokHyz-5sJ3iqMxyqIyoYNApC1I1D3qrJZ7lmYcSLLA2LB4aCx7wQPKbojdc3NfpVdqUd9kMRwxbhorJp9gPkj7PE2FO53hv_WEOhQBIDjrp25LmHMq2yn8_HAA2357KNvvAF1rlEM2gjilCD1B9jinZBb28"/>
+</div>
+<div class="relative surgical-border border-secondary group/thumb cursor-pointer">
+<img class="w-full aspect-video object-cover" data-alt="Macro photography of digital code streaming down a screen in neon green characters. The focus is razor sharp on a single line of script, with other lines blurring into a deep black background. High-fidelity textures and professional lighting define this surgical cyberpunk UI element." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSP32j4SCX0Z8cReElRBxKZVIw05jbzhx3-BOSCJUzWg2W_QsCDTCOCYC1OMb8jrw4gmqzFc_oE57obsku293SSbXUFQ4hrya6OC-AyMJLFhOcAzcvpxAC1_gbQEBbnyKGIqzqd5XS07WMG0z5rXkTB3ejhf-SJFkll12D4bJRFIHUscYTPW5IJS8O39XyFO72p13VPzZEY40DclYL7CJ1D-3jsa70qUdXv7n4cd2LdeuKW37fsM7Gs0QQXSw8gS7rFXn4iE53IYQ"/>
+<div class="absolute top-1 right-1 bg-secondary text-on-secondary px-1 text-[9px] font-bold">SELECTED</div>
+<div class="absolute bottom-0 left-0 right-0 bg-black/60 p-1 flex justify-between items-center"><span class="font-technical-sm text-[10px]">10s ▶</span><button class="bg-secondary text-on-secondary text-[9px] px-2 py-0.5 font-bold">✓ SELECTED</button></div>
+</div>
+<div class="relative surgical-border border-outline-variant neon-glow cursor-pointer group/thumb">
+<img class="w-full aspect-video object-cover grayscale opacity-60" data-alt="Electronic circuit board close-up with gold-plated connectors and microscopic components. The image has a heavy technical feel with high contrast and sharp focus, simulating a mission-critical GPU monitoring station visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgiVgn7DMRyqIN5C_C9cACMyRhJFYl-wSglr_JEC3TW2G3SGBi0lkt9cL-NDkgci_4Pwv25ZHrkVXQeiCU3psqo93d8LNRtlmL688nsE4UnVg17HiLLcsby9mY6QvABTjbTeAtODwRaNZT2ZEaPW1CJpeIekw2ohYSlQXXxyQWt9dk35mIut-Z2GLHxyK0vAnAdg5BJJRnJKGwJlTLJenwyQqnwpDQYpqyHtlrBzyg4iyfzmDAqF_nU6PNYEBqg5F1Fz0NYz1XZZo"/>
+</div>
+</div>
+</div>
+<!-- Scene 03 to 06 represented simply for density -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center group border-t border-outline-variant/30 pt-4" v-for="i in [3,4,5,6]">
+<div class="font-technical-sm text-on-surface-variant py-2 border-l-2 border-outline-variant pl-3">SCENE_03_TO_06_BATCH</div>
+<div class="md:col-span-3 h-12 bg-surface-container-low border border-dashed border-outline-variant flex items-center justify-center font-technical-sm text-outline">
+                        EXPAND FOR SCENES 03-06 MATRIX [TOTAL: 12 ADDITIONAL CLIPS]
+                    </div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: MASTER TIMELINE -->
+<section class="surgical-border bg-surface-container-lowest p-gutter">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-headline-lg text-[20px] text-primary tracking-widest uppercase">MASTER TIMELINE</h2>
+<div class="flex items-center gap-6 font-technical-sm">
+<div class="flex gap-2 text-on-surface-variant"><span class="text-primary-container">TOTAL:</span> 60.00s</div>
+<div class="flex gap-2 text-on-surface-variant"><span class="text-primary-container">FORMAT:</span> 16:9</div>
+<div class="flex gap-2 text-on-surface-variant"><span class="text-primary-container">RES:</span> 1080p</div>
+</div>
+</div>
+<div class="relative">
+<div class="overflow-x-auto custom-scrollbar pb-4 flex gap-1">
+<!-- Timeline Items -->
+<div class="flex-none w-32 h-20 surgical-border bg-surface flex flex-col items-center justify-center group cursor-pointer hover:border-primary-container">
+<span class="font-technical-sm text-primary-container">S1▶10s</span>
+<div class="w-full h-1 bg-secondary mt-2"></div>
+</div>
+<div class="flex-none flex items-center px-1 text-outline-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+<div class="flex-none w-32 h-20 surgical-border bg-surface flex flex-col items-center justify-center group cursor-pointer hover:border-primary-container">
+<span class="font-technical-sm text-primary-container">S2▶10s</span>
+<div class="w-full h-1 bg-secondary mt-2"></div>
+</div>
+<div class="flex-none flex items-center px-1 text-outline-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+<div class="flex-none w-32 h-20 surgical-border bg-surface flex flex-col items-center justify-center group cursor-pointer hover:border-primary-container">
+<span class="font-technical-sm text-primary-container">S3▶10s</span>
+<div class="w-full h-1 bg-secondary mt-2"></div>
+</div>
+<div class="flex-none flex items-center px-1 text-outline-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+<div class="flex-none w-32 h-20 border border-dashed border-outline-variant flex flex-col items-center justify-center opacity-40">
+<span class="font-technical-sm">S4▶--s</span>
+</div>
+<div class="flex-none flex items-center px-1 text-outline-variant opacity-40">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+<div class="flex-none w-32 h-20 border border-dashed border-outline-variant flex flex-col items-center justify-center opacity-40">
+<span class="font-technical-sm">S5▶--s</span>
+</div>
+<div class="flex-none flex items-center px-1 text-outline-variant opacity-40">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+<div class="flex-none w-32 h-20 border border-dashed border-outline-variant flex flex-col items-center justify-center opacity-40">
+<span class="font-technical-sm">S6▶--s</span>
+</div>
+</div>
+<div class="mt-4 flex justify-end">
+<button class="px-6 py-2 border border-primary-container text-primary-container font-technical-sm uppercase hover:bg-primary-container/10 transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                        PREVIEW ALL
+                    </button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- SECTION 3: AUDIO SUITE -->
+<section class="surgical-border bg-surface-container-lowest p-gutter flex flex-col">
+<h2 class="font-headline-lg text-[20px] text-primary tracking-widest uppercase mb-4">AUDIO SUITE</h2>
+<div class="flex border-b border-outline-variant mb-4">
+<button class="px-4 py-2 font-technical-sm bg-surface-container border-t-2 border-primary-container text-primary-container">🎵 MUSIC LIBRARY</button>
+<button class="px-4 py-2 font-technical-sm text-on-surface-variant hover:text-primary">🎤 RECORD</button>
+<button class="px-4 py-2 font-technical-sm text-on-surface-variant hover:text-primary">📁 UPLOAD</button>
+</div>
+<div class="flex-grow space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+<!-- Library Items -->
+<div class="flex justify-between items-center p-3 surgical-border bg-surface hover:bg-surface-container transition-colors group">
+<div>
+<div class="font-technical-sm text-primary">EPIC_CINEMATIC_ORCHESTRA</div>
+<div class="text-[10px] text-on-surface-variant font-label-xs uppercase">BPM: 120 | KEY: Am | DUR: 3:45</div>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant text-on-surface-variant hover:text-primary-container"><span class="material-symbols-outlined">play_arrow</span></button>
+<button class="w-8 h-8 flex items-center justify-center border border-primary-container text-primary-container hover:bg-primary-container hover:text-on-primary"><span class="material-symbols-outlined">add</span></button>
+</div>
+</div>
+<div class="flex justify-between items-center p-3 surgical-border bg-surface hover:bg-surface-container transition-colors group">
+<div>
+<div class="font-technical-sm text-primary">DARK_AMBIENT_VOID</div>
+<div class="text-[10px] text-on-surface-variant font-label-xs uppercase">BPM: 70 | KEY: C#m | DUR: 5:12</div>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant text-on-surface-variant hover:text-primary-container"><span class="material-symbols-outlined">play_arrow</span></button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant text-on-surface-variant hover:border-primary-container hover:text-primary-container"><span class="material-symbols-outlined">add</span></button>
+</div>
+</div>
+<div class="flex justify-between items-center p-3 surgical-border bg-surface hover:bg-surface-container transition-colors group">
+<div>
+<div class="font-technical-sm text-primary">NEON_PULSE_CHASE</div>
+<div class="text-[10px] text-on-surface-variant font-label-xs uppercase">BPM: 140 | KEY: D | DUR: 2:30</div>
+</div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant text-on-surface-variant hover:text-primary-container"><span class="material-symbols-outlined">play_arrow</span></button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant text-on-surface-variant hover:border-primary-container hover:text-primary-container"><span class="material-symbols-outlined">add</span></button>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant">
+<div class="flex flex-col items-center justify-center py-6 border border-dashed border-outline-variant bg-surface">
+<span class="material-symbols-outlined text-[48px] text-primary-container mb-2">mic</span>
+<div class="flex gap-1 h-8 items-center mb-4">
+<div class="w-1 h-3 bg-primary-container"></div>
+<div class="w-1 h-6 bg-primary-container"></div>
+<div class="w-1 h-4 bg-primary-container"></div>
+<div class="w-1 h-8 bg-primary-container"></div>
+<div class="w-1 h-5 bg-primary-container"></div>
+<div class="w-1 h-2 bg-primary-container opacity-50"></div>
+</div>
+<button class="px-6 py-2 bg-error text-on-error font-technical-sm uppercase font-bold hover:opacity-90 active:scale-95">START RECORDING</button>
+</div>
+</div>
+</section>
+<!-- SECTION 4: TEXT & TITLES -->
+<section class="surgical-border bg-surface-container-lowest p-gutter">
+<h2 class="font-headline-lg text-[20px] text-primary tracking-widest uppercase mb-4">TEXT &amp; TITLES</h2>
+<div class="space-y-6">
+<!-- Title Input -->
+<div>
+<label class="font-label-xs text-on-surface-variant mb-2 block uppercase">MASTER TITLE INPUT</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant focus:border-primary-container focus:ring-0 text-primary font-technical-sm px-4 h-11" placeholder="Enter your title..." type="text"/>
+</div>
+<!-- Layout & Style -->
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="font-label-xs text-on-surface-variant mb-2 block uppercase">POSITION</label>
+<div class="flex gap-1">
+<button class="flex-1 py-1 text-[10px] border border-outline-variant hover:border-primary-container font-technical-sm">TOP</button>
+<button class="flex-1 py-1 text-[10px] bg-primary-container text-on-primary font-technical-sm">CENTER</button>
+<button class="flex-1 py-1 text-[10px] border border-outline-variant hover:border-primary-container font-technical-sm">BOTTOM</button>
+</div>
+</div>
+<div>
+<label class="font-label-xs text-on-surface-variant mb-2 block uppercase">ANIMATION</label>
+<div class="flex gap-1">
+<button class="flex-1 py-1 text-[10px] border border-primary-container text-primary-container font-technical-sm">FADE</button>
+<button class="flex-1 py-1 text-[10px] border border-outline-variant hover:border-primary-container font-technical-sm">SLIDE</button>
+<button class="flex-1 py-1 text-[10px] border border-outline-variant hover:border-primary-container font-technical-sm">TYPE</button>
+</div>
+</div>
+</div>
+<!-- Style Chips -->
+<div>
+<label class="font-label-xs text-on-surface-variant mb-2 block uppercase">PRESET STYLES</label>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 border border-outline-variant font-technical-sm text-[10px] cursor-pointer hover:border-primary-container">MINIMAL</span>
+<span class="px-3 py-1 bg-secondary text-on-secondary font-technical-sm text-[10px] cursor-pointer">BOLD_3D</span>
+<span class="px-3 py-1 border border-primary-container text-primary-container font-technical-sm text-[10px] cursor-pointer shadow-[0_0_8px_#c0f500]">NEON_GLOW</span>
+<span class="px-3 py-1 border border-outline-variant font-technical-sm text-[10px] cursor-pointer hover:border-primary-container">CINEMATIC</span>
+</div>
+</div>
+<!-- Sliders & Colors -->
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="font-label-xs text-on-surface-variant mb-2 block uppercase">SIZE: 72PX</label>
+<input class="w-full accent-primary-container bg-surface-container-high h-1 appearance-none" type="range"/>
+</div>
+<div>
+<label class="font-label-xs text-on-surface-variant mb-2 block uppercase">COLORWAY</label>
+<div class="flex gap-2">
+<div class="w-6 h-6 bg-white border border-outline cursor-pointer"></div>
+<div class="w-6 h-6 bg-primary-container border border-outline cursor-pointer"></div>
+<div class="w-6 h-6 bg-secondary border border-outline cursor-pointer"></div>
+<div class="w-6 h-6 bg-error border border-outline cursor-pointer"></div>
+</div>
+</div>
+</div>
+<!-- Text Preview -->
+<div class="relative surgical-border aspect-video bg-black overflow-hidden group">
+<img class="w-full h-full object-cover opacity-50" data-alt="Dark, moody atmospheric cinematic background with subtle light particles and deep shadows. The scene is framed with surgical precision, utilizing a wide 16:9 aspect ratio and 1px border lines to create a sense of focused technical intensity for a film title sequence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdq_irrd56Kjesk_e0npGDY1IidYXpAbMzj7dP5ULaJs87UGJ_VNprq9u3FCA55T0cwR6wOsBwfRmB67sWByYZFAIE7Jzn0eGkIEExE3GHyP6A1iTCYZi4Tsh-S4HvogAeAyRMVTHxGzM9joyQjWkOkdKk6GNKFvskp7WNUaCzkHpSpgff011_EZqH84YEEFvfNw5aTrXwxMqu6GUK7A584xqf0a2YoF-WxipBJ_-9vfAMYwVAwRKTwW4gwdPBp3dT4Ck62hf6cCA"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<h3 class="font-display-lg text-[24px] text-white tracking-widest uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">Enter your title...</h3>
+</div>
+<div class="absolute top-2 left-2 font-technical-sm text-[10px] bg-black/50 px-2 py-0.5 border border-outline-variant">PREVIEW_WINDOW_01</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer Status Bar -->
+<footer class="fixed bottom-0 w-full z-50 flex justify-between items-center px-gutter h-12 bg-surface border-t border-outline-variant">
+<div class="flex items-center gap-6 font-technical-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+                CLIPS: <span class="text-primary-container font-bold">6/6 ✓</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant border-l border-outline-variant pl-4">
+                AUDIO: <span class="text-primary-container">✓</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant border-l border-outline-variant pl-4">
+                TEXT: <span class="text-primary-container">✓</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-1 border border-outline-variant font-technical-sm text-on-surface-variant hover:border-primary-container hover:text-primary-container transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                PREVIEW
+            </button>
+<button class="px-4 py-1 bg-primary-container text-on-primary font-technical-sm font-bold flex items-center gap-2 ring-1 ring-primary-container">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+                BUILD &amp; EXPORT
+            </button>
+</div>
+<div class="hidden md:block font-label-xs text-on-surface-variant opacity-40">
+            ©2024 AI_CINEMATICS_CORE // BUILD_LOG_0942
+        </div>
+</footer>
+<script src="/js/navigation.js"></script>
 <script>
-// ═══════════════════════════════════════
-// MERCADREAM ASSEMBLY ROOM v2.0
-// ═══════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// MERCADREAM ASSEMBLY ROOM v2 — Live Engine
+// ═══════════════════════════════════════════════════════
 
-const API = "/api/chat";
+var state = {
+  scenes: [],
+  options: {},   // { sceneIdx: [vid1, vid2, vid3] }
+  selected: {},  // { sceneIdx: videoObject }
+  audio: null,
+  textTitle: ''
+};
 
-// ── I18N ──
-const TX = {
-  en:{
-    ph4:"ASSEMBLY",hdr_title:"ASSEMBLY ROOM",hdr_sub:"FINAL CUT PROTOCOL",
-    btn_back:"← STUDIO",preview_label:"MASTER_PREVIEW",
-    ps_lbl:"SELECT A CLIP TO PREVIEW",
-    btn_add_clip:"+ ADD CLIP",add_clip_lbl:"ADD CLIP",
-    btn_clear:"CLEAR ALL",btn_auto:"AUTO-ARRANGE",btn_master:"⚡ GENERATE MASTER",
-    tab_inspector:"INSPECTOR",tab_sequence:"SEQUENCE",tab_settings:"SETTINGS",
-    insp_title:"CLIP_INSPECTOR",insp_empty:"Select a clip on the timeline\nto inspect and edit",
-    seq_stats:"SEQUENCE_STATS",stat_clips:"CLIPS",stat_dur:"DURATION",stat_fmt:"FORMAT",
-    master_title:"MASTER_SEQUENCE_PROMPT",
-    master_empty:"Add clips and click ⚡ GENERATE MASTER to build the master sequence prompt.",
-    rendering:"RENDERING...",
-    btn_export:"⬇ EXPORT MASTER DOCUMENT",btn_copy_master:"⎘ COPY MASTER PROMPT",btn_new:"+ NEW PROJECT",
-    set_aspect:"ASPECT RATIO",set_quality:"OUTPUT QUALITY",set_dur:"CLIP DURATION",
-    set_vol:"MASTER VOLUME",set_default_trans:"DEFAULT TRANSITION",
-    trans_dissolve:"Cinematic Dissolve",trans_cut:"Hard Cut",trans_glitch:"Glitch Wipe",
-    trans_match:"Match Cut",trans_smash:"Smash Cut",trans_whip:"Whip Pan",
-    ai_analyzing:"ANALYZING CLIP...",
-    insp_prompt_lbl:"CLIP PROMPT",insp_dur_lbl:"DURATION",insp_trans_lbl:"TRANSITION TO NEXT",
-    insp_ai_lbl:"AI DIRECTOR NOTES",insp_ai_analyzing:"Analyzing with Dream Extractor™...",
-    placeholder_add:"Describe clip — what happens in this 10-second scene?",
-    toast_copied:"Copied to clipboard",toast_exported:"Master Document exported",
-    toast_cleared:"Timeline cleared",toast_arranged:"Auto-arranged by narrative flow",
-    toast_generating:"Generating master sequence...",
-    master_generating:"⏳ Generating Master Sequence with Dream Extractor™...",
-    no_clips_warn:"Add at least 2 clips to generate a master sequence."
-  },
-  es:{
-    ph4:"MONTAJE",hdr_title:"SALA DE MONTAJE",hdr_sub:"PROTOCOLO DE CORTE FINAL",
-    btn_back:"← ESTUDIO",preview_label:"PREVISUALIZACIÓN_MAESTRA",
-    ps_lbl:"SELECCIONA UN CLIP PARA PREVISUALIZAR",
-    btn_add_clip:"+ AÑADIR CLIP",add_clip_lbl:"AÑADIR",
-    btn_clear:"LIMPIAR",btn_auto:"AUTO-ORDENAR",btn_master:"⚡ GENERAR MASTER",
-    tab_inspector:"INSPECTOR",tab_sequence:"SECUENCIA",tab_settings:"AJUSTES",
-    insp_title:"INSPECTOR_DE_CLIP",insp_empty:"Selecciona un clip en la línea de tiempo\npara inspeccionar y editar",
-    seq_stats:"ESTADÍSTICAS",stat_clips:"CLIPS",stat_dur:"DURACIÓN",stat_fmt:"FORMATO",
-    master_title:"PROMPT_SECUENCIA_MAESTRA",
-    master_empty:"Añade clips y pulsa ⚡ GENERAR MASTER para construir el prompt de secuencia maestra.",
-    rendering:"RENDERIZANDO...",
-    btn_export:"⬇ EXPORTAR DOCUMENTO MAESTRO",btn_copy_master:"⎘ COPIAR PROMPT MAESTRO",btn_new:"+ NUEVO PROYECTO",
-    set_aspect:"RELACIÓN DE ASPECTO",set_quality:"CALIDAD DE SALIDA",set_dur:"DURACIÓN DE CLIP",
-    set_vol:"VOLUMEN MAESTRO",set_default_trans:"TRANSICIÓN POR DEFECTO",
-    trans_dissolve:"Fundido Cinemático",trans_cut:"Corte Seco",trans_glitch:"Glitch Wipe",
-    trans_match:"Match Cut",trans_smash:"Smash Cut",trans_whip:"Whip Pan",
-    ai_analyzing:"ANALIZANDO CLIP...",
-    insp_prompt_lbl:"PROMPT DEL CLIP",insp_dur_lbl:"DURACIÓN",insp_trans_lbl:"TRANSICIÓN AL SIGUIENTE",
-    insp_ai_lbl:"NOTAS DEL DIRECTOR IA",insp_ai_analyzing:"Analizando con Dream Extractor™...",
-    placeholder_add:"Describe el clip — ¿qué sucede en esta escena de 10 segundos?",
-    toast_copied:"Copiado al portapapeles",toast_exported:"Documento Maestro exportado",
-    toast_cleared:"Línea de tiempo limpiada",toast_arranged:"Auto-ordenado por flujo narrativo",
-    toast_generating:"Generando secuencia maestra...",
-    master_generating:"⏳ Generando Secuencia Maestra con Dream Extractor™...",
-    no_clips_warn:"Añade al menos 2 clips para generar una secuencia maestra."
-  },
-  ar:{
-    ph4:"المونتاج",hdr_title:"غرفة المونتاج",hdr_sub:"بروتوكول القطع النهائي",
-    btn_back:"الاستوديو →",preview_label:"المعاينة_الرئيسية",
-    ps_lbl:"اختر كليباً للمعاينة",
-    btn_add_clip:"+ إضافة كليب",add_clip_lbl:"إضافة",
-    btn_clear:"مسح الكل",btn_auto:"ترتيب تلقائي",btn_master:"⚡ توليد الماستر",
-    tab_inspector:"المفتش",tab_sequence:"التسلسل",tab_settings:"الإعدادات",
-    insp_title:"مفتش_الكليب",insp_empty:"اختر كليباً على الخط الزمني\nللفحص والتعديل",
-    seq_stats:"إحصائيات_التسلسل",stat_clips:"كليبات",stat_dur:"المدة",stat_fmt:"التنسيق",
-    master_title:"prompt_التسلسل_الرئيسي",
-    master_empty:"أضف كليبات ثم اضغط ⚡ توليد الماستر لبناء prompt التسلسل الرئيسي.",
-    rendering:"جاري التصيير...",
-    btn_export:"⬇ تصدير وثيقة الماستر",btn_copy_master:"⎘ نسخ الـ Prompt الرئيسي",btn_new:"+ مشروع جديد",
-    set_aspect:"نسبة العرض إلى الارتفاع",set_quality:"جودة الإخراج",set_dur:"مدة الكليب",
-    set_vol:"الصوت الرئيسي",set_default_trans:"الانتقال الافتراضي",
-    trans_dissolve:"تلاشي سينمائي",trans_cut:"قطع مباشر",trans_glitch:"مسح جليتش",
-    trans_match:"قطع مطابقة",trans_smash:"قطع مفاجئ",trans_whip:"بان سريع",
-    ai_analyzing:"يحلل الكليب...",
-    insp_prompt_lbl:"prompt الكليب",insp_dur_lbl:"المدة",insp_trans_lbl:"الانتقال للتالي",
-    insp_ai_lbl:"ملاحظات المخرج الذكي",insp_ai_analyzing:"يحلل بـ Dream Extractor™...",
-    placeholder_add:"صف الكليب — ماذا يحدث في هذا المشهد من 10 ثوانٍ؟",
-    toast_copied:"تم النسخ",toast_exported:"تم تصدير وثيقة الماستر",
-    toast_cleared:"تم مسح الخط الزمني",toast_arranged:"تم الترتيب حسب التدفق السردي",
-    toast_generating:"جاري توليد التسلسل الرئيسي...",
-    master_generating:"⏳ جاري توليد التسلسل الرئيسي بـ Dream Extractor™...",
-    no_clips_warn:"أضف كليبين على الأقل لتوليد تسلسل رئيسي."
+// ── Load scenes from studio ──
+function loadScenesFromStudio(){
+  var assemblyVideos = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
+  var studioScenes   = JSON.parse(localStorage.getItem('md_6scenes')||'[]');
+  state.scenes = assemblyVideos.length ? assemblyVideos : studioScenes;
+  if(!state.scenes.length){ console.log('No scenes. Go to Studio first.'); return; }
+
+  // Pre-populate with existing Pexels URLs
+  state.scenes.forEach(function(s,i){
+    if(s.url){
+      state.options[i] = [{url:s.url,thumb:s.thumb,id:s.id,duration:s.duration||10}];
+      state.selected[i] = state.options[i][0];
+    }
+  });
+
+  renderAllScenes();
+  renderTimeline();
+  updateFooter();
+}
+
+// ── Render all 6 scene rows ──
+function renderAllScenes(){
+  var container = document.querySelector('.space-y-4');
+  if(!container) return;
+  container.innerHTML = '';
+  state.scenes.forEach(function(scene,i){ renderSceneRow(i,scene,container); });
+}
+
+function renderSceneRow(i, scene, container){
+  var existing = document.getElementById('scene-row-'+i);
+  var row = existing || document.createElement('div');
+  row.id = 'scene-row-'+i;
+  row.className = i>0 ? 'pt-4 border-t border-outline-variant' : '';
+
+  var opts = state.options[i]||[];
+  var sel  = state.selected[i];
+  var title = (scene.title||'Scene '+(i+1)).substring(0,30);
+
+  var cardsHTML = '';
+  if(opts.length===0){
+    cardsHTML = '<div class="md:col-span-3 flex items-center gap-4">'+
+      '<div class="flex-1 h-24 border border-dashed border-outline-variant flex items-center justify-center font-technical-sm text-outline text-[10px]">NO CLIPS YET</div>'+
+      '<button id="fetch-btn-'+i+'" onclick="fetchOptions('+i+')" style="background:#c0f500;color:#000;padding:8px 16px;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;border:none;cursor:pointer;white-space:nowrap">FETCH 3 CLIPS</button>'+
+    '</div>';
+  } else {
+    cardsHTML = '<div class="md:col-span-3 grid grid-cols-3 gap-3">'+
+      opts.map(function(vid,j){
+        var isSel = sel && sel.id===vid.id;
+        return '<div class="relative cursor-pointer" style="border:1px solid '+(isSel?'#ffba3f':'#434933')+';transition:border-color .2s" onclick="selectOption('+i+','+j+')">'+
+          (vid.thumb
+            ? '<img src="'+vid.thumb+'" style="width:100%;aspect-ratio:16/9;object-fit:cover;'+(isSel?'':'opacity:.6;filter:grayscale(1)')+';transition:all .3s">'
+            : '<div style="width:100%;aspect-ratio:16/9;background:#1c1b1b;display:flex;align-items:center;justify-content:center;color:#434933;font-size:10px">NO THUMB</div>')+
+          (isSel ? '<div style="position:absolute;top:4px;right:4px;background:#ffba3f;color:#000;font-size:8px;font-weight:700;padding:1px 6px;font-family:IBM Plex Mono,monospace">SELECTED</div>' : '')+
+          '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);padding:4px 8px;display:flex;justify-content:space-between;align-items:center">'+
+            '<span style="font-family:IBM Plex Mono,monospace;font-size:9px;color:#fff">'+(vid.duration||10)+'s ▶</span>'+
+            '<button style="background:'+(isSel?'#ffba3f':'#c0f500')+';color:#000;font-size:8px;font-weight:700;padding:2px 8px;border:none;cursor:pointer;font-family:IBM Plex Mono,monospace">'+(isSel?'✓ SELECTED':'SELECT')+'</button>'+
+          '</div>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+  }
+
+  row.innerHTML =
+    '<div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">'+
+      '<div class="font-technical-sm text-on-surface-variant py-2 pl-3" style="border-left:2px solid '+(sel?'#ffba3f':'#434933')+'">'+
+        'SCENE_0'+(i+1)+'<br>'+
+        '<span style="font-size:9px;opacity:.6">'+title+'</span>'+
+        (opts.length>0 ? '<br><button onclick="fetchOptions('+i+')" style="font-size:8px;color:#c0f500;background:transparent;border:none;cursor:pointer;font-family:IBM Plex Mono,monospace;margin-top:4px">↻ REFRESH</button>' : '')+
+      '</div>'+
+      cardsHTML+
+    '</div>';
+
+  if(!existing && container) container.appendChild(row);
+}
+
+// ── Fetch 3 Pexels options ──
+async function fetchOptions(sceneIdx){
+  var scene = state.scenes[sceneIdx];
+  if(!scene) return;
+  var keywords = (scene.keywords||scene.title||scene.prompt||'cinematic').substring(0,50);
+  var btn = document.getElementById('fetch-btn-'+sceneIdx);
+  if(btn){btn.textContent='SEARCHING...';btn.disabled=true;btn.style.opacity='.5';}
+
+  try{
+    var r = await fetch('/api/pexels?q='+encodeURIComponent(keywords)+'&per_page=3');
+    var data = await r.json();
+    state.options[sceneIdx] = (data.videos||[]).map(function(v){
+      return {id:v.id,url:v.url,thumb:v.thumb,duration:v.duration};
+    });
+    if(!state.selected[sceneIdx]&&state.options[sceneIdx].length){
+      state.selected[sceneIdx]=state.options[sceneIdx][0];
+    }
+    var container = document.querySelector('.space-y-4');
+    renderSceneRow(sceneIdx, state.scenes[sceneIdx], container);
+    renderTimeline();
+    updateFooter();
+    saveProgress();
+  }catch(e){
+    if(btn){btn.textContent='RETRY';btn.disabled=false;btn.style.opacity='1';}
+  }
+}
+
+// ── Select option ──
+function selectOption(sceneIdx,vidIdx){
+  var vid = state.options[sceneIdx]&&state.options[sceneIdx][vidIdx];
+  if(!vid) return;
+  state.selected[sceneIdx]=vid;
+  var container = document.querySelector('.space-y-4');
+  renderSceneRow(sceneIdx,state.scenes[sceneIdx],container);
+  renderTimeline();
+  updateFooter();
+  saveProgress();
+}
+
+// ── Timeline ──
+function renderTimeline(){
+  var tl = document.querySelector('.overflow-x-auto.custom-scrollbar.pb-4.flex');
+  if(!tl) return;
+  tl.innerHTML='';
+  state.scenes.forEach(function(scene,i){
+    if(i>0){
+      var arr=document.createElement('div');
+      arr.className='flex-none flex items-center px-1 text-outline-variant';
+      arr.innerHTML='<span class="material-symbols-outlined">chevron_right</span>';
+      tl.appendChild(arr);
+    }
+    var sel=state.selected[i];
+    var card=document.createElement('div');
+    card.style.cssText='flex:none;width:128px;height:80px;cursor:pointer;position:relative;overflow:hidden;border:1px solid '+(sel?'#ffba3f':'#434933')+';'+(sel?'':'opacity:.4');
+    if(sel&&sel.thumb){
+      card.innerHTML='<img src="'+sel.thumb+'" style="width:100%;height:100%;object-fit:cover;opacity:.7">'+
+        '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.8);padding:2px 6px;font-family:IBM Plex Mono,monospace;font-size:9px;color:#ffba3f">S'+(i+1)+'▶'+(sel.duration||10)+'s</div>';
+    } else {
+      card.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:IBM Plex Mono,monospace;font-size:10px;color:'+(sel?'#c0f500':'#434933')+'">S'+(i+1)+(sel?'▶10s':'▶--s')+'</div>';
+    }
+    card.onclick=function(){ if(sel&&sel.url) previewVideo(sel.url,'Scene '+(i+1)); };
+    tl.appendChild(card);
+  });
+}
+
+// ── Preview ──
+function previewVideo(url,title){
+  if(!url) return;
+  var m=document.createElement('div');
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML='<div style="font-family:IBM Plex Mono,monospace;font-size:11px;color:#c0f500;margin-bottom:12px;letter-spacing:2px">'+title.toUpperCase()+'</div>'+
+    '<video src="'+url+'" controls autoplay style="max-width:900px;width:100%;max-height:70vh;border:1px solid #434933"></video>'+
+    '<button onclick="this.parentElement.remove()" style="margin-top:16px;padding:8px 24px;background:#c0f500;border:none;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;cursor:pointer;color:#000">✕ CLOSE</button>';
+  document.body.appendChild(m);
+}
+
+// ── Footer ──
+function updateFooter(){
+  var confirmed=Object.keys(state.selected).length;
+  var total=state.scenes.length||6;
+  var el=document.querySelector('.text-primary-container.font-bold');
+  if(el) el.textContent=confirmed+'/'+total+(confirmed===total?' ✓':'');
+}
+
+// ── Save ──
+function saveProgress(){
+  localStorage.setItem('md_assembly_state',JSON.stringify({selected:state.selected,options:state.options}));
+}
+
+// ── Load saved ──
+function loadSaved(){
+  var s=localStorage.getItem('md_assembly_state');
+  if(s){ try{ var d=JSON.parse(s);state.selected=d.selected||{};state.options=d.options||{}; }catch(e){} }
+}
+
+// ── Audio recording ──
+var mediaRecorder=null,audioChunks=[];
+var recBtn=document.querySelector('button.bg-error');
+if(recBtn) recBtn.onclick=async function(){
+  if(mediaRecorder&&mediaRecorder.state==='recording'){
+    mediaRecorder.stop();
+    recBtn.textContent='▶ PLAY RECORDING';
+  } else {
+    try{
+      var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder=new MediaRecorder(stream);
+      audioChunks=[];
+      mediaRecorder.ondataavailable=function(e){audioChunks.push(e.data);};
+      mediaRecorder.onstop=function(){state.audio=URL.createObjectURL(new Blob(audioChunks,{type:'audio/wav'}));saveProgress();};
+      mediaRecorder.start();
+      recBtn.textContent='⏹ STOP RECORDING';
+    }catch(e){alert('Microphone access denied.');}
   }
 };
 
-// ── SYSTEM PROMPTS ──
-const SYS_CLIP_ANALYZE = `You are the Dream Extractor™ Clip Analyst at MERCADREAM.
-Given a clip description, provide CONCISE director notes (3-4 sentences max) covering:
-- The key visual moment and camera suggestion
-- The emotional beat this clip carries
-- How it connects to the clips before/after it
-- One specific technical detail (lighting, lens, movement)
-Be precise, cinematic, actionable. No fluff.`;
-
-const SYS_MASTER = `You are the Dream Extractor™ Master Sequence Architect at MERCADREAM — the world's most advanced AI film sequencer.
-
-Given a series of video clips with their descriptions, transitions, and settings, generate a MASTER SEQUENCE DOCUMENT.
-
-Output format (follow exactly, English only):
-
-MASTER SEQUENCE — [PROJECT TITLE]
-Generated by Dream Extractor™ v5.0
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-PROJECT OVERVIEW
-[2-3 sentences describing the full arc of the piece]
-
-TECHNICAL SPECS
-Duration: [total]
-Aspect Ratio: [ratio]
-Quality: [quality]
-Platform: Runway Gen-3 / Kling 1.6 / Pika 2.0
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SCENE-BY-SCENE BREAKDOWN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[For each clip:]
-CLIP [N] — [TITLE] ([duration])
-Prompt: [refined/enhanced version of the clip prompt]
-Camera: [specific camera direction]
-Color: [color temperature and grade]
-Transition OUT: [precise transition instruction to next clip]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MASTER AUDIO DIRECTION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Music arc, sound design notes, audio transitions]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EXCEED ELEMENT ⚡
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[One unexpected cinematic technique that will elevate the entire sequence beyond what was imagined]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PRODUCTION NOTES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Final director's notes for the AI generation platform]`;
-
-// ── STATE ──
-let lang = 'en';
-let clips = [];
-let activeClipIdx = -1;
-let masterDocument = '';
-let playInterval = null;
-let playProgress = 0;
-let settings = {
-  aspect: '16:9', quality: '1080p',
-  clipDuration: 10, volume: 80,
-  defaultTransition: 'cinematic_dissolve'
-};
-
-const EMOJIS = ['🌆','🎭','🌊','🔥','🌌','💫','🎪','🏔️','🌃','⚡','🌅','🎬'];
-const TRANSITIONS = ['cinematic_dissolve','hard_cut','glitch_wipe','match_cut','smash_cut','whip_pan'];
-
-// ── I18N ──
-function t(k){ return TX[lang]?.[k] || TX.en[k] || k; }
-
-function setLang(l){
-  lang = l;
-  document.documentElement.lang = l;
-  document.body.className = l === 'ar' ? 'lang-ar' : 'lang-en';
-  document.querySelectorAll('.lb').forEach(b => b.classList.toggle('on', b.textContent.toLowerCase() === l));
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
-    const v = TX[l]?.[k];
-    if(v) el.textContent = v;
-  });
-  localStorage.setItem('md_lang', l);
-  updateStats();
-}
-
-// ── TOAST ──
-function toast(msg, duration=2600){
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), duration);
-}
-
-// ── API ──
-async function callAPI(system, messages, maxTokens=600){
-  const res = await fetch(API, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({system, messages, max_tokens: maxTokens})
-  });
-  if(!res.ok){ const e = await res.json().catch(()=>({})); throw new Error(e.error||`HTTP ${res.status}`); }
-  const data = await res.json();
-  return data.text || '';
-}
-
-// ── CLIP MANAGEMENT ──
-function createClip(prompt='', idx=null){
-  const id = Date.now();
-  const num = idx !== null ? idx : clips.length;
-  const emoji = EMOJIS[num % EMOJIS.length];
-  return {
-    id, num: num + 1,
-    prompt: prompt || '',
-    title: prompt ? prompt.split(' ').slice(0,4).join(' ')+'...' : `CLIP_${String(num+1).padStart(2,'0')}`,
-    duration: settings.clipDuration,
-    transition: settings.defaultTransition,
-    emoji,
-    aiNotes: '',
-    aiLoading: false
+// ── Text preview ──
+var titleInput=document.querySelector('input[placeholder="Enter your title..."]');
+var previewTitle=document.querySelector('.absolute.inset-0.flex h3');
+if(titleInput&&previewTitle){
+  titleInput.oninput=function(){
+    state.textTitle=titleInput.value;
+    previewTitle.textContent=titleInput.value||'Enter your title...';
   };
 }
 
-function addClipFromStudio(){
-  // Check if studio sent a prompt via localStorage
-  const studioPrompt = localStorage.getItem('md_last_prompt') || '';
-  const promptText = studioPrompt || '';
-
-  // Show input dialog inline
-  const userPrompt = window.prompt(
-    t('placeholder_add') + '\n\n' + (promptText ? `[Studio prompt loaded — edit or accept]: ` : ''),
-    promptText
-  );
-  if(userPrompt === null) return; // cancelled
-
-  const clip = createClip(userPrompt.trim() || `Scene ${clips.length + 1}`);
-  clips.push(clip);
-  renderTimeline();
-  selectClip(clips.length - 1);
-  updateStats();
-
-  // Auto-analyze with AI
-  if(clip.prompt) analyzeClip(clips.length - 1);
-}
-
-async function analyzeClip(idx){
-  const clip = clips[idx];
-  if(!clip || !clip.prompt) return;
-  clip.aiLoading = true;
-
-  if(activeClipIdx === idx) renderInspector(idx);
-
-  try {
-    const notes = await callAPI(SYS_CLIP_ANALYZE, [
-      {role:'user', content:`Clip ${clip.num}: "${clip.prompt}"\nDuration: ${clip.duration}s\nPosition: clip ${clip.num} of ${clips.length}`}
-    ], 300);
-    clip.aiNotes = notes;
-    clip.aiLoading = false;
-    if(activeClipIdx === idx) renderInspector(idx);
-    // Mark clip as analyzed
-    const el = document.getElementById(`clip-${clip.id}`);
-    if(el) el.classList.add('done');
-  } catch(e){
-    clip.aiNotes = `[AI offline — add notes manually]`;
-    clip.aiLoading = false;
-    if(activeClipIdx === idx) renderInspector(idx);
-  }
-}
-
-function removeClip(idx){
-  clips.splice(idx, 1);
-  clips.forEach((c, i) => { c.num = i + 1; });
-  if(activeClipIdx >= clips.length) activeClipIdx = clips.length - 1;
-  renderTimeline();
-  if(activeClipIdx >= 0) selectClip(activeClipIdx);
-  else clearInspector();
-  updateStats();
-}
-
-// ── RENDER TIMELINE ──
-function renderTimeline(){
-  const tl = document.getElementById('timeline');
-  tl.innerHTML = '';
-
-  clips.forEach((clip, i) => {
-    // CONNECTOR (not before first)
-    if(i > 0){
-      const conn = document.createElement('div');
-      conn.className = 'clip-connector';
-      conn.title = formatTransition(clips[i-1].transition);
-      tl.appendChild(conn);
-    }
-
-    // CLIP
-    const el = document.createElement('div');
-    el.className = `clip${activeClipIdx === i ? ' active' : ''}${clip.aiNotes ? ' done' : ''}`;
-    el.id = `clip-${clip.id}`;
-    el.onclick = () => selectClip(i);
-    el.innerHTML = `
-      <div class="clip-thumb">${clip.thumb ? `<img src="${clip.thumb}" style="width:100%;height:100%;object-fit:cover;border-radius:2px">` : clip.emoji}</div>
-      <div class="clip-footer">
-        <span class="clip-num">CLIP_${String(clip.num).padStart(2,'0')}</span>
-        <span class="clip-dur">${clip.duration}s</span>
-        <div class="clip-ttl">${clip.title}</div>
-      </div>`;
-    tl.appendChild(el);
+// ── BUILD & EXPORT ──
+var buildBtn=document.querySelector('footer button.bg-primary-container');
+if(buildBtn) buildBtn.onclick=function(){
+  var confirmed=Object.keys(state.selected).length;
+  if(!confirmed){alert('Select at least one clip.');return;}
+  var film={scenes:[],audio:state.audio,title:state.textTitle,created:new Date().toISOString()};
+  Object.keys(state.selected).sort().forEach(function(i){
+    var v=state.selected[i];
+    film.scenes.push({scene:parseInt(i)+1,url:v.url,thumb:v.thumb,duration:v.duration||10});
   });
+  localStorage.setItem('md_final_film',JSON.stringify(film));
+  var m=document.createElement('div');
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center';
+  m.innerHTML='<div style="font-family:Orbitron,monospace;font-size:24px;color:#c0f500;margin-bottom:8px">⚡ FILM READY</div>'+
+    '<div style="font-family:IBM Plex Mono,monospace;font-size:11px;color:#888;margin-bottom:24px">'+film.scenes.length+' SCENES × 10s = '+film.scenes.length*10+'s TOTAL</div>'+
+    '<div style="display:flex;gap:12px">'+
+      '<button onclick="var b=new Blob([localStorage.getItem('md_final_film')],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='mercadream-film.json';a.click()" style="padding:12px 24px;background:#c0f500;border:none;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;cursor:pointer;color:#000">⬇ DOWNLOAD FILM DATA</button>'+
+      '<button onclick="this.closest('div').remove()" style="padding:12px 24px;background:transparent;border:1px solid #434933;font-family:IBM Plex Mono,monospace;font-size:10px;cursor:pointer;color:#888">CLOSE</button>'+
+    '</div>';
+  document.body.appendChild(m);
+};
 
-  // ADD button
-  const addBtn = document.createElement('div');
-  addBtn.className = 'clip-add';
-  addBtn.onclick = addClipFromStudio;
-  addBtn.innerHTML = `<div style="font-size:20px;opacity:.3">＋</div><span>${t('add_clip_lbl')}</span>`;
-  tl.appendChild(addBtn);
-}
+// ── PREVIEW ALL ──
+var prevBtn=document.querySelector('button.border.border-primary-container.text-primary-container');
+if(prevBtn) prevBtn.onclick=function(){
+  var urls=Object.keys(state.selected).sort().map(function(i){return state.selected[i].url;}).filter(Boolean);
+  if(!urls.length){alert('No clips selected.');return;}
+  previewVideo(urls[0],'FILM PREVIEW');
+};
 
-function formatTransition(t){
-  return t.replace(/_/g,' ').replace(/\b\w/g, c=>c.toUpperCase());
-}
+// ── Navigation ──
+var studioBtn=document.querySelector('header button');
+if(studioBtn) studioBtn.onclick=function(){window.location.href='studio.html';};
 
-// ── SELECT CLIP ──
-function selectClip(idx){
-  activeClipIdx = idx;
-  renderTimeline();
-  renderInspector(idx);
-  renderPreview(idx);
-  document.getElementById('previewMeta').textContent = `CLIP_${String(clips[idx].num).padStart(2,'0')} — ${clips[idx].duration}s`;
-}
-
-function renderPreview(idx){
-  const clip = clips[idx];
-  const screen = document.getElementById('previewScreen');
-  // Remove default placeholder
-  const def = document.getElementById('psDefault');
-  if(def) def.style.display = 'none';
-
-  // Remove old preview
-  const old = document.getElementById('clipPreviewActive');
-  if(old) old.remove();
-
-  const div = document.createElement('div');
-  div.className = 'clip-preview-active';
-  div.id = 'clipPreviewActive';
-  if(clip.videoUrl){
-    div.innerHTML = `
-      <video src="${clip.videoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:4px" controls autoplay muted loop></video>
-      <div class="cpa-num" style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.8);padding:2px 8px">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
-      <div class="cpa-title" style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.8);padding:2px 8px">${clip.title}</div>`;
-    div.style.cssText = 'position:relative;width:100%;height:100%';
-  } else {
-    div.innerHTML = `
-      <div class="cpa-num">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
-      <div class="cpa-title">${clip.title}</div>
-      <div class="cpa-desc">${clip.prompt || '—'}</div>
-      <div class="cpa-dur">⏱ ${clip.duration}s &nbsp;|&nbsp; ${formatTransition(clip.transition)}</div>`;
-  }
-  screen.appendChild(div);
-
-  // Animate progress bar
-  playProgress = 0;
-  updatePlaybar();
-  document.getElementById('hudStatus').textContent = 'PREVIEW';
-  document.getElementById('hudTC').textContent = `00:00:${String(clip.num).padStart(2,'0')}`;
-  updateTransportInfo();
-}
-
-function updatePlaybar(){
-  const fill = document.querySelector('.playbar-fill');
-  if(fill) fill.style.width = playProgress + '%';
-}
-
-function togglePlay(){
-  const btn = document.getElementById('playBtn');
-  if(playInterval){
-    clearInterval(playInterval);
-    playInterval = null;
-    btn.textContent = '▶';
-    btn.classList.remove('playing');
-  } else {
-    if(activeClipIdx < 0 || clips.length === 0) return;
-    btn.textContent = '⏸';
-    btn.classList.add('playing');
-    const clip = clips[activeClipIdx];
-    const steps = clip.duration * 10;
-    let step = 0;
-    playInterval = setInterval(()=>{
-      step++;
-      playProgress = (step / steps) * 100;
-      updatePlaybar();
-      if(step >= steps){
-        clearInterval(playInterval);
-        playInterval = null;
-        btn.textContent = '▶';
-        btn.classList.remove('playing');
-        playProgress = 0;
-        updatePlaybar();
-        // Auto-advance
-        if(activeClipIdx < clips.length - 1) selectClip(activeClipIdx + 1);
-      }
-    }, 100);
-  }
-}
-
-function prevClip(){ if(activeClipIdx > 0) selectClip(activeClipIdx - 1); }
-function nextClip(){ if(activeClipIdx < clips.length - 1) selectClip(activeClipIdx + 1); }
-
-function updateTransportInfo(){
-  const total = clips.reduce((s,c)=>s+c.duration,0);
-  const cur = activeClipIdx >= 0 ? clips.slice(0,activeClipIdx).reduce((s,c)=>s+c.duration,0) : 0;
-  document.getElementById('tpCurrent').textContent = activeClipIdx >= 0 ? `CLIP ${clips[activeClipIdx].num}` : '—';
-  document.getElementById('tpTotal').textContent = `${total}s`;
-}
-
-// ── INSPECTOR ──
-function renderInspector(idx){
-  const clip = clips[idx];
-  const container = document.getElementById('inspectorContent');
-  if(!clip){ clearInspector(); return; }
-
-  container.innerHTML = `
-    <div class="ci-row">
-      <div class="ci-stat"><div class="ci-stat-val">${clip.duration}s</div><div class="ci-stat-lbl">${t('insp_dur_lbl')}</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">${clip.num}/${clips.length}</div><div class="ci-stat-lbl">POSITION</div></div>
-    </div>
-
-    <div class="ci-block">
-      <div class="ci-label">${t('insp_prompt_lbl')}</div>
-      <div class="ci-value prompt-text" contenteditable="true" id="clipPromptEdit"
-           onblur="updateClipPrompt(${idx}, this.textContent)">${clip.prompt || '—'}</div>
-    </div>
-
-    <div class="ci-block">
-      <div class="ci-label">${t('insp_trans_lbl')}</div>
-      <select class="trans-select" onchange="updateClipTransition(${idx}, this.value)">
-        ${TRANSITIONS.map(tr=>`<option value="${tr}" ${clip.transition===tr?'selected':''}>${formatTransition(tr)}</option>`).join('')}
-      </select>
-    </div>
-
-    <div class="ci-block">
-      <div class="ci-label">${t('insp_ai_lbl')}</div>
-      ${clip.aiLoading
-        ? `<div class="ai-instruction"><div class="ai-tag">DREAM_EXTRACTOR™</div>${t('insp_ai_analyzing')}</div>`
-        : clip.aiNotes
-          ? `<div class="ai-instruction"><div class="ai-tag">DREAM_EXTRACTOR™</div>${clip.aiNotes}</div>`
-          : `<div class="ci-value" style="color:var(--text-dim);font-size:11px">Waiting for AI analysis...</div>`
-      }
-    </div>
-
-    <div style="display:flex;gap:6px;margin-top:8px">
-      <button style="flex:1;padding:7px;font-family:var(--mono);font-size:8px;letter-spacing:1px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s" 
-              onmouseover="this.style.color='var(--acid)'" onmouseout="this.style.color='var(--text-dim)'"
-              onclick="analyzeClip(${idx})">↺ RE-ANALYZE</button>
-      <button style="flex:1;padding:7px;font-family:var(--mono);font-size:8px;letter-spacing:1px;border:1px solid var(--border);background:transparent;color:var(--red);cursor:pointer;transition:all .2s"
-              onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'"
-              onclick="removeClip(${idx})">✕ REMOVE</button>
-    </div>`;
-}
-
-function clearInspector(){
-  document.getElementById('inspectorContent').innerHTML = `<div class="ci-empty">${t('insp_empty').replace('\n','<br>')}</div>`;
-}
-
-function updateClipPrompt(idx, val){
-  if(clips[idx]){
-    clips[idx].prompt = val.trim();
-    clips[idx].title = val.trim().split(' ').slice(0,4).join(' ')+'...';
-    renderTimeline();
-  }
-}
-
-function updateClipTransition(idx, val){
-  if(clips[idx]) clips[idx].transition = val;
-}
-
-// ── STATS ──
-function updateStats(){
-  const total = clips.reduce((s,c)=>s+c.duration,0);
-  document.getElementById('statClips').textContent = clips.length;
-  document.getElementById('statDur').textContent = total > 0 ? `${total}s` : '0s';
-  document.getElementById('statFmt').textContent = settings.aspect;
-  updateTransportInfo();
-}
-
-// ── SETTINGS ──
-function setSetting(key, el, val){
-  settings[key] = val;
-  const grid = el.closest('[id$="Grid"]') || el.parentElement;
-  grid.querySelectorAll('.setting-opt').forEach(o => o.classList.remove('on'));
-  el.classList.add('on');
-  if(key === 'aspect') document.getElementById('statFmt').textContent = val;
-}
-
-// ── AUTO ARRANGE ──
-function autoArrange(){
-  if(clips.length < 2){ toast(t('no_clips_warn')); return; }
-  // Assign transitions cinematically based on position
-  const CINEMATIC_FLOW = ['hard_cut','cinematic_dissolve','match_cut','smash_cut','whip_pan','cinematic_dissolve'];
-  clips.forEach((clip, i) => {
-    clip.transition = CINEMATIC_FLOW[i % CINEMATIC_FLOW.length];
-  });
-  renderTimeline();
-  if(activeClipIdx >= 0) renderInspector(activeClipIdx);
-  toast(t('toast_arranged'));
-}
-
-function clearAll(){
-  if(clips.length === 0) return;
-  if(!confirm('Clear all clips?')) return;
-  clips = [];
-  activeClipIdx = -1;
-  masterDocument = '';
-  clearInspector();
-  renderTimeline();
-  updateStats();
-  document.getElementById('masterPromptBox').textContent = t('master_empty');
-  document.getElementById('exportBtn').disabled = true;
-  document.getElementById('copyMasterBtn').style.display = 'none';
-  document.getElementById('renderWrap').style.display = 'none';
-  // Clear preview
-  const old = document.getElementById('clipPreviewActive');
-  if(old) old.remove();
-  const def = document.getElementById('psDefault');
-  if(def) def.style.display = '';
-  document.getElementById('previewMeta').textContent = 'NO CLIP SELECTED';
-  toast(t('toast_cleared'));
-}
-
-// ── GENERATE MASTER ──
-async function generateMaster(){
-  if(clips.length < 2){ toast(t('no_clips_warn')); return; }
-
-  const btn = document.getElementById('masterBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ GENERATING...';
-  document.getElementById('masterPromptBox').textContent = t('master_generating');
-  document.getElementById('renderWrap').style.display = 'block';
-  toast(t('toast_generating'));
-
-  // Animate render bar
-  let pct = 0;
-  const fill = document.getElementById('renderFill');
-  const pctEl = document.getElementById('renderPct');
-  const barInterval = setInterval(()=>{
-    pct = Math.min(pct + 1.2, 90);
-    fill.style.width = pct + '%';
-    pctEl.textContent = Math.round(pct) + '%';
-  }, 120);
-
-  // Switch to sequence tab
-  switchTab('sequence');
-
-  // Build clips summary
-  const clipsSummary = clips.map((c,i) => `
-CLIP ${c.num}: "${c.prompt}"
-Duration: ${c.duration}s
-Transition to next: ${formatTransition(c.transition)}
-AI Notes: ${c.aiNotes || 'none'}
-  `).join('\n---\n');
-
-  const projectInfo = `
-Total clips: ${clips.length}
-Total duration: ${clips.reduce((s,c)=>s+c.duration,0)}s
-Aspect ratio: ${settings.aspect}
-Quality: ${settings.quality}
-Volume: ${settings.volume}%
-  `;
-
-  try {
-    const master = await callAPI(SYS_MASTER, [{
-      role:'user',
-      content:`Project Settings:\n${projectInfo}\n\nClips:\n${clipsSummary}\n\nGenerate the complete Master Sequence Document with EXCEED PROTOCOL activated.`
-    }], 2000);
-
-    masterDocument = master;
-
-    clearInterval(barInterval);
-    fill.style.width = '100%';
-    pctEl.textContent = '100%';
-
-    // Display
-    const box = document.getElementById('masterPromptBox');
-    box.style.cssText = 'font-family:var(--mono);font-size:9px;color:var(--acid-dim);background:var(--s2);border:1px solid var(--border-b);border-left:3px solid var(--acid);padding:14px;line-height:1.8;white-space:pre-wrap;direction:ltr;max-height:280px;overflow-y:auto;margin-bottom:10px';
-    box.textContent = master;
-
-    document.getElementById('exportBtn').disabled = false;
-    document.getElementById('copyMasterBtn').style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = '⚡ REGENERATE';
-
-  } catch(e){
-    clearInterval(barInterval);
-    document.getElementById('masterPromptBox').textContent = `[AI Error: ${e.message}]\n\nMake sure /api/chat is deployed on Vercel with ANTHROPIC_API_KEY set.`;
-    btn.disabled = false;
-    btn.textContent = '⚡ GENERATE MASTER';
-  }
-}
-
-// ── EXPORT ──
-function exportMaster(){
-  if(!masterDocument) return;
-  const blob = new Blob([masterDocument], {type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `MERCADREAM_Master_Sequence_${Date.now()}.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast(t('toast_exported'));
-}
-
-function copyMaster(){
-  if(!masterDocument) return;
-  navigator.clipboard.writeText(masterDocument).then(()=>toast(t('toast_copied')));
-}
-
-// ── TABS ──
-function switchTab(tab){
-  document.querySelectorAll('.rp-tab').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('on', p.id === `tab-${tab}`));
-}
-
-// ── LOAD STUDIO DATA ──
-function loadFromStudio(){
-  // Load scenes from studio production
-  const assemblyVideos = JSON.parse(localStorage.getItem('md_assembly_videos') || '[]');
-  const studioScenes   = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-  const scenes = assemblyVideos.length ? assemblyVideos : studioScenes;
-
-  if(scenes.length){
-    clips = [];
-    scenes.forEach((s, i) => {
-      const clip = createClip(s.prompt || s.title || ('Scene ' + (i+1)));
-      clip.title    = s.title || ('Scene ' + (i+1));
-      clip.videoUrl = s.url   || null;
-      clip.thumb    = s.thumb || null;
-      clip.status   = s.url ? 'ready' : 'pending';
-      clips.push(clip);
-    });
-    renderTimeline();
-    if(clips.length) selectClip(0);
-    updateStats();
-    console.log('Loaded ' + clips.length + ' scenes from studio. Videos:', clips.filter(c=>c.videoUrl).length);
-    return;
-  }
-
-  // Fallback: last prompt
-  const lastPrompt = localStorage.getItem('md_last_prompt');
-  if(lastPrompt){
-    const clip = createClip(lastPrompt);
-    clips.push(clip);
-    renderTimeline();
-    selectClip(0);
-    updateStats();
-  }
+// ── FETCH ALL button ──
+function fetchAllScenes(){
+  state.scenes.forEach(function(s,i){ fetchOptions(i); });
 }
 
 // ── INIT ──
-window.onload = () => {
-  const saved = localStorage.getItem('md_lang') || 'en';
-  setLang(saved);
-  renderTimeline();
-  updateStats();
-  loadFromStudio();
+window.addEventListener('load',function(){
+  loadSaved();
+  loadScenesFromStudio();
+  if(window.MD) window.MD.updateCredits();
 
-  // Test API
-  fetch(API, {method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({system:'Reply: OK', messages:[{role:'user',content:'ping'}], max_tokens:5})})
-    .then(r => console.log(r.ok ? '✓ /api/chat OK' : '✗ /api/chat HTTP '+r.status))
-    .catch(e => console.error('✗ /api/chat unreachable:', e.message));
-};
-</script>
-<script>
-function updateCredits(){var c=parseInt(localStorage.getItem('md_credits')||'0');var el=document.getElementById('header-credits');if(el){var s=el.querySelector('span:last-child');if(s)s.textContent=c.toLocaleString()+' LUX';}}
-function loadScenes(){var scenes=JSON.parse(localStorage.getItem('md_6scenes')||'[]');if(!scenes.length)return;var cards=document.querySelectorAll('.flex-shrink-0.w-64');scenes.forEach(function(scene,i){if(cards[i]){var t=cards[i].querySelector('.font-label-caps');if(t)t.textContent='SCENE '+(i+1)+'/'+scenes.length;cards[i].querySelector('button').onclick=function(){cards.forEach(function(c){c.style.borderColor='';});cards[i].style.borderColor='#c8ff00';var hud=document.querySelector('.absolute.top-4.left-4 div');if(hud)hud.textContent='SCENE '+(i+1)+': '+(scene.title||'');};};});}
-var bb=document.getElementById('btn-back-studio');if(bb)bb.onclick=function(){window.location.href='studio.html';};
-document.querySelectorAll('button').forEach(function(btn){var t=btn.textContent.trim().toUpperCase();if(t.includes('EXPORT FILM'))btn.onclick=function(){var s=JSON.parse(localStorage.getItem('md_6scenes')||'[]');if(!s.length){alert('No scenes. Go to Studio first.');return;}var b=new Blob([JSON.stringify({scenes:s,total:s.length*10+'s',created:new Date().toISOString()},null,2)],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='mercadream-film.json';a.click();};if(t.includes('REGENERATE'))btn.onclick=function(){window.location.href='studio.html';};});
-updateCredits();loadScenes();
-</script><script src="/js/navigation.js"></script><script>
-window.addEventListener('load', function(){
-  var videos = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
-  var scenes = JSON.parse(localStorage.getItem('md_6scenes')||'[]');
-
-  if(!videos.length && !scenes.length){
-    console.log('No videos found in localStorage');
-    return;
+  // Add FETCH ALL button
+  var sectionHeader=document.querySelector('.flex.justify-between.items-end.mb-4');
+  if(sectionHeader){
+    var btn=document.createElement('button');
+    btn.textContent='⚡ FETCH ALL CLIPS';
+    btn.style.cssText='background:#c0f500;color:#000;padding:4px 12px;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;border:none;cursor:pointer';
+    btn.onclick=fetchAllScenes;
+    sectionHeader.appendChild(btn);
   }
-
-  var data = videos.length ? videos : scenes;
-
-  // Find timeline container
-  var timeline = document.querySelector('.overflow-x-auto');
-  if(!timeline) return;
-
-  // Clear placeholder cards and add real ones
-  var cards = timeline.querySelectorAll('.flex-shrink-0');
-  data.forEach(function(scene, i){
-    var card = cards[i];
-    if(!card) return;
-
-    // Update scene title
-    var titleEl = card.querySelector('.font-label-caps');
-    if(titleEl) titleEl.textContent = 'SCENE '+(i+1)+'/'+data.length;
-
-    // Show video or thumbnail
-    var imgEl = card.querySelector('img');
-    if(scene.thumb && imgEl){
-      imgEl.src = scene.thumb;
-      imgEl.style.opacity = '1';
-      imgEl.style.filter = 'none';
-    }
-
-    // Play button  show video in preview
-    var playBtn = card.querySelector('button');
-    if(playBtn) playBtn.onclick = function(){
-      var preview = document.querySelector('.aspect-video.w-full.max-w-5xl');
-      if(!preview) return;
-
-      if(scene.url){
-        preview.innerHTML = '<video src="'+scene.url+'" controls autoplay style="width:100%;height:100%;object-fit:cover"></video>'+
-          '<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.8);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px">SCENE '+(i+1)+': '+(scene.title||'')+'</div>';
-      } else {
-        preview.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:11px">NO VISUAL  PROMPT: '+(scene.prompt||scene.title||'').substring(0,80)+'</div>';
-      }
-
-      // Highlight selected card
-      cards.forEach(function(c){ c.style.borderColor=''; });
-      card.style.borderColor = '#c8ff00';
-    };
-
-    // Status badge
-    var statusEl = card.querySelector('.text-neon-acid');
-    if(statusEl) statusEl.innerHTML = (scene.url ?
-      '<span style="color:#c8ff00"> READY</span>' :
-      '<span style="color:#ffba3f"> PENDING</span>');
-  });
-
-  // Auto-play first scene
-  if(cards[0]) cards[0].querySelector('button') && cards[0].querySelector('button').click();
 });
-</script></body>
-</html>
-
-
-
+</script></body></html>
