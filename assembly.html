@@ -1102,7 +1102,70 @@ function loadScenes(){var scenes=JSON.parse(localStorage.getItem('md_6scenes')||
 var bb=document.getElementById('btn-back-studio');if(bb)bb.onclick=function(){window.location.href='studio.html';};
 document.querySelectorAll('button').forEach(function(btn){var t=btn.textContent.trim().toUpperCase();if(t.includes('EXPORT FILM'))btn.onclick=function(){var s=JSON.parse(localStorage.getItem('md_6scenes')||'[]');if(!s.length){alert('No scenes. Go to Studio first.');return;}var b=new Blob([JSON.stringify({scenes:s,total:s.length*10+'s',created:new Date().toISOString()},null,2)],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='mercadream-film.json';a.click();};if(t.includes('REGENERATE'))btn.onclick=function(){window.location.href='studio.html';};});
 updateCredits();loadScenes();
-</script><script src="/js/navigation.js"></script></body>
+</script><script src="/js/navigation.js"></script><script>
+window.addEventListener('load', function(){
+  var videos = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
+  var scenes = JSON.parse(localStorage.getItem('md_6scenes')||'[]');
+
+  if(!videos.length && !scenes.length){
+    console.log('No videos found in localStorage');
+    return;
+  }
+
+  var data = videos.length ? videos : scenes;
+
+  // Find timeline container
+  var timeline = document.querySelector('.overflow-x-auto');
+  if(!timeline) return;
+
+  // Clear placeholder cards and add real ones
+  var cards = timeline.querySelectorAll('.flex-shrink-0');
+  data.forEach(function(scene, i){
+    var card = cards[i];
+    if(!card) return;
+
+    // Update scene title
+    var titleEl = card.querySelector('.font-label-caps');
+    if(titleEl) titleEl.textContent = 'SCENE '+(i+1)+'/'+data.length;
+
+    // Show video or thumbnail
+    var imgEl = card.querySelector('img');
+    if(scene.thumb && imgEl){
+      imgEl.src = scene.thumb;
+      imgEl.style.opacity = '1';
+      imgEl.style.filter = 'none';
+    }
+
+    // Play button  show video in preview
+    var playBtn = card.querySelector('button');
+    if(playBtn) playBtn.onclick = function(){
+      var preview = document.querySelector('.aspect-video.w-full.max-w-5xl');
+      if(!preview) return;
+
+      if(scene.url){
+        preview.innerHTML = '<video src="'+scene.url+'" controls autoplay style="width:100%;height:100%;object-fit:cover"></video>'+
+          '<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.8);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px">SCENE '+(i+1)+': '+(scene.title||'')+'</div>';
+      } else {
+        preview.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:11px">NO VISUAL  PROMPT: '+(scene.prompt||scene.title||'').substring(0,80)+'</div>';
+      }
+
+      // Highlight selected card
+      cards.forEach(function(c){ c.style.borderColor=''; });
+      card.style.borderColor = '#c8ff00';
+    };
+
+    // Status badge
+    var statusEl = card.querySelector('.text-neon-acid');
+    if(statusEl) statusEl.innerHTML = (scene.url ?
+      '<span style="color:#c8ff00"> READY</span>' :
+      '<span style="color:#ffba3f"> PENDING</span>');
+  });
+
+  // Auto-play first scene
+  if(cards[0]) cards[0].querySelector('button') && cards[0].querySelector('button').click();
+});
+</script></body>
 </html>
+
 
 

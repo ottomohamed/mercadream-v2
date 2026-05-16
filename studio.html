@@ -544,18 +544,30 @@ async function startProduction(){
     log('Stage 3: '+scenes.length+' scenes generated', 'ok');
 
     localStorage.setItem('md_6scenes', JSON.stringify(scenes));
-    const videos = scenes.map((s,i)=>({id:Date.now()+i,url:null,prompt:(s.prompt||'').substring(0,500),timestamp:new Date().toISOString(),duration:10,title:'Scene '+(i+1)+'/6: '+(s.title||''),sceneNumber:i+1,status:'pending'}));
-    const videoResults = await Promise.all(scenes.map(async (s,i)=>{
-  try{
-    const q=encodeURIComponent((s.keywords||s.title||'cinematic').substring(0,40));
-    const pr=await fetch('/api/pexels?q='+q+'&per_page=1');
-    const pd=await pr.json();
-    const vid=pd.videos&&pd.videos[0];
-    return Object.assign({},videos[i],{url:vid?vid.url:null,thumb:vid?vid.thumb:null,status:vid?'ready':'pending'});
-  }catch(e){return videos[i];}
-}));
-localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
-    scenes.forEach((s,i) => log('Scene '+(i+1)+': '+s.title, 'ok'));
+    const videos = scenes.map((s,i)=>({id:Date.now()+i,url:null,prompt:(s.prompt||'').substring(0,500),timestamp:new Date().toISOString(),duration:10,title:'Scene '+(i+1)+'/6: '+(s.title||''),sceneNumber:i+1,status:'pending',keywords:s.keywords||s.title||'cinematic'}));
+
+    // Fetch Pexels videos for each scene
+    log('Fetching visuals from Pexels...', 'ok');
+    const videoResults = await Promise.all(videos.map(async (v,i)=>{
+      try{
+        const q = encodeURIComponent((v.keywords||'cinematic scene').substring(0,50));
+        const pr = await fetch('/api/pexels?q='+q+'&per_page=1');
+        if(!pr.ok) return v;
+        const pd = await pr.json();
+        const vid = pd.videos && pd.videos[0];
+        if(vid){
+          log('Scene '+(i+1)+' visual: found', 'ok');
+          return Object.assign({}, v, {url:vid.url, thumb:vid.thumb, status:'ready'});
+        }
+        return v;
+      }catch(e){
+        log('Scene '+(i+1)+' visual: error '+e.message, 'err');
+        return v;
+      }
+    }));
+
+    localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
+    scenes.forEach((s,i) => log('Scene '+(i+1)+': '+s.title+(videoResults[i].url?' ✓':''), 'ok'));
 
     setCockpit('<div style="font-size:24px;margin-bottom:6px">✅</div><span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px">6 SCENES READY</span>');
     addBot(TX[lang].done);
