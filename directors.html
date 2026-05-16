@@ -636,7 +636,65 @@ document.querySelectorAll(".service-card, .crew-card").forEach(function(card){
     var fc=document.getElementById("footer-credits"); if(fc) fc.textContent=total;
   });
 });
-</script><script src="/js/navigation.js"></script></body></html>
+</script><script src="/js/navigation.js"></script><script>
+//  Service Cards  Pages 
+var serviceMap = {
+  "service-deaging":    "deaging.html",
+  "service-relighting": "relighting.html",
+  "service-volumetric": "volumetric.html",
+  "service-script":     "semantic.html",
+  "service-lipsync":    "lipsync.html",
+  "service-physics":    "physics.html",
+  "service-crowd":      "crowd.html",
+  "service-grading":    "grading.html"
+};
+
+// Wire service cards by ID
+Object.keys(serviceMap).forEach(function(id){
+  var card = document.getElementById(id);
+  if(card) card.addEventListener("click", function(){
+    window.location.href = serviceMap[id];
+  });
+});
+
+// Wire cards without IDs by title
+document.querySelectorAll(".service-card").forEach(function(card){
+  if(card.dataset.wired) return;
+  card.dataset.wired = "1";
+  var title = card.querySelector("h3");
+  if(!title) return;
+  var txt = title.textContent.trim().toLowerCase();
+  var map = {
+    "lip sync":        "lipsync.html",
+    "physics":         "physics.html",
+    "crowd":           "crowd.html",
+    "color grading":   "grading.html",
+    "de-aging":        "deaging.html",
+    "relighting":      "relighting.html",
+    "volumetric":      "volumetric.html",
+    "semantic":        "semantic.html",
+    "animate":         "animate.html",
+    "face":            "faceswap.html",
+    "convert":         "convert.html"
+  };
+  Object.keys(map).forEach(function(key){
+    if(txt.includes(key)) card.onclick = function(){ window.location.href = map[key]; };
+  });
+});
+
+// Wire START PRODUCTION  studio.html
+var startBtn = document.getElementById("btn-generate");
+if(startBtn) startBtn.onclick = function(){
+  var selected = document.querySelectorAll(".service-card.active-item");
+  if(selected.length === 0){ window.location.href = "studio.html"; return; }
+  var services = [...selected].map(function(el){
+    return { name: el.querySelector("h3")?.textContent?.trim() || "" };
+  });
+  localStorage.setItem("md_selected_services", JSON.stringify(services));
+  window.location.href = "studio.html";
+};
+</script></body></html>
+
 
 
 
