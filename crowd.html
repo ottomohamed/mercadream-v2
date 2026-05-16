@@ -356,5 +356,6 @@ document.querySelectorAll(".grid-cols-2 .technical-border,.grid-cols-2 .bg-neon-
 document.querySelectorAll(".flex.border.border-outline-variant button").forEach(function(btn){btn.onclick=function(){lighting=btn.textContent.trim();document.querySelectorAll(".flex.border.border-outline-variant button").forEach(function(b){b.style.background="";b.style.color="";});btn.style.background="rgba(200,255,0,0.2)";btn.style.color="#c8ff00";};});
 function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
 window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button.bg-neon-acid");if(btn){btn.id="btn-crowd";btn.onclick=go;}var bb=document.querySelector("header .material-symbols-outlined");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
-</script></body></html>
+</script><script src="/js/pipeline.js"></script></body></html>
+
 

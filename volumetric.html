@@ -366,5 +366,6 @@ document.querySelectorAll(".grid-cols-2 button").forEach(function(btn){btn.oncli
 var sl=document.querySelector("input[type=range]");var sd=document.querySelector(".text-neon-acid.font-label-technical");if(sl&&sd)sl.oninput=function(){sd.textContent=this.value+" / 10";};
 function go(){if(!sf){alert("Upload a video first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-vol");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=1;if(btn)btn.querySelector("span:nth-child(2)").textContent="PROCESSING... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.querySelector("span:nth-child(2)").textContent=" COMPLETE  DOWNLOAD "+exportFmt;btn.onclick=function(){alert("3D model ready for download!");};}}},400);}
 window.addEventListener("load",function(){var btn=document.querySelector("footer button.bg-neon-acid");if(btn){btn.id="btn-vol";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};var nb=document.querySelector("nav button.bg-neon-acid");if(nb)nb.onclick=go;if(window.MD)window.MD.updateCredits();});
-</script></body></html>
+</script><script src="/js/pipeline.js"></script></body></html>
+
 
