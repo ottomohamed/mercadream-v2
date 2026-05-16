@@ -750,7 +750,7 @@ function renderTimeline(){
     el.id = `clip-${clip.id}`;
     el.onclick = () => selectClip(i);
     el.innerHTML = `
-      <div class="clip-thumb">${clip.emoji}</div>
+      <div class="clip-thumb">${clip.thumb ? `<img src="${clip.thumb}" style="width:100%;height:100%;object-fit:cover;border-radius:2px">` : clip.emoji}</div>
       <div class="clip-footer">
         <span class="clip-num">CLIP_${String(clip.num).padStart(2,'0')}</span>
         <span class="clip-dur">${clip.duration}s</span>
@@ -794,11 +794,19 @@ function renderPreview(idx){
   const div = document.createElement('div');
   div.className = 'clip-preview-active';
   div.id = 'clipPreviewActive';
-  div.innerHTML = `
-    <div class="cpa-num">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
-    <div class="cpa-title">${clip.title}</div>
-    <div class="cpa-desc">${clip.prompt || '—'}</div>
-    <div class="cpa-dur">⏱ ${clip.duration}s &nbsp;|&nbsp; ${formatTransition(clip.transition)}</div>`;
+  if(clip.videoUrl){
+    div.innerHTML = `
+      <video src="${clip.videoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:4px" controls autoplay muted loop></video>
+      <div class="cpa-num" style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.8);padding:2px 8px">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
+      <div class="cpa-title" style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.8);padding:2px 8px">${clip.title}</div>`;
+    div.style.cssText = 'position:relative;width:100%;height:100%';
+  } else {
+    div.innerHTML = `
+      <div class="cpa-num">CLIP ${String(clip.num).padStart(2,'0')} / ${String(clips.length).padStart(2,'0')}</div>
+      <div class="cpa-title">${clip.title}</div>
+      <div class="cpa-desc">${clip.prompt || '—'}</div>
+      <div class="cpa-dur">⏱ ${clip.duration}s &nbsp;|&nbsp; ${formatTransition(clip.transition)}</div>`;
+  }
   screen.appendChild(div);
 
   // Animate progress bar
@@ -1066,18 +1074,36 @@ function switchTab(tab){
 
 // ── LOAD STUDIO DATA ──
 function loadFromStudio(){
-  // Check if studio.html passed a prompt via localStorage
-  const lastPrompt = localStorage.getItem('md_last_prompt');
-  const lastBrief = localStorage.getItem('md_last_brief');
+  // Load scenes from studio production
+  const assemblyVideos = JSON.parse(localStorage.getItem('md_assembly_videos') || '[]');
+  const studioScenes   = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+  const scenes = assemblyVideos.length ? assemblyVideos : studioScenes;
 
-  if(lastPrompt || lastBrief){
-    // Pre-populate first clip from studio output
-    const clip = createClip(lastPrompt || 'Opening scene from studio production');
+  if(scenes.length){
+    clips = [];
+    scenes.forEach((s, i) => {
+      const clip = createClip(s.prompt || s.title || ('Scene ' + (i+1)));
+      clip.title    = s.title || ('Scene ' + (i+1));
+      clip.videoUrl = s.url   || null;
+      clip.thumb    = s.thumb || null;
+      clip.status   = s.url ? 'ready' : 'pending';
+      clips.push(clip);
+    });
+    renderTimeline();
+    if(clips.length) selectClip(0);
+    updateStats();
+    console.log('Loaded ' + clips.length + ' scenes from studio. Videos:', clips.filter(c=>c.videoUrl).length);
+    return;
+  }
+
+  // Fallback: last prompt
+  const lastPrompt = localStorage.getItem('md_last_prompt');
+  if(lastPrompt){
+    const clip = createClip(lastPrompt);
     clips.push(clip);
     renderTimeline();
     selectClip(0);
     updateStats();
-    if(clip.prompt) analyzeClip(0);
   }
 }
 
