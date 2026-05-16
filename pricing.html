@@ -1,370 +1,557 @@
 ﻿<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
+
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><polygon points=%228,1 15,13 1,13%22 fill=%22%23c8ff00%22/></svg>"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Pricing</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | POWER STATION</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--red:#ff3c3c;
-  --surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;
-  --border:rgba(200,255,0,0.1);--border-b:rgba(200,255,0,0.4);
-  --text:#c0c0c0;--text-dim:#444;--text-bright:#f0f0f0;
-  --mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--surface);color:var(--text);font-family:var(--body);overflow-x:hidden;min-height:100vh}
-body.lang-ar{direction:rtl;font-family:'Cairo',var(--body)}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.012) 3px,rgba(0,0,0,0.012) 4px);pointer-events:none;z-index:9999}
-.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
-.orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,255,0,0.04),transparent);top:-150px;right:-80px}
-.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(255,186,63,0.03),transparent);bottom:-100px;left:-80px}
-
-/* HEADER */
-header{position:fixed;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,6,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-mark{width:32px;height:32px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.05)}
-.logo-mark svg{width:16px;height:16px}
-.logo-name{font-family:var(--display);font-size:12px;font-weight:700;color:var(--acid);letter-spacing:3px}
-.hdr-nav{display:flex;gap:24px}
-.hdr-nav a{font-size:10px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color .2s;font-family:var(--mono)}
-.hdr-nav a:hover,.hdr-nav a.on{color:var(--acid)}
-.hdr-right{display:flex;align-items:center;gap:12px}
-.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:3px}
-.lb{font-family:var(--mono);font-size:9px;padding:4px 8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.lb.on{background:var(--acid);color:#000;font-weight:700}
-.lb:hover:not(.on){color:var(--acid)}
-.btn-hdr{font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:6px 14px;border:1px solid var(--border-b);background:var(--acid);color:#000;cursor:pointer;font-weight:700;text-decoration:none}
-
-/* PAGE */
-.page{max-width:1100px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
-
-/* HERO */
-.pricing-hero{padding:110px 0 60px;text-align:center}
-.section-tag{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid);margin-bottom:16px}
-.pricing-hero h1{font-family:var(--display);font-size:clamp(32px,5vw,60px);font-weight:900;color:var(--text-bright);margin-bottom:16px;letter-spacing:-1px}
-.pricing-hero h1 span{color:var(--acid)}
-.pricing-hero p{font-size:16px;color:var(--text);max-width:500px;margin:0 auto 40px}
-
-/* BILLING TOGGLE */
-.billing-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:60px}
-.toggle-wrap{display:flex;background:var(--s3);border:1px solid var(--border);padding:3px}
-.tog{font-family:var(--mono);font-size:10px;letter-spacing:2px;padding:8px 20px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s}
-.tog.on{background:var(--acid);color:#000;font-weight:700}
-.save-tag{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:4px 12px;background:rgba(255,186,63,0.1);border:1px solid rgba(255,186,63,0.3);color:var(--gold)}
-
-/* PLANS */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:80px}
-.plan{background:var(--s2);padding:36px 28px;position:relative;transition:background .3s}
-.plan:hover{background:var(--s3)}
-.plan.featured{background:linear-gradient(160deg,rgba(200,255,0,0.04),rgba(200,255,0,0.01));border:1px solid rgba(200,255,0,0.2)}
-.plan-badge{
-  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-  font-family:var(--mono);font-size:8px;letter-spacing:2px;
-  padding:4px 14px;background:var(--acid);color:#000;font-weight:700;white-space:nowrap
-}
-.plan-tier{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text-dim);margin-bottom:12px}
-.plan-name{font-family:var(--display);font-size:22px;font-weight:700;color:var(--text-bright);margin-bottom:6px}
-.plan-desc{font-size:13px;color:var(--text-dim);margin-bottom:28px}
-.plan-price{margin-bottom:4px}
-.plan-price .amount{font-family:var(--display);font-size:52px;font-weight:900;color:var(--acid);line-height:1}
-.plan-price .currency{font-family:var(--display);font-size:20px;color:var(--acid-dim);vertical-align:top;line-height:1.8}
-.plan-period{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;margin-bottom:28px}
-.divider{height:1px;background:var(--border);margin:24px 0}
-.feat-list{list-style:none;space-y:8px}
-.feat-list li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:13px;color:var(--text);border-bottom:1px solid rgba(255,255,255,0.03)}
-.feat-list li:last-child{border-bottom:none}
-.feat-list .ck{color:var(--acid-dim);font-size:14px;flex-shrink:0;margin-top:1px}
-.feat-list .st{color:var(--gold);font-size:14px;flex-shrink:0;margin-top:1px}
-.feat-list strong{color:var(--text-bright)}
-.btn-plan{
-  display:block;width:100%;margin-top:28px;padding:13px;
-  font-family:var(--mono);font-size:10px;letter-spacing:2px;
-  cursor:pointer;border:none;transition:all .2s;text-align:center;text-decoration:none
-}
-.btn-outline-p{background:transparent;border:1px solid var(--border-b);color:var(--acid)}
-.btn-outline-p:hover{background:rgba(200,255,0,0.06)}
-.btn-solid-p{background:var(--acid);color:#000;font-weight:700}
-.btn-solid-p:hover{background:#d4ff1a;box-shadow:0 0 30px rgba(200,255,0,0.3)}
-
-/* COMPARE TABLE */
-.compare{margin-bottom:80px}
-.compare h2{font-family:var(--display);font-size:22px;color:var(--text-bright);margin-bottom:24px;text-align:center}
-.compare-table{width:100%;border-collapse:collapse;font-size:13px}
-.compare-table th{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
-.compare-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text)}
-.compare-table tr:hover td{background:var(--s3)}
-.compare-table .yes{color:var(--acid)}
-.compare-table .no{color:var(--text-dim)}
-.compare-table .feat-col{color:var(--text-bright);font-weight:500}
-
-/* FAQ */
-.faq{max-width:720px;margin:0 auto 80px}
-.faq h2{font-family:var(--display);font-size:22px;color:var(--text-bright);margin-bottom:32px;text-align:center}
-.faq-item{border-bottom:1px solid var(--border);padding:20px 0;cursor:pointer}
-.faq-q{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:var(--text-bright)}
-.faq-a{font-size:13px;color:var(--text);line-height:1.7;margin-top:12px;display:none}
-.faq-item.open .faq-a{display:block}
-.faq-arrow{font-family:var(--mono);color:var(--text-dim);transition:transform .2s;font-size:16px}
-.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--acid)}
-
-/* FOOTER */
-footer{border-top:1px solid var(--border);padding:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
-.foot-logo{font-family:var(--display);font-size:10px;color:var(--acid);letter-spacing:3px}
-.foot-links{display:flex;gap:20px}
-.foot-links a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;letter-spacing:1px;transition:color .2s}
-.foot-links a:hover{color:var(--acid)}
-.foot-copy{font-family:var(--mono);font-size:8px;color:var(--text-dim)}
-
-@media(max-width:900px){.plans{grid-template-columns:1fr}.hdr-nav{display:none}.page{padding:0 16px}}
-@media(max-width:600px){header{padding:0 16px}.billing-row{flex-direction:column}}
-</style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline-overlay {
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.05) 0px,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+        .surgical-border {
+            border: 1px solid #222222;
+        }
+        .neon-glow {
+            box-shadow: 0 0 12px rgba(192, 245, 0, 0.2);
+        }
+        .neon-glow-hover:hover {
+            box-shadow: 0 0 15px rgba(192, 245, 0, 0.4);
+            border-color: #c0f500;
+        }
+        .cursor-crosshair {
+            cursor: crosshair;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#0e0e0e",
+                      "primary-container": "#c0f500",
+                      "inverse-primary": "#4f6600",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "primary-fixed-dim": "#a8d700",
+                      "surface-dim": "#131313",
+                      "on-secondary": "#432c00",
+                      "on-background": "#e5e2e1",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "on-surface-variant": "#c4caac",
+                      "on-primary-container": "#546d00",
+                      "on-error-container": "#ffdad6",
+                      "surface-tint": "#a8d700",
+                      "error-container": "#93000a",
+                      "surface-container": "#201f1f",
+                      "on-tertiary-container": "#656464",
+                      "on-error": "#690005",
+                      "primary-fixed": "#c0f500",
+                      "outline": "#8e9479",
+                      "secondary-container": "#c48800",
+                      "surface-bright": "#3a3939",
+                      "primary": "#ffffff",
+                      "on-tertiary": "#303030",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "on-secondary-fixed-variant": "#604100",
+                      "inverse-surface": "#e5e2e1",
+                      "tertiary-container": "#e5e2e1",
+                      "surface-container-low": "#1c1b1b",
+                      "on-secondary-container": "#3e2800",
+                      "surface-variant": "#353534",
+                      "tertiary-fixed": "#e5e2e1",
+                      "inverse-on-surface": "#313030",
+                      "on-secondary-fixed": "#281900",
+                      "error": "#ffb4ab",
+                      "secondary-fixed-dim": "#ffba3f",
+                      "tertiary": "#ffffff",
+                      "on-surface": "#e5e2e1",
+                      "surface-container-high": "#2a2a2a",
+                      "surface-container-highest": "#353534",
+                      "on-primary-fixed": "#161f00",
+                      "on-primary": "#273500",
+                      "outline-variant": "#434933",
+                      "background": "#131313",
+                      "secondary-fixed": "#ffdeae",
+                      "surface": "#131313",
+                      "secondary": "#ffba3f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Sora"],
+                      "technical-sm": ["IBM Plex Mono"],
+                      "display-lg": ["Sora"],
+                      "label-xs": ["IBM Plex Mono"],
+                      "headline-lg": ["Sora"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
 </head>
-<body class="lang-en">
-<div class="orb orb-1"></div><div class="orb orb-2"></div>
-
-<header>
-  <a href="index.html" class="logo">
-    <div class="logo-mark"><svg viewBox="0 0 16 16" fill="none"><polygon points="8,2 14,12 2,12" stroke="#c8ff00" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="2" fill="#c8ff00"/></svg></div>
-    <span class="logo-name">MERCADREAM</span>
-  </a>
-  <nav class="hdr-nav">
-    <a href="index.html" data-i18n="nav_home">HOME</a>
-    <a href="studio.html" data-i18n="nav_studio">STUDIO</a>
-    <a href="pricing.html" class="on" data-i18n="nav_pricing">PRICING</a>
-  </nav>
-  <div class="hdr-right">
-    <div class="lang-sw">
-      <button class="lb on" onclick="setLang('en')">EN</button>
-      <button class="lb" onclick="setLang('es')">ES</button>
-      <button class="lb" onclick="setLang('ar')">AR</button>
-    </div>
-    <a href="studio.html" class="btn-hdr" data-i18n="btn_start">START FREE</a>
-  </div>
-</header>
-
-<div class="page">
-  <div class="pricing-hero">
-    <div class="section-tag" data-i18n="page_tag">PLANS & PRICING</div>
-    <h1><span data-i18n="hero_h1a">Choose Your</span> <span data-i18n="hero_h1b">Creative Power</span></h1>
-    <p data-i18n="hero_sub">Scalable plans for every creator. From indie filmmaker to full production studio.</p>
-    <div class="billing-row">
-      <div class="toggle-wrap">
-        <button class="tog on" id="togM" onclick="setBilling('monthly')" data-i18n="bill_m">MONTHLY</button>
-        <button class="tog" id="togY" onclick="setBilling('yearly')" data-i18n="bill_y">YEARLY</button>
-      </div>
-      <div class="save-tag" data-i18n="save_tag">SAVE 20%</div>
-    </div>
-  </div>
-
-  <div class="plans">
-    <!-- REGULAR -->
-    <div class="plan">
-      <div class="plan-tier" data-i18n="p1_tier">TIER 01</div>
-      <div class="plan-name" data-i18n="p1_name">Regular</div>
-      <div class="plan-desc" data-i18n="p1_desc">For indie creators</div>
-      <div class="plan-price"><span class="currency">$</span><span class="amount" id="p1price">21</span></div>
-      <div class="plan-period" data-i18n="period_m">PER MONTH, BILLED MONTHLY</div>
-      <div class="divider"></div>
-      <ul class="feat-list">
-        <li><span class="ck">✓</span><span data-i18n="p1_f1">720p Generation</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p1_f2">30 Videos / Month</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p1_f3">Standard Queue</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p1_f4">AI Director Chat</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p1_f5">3 Languages</span></li>
-      </ul>
-      <a href="studio.html" class="btn-plan btn-outline-p" data-i18n="btn_get">GET STARTED</a>
-    </div>
-
-    <!-- ADVANCED -->
-    <div class="plan">
-      <div class="plan-tier" data-i18n="p2_tier">TIER 02</div>
-      <div class="plan-name" data-i18n="p2_name">Advanced</div>
-      <div class="plan-desc" data-i18n="p2_desc">For professional creatives</div>
-      <div class="plan-price"><span class="currency">$</span><span class="amount" id="p2price">79</span></div>
-      <div class="plan-period" data-i18n="period_m">PER MONTH, BILLED MONTHLY</div>
-      <div class="divider"></div>
-      <ul class="feat-list">
-        <li><span class="ck">✓</span><span data-i18n="p2_f1">4K Generation</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p2_f2">250 Videos / Month</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p2_f3">Priority Queue</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p2_f4">Custom Voice Cloning</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p2_f5">Advanced Dream Extractor</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p2_f6">Style Transfer</span></li>
-      </ul>
-      <a href="studio.html" class="btn-plan btn-outline-p" data-i18n="btn_get">GET STARTED</a>
-    </div>
-
-    <!-- PROFESSIONAL (FEATURED) -->
-    <div class="plan featured">
-      <div class="plan-badge" data-i18n="feat_badge">🔥 MOST POPULAR</div>
-      <div class="plan-tier" data-i18n="p3_tier">TIER 03</div>
-      <div class="plan-name" data-i18n="p3_name">Professional</div>
-      <div class="plan-desc" data-i18n="p3_desc">For production studios</div>
-      <div class="plan-price"><span class="currency">$</span><span class="amount" id="p3price">200</span></div>
-      <div class="plan-period" data-i18n="period_m">PER MONTH, BILLED MONTHLY</div>
-      <div class="divider"></div>
-      <ul class="feat-list">
-        <li><span class="st">★</span><span><strong data-i18n="p3_f1">8K Ultra Quality</strong></span></li>
-        <li><span class="st">★</span><span><strong data-i18n="p3_f2">Unlimited Generations</strong></span></li>
-        <li><span class="ck">✓</span><span data-i18n="p3_f3">Priority GPU Access</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p3_f4">Full API Access</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p3_f5">Personal Neural Architect</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p3_f6">White-label Output</span></li>
-        <li><span class="ck">✓</span><span data-i18n="p3_f7">24/7 Priority Support</span></li>
-      </ul>
-      <a href="studio.html" class="btn-plan btn-solid-p" data-i18n="btn_unlock">UNLOCK EVERYTHING</a>
-    </div>
-  </div>
-
-  <!-- FAQ -->
-  <div class="faq">
-    <h2 data-i18n="faq_h">Frequently Asked</h2>
-    <div class="faq-item" onclick="this.classList.toggle('open')">
-      <div class="faq-q"><span data-i18n="faq1_q">What counts as a generation?</span><span class="faq-arrow">▼</span></div>
-      <div class="faq-a" data-i18n="faq1_a">One complete render of a video. Edits and re-renders count as separate generations. Preview renders at reduced quality do not count.</div>
-    </div>
-    <div class="faq-item" onclick="this.classList.toggle('open')">
-      <div class="faq-q"><span data-i18n="faq2_q">Can I switch plans anytime?</span><span class="faq-arrow">▼</span></div>
-      <div class="faq-a" data-i18n="faq2_a">Yes. Upgrades take effect immediately. Downgrades take effect at the start of your next billing cycle.</div>
-    </div>
-    <div class="faq-item" onclick="this.classList.toggle('open')">
-      <div class="faq-q"><span data-i18n="faq3_q">Is my content used for AI training?</span><span class="faq-arrow">▼</span></div>
-      <div class="faq-a" data-i18n="faq3_a">Never. Your content is encrypted and never used to train shared models. Your intellectual property remains yours.</div>
-    </div>
-    <div class="faq-item" onclick="this.classList.toggle('open')">
-      <div class="faq-q"><span data-i18n="faq4_q">Which video platforms does the output work with?</span><span class="faq-arrow">▼</span></div>
-      <div class="faq-a" data-i18n="faq4_a">Our prompts are optimized for Runway Gen-3, Kling 1.6, Pika 2.0, and Sora. We update our output engine as new platforms emerge.</div>
-    </div>
-    <div class="faq-item" onclick="this.classList.toggle('open')">
-      <div class="faq-q"><span data-i18n="faq5_q">Do unused videos roll over?</span><span class="faq-arrow">▼</span></div>
-      <div class="faq-a" data-i18n="faq5_a">Unused generations do not roll over on Regular and Advanced plans. Professional plan has unlimited generations.</div>
-    </div>
-  </div>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen font-body-md relative overflow-x-hidden">
+<div class="fixed inset-0 scanline-overlay z-[100] opacity-30 pointer-events-none"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center h-16 px-margin-desktop">
+<div class="flex items-center gap-gutter">
+<button class="active:scale-95 transition-transform flex items-center gap-2 group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-container">arrow_back</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant group-hover:text-primary-container uppercase">Back</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<h1 class="font-display-lg text-[24px] uppercase tracking-tighter text-primary">MERCADREAM | POWER STATION</h1>
 </div>
-
-<footer>
-  <div class="foot-logo">MERCADREAM</div>
-  <div class="foot-links">
-    <a href="index.html" data-i18n="nav_home">Home</a>
-    <a href="studio.html" data-i18n="nav_studio">Studio</a>
-
-    <a href="pricing.html" data-i18n="nav_pricing">Pricing</a>
-  </div>
-  <div class="foot-copy">© 2025 MERCADREAM — AI CINEMA STUDIO</div>
+<div class="flex items-center gap-8">
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Active Credits</span>
+<span class="font-technical-sm text-technical-sm text-primary-container">2,450 CREDITS</span>
+</div>
+<button class="material-symbols-outlined text-primary text-3xl active:scale-95 transition-transform" data-icon="account_circle">account_circle</button>
+</div>
+</header>
+<main class="pt-24 pb-16 px-margin-desktop max-w-container-max mx-auto space-y-12">
+<!-- SECTION 1: RECHARGE -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant">
+<!-- LEFT: CREDIT CALCULATOR -->
+<div class="bg-surface-container-low p-8 flex flex-col justify-between space-y-8">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<div class="w-1 h-4 bg-primary-container"></div>
+<h2 class="font-technical-sm text-technical-sm uppercase text-on-surface-variant">Credit Acquisition Protocol</h2>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-xs text-label-xs text-on-surface-variant uppercase">How many credits?</label>
+<div class="relative">
+<input class="w-full bg-surface border border-outline-variant focus:border-primary-container focus:ring-0 text-primary-container font-technical-sm p-4 text-xl outline-none transition-colors" type="number" value="1000"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 font-technical-sm text-on-surface-variant text-sm">CRDS</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">100</button>
+<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">500</button>
+<button class="surgical-border p-3 font-technical-sm text-technical-sm border-primary-container text-primary-container bg-primary-container/10 active:scale-95">1K</button>
+<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">5K</button>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-outline-variant">
+<div class="flex justify-between items-end mb-6">
+<div>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Unit Cost</span>
+<span class="font-technical-sm text-technical-sm text-primary">$0.10/CREDIT</span>
+</div>
+<div class="text-right">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Total Cost</span>
+<span class="font-headline-lg text-headline-lg text-primary-container">$100.00</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-4 font-headline-lg text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all neon-glow">
+<span class="material-symbols-outlined" data-weight="fill">bolt</span>
+                        BUY CREDITS
+                    </button>
+</div>
+</div>
+<!-- RIGHT: LIVE BALANCE -->
+<div class="bg-surface-container p-8 flex flex-col justify-between border-l border-outline-variant">
+<div class="relative overflow-hidden group">
+<div class="flex justify-between items-start mb-12">
+<div class="space-y-1">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Live Engine Status</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="font-technical-sm text-technical-sm text-primary uppercase">System Optimal</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Member Since</span>
+<span class="font-technical-sm text-technical-sm text-primary">MAY 2026</span>
+</div>
+</div>
+<div class="text-center py-8">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block mb-2">Available Processing Power</span>
+<div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">2,450</div>
+<div class="flex justify-center gap-1">
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+<span class="text-primary-container text-xs font-technical-sm">◆</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-6 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center surgical-border bg-surface-dim text-on-surface-variant">
+<span class="material-symbols-outlined text-3xl">shield</span>
+</div>
+<div>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Current Shield</span>
+<span class="font-technical-sm text-technical-sm text-primary uppercase">UNPROTECTED / NO PLAN</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Tier</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase">NONE</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: SUBSCRIPTIONS -->
+<section class="space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-outline-variant pb-6 gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary mb-2">Upgrade Your Arsenal</h2>
+<p class="font-body-md text-on-surface-variant max-w-2xl">Elevate your production workflow with dedicated hardware allocation, priority rendering, and commercial usage rights.</p>
+</div>
+<div class="flex items-center gap-4 p-1 bg-surface-container border border-outline-variant">
+<button class="px-6 py-2 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase">Monthly</button>
+<button class="px-6 py-2 hover:text-primary-container transition-colors font-technical-sm text-technical-sm uppercase">Yearly <span class="text-primary-fixed-dim">(-20%)</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- FREE -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-on-surface-variant transition-colors group cursor-crosshair">
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 surgical-border flex items-center justify-center text-on-surface-variant group-hover:bg-on-surface-variant/10">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase border border-on-surface-variant/20 px-2 py-1">Standard</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">FREE</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$0</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-primary-container text-[10px]">◆</span> 100 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-primary-container text-[10px]">◆</span> Standard 1080p
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-primary-container text-[10px]">◆</span> Public Asset Gallery
+                        </li>
+</ul>
+<button class="w-full py-4 border border-outline-variant font-technical-sm text-technical-sm uppercase text-on-surface-variant bg-surface-variant/20 cursor-default">
+                        CURRENT PLAN
+                    </button>
+</div>
+<!-- CREATOR -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-primary-fixed-dim transition-all group neon-glow-hover cursor-crosshair">
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 surgical-border flex items-center justify-center text-primary-fixed-dim border-primary-fixed-dim/40 group-hover:border-primary-fixed-dim group-hover:bg-primary-fixed-dim/10">
+<span class="material-symbols-outlined" data-weight="fill">shield</span>
+</div>
+<span class="font-label-xs text-label-xs text-primary-fixed-dim uppercase border border-primary-fixed-dim/40 px-2 py-1">+20% Bonus</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">CREATOR</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$49</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> 1,200 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> 4K Ultra Rendering
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> Private Asset Vault
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> Commercial Rights
+                        </li>
+</ul>
+<button class="w-full py-4 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
+                        UPGRADE NOW
+                    </button>
+</div>
+<!-- PRO -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col border-secondary/40 hover:border-secondary transition-all group cursor-crosshair relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-on-secondary px-3 py-1 font-label-xs text-label-xs uppercase">Elite Choice</div>
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 border border-secondary/40 flex items-center justify-center text-secondary group-hover:bg-secondary/10">
+<span class="material-symbols-outlined" data-weight="fill">shield</span>
+</div>
+<span class="font-label-xs text-label-xs text-secondary uppercase border border-secondary/40 px-2 py-1">+30% Bonus</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">PRO</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$199</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> 5,500 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> 8K Production Grade
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> Early API Access
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> Priority GPU Queue
+                        </li>
+</ul>
+<button class="w-full py-4 bg-secondary text-on-secondary font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_15px_rgba(255,186,63,0.3)]">
+                        UPGRADE NOW
+                    </button>
+</div>
+<!-- STUDIO -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-primary transition-all group cursor-crosshair">
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 surgical-border flex items-center justify-center text-primary group-hover:bg-primary/10">
+<span class="material-symbols-outlined" data-weight="fill">diamond</span>
+</div>
+<span class="font-label-xs text-label-xs text-primary uppercase border border-primary/40 px-2 py-1">+40% Bonus</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">STUDIO</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$499</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> 15,000 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> Enterprise API Access
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> White Label Export
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">◆</span> Dedicated Account Mgr
+                        </li>
+</ul>
+<button class="w-full py-4 bg-primary text-background font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
+                        UPGRADE NOW
+                    </button>
+</div>
+</div>
+</section>
+<!-- DATA VISUALIZER (Visual Break) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant surgical-border">
+<div class="bg-surface p-6 flex flex-col gap-4">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Global GPU Load</span>
+<div class="h-2 w-full bg-surface-container-high relative">
+<div class="absolute inset-y-0 left-0 bg-primary-container w-[74%]"></div>
+</div>
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-on-surface-variant">ALLOCATED: 12,442 TFLOPS</span>
+<span class="text-primary-container">74%</span>
+</div>
+</div>
+<div class="bg-surface p-6 flex flex-col gap-4">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Network Latency</span>
+<div class="flex items-end gap-1 h-8">
+<div class="w-2 h-4 bg-primary-container"></div>
+<div class="w-2 h-6 bg-primary-container"></div>
+<div class="w-2 h-3 bg-primary-container"></div>
+<div class="w-2 h-5 bg-primary-container"></div>
+<div class="w-2 h-8 bg-primary-container"></div>
+<div class="w-2 h-4 bg-primary-container"></div>
+<div class="w-2 h-6 bg-primary-container"></div>
+</div>
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-on-surface-variant">POP: SAN FRANCISCO v.4</span>
+<span class="text-primary-container">12MS</span>
+</div>
+</div>
+<div class="bg-surface p-6 flex flex-col gap-4">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Security Protocol</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-sm">lock</span>
+<span class="font-technical-sm text-technical-sm text-primary">ENCRYPTION: AES-256</span>
+</div>
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-on-surface-variant">VERIFIED: MERCADREAM_SEC</span>
+<span class="text-primary-container">ACTIVE</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center h-8 px-margin-desktop">
+<div class="flex items-center gap-6">
+<span class="font-technical-sm text-label-xs text-primary uppercase">SYSTEM STATUS: OPTIMAL</span>
+<div class="h-3 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-4 text-on-tertiary-fixed-variant font-label-xs">
+<span>GPU: 84%</span>
+<span>LATENCY: 12MS</span>
+<span>VRAM: 22GB/24GB</span>
+</div>
+</div>
+<nav class="flex items-center gap-6">
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Telemetry</a>
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Logs</a>
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Docs</a>
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Support</a>
+</nav>
 </footer>
+<script src="/js/navigation.js"></script><script>
+var RATE=0.10,currentPlan=localStorage.getItem("md_plan")||"free";
 
-<script>
-const PRICES={monthly:{p1:21,p2:79,p3:200},yearly:{p1:17,p2:63,p3:160}};
-let billing='monthly';
-
-function setBilling(b){
-  billing=b;
-  document.getElementById('togM').classList.toggle('on',b==='monthly');
-  document.getElementById('togY').classList.toggle('on',b==='yearly');
-  document.getElementById('p1price').textContent=PRICES[b].p1;
-  document.getElementById('p2price').textContent=PRICES[b].p2;
-  document.getElementById('p3price').textContent=PRICES[b].p3;
-  const pkey = b==='monthly'?'period_m':'period_y';
-  document.querySelectorAll('.plan-period').forEach(el=>{el.setAttribute('data-i18n',pkey);});
-  applyI18n();
+//  Update balance display 
+function updateBalance(){
+  var c=parseInt(localStorage.getItem("md_credits")||"0");
+  var el=document.querySelector(".font-display-lg.text-primary-container.text-\\[64px\\]");
+  if(el)el.textContent=c.toLocaleString();
+  var hel=document.querySelector(".font-technical-sm.text-technical-sm.text-primary-container");
+  if(hel)hel.textContent=c.toLocaleString()+" CREDITS";
+  updateShield();
 }
 
-const I18N={
-  en:{
-    nav_home:"HOME",nav_studio:"STUDIO",nav_pricing:"PRICING",btn_start:"START FREE",
-    page_tag:"PLANS & PRICING",
-    hero_h1a:"Choose Your",hero_h1b:"Creative Power",
-    hero_sub:"Scalable plans for every creator. From indie filmmaker to full production studio.",
-    bill_m:"MONTHLY",bill_y:"YEARLY",save_tag:"SAVE 20%",
-    period_m:"PER MONTH, BILLED MONTHLY",period_y:"PER MONTH, BILLED YEARLY",
-    p1_tier:"TIER 01",p1_name:"Regular",p1_desc:"For indie creators",
-    p1_f1:"720p Generation",p1_f2:"30 Videos / Month",p1_f3:"Standard Queue",p1_f4:"AI Director Chat",p1_f5:"3 Languages",
-    p2_tier:"TIER 02",p2_name:"Advanced",p2_desc:"For professional creatives",
-    p2_f1:"4K Generation",p2_f2:"250 Videos / Month",p2_f3:"Priority Queue",p2_f4:"Custom Voice Cloning",p2_f5:"Advanced Dream Extractor",p2_f6:"Style Transfer",
-    p3_tier:"TIER 03",p3_name:"Professional",p3_desc:"For production studios",
-    feat_badge:"🔥 MOST POPULAR",
-    p3_f1:"8K Ultra Quality",p3_f2:"Unlimited Generations",p3_f3:"Priority GPU Access",p3_f4:"Full API Access",p3_f5:"Personal Neural Architect",p3_f6:"White-label Output",p3_f7:"24/7 Priority Support",
-    btn_get:"GET STARTED",btn_unlock:"UNLOCK EVERYTHING",
-    faq_h:"Frequently Asked",
-    faq1_q:"What counts as a generation?",faq1_a:"One complete render of a video. Edits and re-renders count as separate generations.",
-    faq2_q:"Can I switch plans anytime?",faq2_a:"Yes. Upgrades take effect immediately. Downgrades take effect at the start of your next billing cycle.",
-    faq3_q:"Is my content used for AI training?",faq3_a:"Never. Your content is encrypted and never used to train shared models.",
-    faq4_q:"Which video platforms does the output work with?",faq4_a:"Our prompts are optimized for Runway Gen-3, Kling 1.6, Pika 2.0, and Sora.",
-    faq5_q:"Do unused videos roll over?",faq5_a:"Unused generations do not roll over on Regular and Advanced plans. Professional plan has unlimited generations."
-  },
-  es:{
-    nav_home:"INICIO",nav_studio:"ESTUDIO",nav_pricing:"PRECIOS",btn_start:"COMENZAR GRATIS",
-    page_tag:"PLANES Y PRECIOS",
-    hero_h1a:"Elige Tu",hero_h1b:"Poder Creativo",
-    hero_sub:"Planes escalables para cada creador. Desde cineasta independiente hasta estudio de producción completo.",
-    bill_m:"MENSUAL",bill_y:"ANUAL",save_tag:"AHORRA 20%",
-    period_m:"POR MES, FACTURADO MENSUALMENTE",period_y:"POR MES, FACTURADO ANUALMENTE",
-    p1_tier:"NIVEL 01",p1_name:"Regular",p1_desc:"Para creadores independientes",
-    p1_f1:"Generación 720p",p1_f2:"30 Videos / Mes",p1_f3:"Cola Estándar",p1_f4:"Chat Director IA",p1_f5:"3 Idiomas",
-    p2_tier:"NIVEL 02",p2_name:"Avanzado",p2_desc:"Para creativos profesionales",
-    p2_f1:"Generación 4K",p2_f2:"250 Videos / Mes",p2_f3:"Cola Prioritaria",p2_f4:"Clonación de Voz",p2_f5:"Dream Extractor Avanzado",p2_f6:"Transferencia de Estilo",
-    p3_tier:"NIVEL 03",p3_name:"Profesional",p3_desc:"Para estudios de producción",
-    feat_badge:"🔥 MÁS POPULAR",
-    p3_f1:"Calidad 8K Ultra",p3_f2:"Generaciones Ilimitadas",p3_f3:"Acceso GPU Prioritario",p3_f4:"Acceso API Completo",p3_f5:"Arquitecto Neural Personal",p3_f6:"Salida White-label",p3_f7:"Soporte 24/7 Prioritario",
-    btn_get:"COMENZAR",btn_unlock:"DESBLOQUEAR TODO",
-    faq_h:"Preguntas Frecuentes",
-    faq1_q:"¿Qué cuenta como generación?",faq1_a:"Un renderizado completo de un video. Las ediciones y re-renderizados cuentan como generaciones separadas.",
-    faq2_q:"¿Puedo cambiar de plan en cualquier momento?",faq2_a:"Sí. Las actualizaciones surten efecto inmediatamente. Las reducciones surten efecto al inicio de tu próximo ciclo.",
-    faq3_q:"¿Mi contenido se usa para entrenar IA?",faq3_a:"Nunca. Tu contenido está encriptado y nunca se usa para entrenar modelos compartidos.",
-    faq4_q:"¿Con qué plataformas funciona el resultado?",faq4_a:"Nuestros prompts están optimizados para Runway Gen-3, Kling 1.6, Pika 2.0 y Sora.",
-    faq5_q:"¿Los videos no usados se acumulan?",faq5_a:"No se acumulan en planes Regular y Avanzado. El plan Profesional tiene generaciones ilimitadas."
-  },
-  ar:{
-    nav_home:"الرئيسية",nav_studio:"الاستوديو",nav_pricing:"الأسعار",btn_start:"ابدأ مجاناً",
-    page_tag:"الخطط والأسعار",
-    hero_h1a:"اختر",hero_h1b:"قوتك الإبداعية",
-    hero_sub:"خطط قابلة للتطوير لكل مبدع. من المخرج المستقل إلى استوديو الإنتاج الكامل.",
-    bill_m:"شهري",bill_y:"سنوي",save_tag:"وفر 20%",
-    period_m:"شهرياً، تُفوتر شهرياً",period_y:"شهرياً، تُفوتر سنوياً",
-    p1_tier:"المستوى 01",p1_name:"العادي",p1_desc:"للمبدعين المستقلين",
-    p1_f1:"جودة 720p",p1_f2:"30 فيديو / شهر",p1_f3:"طابور عادي",p1_f4:"محادثة المخرج الذكي",p1_f5:"3 لغات",
-    p2_tier:"المستوى 02",p2_name:"المتقدم",p2_desc:"للمبدعين المحترفين",
-    p2_f1:"جودة 4K",p2_f2:"250 فيديو / شهر",p2_f3:"طابور أولوية",p2_f4:"استنساخ الصوت",p2_f5:"Dream Extractor متقدم",p2_f6:"نقل الأسلوب",
-    p3_tier:"المستوى 03",p3_name:"الاحترافي",p3_desc:"لاستوديوهات الإنتاج",
-    feat_badge:"🔥 الأكثر شعبية",
-    p3_f1:"جودة 8K فائقة",p3_f2:"إنتاج غير محدود",p3_f3:"وصول GPU أولوية",p3_f4:"وصول API كامل",p3_f5:"مهندس عصبي شخصي",p3_f6:"مخرجات بعلامتك التجارية",p3_f7:"دعم 24/7 أولوية",
-    btn_get:"ابدأ الآن",btn_unlock:"افتح كل شيء",
-    faq_h:"الأسئلة الشائعة",
-    faq1_q:"ما الذي يُحسب كإنتاج واحد؟",faq1_a:"إنتاج كامل لفيديو واحد. التعديلات وإعادة الإنتاج تُحسب إنتاجات منفصلة.",
-    faq2_q:"هل يمكنني تغيير الخطة في أي وقت؟",faq2_a:"نعم. الترقيات تسري فوراً. التخفيضات تسري في بداية دورة الفوترة التالية.",
-    faq3_q:"هل يُستخدم محتواي لتدريب الذكاء الاصطناعي؟",faq3_a:"أبداً. محتواك مشفر ولا يُستخدم لتدريب النماذج المشتركة.",
-    faq4_q:"مع أي منصات فيديو يعمل المخرج؟",faq4_a:"نحسّن الـ prompts لـ Runway Gen-3 و Kling 1.6 و Pika 2.0 و Sora.",
-    faq5_q:"هل تتراكم الفيديوهات غير المستخدمة؟",faq5_a:"لا تتراكم في الخطتين العادية والمتقدمة. الخطة الاحترافية غير محدودة."
+//  Shield system 
+function updateShield(){
+  var shields={free:{label:"UNPROTECTED / NO PLAN",tier:"NONE",color:"#a1a1a1"},creator:{label:"CREATOR SHIELD",tier:"CREATOR",color:"#a8d700"},pro:{label:"PRO SHIELD",tier:"PRO",color:"#ffba3f"},studio:{label:"STUDIO SHIELD ",tier:"STUDIO",color:"#ffffff"}};
+  var s=shields[currentPlan]||shields.free;
+  var shieldLabel=document.querySelector(".font-technical-sm.text-primary.uppercase:not(.text-primary-container)");
+  var tierEl=document.querySelector(".font-technical-sm.text-on-surface-variant.uppercase");
+  var shieldIcon=document.querySelector(".material-symbols-outlined.text-3xl");
+  if(shieldLabel)shieldLabel.textContent=s.label;
+  if(tierEl)tierEl.textContent=s.tier;
+  if(shieldIcon)shieldIcon.style.color=s.color;
+}
+
+//  Calculator 
+var input=document.querySelector("input[type=number]");
+var totalEl=document.querySelector(".font-headline-lg.text-primary-container");
+var buyBtn=document.querySelector("button.bg-primary-container.w-full");
+
+function calcTotal(){
+  var amt=parseInt(input.value)||0;
+  var total=(amt*RATE).toFixed(2);
+  if(totalEl)totalEl.textContent="$"+total;
+  if(buyBtn){var span=buyBtn.querySelector("span:last-child")||buyBtn;buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" CREDITS  $"+total;}
+}
+
+if(input)input.oninput=calcTotal;
+
+//  Quick amounts 
+document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
+  btn.onclick=function(){
+    var map={"100":100,"500":500,"1K":1000,"5K":5000};
+    var v=map[btn.textContent.trim()]||parseInt(btn.textContent)||0;
+    if(input){input.value=v;calcTotal();}
+    document.querySelectorAll(".grid-cols-4 button").forEach(function(b){b.style.background="";b.style.color="";});
+    btn.style.background="#c8ff00";btn.style.color="#060606";
+  };
+});
+
+//  Buy credits 
+if(buyBtn)buyBtn.onclick=function(){
+  var amt=parseInt(input.value)||0;
+  if(amt<1){alert("Enter amount.");return;}
+  var cost=(amt*RATE).toFixed(2);
+  if(confirm("Buy "+amt+" credits for $"+cost+"?\n(Stripe integration coming soon)")){
+    var current=parseInt(localStorage.getItem("md_credits")||"0");
+    localStorage.setItem("md_credits",current+amt);
+    if(window.MD)window.MD.updateCredits();
+    updateBalance();
+    alert(" "+amt+" credits added! New balance: "+(current+amt).toLocaleString());
   }
 };
 
-function applyI18n(){
-  const tx=I18N[currentLang];
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    if(tx[k]) el.textContent=tx[k];
+//  Subscription upgrade 
+document.querySelectorAll(".grid-cols-4 .surgical-border button, button.bg-primary-container.w-full, button.bg-secondary, button.bg-primary.text-background").forEach(function(btn){
+  var txt=btn.textContent.trim().toUpperCase();
+  if(!txt.includes("UPGRADE"))return;
+  btn.onclick=function(){
+    var card=btn.closest(".surgical-border,.bg-surface-container-low");
+    var planName=card?card.querySelector("h3").textContent.trim().toLowerCase():"creator";
+    currentPlan=planName;
+    localStorage.setItem("md_plan",planName);
+    // Add bonus credits
+    var bonus={creator:300,pro:1000,studio:5000};
+    var b=bonus[planName]||0;
+    var current=parseInt(localStorage.getItem("md_credits")||"0");
+    localStorage.setItem("md_credits",current+b);
+    if(window.MD)window.MD.updateCredits();
+    updateBalance();
+    // Update button
+    document.querySelectorAll("button").forEach(function(b){if(b.textContent.includes("CURRENT PLAN"))b.textContent="UPGRADE NOW";});
+    btn.textContent=" CURRENT PLAN";
+    btn.disabled=true;
+    alert(" Upgraded to "+planName.toUpperCase()+"! "+b+" bonus credits added!");
+  };
+});
+
+//  Back button 
+var bb=document.querySelector("header button");
+if(bb)bb.onclick=function(){window.location.href="directors.html";};
+
+//  Monthly/Yearly toggle 
+var toggleBtns=document.querySelectorAll(".flex.items-center.gap-4.p-1 button");
+if(toggleBtns[1])toggleBtns[1].onclick=function(){
+  toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
+  this.style.background="#c8ff00";this.style.color="#060606";
+  // Apply 20% discount
+  document.querySelectorAll(".font-display-lg.text-\\[32px\\]").forEach(function(el){
+    var base={"$49":39,"$199":159,"$499":399};
+    if(base[el.textContent])el.textContent="$"+base[el.textContent];
   });
-}
-
-let currentLang='en';
-function setLang(l){
-  currentLang=l;
-  document.documentElement.lang=l;
-  document.body.className=l==='ar'?'lang-ar':'lang-en';
-  document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));
-  applyI18n();
-  localStorage.setItem('md_lang',l);
-}
-
-window.onload=()=>{
-  const saved=localStorage.getItem('md_lang')||'en';
-  setLang(saved);
 };
-</script>
-<script src="/js/navigation.js"></script></body>
-</html>
+if(toggleBtns[0])toggleBtns[0].onclick=function(){
+  toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
+  this.style.background="#c8ff00";this.style.color="#060606";
+  document.querySelectorAll(".font-display-lg.text-\\[32px\\]").forEach(function(el){
+    var base={"$39":49,"$159":199,"$399":499};
+    if(base[el.textContent])el.textContent="$"+base[el.textContent];
+  });
+};
 
+//  Init 
+window.addEventListener("load",function(){updateBalance();calcTotal();});
+</script></body></html>
