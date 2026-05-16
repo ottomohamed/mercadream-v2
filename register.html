@@ -330,10 +330,10 @@ async function handleRegister(e){
   localStorage.setItem('md_credits','100');
   localStorage.setItem('md_plan','free');
   alert('Account created! You have 100 free credits.');
-  window.location.href='directors.html';
+  window.location.href='profile.html';
 }
 window.addEventListener('load',function(){
-  if(localStorage.getItem('sb_session')){window.location.href='directors.html';return;}
+  if(localStorage.getItem('sb_session')){window.location.href='profile.html';return;}
   var form=document.querySelector('form');
   if(form)form.onsubmit=handleRegister;
   var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
@@ -341,5 +341,6 @@ window.addEventListener('load',function(){
 });
 </script></body>
 </html>
+
 
 
