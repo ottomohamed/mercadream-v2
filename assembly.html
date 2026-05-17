@@ -429,10 +429,15 @@ function loadScenesFromStudio(){
   state.scenes = assemblyVideos.length ? assemblyVideos : studioScenes;
   if(!state.scenes.length){ console.log('No scenes. Go to Studio first.'); return; }
 
-  // Pre-populate with existing Pexels URLs
+  // Pre-populate with Pexels options from studio
   state.scenes.forEach(function(s,i){
-    if(s.url){
-      state.options[i] = [{url:s.url,thumb:s.thumb,id:s.id,duration:s.duration||10}];
+    if(s.options && s.options.length){
+      // Studio sent 3 options
+      state.options[i] = s.options;
+      state.selected[i] = s.options[0]; // auto-select first
+    } else if(s.url){
+      // Fallback: single URL
+      state.options[i] = [{url:s.url,thumb:s.thumb,id:s.id||i,duration:s.duration||10}];
       state.selected[i] = state.options[i][0];
     }
   });
