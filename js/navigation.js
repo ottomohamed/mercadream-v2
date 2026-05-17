@@ -1,4 +1,4 @@
-// ═══════════════════════════════════════════════════════
+﻿// ═══════════════════════════════════════════════════════
 // MERCADREAM — js/navigation.js
 // Shared navigation + language system for all pages
 // Add to every page: <script src="/js/navigation.js"></script>
@@ -306,3 +306,4 @@
   };
 
 })();
+
