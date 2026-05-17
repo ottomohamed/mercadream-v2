@@ -569,28 +569,6 @@ async function startProduction(){
     localStorage.setItem('md_assembly_videos',JSON.stringify(videoResults));
     scenes.forEach((s,i)=>log('Scene '+(i+1)+': '+s.title+' ('+((videoResults[i].options||[]).length)+' options)','ok'));
 
-    // Fetch Pexels videos for each scene
-    log('Fetching visuals from Pexels...', 'ok');
-    const videoResults = await Promise.all(videos.map(async (v,i)=>{
-      try{
-        const q = encodeURIComponent((v.keywords||'cinematic scene').substring(0,50));
-        const pr = await fetch('/api/pexels?q='+q+'&per_page=1');
-        if(!pr.ok) return v;
-        const pd = await pr.json();
-        const vid = pd.videos && pd.videos[0];
-        if(vid){
-          log('Scene '+(i+1)+' visual: found', 'ok');
-          return Object.assign({}, v, {url:vid.url, thumb:vid.thumb, status:'ready'});
-        }
-        return v;
-      }catch(e){
-        log('Scene '+(i+1)+' visual: error '+e.message, 'err');
-        return v;
-      }
-    }));
-
-    localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
-    scenes.forEach((s,i) => log('Scene '+(i+1)+': '+s.title+(videoResults[i].url?' ✓':''), 'ok'));
 
     setCockpit('<div style="font-size:24px;margin-bottom:6px">✅</div><span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px">6 SCENES READY</span>');
     addBot(TX[lang].done);
