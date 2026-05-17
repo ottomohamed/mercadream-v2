@@ -143,7 +143,7 @@
                 </h2>
 <span class="font-technical-sm text-on-surface-variant opacity-50">SCENE_SELECTION_MATRIX_v2.0</span>
 </div>
-<div class="space-y-4">
+<div class="space-y-4" id="scenes-container">
 <!-- Scene Rows -->
 <!-- Scene 01 -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center group">
@@ -444,7 +444,7 @@ function loadScenesFromStudio(){
 
 // ── Render all 6 scene rows ──
 function renderAllScenes(){
-  var container = document.querySelector('.space-y-4');
+  var container = document.getElementById('scenes-container');
   if(!container) return;
   container.innerHTML = '';
   state.scenes.forEach(function(scene,i){ renderSceneRow(i,scene,container); });
@@ -514,7 +514,7 @@ async function fetchOptions(sceneIdx){
     if(!state.selected[sceneIdx]&&state.options[sceneIdx].length){
       state.selected[sceneIdx]=state.options[sceneIdx][0];
     }
-    var container = document.querySelector('.space-y-4');
+    var container = document.getElementById('scenes-container');
     renderSceneRow(sceneIdx, state.scenes[sceneIdx], container);
     renderTimeline();
     updateFooter();
@@ -529,7 +529,7 @@ function selectOption(sceneIdx,vidIdx){
   var vid = state.options[sceneIdx]&&state.options[sceneIdx][vidIdx];
   if(!vid) return;
   state.selected[sceneIdx]=vid;
-  var container = document.querySelector('.space-y-4');
+  var container = document.getElementById('scenes-container');
   renderSceneRow(sceneIdx,state.scenes[sceneIdx],container);
   renderTimeline();
   updateFooter();
