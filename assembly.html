@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+﻿<html class="dark" lang="en"><head></head><body class="font-body-md flex flex-col font-technical-sm h-screen overflow-hidden" dir="ltr">```html
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
+
+    <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM Assembly Room v3.0</title>
+<title>MERCADREAM Assembly Room v5.1 PRO | Production Editor</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;family=Orbitron:wght@400;700&amp;family=Inter:wght@400;500&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -23,12 +23,8 @@
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
-        .surgical-line-v { width: 1px; height: 100%; background-color: #222222; }
-        .surgical-line-h { height: 1px; width: 100%; background-color: #222222; }
         .active-glow { box-shadow: 0 0 10px rgba(200, 255, 0, 0.3); }
-        .selection-gold { border-color: #ffba3f !important; }
         
-        /* Custom Scrollbar for Scenes */
         .custom-scrollbar-h::-webkit-scrollbar { height: 3px; }
         .custom-scrollbar-h::-webkit-scrollbar-track { background: #0e0e0e; }
         .custom-scrollbar-h::-webkit-scrollbar-thumb { background: #353534; }
@@ -38,27 +34,49 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #0e0e0e; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #353534; }
 
-        /* Filmstrip Effect */
         .filmstrip {
             background-image: radial-gradient(circle, #000 1px, transparent 1px);
             background-size: 100% 4px;
         }
+        
+        .text-3d {
+            text-shadow: 1px 1px 0px #c8ff00, 2px 2px 0px rgba(0,0,0,0.5);
+            transform: perspective(500px) rotateX(10deg);
+        }
 
-        /* Trim Handles */
-        .trim-handle {
-            width: 4px;
+        .dragging {
+            opacity: 0.5;
+            cursor: move;
+            border: 1px dashed #c8ff00 !important;
+        }
+
+        .render-log-item {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.2);
-            position: absolute;
-            top: 0;
-            cursor: col-resize;
-            transition: background-color 0.2s;
+            background: none;
+            cursor: pointer;
         }
-        .trim-handle:hover {
-            background-color: #ffba3f;
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; }
+
+        .player-visual-transition {
+            transition: opacity 0.15s ease-in-out;
         }
-        .trim-handle-l { left: 0; border-right: 1px solid rgba(0,0,0,0.3); }
-        .trim-handle-r { right: 0; border-left: 1px solid rgba(0,0,0,0.3); }
+        
+        .waveform-active {
+            stroke: #c8ff00;
+            filter: drop-shadow(0 0 2px #c8ff00);
+        }
     </style>
 <script id="tailwind-config">
         tailwind.config = {
@@ -91,7 +109,7 @@
                     fontFamily: {
                         "body-md": ["Inter", "Cairo"],
                         "label-xs": ["IBM Plex Mono"],
-                        "headline-lg": ["Orbitron"],
+                        "headline-lg": ["Sora", "Orbitron"],
                         "technical-sm": ["IBM Plex Mono"]
                     },
                     fontSize: {
@@ -104,8 +122,6 @@
             }
         }
     </script>
-</head>
-<body class="font-body-md flex flex-col font-technical-sm" dir="ltr">
 <!-- TOP APP BAR -->
 <header class="h-10 w-full flex justify-between items-center px-4 bg-surface-container border-b border-surface-variant z-50">
 <div class="flex items-center gap-4">
@@ -113,13 +129,13 @@
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
 <h1 class="font-headline-lg text-headline-lg text-primary tracking-tighter">
-            MERCADREAM <span class="text-neon-acid">|</span> <span class="font-normal opacity-80">ASSEMBLY ROOM v3.0</span>
+            MERCADREAM <span class="text-neon-acid">|</span> <span class="font-normal opacity-80 uppercase">Assembly Room v5.1 PRO</span>
 </h1>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2 px-3 py-1 bg-void-black border border-surface-variant">
 <span class="font-label-xs text-label-xs text-neon-acid">CREDITS:</span>
-<span class="font-label-xs text-label-xs text-white">2,450 CR</span>
+<span class="font-label-xs text-label-xs text-white" id="header-credits">2,450 CR</span>
 </div>
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-silver-technical cursor-pointer hover:text-neon-acid">settings</span>
@@ -132,173 +148,126 @@
 <!-- SIDEBAR: SCENES PANEL -->
 <aside class="w-[300px] bg-surface flex flex-col border-r border-surface-variant">
 <div class="h-10 px-4 flex items-center justify-between border-b border-surface-variant bg-surface-container-low">
-<span class="font-label-xs text-label-xs text-silver-technical uppercase">Scenes Panel</span>
+<span class="font-label-xs text-label-xs text-silver-technical uppercase">Asset Browser</span>
 <span class="material-symbols-outlined text-silver-technical text-sm">unfold_more</span>
 </div>
-<div class="flex-1 overflow-y-auto custom-scrollbar">
-<!-- SCENE GROUPS -->
-<div class="p-2 space-y-4">
-<!-- Scene 01 (Active) -->
-<section class="space-y-1">
-<div class="flex justify-between items-center px-2">
-<span class="font-label-xs text-label-xs text-cyber-gold">SCENE_01</span><span class="font-label-xs text-[8px] text-neon-acid/60 ml-2">NEURAL_V2</span>
-<span class="font-label-xs text-label-xs text-silver-technical">10.0s</span>
-</div>
-<div class="flex gap-1 px-1 overflow-x-auto custom-scrollbar-h pb-2">
-<div class="flex-shrink-0 relative w-24 aspect-video border border-cyber-gold bg-void-black">
-<img class="w-full h-full object-cover" data-alt="Cyberpunk interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX0PE5ILUxWtF53bWdzeJtMXjSw0f97cPtNU8gurdF-_AJTz1WwOJ95IsCtN3j4ZAjsaE0puXv_nbs-7pnDmPtCY70J2YjMdy-NouIW8qZgrHumJODS3lpSEUzIH4X89Ez1XI0bfzVTRqW4fzxheksUH5mHLk6vB9Dx6S3LuAg-fEf4Qw5d6MhAyIftZTYWtrCmVrPcTmkHI1iYrfGGSxXOn7hENIUGsQlW8-2dMIzo26rwH_i8qsyiQl6IVALEYW3WGrFhPHjJHs"/>
-</div>
-<div class="flex-shrink-0 relative w-24 aspect-video border border-surface-variant bg-void-black opacity-60">
-<img class="w-full h-full object-cover" data-alt="Workstation hardware" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRGvyOO_cmSQqo-ee9I1y4A5kLkw9p82bnsLbcT-K2RC4D71NVPzqKhXVi12qkKEPIEM2pOJV_NCZVKDbjjvvzmJ5q3OD47WNnZ4tQChSn89z6DgZ65zsa2MxpBCS6y_9-Ko1ext2FbuxFwVYKweHmmYYaDZ6SQvh3giEmEjeqhkETMGC12WIhrTeRDmGVOZj4YXLFV_7zDy_SePnEQAxp1z-yKOs8eoNJlalBx3IstB42XEiGeTytRNtJJPUuhC_Le2VkW8Vxxv4"/>
-</div>
-<div class="flex-shrink-0 relative w-24 aspect-video border border-surface-variant bg-void-black opacity-60">
-<img class="w-full h-full object-cover" data-alt="Abstract neural network" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEybm96AbcK5i-qdmfvFItE8ZroOpzj-5vAcerXUPz3iVeQD86OkBxooKFI4R0J161kjCEDVkfIp9Dx1JalkrCArciqt1Jbqc84PITT_3_OuQquDhiV3wgwTAYPpGl1LULe7sSU-7Fr2zTooQQoYp3daS5XjwL1E2NJ9q2YigsKK7go_ei8Om7GvrJ5FvaPRkNw2E_0Vo02XIyDbM3nl67dAU5WvS6FANCxtiBLhrwcZD5wL9XPdZ6uhopIWjJ3OJANbScGKEjwws"/>
-</div>
-<div class="flex-shrink-0 relative w-24 aspect-video border border-surface-variant bg-void-black opacity-60">
-<div class="w-full h-full flex items-center justify-center text-[10px] text-silver-technical">EXT_04</div>
-</div>
-</div>
-</section>
-<!-- Other Scenes -->
-<section class="space-y-1 opacity-80">
-<div class="flex justify-between items-center px-2">
-<span class="font-label-xs text-label-xs text-silver-technical">SCENE_02</span><span class="font-label-xs text-[8px] text-silver-technical/40 ml-2">4K_RAW</span>
-<span class="font-label-xs text-label-xs text-on-tertiary-container">10.0s</span>
-</div>
-<div class="flex gap-1 px-1 overflow-x-auto custom-scrollbar-h pb-2">
-<div class="flex-shrink-0 w-24 aspect-video border border-surface-variant bg-surface-container"></div>
-<div class="flex-shrink-0 w-24 aspect-video border border-surface-variant bg-surface-container"></div>
-<div class="flex-shrink-0 w-24 aspect-video border border-surface-variant bg-surface-container"></div>
-</div>
-</section>
-<section class="space-y-1 opacity-80">
-<div class="flex justify-between items-center px-2">
-<span class="font-label-xs text-label-xs text-silver-technical">SCENE_03</span><span class="font-label-xs text-[8px] text-silver-technical/40 ml-2">VFX_PRO_01</span>
-<span class="font-label-xs text-label-xs text-on-tertiary-container">10.0s</span>
-</div>
-<div class="flex gap-1 px-1 overflow-x-auto custom-scrollbar-h pb-2">
-<div class="flex-shrink-0 w-24 aspect-video border border-surface-variant bg-surface-container"></div>
-<div class="flex-shrink-0 w-24 aspect-video border border-surface-variant bg-surface-container"></div>
-</div>
-</section>
-</div>
-</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar" id="scenes-container"><div class="p-2 space-y-4" id="scenes-container"></div></div>
 </aside>
 <!-- CENTER PANEL: PLAYER + CONTROLS -->
 <div class="flex-1 flex flex-col bg-void-black">
 <!-- PREVIEW PLAYER -->
-<div class="flex-1 relative flex items-center justify-center p-8 bg-[#0a0a0a]">
-<div class="w-full max-w-4xl aspect-video bg-surface relative border border-surface-variant shadow-2xl overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="Futuristic control room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDiWITL_StE7TXEbm-bw38MZocm1SraGCOiaIU4c1A_1QFMOBSB4NaCvFLumwBYAOJxzZsB9jJmigDj38341VmqSTyq8jfAcGesvDtV9eJNZS6fGZfp8PNN6glE6uF5Z461tmLFx0hc3jqyp9-9OSgxiGIq_Z6l9W-7iXyhHfipeY8whXNCqivuXm_0uKgKFcvRAOU6WS9XY0ux9yOSUEm5RMvghS2a40NlvyU45KkZgO5hBCOE5SaqiSxVnM0Hxtm9_vr-r0zI_Q"/>
-<div class="scanline-overlay absolute inset-0"></div>
-<!-- Player HUD -->
+<div class="flex-1 relative flex items-center justify-center p-8 bg-[#0a0a0a]" id="player-container">
+<div class="w-full max-w-4xl aspect-video bg-surface relative border border-surface-variant shadow-2xl overflow-hidden" id="video-wrapper">
+<img alt="Main Preview" class="w-full h-full object-cover player-visual-transition" id="preview-player" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGy667x1FtBtD55fpcGIfB-dwmaC3kLg6plh0Wl4GMbLXlhfijTktREv81QxaS4THoIgTpqVIOV7djsgn5ogOhWWtBr4Vs2PvMWsL9r2q2GpCbw2yk27yFNPi3mXeefzg-kK1mQBf71NQKQaVAzgkCqh7plxTNgFHbxZNxQ6QSI2L6fg97J2NHbnwA3ypTn5FVCwYwPsFN2uUXEEBDMlRtyrq3qVBI6oJYm2z7Xr8j2CPS6xUcRbEHGjGoE4MOgDbLUlS4RsmM6nc"/>
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center transition-all duration-75 text-neon-acid font-headline-lg opacity-0" id="live-text-overlay"></div>
+<div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle,transparent_50%,rgba(0,0,0,0.4)_100%)] opacity-0" id="vignette-layer"></div>
+<div class="scanline-overlay absolute inset-0 opacity-20"></div>
 <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none">
 <div class="bg-void-black/80 px-2 py-1 border-l-2 border-neon-acid">
-<span class="font-label-xs text-label-xs text-neon-acid">SCENE_01 | 10.0s</span>
+<span class="font-label-xs text-label-xs text-neon-acid uppercase" id="preview-hud">SCENE_01 | 0.0s</span>
 </div>
-<span class="font-label-xs text-label-xs text-silver-technical bg-void-black/80 px-2">LIVE_FEED // 4K</span>
+<div class="flex gap-2">
+<span class="font-label-xs text-label-xs text-silver-technical bg-void-black/80 px-2 uppercase">PRO_ASSEMBLY // 4K</span>
+<button class="bg-void-black/80 p-1 pointer-events-auto hover:text-neon-acid text-silver-technical" id="fullscreen-toggle">
+<span class="material-symbols-outlined text-sm">fullscreen</span>
+</button>
 </div>
-<!-- Bottom Controls overlay -->
+</div>
 <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-void-black/90 to-transparent p-4 flex flex-col gap-3">
-<div class="w-full h-1 bg-surface-variant relative">
-<div class="absolute top-0 left-0 h-full w-1/3 bg-neon-acid"></div>
-<div class="absolute top-1/2 left-1/3 -translate-y-1/2 w-3 h-3 bg-neon-acid rounded-full active-glow"></div>
+<div class="w-full h-1 bg-surface-variant relative cursor-pointer" id="player-timeline-scrub">
+<div class="absolute top-0 left-0 h-full w-[0%] bg-neon-acid transition-all duration-75" id="player-progress-bar"></div>
+<div class="absolute top-1/2 left-[0%] -translate-y-1/2 w-3 h-3 bg-neon-acid rounded-full active-glow transition-all duration-75" id="player-progress-knob"></div>
 </div>
 <div class="flex justify-center items-center gap-6">
-<span class="material-symbols-outlined text-silver-technical cursor-pointer hover:text-white">skip_previous</span>
-<div class="w-10 h-10 flex items-center justify-center border border-neon-acid text-neon-acid cursor-pointer hover:bg-neon-acid/10">
-<span class="material-symbols-outlined">play_arrow</span>
-</div>
-<span class="material-symbols-outlined text-silver-technical cursor-pointer hover:text-white">skip_next</span>
+<span class="material-symbols-outlined text-silver-technical cursor-pointer hover:text-white" id="btn-skip-back">skip_previous</span>
+<button class="w-10 h-10 flex items-center justify-center border border-neon-acid text-neon-acid cursor-pointer hover:bg-neon-acid/10" id="play-pause-btn">
+<span class="material-symbols-outlined" id="play-icon">play_arrow</span>
+</button>
+<span class="material-symbols-outlined text-silver-technical cursor-pointer hover:text-white" id="btn-skip-forward">skip_next</span>
 </div>
 </div>
 </div>
 </div>
 <!-- AUDIO + TEXT CONTROLS -->
 <div class="h-64 bg-surface border-t border-surface-variant flex">
-<!-- Side Tabs -->
 <div class="w-12 border-r border-surface-variant flex flex-col bg-surface-container-low">
-<button class="flex-1 flex flex-col items-center justify-center border-b border-surface-variant text-neon-acid bg-surface-container-high border-r-2 border-neon-acid">
+<button class="flex-1 flex flex-col items-center justify-center border-b border-surface-variant text-neon-acid bg-surface-container-high border-r-2 border-neon-acid" id="tab-text">
 <span class="material-symbols-outlined">text_fields</span>
 </button>
-<button class="flex-1 flex flex-col items-center justify-center border-b border-surface-variant text-silver-technical hover:bg-surface-container">
+<button class="flex-1 flex flex-col items-center justify-center border-b border-surface-variant text-silver-technical hover:bg-surface-container" id="tab-audio">
 <span class="material-symbols-outlined">graphic_eq</span>
 </button>
 <button class="flex-1 flex flex-col items-center justify-center text-silver-technical hover:bg-surface-container">
 <span class="material-symbols-outlined">auto_fix_high</span>
 </button>
 </div>
-<!-- Unified Control Content -->
 <div class="flex-1 grid grid-cols-3 divide-x divide-surface-variant">
-<!-- TYPOGRAPHY ENGINE (Left) -->
-<div class="p-4 space-y-4">
-<div class="flex justify-between items-center mb-1">
+<div class="p-4 space-y-3" id="text-editor-panel">
+<div class="flex justify-between items-center">
 <span class="font-label-xs text-silver-technical uppercase text-[10px]">Typography Engine</span>
-<span class="text-[8px] text-neon-acid">READY_AR</span>
+<span class="text-[8px] text-neon-acid uppercase" id="selected-clip-id">NO CLIP SELECTED</span>
 </div>
-<div class="space-y-3">
-<input class="w-full bg-void-black border border-surface-variant text-neon-acid font-technical-sm px-3 py-1.5 outline-none focus:border-neon-acid font-body-md" dir="auto" placeholder="Enter Text / أدخل النص" type="text" value="NEURAL_PROCESSING_ACTIVE"/>
+<div class="space-y-2 opacity-30 pointer-events-none" id="text-controls-group">
+<input class="w-full bg-void-black border border-surface-variant text-neon-acid font-technical-sm px-3 py-1.5 outline-none focus:border-neon-acid font-body-md" id="overlay-text-input" placeholder="Select clip to edit..." type="text"/>
+<div class="grid grid-cols-2 gap-2">
+<div class="space-y-1">
+<span class="text-[8px] text-silver-technical uppercase">Size</span>
+<input class="w-full h-1 bg-surface-variant appearance-none cursor-pointer accent-neon-acid" id="font-size-slider" max="80" min="12" type="range" value="32"/>
+</div>
+<div class="space-y-1">
+<span class="text-[8px] text-silver-technical uppercase">Color</span>
+<div class="h-5 w-full bg-void-black border border-surface-variant relative overflow-hidden">
+<input class="absolute inset-0 opacity-0 cursor-pointer" id="text-color-picker" type="color" value="#c8ff00"/>
+<div class="absolute inset-0 pointer-events-none" id="color-preview" style="background-color: #c8ff00"></div>
+</div>
+</div>
+</div>
 <div class="flex gap-2 h-7">
-<button class="flex-1 text-[9px] bg-neon-acid text-void-black font-bold uppercase">2D FLAT</button>
-<button class="flex-1 text-[9px] border border-surface-variant text-silver-technical uppercase">3D VOL</button>
+<button class="flex-1 text-[9px] border border-surface-variant text-silver-technical uppercase transition-all" id="btn-text-2d">2D FLAT</button>
+<button class="flex-1 text-[9px] border border-surface-variant text-silver-technical uppercase transition-all" id="btn-text-3d">3D VOL</button>
 </div>
-<div class="grid grid-cols-3 gap-1">
-<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant">TOP_L</button>
-<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant">TOP_C</button>
-<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant">TOP_R</button>
-<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant">MID_L</button>
-<button class="h-6 bg-cyber-gold text-void-black text-[8px]">CENTER</button>
-<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant">MID_R</button>
+<div class="grid grid-cols-3 gap-1" id="text-align-grid">
+<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant" data-pos="top-4 left-4">TOP_L</button>
+<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant" data-pos="top-4 left-1/2 -translate-x-1/2">TOP_C</button>
+<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant" data-pos="top-4 right-4">TOP_R</button>
+<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant" data-pos="top-1/2 left-4 -translate-y-1/2">MID_L</button>
+<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant" data-pos="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">CENTER</button>
+<button class="h-6 border border-surface-variant text-[8px] hover:bg-surface-variant" data-pos="top-1/2 right-4 -translate-y-1/2">MID_R</button>
 </div>
 </div>
 </div>
-<!-- AUDIO SUITE (Center) -->
 <div class="p-4 space-y-3">
-<span class="font-label-xs text-silver-technical uppercase text-[10px] block mb-1">Audio Library &amp; Mix</span>
-<div class="space-y-2 overflow-y-auto max-h-24 custom-scrollbar">
-<div class="flex justify-between items-center bg-void-black p-1.5 border border-surface-variant/30">
-<span class="text-[9px] text-white">CINEMATIC_ORCH.WAV</span>
-<div class="flex gap-2">
-<span class="material-symbols-outlined text-neon-acid text-xs cursor-pointer">play_circle</span>
-<span class="material-symbols-outlined text-silver-technical text-xs cursor-pointer">add</span>
-</div>
-</div>
-<div class="flex justify-between items-center bg-void-black p-1.5 border border-surface-variant/30 opacity-60">
-<span class="text-[9px] text-white">DEEP_SYNTH_DRONE.MP3</span>
-<div class="flex gap-2">
-<span class="material-symbols-outlined text-silver-technical text-xs cursor-pointer">play_circle</span>
-<span class="material-symbols-outlined text-silver-technical text-xs cursor-pointer">add</span>
-</div>
+<span class="font-label-xs text-silver-technical uppercase text-[10px] block">Global Settings</span>
+<div class="space-y-4">
+<div class="space-y-2">
+<span class="text-[8px] text-silver-technical uppercase">Video Transitions</span>
+<div class="flex gap-1">
+<button class="flex-1 h-7 border border-neon-acid bg-neon-acid/10 text-neon-acid text-[8px] uppercase" id="trans-fade">Cross Fade</button>
+<button class="flex-1 h-7 border border-surface-variant text-silver-technical text-[8px] uppercase" id="trans-cut">Cut</button>
 </div>
 </div>
 <div class="space-y-2">
-<div class="flex items-center gap-2">
-<span class="text-[8px] w-8 text-silver-technical">MST</span>
-<div class="flex-1 h-1 bg-surface-variant"><div class="w-3/4 h-full bg-cyber-gold"></div></div>
-</div>
-<div class="flex items-center gap-2">
-<span class="text-[8px] w-8 text-silver-technical">SFX</span>
-<div class="flex-1 h-1 bg-surface-variant"><div class="w-1/2 h-full bg-neon-acid"></div></div>
+<div class="flex justify-between text-[8px] text-silver-technical"><span>MASTER VOLUME</span><span id="volume-value">80%</span></div>
+<input class="w-full h-1 bg-surface-variant appearance-none cursor-pointer accent-neon-acid" id="volume-slider" max="100" min="0" type="range" value="80"/>
 </div>
 </div>
 </div>
-<!-- MASTER FX NODE (Right) -->
-<div class="p-4 space-y-4">
-<span class="font-label-xs text-silver-technical uppercase text-[10px] block mb-1">Master FX Node</span>
+<div class="p-4 space-y-3">
+<span class="font-label-xs text-silver-technical uppercase text-[10px] block">Master FX Node</span>
 <div class="grid grid-cols-2 gap-2">
-<button class="h-8 border border-neon-acid text-neon-acid text-[9px] flex items-center justify-center gap-2 bg-neon-acid/5">
+<button class="h-8 border border-surface-variant text-silver-technical text-[9px] flex items-center justify-center gap-2 transition-all" id="neural-grain-toggle">
 <span class="material-symbols-outlined text-xs">grain</span> NEURAL GRAIN
                         </button>
-<button class="h-8 border border-surface-variant text-silver-technical text-[9px] flex items-center justify-center gap-2">
+<button class="h-8 border border-surface-variant text-silver-technical text-[9px] flex items-center justify-center gap-2" id="anamorphic-toggle">
 <span class="material-symbols-outlined text-xs">flare</span> ANAMORPHIC
                         </button>
 </div>
-<div class="space-y-2 pt-2">
-<div class="flex justify-between text-[8px] text-silver-technical"><span>VIGNETTE INTENSITY</span><span>40%</span></div>
-<div class="h-1 bg-surface-variant"><div class="w-[40%] h-full bg-neon-acid"></div></div>
+<div class="space-y-2 pt-1">
+<div class="flex justify-between text-[8px] text-silver-technical"><span>VIGNETTE INTENSITY</span><span id="vignette-value">0%</span></div>
+<input class="w-full h-1 bg-surface-variant appearance-none cursor-pointer accent-neon-acid" id="vignette-slider" max="100" min="0" type="range" value="0"/>
 </div>
-<div class="flex justify-end pt-2">
-<button class="bg-white text-void-black text-[9px] px-3 py-1 font-bold">BYPASS ALL</button>
+<div class="flex justify-end pt-1">
+<button class="bg-white text-void-black text-[9px] px-3 py-1 font-bold uppercase hover:bg-silver-technical" id="bypass-fx">BYPASS ALL</button>
 </div>
 </div>
 </div>
@@ -307,7 +276,6 @@
 </main>
 <!-- TIMELINE SECTION -->
 <section class="h-56 w-full bg-void-black border-t border-surface-variant relative flex flex-col overflow-hidden font-label-xs">
-<!-- Timeline Toolbar -->
 <div class="h-8 border-b border-surface-variant flex items-center px-2 bg-surface-container-lowest gap-4">
 <div class="flex items-center gap-1 border-r border-surface-variant pr-4">
 <button class="p-1 text-silver-technical hover:text-neon-acid"><span class="material-symbols-outlined text-sm">near_me</span></button>
@@ -315,40 +283,25 @@
 <button class="p-1 text-silver-technical hover:text-neon-acid"><span class="material-symbols-outlined text-sm">pan_tool</span></button>
 </div>
 <div class="font-label-xs text-[10px] text-neon-acid flex items-center gap-2">
-<span class="opacity-50">TC:</span> 00:00:21:14
-        </div>
+<span class="opacity-50">TC:</span> <span id="tc-display">00:00:00:00</span>
 </div>
-<!-- Time Ruler -->
+<div class="ml-auto flex items-center gap-2">
+<span class="text-[8px] text-silver-technical animate-pulse opacity-0" id="autosave-indicator">PRO_SAVED</span>
+</div>
+</div>
 <div class="h-6 w-full border-b border-surface-variant relative bg-surface-container-low flex items-end">
-<div class="w-24 flex-shrink-0 border-r border-surface-variant"></div>
-<div class="flex-1 relative h-full flex items-end">
-<!-- 0s - 60s markers -->
-<div class="absolute inset-0 flex justify-between px-1">
-<span class="text-[8px] text-silver-technical/60">00s</span>
-<span class="text-[8px] text-silver-technical/60">10s</span>
-<span class="text-[8px] text-silver-technical/60">20s</span>
+<div class="w-24 flex-shrink-0 border-r border-surface-variant h-full"></div>
+<div class="flex-1 relative h-full flex items-end" id="time-ruler">
+<div class="absolute inset-0 flex justify-between px-1 pointer-events-none">
+<span class="text-[8px] text-silver-technical/60">0s</span>
+<span class="text-[8px] text-silver-technical/60">15s</span>
 <span class="text-[8px] text-silver-technical/60">30s</span>
-<span class="text-[8px] text-silver-technical/60">40s</span>
-<span class="text-[8px] text-silver-technical/60">50s</span>
+<span class="text-[8px] text-silver-technical/60">45s</span>
 <span class="text-[8px] text-silver-technical/60">60s</span>
-</div>
-<!-- Sub-markers -->
-<div class="absolute inset-0 flex justify-between px-1 opacity-20 pointer-events-none">
-<div class="w-px h-2 bg-silver-technical ml-[5%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[15%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[25%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[35%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[45%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[55%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[65%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[75%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[85%]"></div>
-<div class="w-px h-2 bg-silver-technical ml-[95%]"></div>
 </div>
 </div>
 </div>
 <div class="flex w-full h-full relative">
-<!-- Tracks Labels -->
 <div class="w-24 border-r border-surface-variant flex flex-col bg-surface-container-low text-[9px] uppercase z-10">
 <div class="flex-1 border-b border-surface-variant px-2 flex items-center text-neon-acid justify-between">
 <span>T1 TEXT</span>
@@ -363,47 +316,17 @@
 <span class="material-symbols-outlined text-[10px] opacity-40">volume_up</span>
 </div>
 </div>
-<!-- Tracks Area -->
-<div class="flex-1 relative overflow-hidden bg-void-black">
-<!-- Global Playhead -->
-<div class="absolute left-[35%] top-0 bottom-0 w-[1px] bg-red-600 z-[60] shadow-[0_0_8px_rgba(220,38,38,0.8)] cursor-grab active:cursor-grabbing">
+<div class="flex-1 relative overflow-hidden bg-void-black" id="timeline-area">
+<div class="absolute left-[0%] top-0 bottom-0 w-px bg-red-600 z-[60] shadow-[0_0_8px_rgba(220,38,38,0.8)] cursor-grab active:cursor-grabbing" id="playhead">
 <div class="absolute -top-1.5 -left-[5px] w-[11px] h-[11px] bg-red-600 rotate-45"></div>
 </div>
-<!-- Text Track (T1) -->
-<div class="h-1/3 w-full border-b border-surface-variant/30 flex p-0.5 relative">
-<div class="ml-[30%] w-[40%] h-full bg-neon-acid/20 border border-neon-acid/40 rounded flex items-center px-2 text-[9px] text-neon-acid group relative overflow-hidden">
-<span class="font-body-md truncate">NEURAL_PROCESSING_ACTIVE</span>
-<div class="trim-handle trim-handle-l group-hover:bg-white/40"></div>
-<div class="trim-handle trim-handle-r group-hover:bg-white/40"></div>
-</div>
-</div>
-<!-- Video Track (V1) - Filmstrip Preview -->
-<div class="h-1/3 w-full border-b border-surface-variant/30 flex gap-0.5 p-0.5 relative">
-<div class="w-[30%] h-full border border-cyber-gold/50 relative overflow-hidden bg-surface-container-high group">
-<div class="absolute inset-0 flex filmstrip opacity-20"></div>
-<div class="flex h-full w-full opacity-60">
-<img class="h-full w-1/3 object-cover border-r border-void-black/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX0PE5ILUxWtF53bWdzeJtMXjSw0f97cPtNU8gurdF-_AJTz1WwOJ95IsCtN3j4ZAjsaE0puXv_nbs-7pnDmPtCY70J2YjMdy-NouIW8qZgrHumJODS3lpSEUzIH4X89Ez1XI0bfzVTRqW4fzxheksUH5mHLk6vB9Dx6S3LuAg-fEf4Qw5d6MhAyIftZTYWtrCmVrPcTmkHI1iYrfGGSxXOn7hENIUGsQlW8-2dMIzo26rwH_i8qsyiQl6IVALEYW3WGrFhPHjJHs"/>
-<img class="h-full w-1/3 object-cover border-r border-void-black/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRGvyOO_cmSQqo-ee9I1y4A5kLkw9p82bnsLbcT-K2RC4D71NVPzqKhXVi12qkKEPIEM2pOJV_NCZVKDbjjvvzmJ5q3OD47WNnZ4tQChSn89z6DgZ65zsa2MxpBCS6y_9-Ko1ext2FbuxFwVYKweHmmYYaDZ6SQvh3giEmEjeqhkETMGC12WIhrTeRDmGVOZj4YXLFV_7zDy_SePnEQAxp1z-yKOs8eoNJlalBx3IstB42XEiGeTytRNtJJPUuhC_Le2VkW8Vxxv4"/>
-<img class="h-full w-1/3 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEybm96AbcK5i-qdmfvFItE8ZroOpzj-5vAcerXUPz3iVeQD86OkBxooKFI4R0J161kjCEDVkfIp9Dx1JalkrCArciqt1Jbqc84PITT_3_OuQquDhiV3wgwTAYPpGl1LULe7sSU-7Fr2zTooQQoYp3daS5XjwL1E2NJ9q2YigsKK7go_ei8Om7GvrJ5FvaPRkNw2E_0Vo02XIyDbM3nl67dAU5WvS6FANCxtiBLhrwcZD5wL9XPdZ6uhopIWjJ3OJANbScGKEjwws"/>
-</div>
-<div class="trim-handle trim-handle-l group-hover:bg-cyber-gold/80"></div>
-<div class="trim-handle trim-handle-r group-hover:bg-cyber-gold/80"></div>
-</div>
-<div class="w-[20%] h-full border border-surface-variant/30 bg-surface-container opacity-40 group relative overflow-hidden">
-<div class="absolute inset-0 flex filmstrip opacity-10"></div>
-<div class="trim-handle trim-handle-l group-hover:bg-white/40"></div>
-<div class="trim-handle trim-handle-r group-hover:bg-white/40"></div>
-</div>
-</div>
-<!-- Audio Track (A1) - Detailed Waveform -->
+<div class="h-1/3 w-full border-b border-surface-variant/30 flex p-0.5 relative" id="text-track-container"></div>
+<div class="h-1/3 w-full border-b border-surface-variant/30 flex gap-0.5 p-0.5 relative" id="video-track"></div>
 <div class="h-1/3 w-full flex p-0.5 relative">
-<div class="w-[80%] h-full bg-silver-technical/10 border border-silver-technical/20 relative group overflow-hidden">
-<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 40">
-<!-- Symmetric waveform -->
-<path d="M0,20 L10,12 L20,28 L30,10 L40,32 L50,15 L60,25 L70,5 L80,35 L90,18 L100,22 L110,8 L120,38 L130,12 L140,28 L150,5 L160,35 L170,15 L180,25 L190,10 L200,30 L210,15 L220,25 L230,5 L240,35 L250,18 L260,22 L270,8 L280,38 L290,12 L300,28 L310,5 L320,35 L330,15 L340,25 L350,10 L360,30 L370,15 L380,25 L390,5 L400,35 L410,18 L420,22 L430,8 L440,38 L450,12 L460,28 L470,5 L480,35 L490,15 L500,25 L510,10 L520,30 L530,15 L540,25 L550,5 L560,35 L570,18 L580,22 L590,8 L600,38 L610,12 L620,28 L630,5 L640,35 L650,15 L660,25 L670,10 L680,30 L690,15 L700,25 L710,5 L720,35 L730,18 L740,22 L750,8 L760,38 L770,12 L780,28 L790,5 L800,35 L810,15 L820,25 L830,10 L840,30 L850,15 L860,25 L870,5 L880,35 L890,18 L900,22 L910,8 L920,38 L930,12 L940,28 L950,5 L960,35 L970,15 L980,25 L990,10 L1000,30" fill="none" opacity="0.6" stroke="#c8c6c5" stroke-width="0.5"></path>
+<div class="w-full h-full bg-silver-technical/10 border border-silver-technical/20 relative group overflow-hidden" id="audio-track-clip">
+<svg class="w-full h-full" id="waveform-svg" preserveaspectratio="none" viewbox="0 0 1000 40">
+<path d="M0,20 L10,12 L20,28 L30,10 L40,32 L50,15 L60,25 L70,5 L80,35 L90,18 L100,22 L110,8 L120,38 L130,12 L140,28 L150,5 L160,35 L170,15 L180,25 L190,10 L200,30 L210,15 L220,25 L230,5 L240,35 L250,18 L260,22 L270,8 L280,38 L290,12 L300,28 L310,5 L320,35 L330,15 L340,25 L350,10 L360,30 L370,15 L380,25 L390,5 L400,35 L410,18 L420,22 L430,8 L440,38 L450,12 L460,28 L470,5 L480,35 L490,15 L500,25 L510,10 L520,30 L530,15 L540,25 L550,5 L560,35 L570,18 L580,22 L590,8 L600,38 L610,12 L620,28 L630,5 L640,35 L650,15 L660,25 L670,10 L680,30 L690,15 L700,25 L710,5 L720,35 L730,18 L740,22 L750,8 L760,38 L770,12 L780,28 L790,5 L800,35 L810,15 L820,25 L830,10 L840,30 L850,15 L860,25 L870,5 L880,35 L890,18 L900,22 L910,8 L920,38 L930,12 L940,28 L950,5 L960,35 L970,15 L980,25 L990,10 L1000,30" fill="none" id="waveform-path" opacity="0.6" stroke="#c8c6c5" stroke-width="0.5"></path>
 </svg>
-<div class="trim-handle trim-handle-l group-hover:bg-white/40"></div>
-<div class="trim-handle trim-handle-r group-hover:bg-white/40"></div>
 </div>
 </div>
 </div>
@@ -413,167 +336,644 @@
 <footer class="h-9 w-full flex justify-between items-center px-4 bg-void-black border-t border-surface-variant z-50">
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-neon-acid animate-pulse"></span>
-<span class="font-label-xs text-label-xs text-silver-technical uppercase">System Status: Nominal</span>
+<span class="w-2 h-2 rounded-full bg-neon-acid animate-pulse" id="system-status-orb"></span>
+<span class="font-label-xs text-label-xs text-silver-technical uppercase" id="system-status-text">System Status: Nominal</span>
 </div>
 <div class="flex gap-4 border-l border-surface-variant pl-4">
-<span class="font-label-xs text-label-xs text-on-tertiary-container">TOTAL 60s</span>
-<span class="font-label-xs text-label-xs text-on-tertiary-container">1080p</span>
-<span class="font-label-xs text-label-xs text-on-tertiary-container">16:9</span>
+<span class="font-label-xs text-label-xs text-on-tertiary-container uppercase">TOTAL 60s</span>
+<span class="font-label-xs text-label-xs text-on-tertiary-container uppercase">1080p</span>
+<span class="font-label-xs text-label-xs text-on-tertiary-container uppercase">16:9</span>
 </div>
 </div>
 <div class="flex items-center h-full">
-<button class="h-full px-4 font-label-xs text-label-xs text-silver-technical hover:text-white hover:bg-surface-variant transition-all border-l border-surface-variant">
+<button class="h-full px-4 font-label-xs text-label-xs text-silver-technical hover:text-white hover:bg-surface-variant transition-all border-l border-surface-variant uppercase" id="btn-preview">
             PREVIEW
         </button>
-<button class="h-full px-6 bg-neon-acid text-void-black font-headline-lg text-[12px] flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all">
+<button class="h-full px-6 bg-neon-acid text-void-black font-headline-lg text-[12px] flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all uppercase" id="btn-build">
 <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
             BUILD &amp; EXPORT
         </button>
 </div>
 </footer>
-<!-- SCANLINE GLOBAL OVERLAY -->
+<!-- EXPORT OVERLAY -->
+<div class="fixed inset-0 bg-void-black/90 z-[200] hidden items-center justify-center backdrop-blur-sm p-4" id="export-modal">
+<div class="max-w-md w-full border border-neon-acid bg-surface p-6 flex flex-col gap-6">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-lg text-neon-acid">RENDER_INITIATED</h3>
+<p class="text-[10px] text-silver-technical uppercase mt-1">Transaction ID: <span id="tx-id">#PRO-99812</span></p>
+</div>
+<span class="text-cyber-gold font-technical-sm">COST: 50 CR</span>
+</div>
+<div class="hidden flex flex-col gap-4" id="render-content">
+<div class="h-1 w-full bg-surface-container-high relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-neon-acid transition-all duration-300 w-0" id="render-progress-bar"></div>
+</div>
+<div class="h-32 bg-void-black border border-surface-variant p-2 font-technical-sm text-[9px] text-neon-acid/80 overflow-y-auto custom-scrollbar flex flex-col gap-1" id="render-log"></div>
+<div class="hidden pt-4" id="download-wrap">
+<button class="w-full text-center bg-cyber-gold text-void-black py-2 font-bold uppercase text-[10px] hover:brightness-110" id="download-trigger">Download Production Manifest</button>
+</div>
+</div>
+<div class="flex flex-col gap-6" id="confirmation-content">
+<p class="text-body-md text-silver-technical">Generate high-fidelity build package? This will export full project state as JSON.</p>
+<div class="flex gap-4">
+<button class="flex-1 border border-surface-variant py-2 text-silver-technical uppercase text-[10px]" id="cancel-export">Abort</button>
+<button class="flex-1 bg-neon-acid text-void-black py-2 font-bold uppercase text-[10px]" id="confirm-export">Confirm &amp; Build</button>
+</div>
+</div>
+</div>
+</div>
 <div class="scanline-overlay fixed inset-0 pointer-events-none z-[100] opacity-30"></div>
-<script src="/js/navigation.js"></script>
+<!-- Real Audio Object -->
+<audio id="main-audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 <script>
-var state={scenes:[],options:{},selected:{},currentScene:0,textTitle:'MERCADREAM PRODUCTION'};
+    const STORAGE_KEY = 'mercadream_pro_v5.1_stable';
+    
+    let AppState = {
+        credits: 2450,
+        isPlaying: false,
+        currentTime: 0, // 0 to 100
+        totalDuration: 60,
+        vignette: 0,
+        neuralGrain: false,
+        transitionType: 'fade',
+        volume: 80,
+        selectedTextClipId: null,
+        videoClips: [
+            { id: Date.now() + 1, node: 1, start: 0, duration: 15, src: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800" },
+            { id: Date.now() + 2, node: 2, start: 15, duration: 20, src: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&q=80&w=800" },
+            { id: Date.now() + 3, node: 3, start: 35, duration: 25, src: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800" }
+        ],
+        textClips: [
+            { 
+                id: 'text_' + Date.now(), 
+                start: 5, 
+                duration: 10, 
+                content: "NEURAL_PROCESSING_ACTIVE", 
+                fontSize: 32, 
+                color: "#c8ff00", 
+                is3D: false, 
+                posClasses: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" 
+            }
+        ]
+    };
 
-function init(){
-  loadSaved();
-  var av=JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
-  var ss=JSON.parse(localStorage.getItem('md_6scenes')||'[]');
-  state.scenes=av.length?av:ss;
-  if(!state.scenes.length){showNoScenes();return;}
-  state.scenes.forEach(function(s,i){
-    if(s.options&&s.options.length){state.options[i]=s.options;if(!state.selected[i])state.selected[i]=s.options[0];}
-    else if(s.url){state.options[i]=[{id:s.id||i,url:s.url,thumb:s.thumb,duration:s.duration||10}];if(!state.selected[i])state.selected[i]=state.options[i][0];}
-  });
-  renderScenesPanel();
-  renderTimeline();
-  updateCredits();
-  if(state.selected[0])loadPreview(state.selected[0],0);
-}
+    const els = {
+        credits: document.getElementById('header-credits'),
+        playPauseBtn: document.getElementById('play-pause-btn'),
+        playIcon: document.getElementById('play-icon'),
+        playhead: document.getElementById('playhead'),
+        timelineArea: document.getElementById('timeline-area'),
+        tcDisplay: document.getElementById('tc-display'),
+        overlayText: document.getElementById('live-text-overlay'),
+        textInput: document.getElementById('overlay-text-input'),
+        fontSizeSlider: document.getElementById('font-size-slider'),
+        textColorPicker: document.getElementById('text-color-picker'),
+        colorPreview: document.getElementById('color-preview'),
+        btn2D: document.getElementById('btn-text-2d'),
+        btn3D: document.getElementById('btn-text-3d'),
+        alignButtons: document.querySelectorAll('#text-align-grid button'),
+        vignetteSlider: document.getElementById('vignette-slider'),
+        vignetteLayer: document.getElementById('vignette-layer'),
+        grainToggle: document.getElementById('neural-grain-toggle'),
+        playerVisual: document.getElementById('main-player-visual'),
+        sceneLabel: document.getElementById('current-scene-label'),
+        playerProgressBar: document.getElementById('player-progress-bar'),
+        playerProgressKnob: document.getElementById('player-progress-knob'),
+        playerScrubArea: document.getElementById('player-timeline-scrub'),
+        videoTrack: document.getElementById('video-track-container'),
+        textTrack: document.getElementById('text-track-container'),
+        audio: document.getElementById('main-audio'),
+        waveform: document.getElementById('waveform-path'),
+        exportBtn: document.getElementById('export-button'),
+        exportModal: document.getElementById('export-modal'),
+        confirmExport: document.getElementById('confirm-export'),
+        cancelExport: document.getElementById('cancel-export'),
+        renderBar: document.getElementById('render-progress-bar'),
+        renderLog: document.getElementById('render-log'),
+        volumeSlider: document.getElementById('volume-slider'),
+        volumeValue: document.getElementById('volume-value'),
+        addTextBtn: document.getElementById('add-text-clip-btn'),
+        skipBack: document.getElementById('btn-skip-back'),
+        skipForward: document.getElementById('btn-skip-forward')
+    };
 
-function showNoScenes(){
-  var p=document.querySelector('aside .flex-1.overflow-y-auto')||document.querySelector('aside');
-  if(p)p.innerHTML='<div style="padding:20px;text-align:center;color:#666;font-family:IBM Plex Mono,monospace;font-size:10px">NO SCENES<br><br><button onclick="window.location.href='studio.html'" style="background:#c8ff00;color:#000;border:none;padding:6px 12px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer">→ STUDIO</button></div>';
-}
 
-function renderScenesPanel(){
-  var panel=document.querySelector('aside .p-2.space-y-4')||document.querySelector('aside .flex-1 .p-2');
-  if(!panel)return;
-  panel.innerHTML='';
-  state.scenes.forEach(function(scene,i){
-    var opts=state.options[i]||[];
-    var sel=state.selected[i];
-    var isActive=state.currentScene===i;
-    var title=(scene.title||'Scene '+(i+1)).replace(/Scene \d+\/6: /,'').substring(0,18);
-    var thumbs=opts.length?opts.map(function(vid,j){
-      var isSel=sel&&sel.id===vid.id;
-      return '<div onclick="selectClip('+i+','+j+')" style="flex-shrink:0;width:96px;aspect-ratio:16/9;border:1px solid '+(isSel?'#ffba3f':'#353534')+';cursor:pointer;position:relative;overflow:hidden">'+(vid.thumb?'<img src="'+vid.thumb+'" style="width:100%;height:100%;object-fit:cover;opacity:'+(isSel?'1':'0.5')+'">'+'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);padding:1px 4px;font-family:IBM Plex Mono,monospace;font-size:7px;color:'+(isSel?'#ffba3f':'#fff')+'">'+(isSel?'✓ ':'')+(vid.duration||10)+'s</div>':'<div style="width:100%;height:100%;background:#1c1b1b;display:flex;align-items:center;justify-content:center;color:#434933;font-size:8px">NO VID</div>')+'</div>';
-    }).join(''):'<button id="fetch-btn-'+i+'" onclick="fetchOptions('+i+')" style="flex-shrink:0;height:54px;padding:0 12px;background:rgba(200,255,0,.1);border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer">FETCH CLIPS</button>';
-    var sec=document.createElement('section');
-    sec.className='space-y-1';
-    sec.id='scene-sec-'+i;
-    sec.style.opacity=isActive?'1':'0.75';
-    sec.innerHTML='<div onclick="setActive('+i+')" style="display:flex;justify-content:space-between;align-items:center;padding:0 8px;cursor:pointer"><div style="display:flex;align-items:center;gap:6px"><span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:'+(isActive?'#ffba3f':'#c8c6c5')+'">S0'+(i+1)+'</span><span style="font-family:IBM Plex Mono,monospace;font-size:8px;color:'+(isActive?'#c8ff00':'#434933')+'">'+title+'</span></div><span style="font-family:IBM Plex Mono,monospace;font-size:9px;color:#434933">10s</span></div><div style="display:flex;gap:4px;padding:2px 4px 6px;overflow-x:auto">'+thumbs+'</div>';
-    panel.appendChild(sec);
-  });
-  if(!document.getElementById('fetch-all-btn')){
-    var h=document.querySelector('aside .h-10')||document.querySelector('aside header');
-    if(h){var b=document.createElement('button');b.id='fetch-all-btn';b.textContent='⚡ ALL';b.style.cssText='font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;background:#c8ff00;color:#000;border:none;padding:2px 8px;cursor:pointer;margin-left:auto';b.onclick=fetchAllScenes;h.appendChild(b);}
-  }
-}
+    // ── PEXELS LOADER — Load scenes from Studio ──
+    async function loadFromStudio() {
+        const assemblyVideos = JSON.parse(localStorage.getItem('md_assembly_videos') || '[]');
+        const studioScenes   = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+        const scenes = assemblyVideos.length ? assemblyVideos : studioScenes;
 
-function setActive(i){state.currentScene=i;var s=state.selected[i];if(s)loadPreview(s,i);renderScenesPanel();}
+        // Update credits from localStorage
+        const savedCredits = parseInt(localStorage.getItem('md_credits') || '0');
+        if(savedCredits) AppState.credits = savedCredits;
 
-function selectClip(si,vi){
-  var vid=state.options[si]&&state.options[si][vi];
-  if(!vid)return;
-  state.selected[si]=vid;state.currentScene=si;
-  loadPreview(vid,si);renderScenesPanel();renderTimeline();saveProgress();
-}
+        if (!scenes.length) {
+            console.log('No scenes found — using demo clips');
+            return;
+        }
 
-function loadPreview(vid,si){
-  var player=document.querySelector('.w-full.max-w-4xl.aspect-video')||document.querySelector('[class*="aspect-video"]');
-  if(!player)return;
-  var hud=player.querySelector('.text-neon-acid');
-  if(hud)hud.textContent='SCENE_0'+(si+1)+' | 10.0s';
-  if(vid.url){
-    var old=player.querySelector('video');if(old)old.remove();
-    var img=player.querySelector('img');if(img)img.style.display='none';
-    var v=document.createElement('video');
-    v.src=vid.url;v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1';
-    v.autoplay=true;v.muted=true;v.loop=true;
-    player.appendChild(v);
-  }else if(vid.thumb){var img=player.querySelector('img');if(img){img.src=vid.thumb;img.style.display='';}}
-}
+        // Build scenes panel
+        renderScenesPanel(scenes);
 
-function renderTimeline(){
-  var tracks=document.querySelectorAll('[class*="h-1/3"]');
-  var videoTrack=tracks[1];
-  if(!videoTrack)return;
-  videoTrack.innerHTML='';
-  videoTrack.style.cssText='height:33%;width:100%;border-bottom:1px solid rgba(53,53,52,.3);display:flex;padding:2px;gap:2px;position:relative';
-  var pct=Math.floor(100/Math.max(state.scenes.length,1));
-  state.scenes.forEach(function(scene,i){
-    var sel=state.selected[i];
-    var d=document.createElement('div');
-    d.style.cssText='width:'+pct+'%;height:100%;border:1px solid '+(sel?'#ffba3f':'#353534')+';position:relative;overflow:hidden;cursor:pointer;background:'+(sel?'#0d0d00':'#060606');
-    d.onclick=function(){setActive(i);};
-    if(sel&&sel.thumb)d.innerHTML='<img src="'+sel.thumb+'" style="width:100%;height:100%;object-fit:cover;opacity:0.6"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.8);padding:1px 3px;font-family:IBM Plex Mono,monospace;font-size:7px;color:#ffba3f">S'+(i+1)+'</div>';
-    else d.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:IBM Plex Mono,monospace;font-size:8px;color:#434933">S'+(i+1)+'</div>';
-    videoTrack.appendChild(d);
-  });
-}
+        // If scenes already have Pexels options, load them into timeline
+        const hasVideos = scenes.some(s => s.url || (s.options && s.options.length));
+        if (hasVideos) {
+            loadVideosIntoTimeline(scenes);
+        }
+    }
 
-async function fetchOptions(si){
-  var scene=state.scenes[si];if(!scene)return;
-  var kw=(scene.keywords||scene.title||scene.prompt||'cinematic').replace(/Scene \d+\/6: /g,'').substring(0,60);
-  var btn=document.getElementById('fetch-btn-'+si);
-  if(btn){btn.textContent='LOADING...';btn.disabled=true;}
-  try{
-    var r=await fetch('/api/pexels?q='+encodeURIComponent(kw)+'&per_page=3');
-    var d=await r.json();
-    state.options[si]=(d.videos||[]).map(function(v){return{id:v.id,url:v.url,thumb:v.thumb,duration:v.duration};});
-    if(!state.selected[si]&&state.options[si].length)state.selected[si]=state.options[si][0];
-    renderScenesPanel();renderTimeline();saveProgress();
-    if(state.currentScene===si&&state.selected[si])loadPreview(state.selected[si],si);
-  }catch(e){if(btn){btn.textContent='RETRY';btn.disabled=false;}}
-}
+    // ── Render Scenes Panel ──
+    function renderScenesPanel(scenes) {
+        const container = document.getElementById('scenes-container');
+        if (!container) return;
+        container.innerHTML = '';
 
-async function fetchAllScenes(){
-  for(var i=0;i<state.scenes.length;i++){if(!state.options[i]||!state.options[i].length)await fetchOptions(i);}
-}
+        // Add FETCH ALL button
+        const fetchAll = document.createElement('button');
+        fetchAll.textContent = '⚡ FETCH ALL CLIPS';
+        fetchAll.style.cssText = 'width:100%;padding:6px;background:#c8ff00;color:#000;border:none;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer;margin-bottom:8px';
+        fetchAll.onclick = () => fetchAllScenes(scenes);
+        container.appendChild(fetchAll);
 
-function updateCredits(){
-  var c=parseInt(localStorage.getItem('md_credits')||'0');
-  var el=document.querySelector('.text-white.font-label-xs');
-  if(el)el.textContent=c.toLocaleString()+' CR';
-}
+        scenes.forEach((scene, i) => {
+            const opts = scene.options || (scene.url ? [{id:i,url:scene.url,thumb:scene.thumb,duration:scene.duration||10}] : []);
+            const title = (scene.title||'Scene '+(i+1)).replace(/Scene \d+\/6: /,'').substring(0,20);
 
-function saveProgress(){localStorage.setItem('md_asm_v3',JSON.stringify({selected:state.selected,options:state.options}));}
-function loadSaved(){var s=localStorage.getItem('md_asm_v3');if(s){try{var d=JSON.parse(s);state.selected=d.selected||{};state.options=d.options||{};}catch(e){}}}
+            const sec = document.createElement('div');
+            sec.id = 'scene-sec-'+i;
+            sec.style.cssText = 'padding:4px 0;border-bottom:1px solid #222';
 
-function buildExport(){
-  var keys=Object.keys(state.selected);
-  if(!keys.length){alert('Select at least one clip.');return;}
-  var film={scenes:keys.sort().map(function(i){var v=state.selected[i];return{scene:parseInt(i)+1,url:v.url,thumb:v.thumb,duration:v.duration||10};}),title:state.textTitle,created:new Date().toISOString()};
-  localStorage.setItem('md_final_film',JSON.stringify(film));
-  var m=document.createElement('div');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center';
-  m.innerHTML='<div style="font-family:Orbitron,monospace;font-size:20px;color:#c8ff00;margin-bottom:8px">⚡ FILM READY</div><div style="font-family:IBM Plex Mono,monospace;font-size:11px;color:#888;margin-bottom:24px">'+film.scenes.length+' SCENES × 10s = '+film.scenes.length*10+'s</div><div style="display:flex;gap:12px"><button onclick="var b=new Blob([localStorage.getItem('md_final_film')],{type:'application/json'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='mercadream-film.json';a.click()" style="padding:12px 24px;background:#c8ff00;border:none;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;cursor:pointer;color:#000">⬇ DOWNLOAD</button><button onclick="this.closest('div').remove()" style="padding:12px 24px;background:transparent;border:1px solid #434933;font-family:IBM Plex Mono,monospace;font-size:10px;cursor:pointer;color:#888">CLOSE</button></div>';
-  document.body.appendChild(m);
-}
+            const label = document.createElement('div');
+            label.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:2px 8px;cursor:pointer';
+            label.innerHTML = '<span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:#ffba3f">S0'+(i+1)+'</span><span style="font-family:IBM Plex Mono,monospace;font-size:8px;color:#434933">'+title+'</span>';
+            sec.appendChild(label);
 
-window.addEventListener('load',function(){
-  init();
-  var backBtn=document.querySelector('header button');if(backBtn)backBtn.onclick=function(){window.location.href='studio.html';};
-  var buildBtn=document.querySelector('footer button:last-child');if(buildBtn)buildBtn.onclick=buildExport;
-  var tin=document.querySelector('input[placeholder*="Enter Text"]');
-  if(tin)tin.oninput=function(){state.textTitle=tin.value;var tc=document.querySelector('.text-neon-acid.font-body-md');if(tc)tc.textContent=tin.value;};
-  var playBtn=document.querySelector('.w-10.h-10.flex.items-center.justify-center.border.border-neon-acid');
-  if(playBtn)playBtn.onclick=function(){var v=document.querySelector('.w-full.max-w-4xl video');if(v){if(v.paused)v.play();else v.pause();}};
-  if(window.MD)window.MD.updateCredits();
-});
+            const thumbsRow = document.createElement('div');
+            thumbsRow.style.cssText = 'display:flex;gap:3px;padding:2px 4px;overflow-x:auto';
+
+            if (opts.length) {
+                opts.forEach((vid, j) => {
+                    const card = document.createElement('div');
+                    card.style.cssText = 'flex-shrink:0;width:88px;aspect-ratio:16/9;border:1px solid #353534;cursor:pointer;position:relative;overflow:hidden';
+                    card.onclick = () => addToTimeline(vid, i, scene);
+                    card.innerHTML = vid.thumb
+                        ? '<img src="'+vid.thumb+'" style="width:100%;height:100%;object-fit:cover;opacity:0.7"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.8);padding:1px 3px;font-family:IBM Plex Mono,monospace;font-size:7px;color:#ffba3f">'+(vid.duration||10)+'s ▶ ADD</div>'
+                        : '<div style="width:100%;height:100%;background:#1c1b1b;display:flex;align-items:center;justify-content:center;color:#434933;font-size:8px">NO VID</div>';
+                    thumbsRow.appendChild(card);
+                });
+            } else {
+                const btn = document.createElement('button');
+                btn.id = 'fetch-btn-'+i;
+                btn.textContent = 'FETCH 3 CLIPS';
+                btn.style.cssText = 'padding:4px 10px;background:rgba(200,255,0,.1);border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer';
+                btn.onclick = () => fetchScene(scene, i, scenes);
+                thumbsRow.appendChild(btn);
+            }
+
+            sec.appendChild(thumbsRow);
+            container.appendChild(sec);
+        });
+    }
+
+    // ── Add clip to timeline ──
+    function addToTimeline(vid, sceneIdx, scene) {
+        const startTime = sceneIdx * 10;
+        // Remove existing clip at same start
+        AppState.videoClips = AppState.videoClips.filter(c => Math.abs(c.start - startTime) > 1);
+        AppState.videoClips.push({
+            id: Date.now() + sceneIdx,
+            node: sceneIdx + 1,
+            start: startTime,
+            duration: vid.duration || 10,
+            src: vid.thumb || '',
+            url: vid.url || '',
+            title: scene.title || 'Scene '+(sceneIdx+1)
+        });
+        AppState.videoClips.sort((a,b) => a.start - b.start);
+        renderTimeline();
+        saveState();
+
+        // Update preview
+        const previewImg = document.getElementById('preview-player');
+        const previewHud = document.getElementById('preview-hud');
+        if(previewImg && vid.thumb) previewImg.src = vid.thumb;
+        if(previewHud) previewHud.textContent = 'SCENE_0'+(sceneIdx+1)+' | '+(vid.duration||10)+'s';
+    }
+
+    // ── Load existing videos into timeline ──
+    function loadVideosIntoTimeline(scenes) {
+        AppState.videoClips = [];
+        scenes.forEach((scene, i) => {
+            const opts = scene.options || (scene.url ? [{url:scene.url,thumb:scene.thumb,duration:scene.duration||10}] : []);
+            if(opts[0]) {
+                AppState.videoClips.push({
+                    id: Date.now() + i,
+                    node: i + 1,
+                    start: i * 10,
+                    duration: opts[0].duration || 10,
+                    src: opts[0].thumb || '',
+                    url: opts[0].url || '',
+                    title: scene.title || 'Scene '+(i+1)
+                });
+            }
+        });
+        renderTimeline();
+    }
+
+    // ── Fetch scene options ──
+    async function fetchScene(scene, i, allScenes) {
+        const btn = document.getElementById('fetch-btn-'+i);
+        if(btn) { btn.textContent='LOADING...'; btn.disabled=true; }
+        const kw = (scene.keywords||scene.title||scene.prompt||'cinematic').replace(/Scene \d+\/6: /g,'').substring(0,60);
+        try {
+            const r = await fetch('/api/pexels?q='+encodeURIComponent(kw)+'&per_page=3');
+            const d = await r.json();
+            scene.options = (d.videos||[]).map(v=>({id:v.id,url:v.url,thumb:v.thumb,duration:v.duration}));
+            if(scene.options[0]) { scene.url=scene.options[0].url; scene.thumb=scene.options[0].thumb; }
+            // Save updated scenes
+            const av = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
+            if(av[i]) { av[i].options=scene.options; av[i].url=scene.url; av[i].thumb=scene.thumb; localStorage.setItem('md_assembly_videos',JSON.stringify(av)); }
+            renderScenesPanel(allScenes);
+            loadVideosIntoTimeline(allScenes);
+        } catch(e) { if(btn){btn.textContent='RETRY';btn.disabled=false;} }
+    }
+
+    async function fetchAllScenes(scenes) {
+        for(let i=0; i<scenes.length; i++) {
+            if(!scenes[i].url && !(scenes[i].options&&scenes[i].options.length)) {
+                await fetchScene(scenes[i], i, scenes);
+            }
+        }
+    }
+
+    function init() {
+        loadState();
+        loadFromStudio();
+        setupEventListeners();
+        requestAnimationFrame(playbackLoop);
+    }
+
+    function loadState() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) AppState = { ...AppState, ...JSON.parse(saved) };
+        AppState.isPlaying = false; // Never start auto-playing
+        syncFromAppState();
+        renderTimeline();
+    }
+
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(AppState));
+        const indicator = document.getElementById('autosave-indicator');
+        indicator.classList.remove('opacity-0');
+        setTimeout(() => indicator.classList.add('opacity-0'), 1000);
+    }
+
+    function syncFromAppState() {
+        els.credits.textContent = `${AppState.credits.toLocaleString()} CR`;
+        els.vignetteLayer.style.opacity = AppState.vignette / 100;
+        els.audio.volume = AppState.volume / 100;
+        els.volumeValue.textContent = `${AppState.volume}%`;
+        els.volumeSlider.value = AppState.volume;
+        els.vignetteSlider.value = AppState.vignette;
+        document.getElementById('vignette-value').textContent = `${AppState.vignette}%`;
+
+        if (AppState.neuralGrain) {
+            els.grainToggle.classList.add('bg-neon-acid/20', 'border-neon-acid', 'text-neon-acid');
+            els.playerVisual.style.filter = 'contrast(1.2) brightness(1.1) saturate(1.2)';
+        } else {
+            els.grainToggle.classList.remove('bg-neon-acid/20', 'border-neon-acid', 'text-neon-acid');
+            els.playerVisual.style.filter = 'none';
+        }
+
+        syncPlayerUI();
+    }
+
+    function renderTimeline() {
+        els.videoTrack.innerHTML = '';
+        AppState.videoClips.forEach(clip => {
+            const clipEl = document.createElement('div');
+            clipEl.className = 'video-clip absolute h-full border border-cyber-gold/30 bg-surface-container-high group cursor-move overflow-hidden';
+            clipEl.style.left = `${(clip.start / AppState.totalDuration) * 100}%`;
+            clipEl.style.width = `${(clip.duration / AppState.totalDuration) * 100}%`;
+            
+            clipEl.innerHTML = `
+                <div class="absolute inset-0 flex filmstrip opacity-10"></div>
+                <img src="${clip.src}" class="h-full w-full object-cover opacity-40 group-hover:opacity-60 pointer-events-none">
+                <div class="absolute top-0 left-1 text-[7px] text-cyber-gold opacity-50 uppercase">NODE_${clip.node}</div>
+                <div class="trim-handle trim-left absolute left-0 top-0 w-1.5 h-full bg-white/10 hover:bg-neon-acid/50 cursor-col-resize z-10" data-id="${clip.id}" data-side="left" data-type="video"></div>
+                <div class="trim-handle trim-right absolute right-0 top-0 w-1.5 h-full bg-white/10 hover:bg-neon-acid/50 cursor-col-resize z-10" data-id="${clip.id}" data-side="right" data-type="video"></div>
+            `;
+            els.videoTrack.appendChild(clipEl);
+        });
+
+        els.textTrack.innerHTML = '';
+        AppState.textClips.forEach(clip => {
+            const clipEl = document.createElement('div');
+            const isActive = AppState.selectedTextClipId === clip.id;
+            clipEl.className = `text-clip absolute h-full border ${isActive ? 'border-neon-acid bg-neon-acid/30' : 'border-neon-acid/40 bg-neon-acid/10'} rounded flex items-center px-2 group cursor-move`;
+            clipEl.style.left = `${(clip.start / AppState.totalDuration) * 100}%`;
+            clipEl.style.width = `${(clip.duration / AppState.totalDuration) * 100}%`;
+            
+            clipEl.innerHTML = `
+                <span class="text-[9px] text-neon-acid truncate pointer-events-none uppercase">${clip.content}</span>
+                <div class="trim-handle trim-left absolute left-0 top-0 w-1.5 h-full bg-white/10 hover:bg-white/40 cursor-col-resize z-10" data-id="${clip.id}" data-side="left" data-type="text"></div>
+                <div class="trim-handle trim-right absolute right-0 top-0 w-1.5 h-full bg-white/10 hover:bg-white/40 cursor-col-resize z-10" data-id="${clip.id}" data-side="right" data-type="text"></div>
+            `;
+
+            clipEl.onmousedown = (e) => {
+                if(e.target.classList.contains('trim-handle')) return;
+                AppState.selectedTextClipId = clip.id;
+                renderTimeline();
+                updateTextControls();
+            };
+            
+            els.textTrack.appendChild(clipEl);
+        });
+    }
+
+    function updateTextControls() {
+        const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+        const group = document.getElementById('text-controls-group');
+        const idLabel = document.getElementById('selected-clip-id');
+        
+        if (!clip) {
+            idLabel.textContent = "NO CLIP SELECTED";
+            group.classList.add('opacity-30', 'pointer-events-none');
+            return;
+        }
+
+        idLabel.textContent = `SELECTED: CLIP_${clip.id.toString().slice(-4)}`;
+        group.classList.remove('opacity-30', 'pointer-events-none');
+        
+        els.textInput.value = clip.content;
+        els.fontSizeSlider.value = clip.fontSize;
+        els.textColorPicker.value = clip.color;
+        els.colorPreview.style.backgroundColor = clip.color;
+        
+        els.btn2D.className = `flex-1 text-[9px] border border-surface-variant uppercase transition-all ${!clip.is3D ? 'bg-neon-acid text-void-black font-bold' : 'text-silver-technical'}`;
+        els.btn3D.className = `flex-1 text-[9px] border border-surface-variant uppercase transition-all ${clip.is3D ? 'bg-neon-acid text-void-black font-bold' : 'text-silver-technical'}`;
+    }
+
+    function syncPlayerUI() {
+        const pct = AppState.currentTime;
+        const totalSecs = (pct / 100) * AppState.totalDuration;
+        
+        els.playhead.style.left = `${pct}%`;
+        els.playerProgressBar.style.width = `${pct}%`;
+        els.playerProgressKnob.style.left = `${pct}%`;
+
+        const mm = Math.floor(totalSecs / 60).toString().padStart(2, '0');
+        const ss = Math.floor(totalSecs % 60).toString().padStart(2, '0');
+        const ff = Math.floor((totalSecs % 1) * 30).toString().padStart(2, '0');
+        els.tcDisplay.textContent = `00:${mm}:${ss}:${ff}`;
+
+        const currentClip = AppState.videoClips.find(c => totalSecs >= c.start && totalSecs < (c.start + c.duration));
+        if (currentClip) {
+            if (els.playerVisual.src !== currentClip.src) {
+                els.playerVisual.src = currentClip.src;
+                els.sceneLabel.textContent = `SCENE_NODE_${currentClip.node} | ${totalSecs.toFixed(1)}s`;
+            }
+        }
+
+        const activeText = AppState.textClips.find(c => totalSecs >= c.start && totalSecs < (c.start + c.duration));
+        if (activeText) {
+            els.overlayText.style.opacity = 1;
+            els.overlayText.textContent = activeText.content;
+            els.overlayText.style.fontSize = `${activeText.fontSize}px`;
+            els.overlayText.style.color = activeText.color;
+            els.overlayText.className = `absolute inset-0 pointer-events-none flex items-center justify-center transition-all duration-75 font-headline-lg ${activeText.posClasses} ${activeText.is3D ? 'text-3d' : ''}`;
+        } else {
+            els.overlayText.style.opacity = 0;
+        }
+
+        if (AppState.isPlaying && !isNaN(els.audio.duration)) {
+            const targetTime = (pct / 100) * Math.min(els.audio.duration, AppState.totalDuration);
+            if (Math.abs(els.audio.currentTime - targetTime) > 0.3) {
+                els.audio.currentTime = targetTime;
+            }
+            els.waveform.classList.add('waveform-active');
+        } else {
+            els.waveform.classList.remove('waveform-active');
+        }
+    }
+
+    function playbackLoop() {
+        if (AppState.isPlaying) {
+            AppState.currentTime += (0.016 / AppState.totalDuration) * 100; // ~60fps
+            if (AppState.currentTime >= 100) {
+                AppState.currentTime = 0;
+                if (!els.audio.paused) els.audio.currentTime = 0;
+            }
+            syncPlayerUI();
+        }
+        requestAnimationFrame(playbackLoop);
+    }
+
+    function setupEventListeners() {
+        els.playPauseBtn.onclick = () => {
+            AppState.isPlaying = !AppState.isPlaying;
+            els.playIcon.textContent = AppState.isPlaying ? 'pause' : 'play_arrow';
+            if (AppState.isPlaying) {
+                els.audio.play().catch(() => console.log('Audio wait user gesture'));
+            } else {
+                els.audio.pause();
+            }
+            saveState();
+        };
+
+        els.skipBack.onclick = () => { AppState.currentTime = 0; syncPlayerUI(); };
+        els.skipForward.onclick = () => { AppState.currentTime = 99.9; syncPlayerUI(); };
+
+        let isDraggingPlayhead = false;
+        let dragInfo = null;
+
+        const getTimelinePct = (clientX) => {
+            const rect = els.timelineArea.getBoundingClientRect();
+            return Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        };
+
+        window.onmousedown = (e) => {
+            if (e.target.closest('#playhead') || e.target.closest('#player-timeline-scrub')) {
+                isDraggingPlayhead = true;
+            }
+            if (e.target.classList.contains('trim-handle')) {
+                dragInfo = {
+                    id: e.target.dataset.id,
+                    side: e.target.dataset.side,
+                    type: e.target.dataset.type
+                };
+            }
+        };
+
+        window.onmousemove = (e) => {
+            if (isDraggingPlayhead) {
+                AppState.currentTime = getTimelinePct(e.clientX);
+                syncPlayerUI();
+            }
+            if (dragInfo) {
+                const pct = getTimelinePct(e.clientX);
+                const sec = (pct / 100) * AppState.totalDuration;
+                const list = dragInfo.type === 'video' ? AppState.videoClips : AppState.textClips;
+                const clip = list.find(c => c.id == dragInfo.id);
+                if (clip) {
+                    if (dragInfo.side === 'left') {
+                        const end = clip.start + clip.duration;
+                        clip.start = Math.min(sec, end - 0.5);
+                        clip.duration = end - clip.start;
+                    } else {
+                        clip.duration = Math.max(0.5, sec - clip.start);
+                    }
+                    renderTimeline();
+                }
+            }
+        };
+
+        window.onmouseup = () => {
+            if (isDraggingPlayhead || dragInfo) saveState();
+            isDraggingPlayhead = false;
+            dragInfo = null;
+        };
+
+        // Sidebar Drag & Drop
+        document.querySelectorAll('.scene-asset').forEach(asset => {
+            asset.ondragstart = (e) => {
+                e.dataTransfer.setData('node', asset.dataset.node);
+                e.dataTransfer.setData('src', asset.dataset.src);
+                asset.classList.add('opacity-40');
+            };
+            asset.ondragend = () => asset.classList.remove('opacity-40');
+        });
+
+        els.timelineArea.ondragover = (e) => e.preventDefault();
+        els.timelineArea.ondrop = (e) => {
+            e.preventDefault();
+            const node = e.dataTransfer.getData('node');
+            const src = e.dataTransfer.getData('src');
+            if (!node || !src) return;
+
+            const pct = getTimelinePct(e.clientX);
+            const start = (pct / 100) * AppState.totalDuration;
+            
+            AppState.videoClips.push({
+                id: Date.now(),
+                node: parseInt(node),
+                start: start,
+                duration: 10,
+                src: src
+            });
+            renderTimeline();
+            saveState();
+        };
+
+        // Controls
+        els.textInput.oninput = (e) => {
+            const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+            if (clip) { clip.content = e.target.value; syncPlayerUI(); renderTimeline(); saveState(); }
+        };
+        els.fontSizeSlider.oninput = (e) => {
+            const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+            if (clip) { clip.fontSize = parseInt(e.target.value); syncPlayerUI(); saveState(); }
+        };
+        els.textColorPicker.oninput = (e) => {
+            const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+            if (clip) { clip.color = e.target.value; els.colorPreview.style.backgroundColor = clip.color; syncPlayerUI(); saveState(); }
+        };
+        els.btn2D.onclick = () => {
+            const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+            if (clip) { clip.is3D = false; updateTextControls(); syncPlayerUI(); saveState(); }
+        };
+        els.btn3D.onclick = () => {
+            const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+            if (clip) { clip.is3D = true; updateTextControls(); syncPlayerUI(); saveState(); }
+        };
+        els.alignButtons.forEach(btn => {
+            btn.onclick = () => {
+                const clip = AppState.textClips.find(c => c.id === AppState.selectedTextClipId);
+                if (clip) { clip.posClasses = btn.dataset.pos; syncPlayerUI(); saveState(); }
+            };
+        });
+
+        els.volumeSlider.oninput = (e) => {
+            AppState.volume = parseInt(e.target.value);
+            els.audio.volume = AppState.volume / 100;
+            els.volumeValue.textContent = `${AppState.volume}%`;
+            saveState();
+        };
+
+        els.vignetteSlider.oninput = (e) => {
+            AppState.vignette = parseInt(e.target.value);
+            els.vignetteLayer.style.opacity = AppState.vignette / 100;
+            document.getElementById('vignette-value').textContent = `${AppState.vignette}%`;
+            saveState();
+        };
+
+        els.grainToggle.onclick = () => {
+            AppState.neuralGrain = !AppState.neuralGrain;
+            syncFromAppState();
+            saveState();
+        };
+
+        els.addTextBtn.onclick = () => {
+            const newId = 'text_' + Date.now();
+            AppState.textClips.push({
+                id: newId,
+                start: (AppState.currentTime / 100) * AppState.totalDuration,
+                duration: 5,
+                content: "NEW_TEXT_BLOCK",
+                fontSize: 24,
+                color: "#ffffff",
+                is3D: false,
+                posClasses: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            });
+            AppState.selectedTextClipId = newId;
+            renderTimeline();
+            updateTextControls();
+            saveState();
+        };
+
+        // Export Logic
+        els.exportBtn.onclick = () => {
+            els.exportModal.classList.replace('hidden', 'flex');
+            document.getElementById('confirmation-content').classList.remove('hidden');
+            document.getElementById('render-content').classList.add('hidden');
+        };
+
+        els.cancelExport.onclick = () => els.exportModal.classList.replace('flex', 'hidden');
+
+        els.confirmExport.onclick = async () => {
+            document.getElementById('confirmation-content').classList.add('hidden');
+            document.getElementById('render-content').classList.remove('hidden');
+            
+            const logs = [
+                "Initializing neural render pipeline v5.1...",
+                "Baking scene geometry and lighting nodes...",
+                "Encoding h.265 cinematic stream...",
+                "Assembling manifest layers (V1, T1, A1)...",
+                "Finalizing encryption headers...",
+                "EXPORT READY."
+            ];
+
+            let progress = 0;
+            for (let i = 0; i < logs.length; i++) {
+                const logItem = document.createElement('div');
+                logItem.className = "render-log-item";
+                logItem.textContent = `> ${logs[i]}`;
+                els.renderLog.appendChild(logItem);
+                els.renderLog.scrollTop = els.renderLog.scrollHeight;
+                
+                progress += (100 / logs.length);
+                els.renderBar.style.width = `${progress}%`;
+                await new Promise(r => setTimeout(r, 600));
+            }
+
+            document.getElementById('download-wrap').classList.remove('hidden');
+        };
+
+        document.getElementById('download-trigger').onclick = () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(AppState, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "mercadream-film-manifest.json");
 </script></body></html>
