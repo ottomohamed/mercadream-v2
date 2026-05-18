@@ -1,0 +1,582 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM SINGULARITY v3.0</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #020202;
+            color: #e5e2e1;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+        }
+        .acid-glow {
+            text-shadow: 0 0 10px rgba(200, 255, 0, 0.5);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 240, 255, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ffb4ab",
+                      "on-background": "#e5e2e1",
+                      "tertiary-fixed": "#f2daff",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "on-primary-container": "#546d00",
+                      "on-error-container": "#ffdad6",
+                      "panel-glass": "rgba(10, 10, 10, 0.6)",
+                      "glow-green": "rgba(200, 255, 0, 0.3)",
+                      "secondary-fixed-dim": "#00dbe9",
+                      "on-secondary-fixed": "#002022",
+                      "surface-container-high": "#2a2a2a",
+                      "on-tertiary-fixed": "#2e004d",
+                      "on-error": "#690005",
+                      "surface-tint": "#a8d700",
+                      "error-container": "#93000a",
+                      "multiverse-purple": "#a300ff",
+                      "secondary-container": "#00eefc",
+                      "outline": "#8e9479",
+                      "on-surface-variant": "#c4caac",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-dim": "#141313",
+                      "primary-fixed": "#c0f500",
+                      "secondary": "#d3fbff",
+                      "surface-container-highest": "#353434",
+                      "surface": "#141313",
+                      "secondary-fixed": "#7df4ff",
+                      "on-surface": "#e5e2e1",
+                      "tertiary-container": "#f2daff",
+                      "outline-variant": "#434933",
+                      "surface-container-low": "#1c1b1b",
+                      "on-tertiary-fixed-variant": "#6d00ac",
+                      "surface-bright": "#3a3939",
+                      "primary-container": "#c0f500",
+                      "neural-cyan": "#00f0ff",
+                      "tertiary-fixed-dim": "#e1b6ff",
+                      "background": "#141313",
+                      "inverse-primary": "#4f6600",
+                      "on-primary": "#273500",
+                      "void-black": "#020202",
+                      "acid-green": "#c8ff00",
+                      "surface-container": "#201f1f",
+                      "on-secondary-container": "#00686f",
+                      "on-secondary-fixed-variant": "#004f54",
+                      "primary-fixed-dim": "#a8d700",
+                      "on-primary-fixed": "#161f00",
+                      "primary": "#ffffff",
+                      "inverse-on-surface": "#313030",
+                      "tertiary": "#ffffff",
+                      "on-tertiary-container": "#9800ee",
+                      "on-tertiary": "#4c007b",
+                      "grid-line": "rgba(0, 240, 255, 0.1)",
+                      "surface-container-lowest": "#0e0e0e",
+                      "on-secondary": "#00363a",
+                      "surface-variant": "#353434",
+                      "cyber-gold": "#ffba3f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin": "40px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Space Grotesk"],
+                      "label-caps": ["IBM Plex Mono"],
+                      "body-main": ["Inter"],
+                      "readout-data": ["IBM Plex Mono"],
+                      "headline-lg-mobile": ["Space Grotesk"],
+                      "headline-xl": ["Space Grotesk"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "body-main": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "readout-data": ["16px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-void-black text-on-surface font-body-main selection:bg-acid-green selection:text-void-black h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin h-16 z-50 bg-panel-glass backdrop-blur-md border-b border-grid-line/20 shadow-[0_0_20px_rgba(200,255,0,0.15)]">
+<div class="flex items-center gap-6">
+<span class="font-headline-lg text-headline-lg font-bold text-acid-green tracking-tighter uppercase">MERCADREAM SINGULARITY v3.0</span>
+<div class="flex items-center gap-2 border-l border-grid-line/40 pl-6 h-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-acid-green/10 rounded-full border border-acid-green/30">
+<span class="w-2 h-2 rounded-full bg-acid-green shadow-[0_0_8px_#c8ff00]"></span>
+<span class="font-label-caps text-label-caps text-acid-green">UPLINK SECURE</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-cyber-gold/10 rounded-full border border-cyber-gold/30">
+<span class="material-symbols-outlined text-[14px] text-cyber-gold">encrypted</span>
+<span class="font-label-caps text-label-caps text-cyber-gold">OMEGA LEVEL</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-acid-green border-b-2 border-acid-green font-bold px-2 py-1 font-label-caps text-label-caps" href="#">Neural Stream</a>
+<a class="text-on-surface-variant font-medium px-2 py-1 font-label-caps text-label-caps hover:text-acid-green transition-colors" href="#">Quantum Preview</a>
+<a class="text-on-surface-variant font-medium px-2 py-1 font-label-caps text-label-caps hover:text-acid-green transition-colors" href="#">Timeline</a>
+<a class="text-on-surface-variant font-medium px-2 py-1 font-label-caps text-label-caps hover:text-acid-green transition-colors" href="#">Modulation</a>
+</nav>
+<div class="flex items-center gap-4 border-l border-grid-line/40 pl-6 h-6">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">settings_input_component</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">terminal</span>
+<span class="material-symbols-outlined text-acid-green cursor-pointer" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+</div>
+</div>
+</header>
+<main class="flex-grow flex overflow-hidden">
+<!-- Left Sidebar: PhD Neural Mesh -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px-180px)] w-72 flex flex-col border-r border-grid-line/20 bg-panel-glass backdrop-blur-xl z-40">
+<div class="p-6 border-b border-grid-line/10">
+<div class="flex flex-col">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-acid-green font-black">NEURAL STREAM</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant tracking-[0.2em]">PHD AGENT OVERRIDE</span>
+</div>
+</div>
+<div class="flex-grow overflow-y-auto p-4 space-y-4">
+<!-- Agent Feed Items -->
+<div class="space-y-6">
+<!-- Stream 1 -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<span class="font-label-caps text-[11px] text-acid-green">Quantum Gravity</span>
+<span class="font-readout-data text-[10px] text-on-surface-variant">0.998 Hz</span>
+</div>
+<div class="h-4 bg-void-black border border-grid-line/20 relative overflow-hidden">
+<div class="absolute inset-0 flex items-center gap-1 px-1">
+<div class="h-2 w-1 bg-acid-green/60"></div><div class="h-1 w-1 bg-acid-green/40"></div><div class="h-2 w-2 bg-acid-green"></div><div class="h-1 w-1 bg-acid-green/20"></div><div class="h-3 w-1 bg-acid-green"></div><div class="h-1 w-1 bg-acid-green/40"></div><div class="h-2 w-1 bg-acid-green/60"></div><div class="h-1 w-1 bg-acid-green/30"></div><div class="h-1 w-2 bg-acid-green/10"></div><div class="h-3 w-1 bg-acid-green/80"></div>
+<div class="h-2 w-1 bg-acid-green/60"></div><div class="h-1 w-1 bg-acid-green/40"></div><div class="h-2 w-2 bg-acid-green"></div><div class="h-1 w-1 bg-acid-green/20"></div><div class="h-3 w-1 bg-acid-green"></div>
+</div>
+</div>
+</div>
+<!-- Stream 2 -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<span class="font-label-caps text-[11px] text-on-surface">Temporal Flux</span>
+<span class="font-readout-data text-[10px] text-on-surface-variant">Σ-Δ: 4.2</span>
+</div>
+<div class="h-4 bg-void-black border border-grid-line/20 relative overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-2/3 bg-acid-green/20"></div>
+<div class="absolute top-0 right-1/4 h-full w-[2px] bg-acid-green shadow-[0_0_8px_#c8ff00]"></div>
+</div>
+</div>
+<!-- Stream 3 -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<span class="font-label-caps text-[11px] text-on-surface">Molecular Synthesis</span>
+<span class="font-readout-data text-[10px] text-on-surface-variant">BOUND</span>
+</div>
+<div class="h-12 bg-void-black border border-grid-line/20 p-1">
+<div class="grid grid-cols-10 grid-rows-3 gap-1 h-full">
+<div class="bg-acid-green/40"></div><div class="bg-acid-green"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/60"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/80"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/40"></div>
+<div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/5"></div><div class="bg-acid-green/30"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/5"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/10"></div>
+<div class="bg-acid-green/20"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/80"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/60"></div>
+</div>
+</div>
+</div>
+<!-- Agents 4-10 collapsed for info density -->
+<div class="space-y-1 opacity-60">
+<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
+<span class="material-symbols-outlined text-[14px]">psychology</span>
+<span class="font-label-caps text-[10px]">COGNITIVE ECHO</span>
+</div>
+<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
+<span class="material-symbols-outlined text-[14px]">robot_2</span>
+<span class="font-label-caps text-[10px]">AGENT ALPHA</span>
+</div>
+<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
+<span class="material-symbols-outlined text-[14px]">dynamic_form</span>
+<span class="font-label-caps text-[10px]">SUBROUTINE BETA</span>
+</div>
+<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
+<span class="material-symbols-outlined text-[14px]">visibility_off</span>
+<span class="font-label-caps text-[10px]">GHOST PROTOCOL</span>
+</div>
+<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
+<span class="material-symbols-outlined text-[14px]">hub</span>
+<span class="font-label-caps text-[10px]">NEURAL MESH</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-grid-line/20 bg-void-black/40">
+<button class="w-full py-3 bg-acid-green text-void-black font-label-caps text-label-caps font-black hover:shadow-[0_0_20px_#c8ff00] transition-all active:scale-95">
+                    INITIATE UPLINK
+                </button>
+<div class="mt-4 flex justify-between items-center opacity-70">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span class="font-label-caps text-[9px]">DIAGNOSTICS</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-[9px]">LOGOFF</span>
+<span class="material-symbols-outlined text-[18px]">logout</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Center: The Singularity Core -->
+<section class="flex-grow ml-72 mr-80 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05)_0%,transparent_70%)]">
+<!-- Background Grid Layer -->
+<div class="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
+<div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 40px 40px;"></div>
+<!-- Main Hero: 3D Wireframe Form (Represented via High-Tech Image) -->
+<div class="absolute inset-0 flex items-center justify-center p-gutter">
+<div class="relative w-full h-full max-w-4xl max-h-[716px]">
+<img alt="Singularity Core Humanoid" class="w-full h-full object-contain opacity-80 mix-blend-screen grayscale brightness-125" data-alt="A high-fidelity 3D wireframe mesh of a human male figure, composed of glowing neon acid green digital lines and neural connection nodes. The figure is suspended in a dark, infinite virtual void with floating data fragments and crystalline reality splinters drifting around it. The lighting is dramatic, coming from within the figure itself, casting a lime-green glow on its surroundings. Professional high-tech UI cyberpunk aesthetic with medical-grade technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl0wWq7FqhEQWOSJsSX08Jtk_EXF6uJPfLoMHI5dVaTE1Ndpi4b6sFt9JQtiBsMzX_tKENaAnSfMUKlKqIScSDpsZcj7EXuT1s8d07kWU-eHz30ZR16h2bfRaiPQq3UuRgIv1FIiURcDAQVtDa9TCAzxbK9xWO1P5PQqA4m__ENODitif2pj8QD1OpoDs-eL_bFLQT5CZcu_R9uQEWQqvzMYkZCr7XGViIGfEQSg-C19MoC5XqFutDFfAmnuZ0z5udBs_bHKmfSwc"/>
+<!-- Floating Data Fragments -->
+<div class="absolute top-[20%] left-[10%] p-3 glass-panel border-l-2 border-acid-green">
+<span class="block font-label-caps text-[10px] text-acid-green">REALITY SPLINTER #772</span>
+<span class="block font-readout-data text-[12px] text-on-surface">COORDINATE DRIFT DETECTED</span>
+</div>
+<div class="absolute bottom-[30%] right-[15%] p-3 glass-panel border-r-2 border-multiverse-purple">
+<span class="block font-label-caps text-[10px] text-multiverse-purple">QUANTUM LEAK</span>
+<span class="block font-readout-data text-[12px] text-on-surface">DECONSTRUCTION IN PROGRESS</span>
+</div>
+</div>
+</div>
+<!-- Live Coordinate Tracking UI -->
+<div class="absolute bottom-10 left-10 p-4 border border-grid-line/20 bg-void-black/60 backdrop-blur-md">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-[10px] text-on-surface-variant w-4">X</span>
+<span class="font-readout-data text-acid-green text-[14px]">442.9912.001</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-[10px] text-on-surface-variant w-4">Y</span>
+<span class="font-readout-data text-acid-green text-[14px]">881.0234.552</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-[10px] text-on-surface-variant w-4">Z</span>
+<span class="font-readout-data text-acid-green text-[14px]">-122.339.882</span>
+</div>
+<div class="pt-2 border-t border-grid-line/20">
+<span class="font-label-caps text-[10px] text-cyber-gold">TIME_INDEX: 4.09e-11s</span>
+</div>
+</div>
+</div>
+<!-- Viewport Legend -->
+<div class="absolute bottom-4 right-4 flex items-center gap-4 px-3 py-1 bg-void-black/80 border border-grid-line/30">
+<span class="font-label-caps text-[10px] text-on-surface-variant">LENS: NEURAL_EYE_01</span>
+<span class="font-label-caps text-[10px] text-acid-green">FOV: 110.00</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">FPS: 144.02</span>
+</div>
+</section>
+<!-- Right Sidebar: Dimension Controller -->
+<aside class="fixed right-0 top-16 h-[calc(100vh-64px-180px)] w-80 flex flex-col border-l border-grid-line/20 bg-panel-glass backdrop-blur-xl z-40">
+<div class="p-6 border-b border-grid-line/10 bg-void-black/20">
+<span class="font-label-caps text-[11px] text-on-surface-variant tracking-[0.3em] uppercase">Control Module</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">DIMENSION CONTROLLER</h2>
+</div>
+<div class="flex-grow p-6 space-y-8 overflow-y-auto">
+<!-- Slider: Event Horizon -->
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[11px] text-on-surface">Event Horizon Deviation</label>
+<span class="font-readout-data text-[12px] text-acid-green">14.02%</span>
+</div>
+<div class="relative h-1 bg-white/10 w-full">
+<div class="absolute top-0 left-0 h-full w-[14%] bg-acid-green"></div>
+<div class="absolute top-[-4px] left-[14%] w-3 h-3 bg-acid-green rounded-full shadow-[0_0_10px_#c8ff00]"></div>
+</div>
+</div>
+<!-- Slider: Quantum Entanglement -->
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[11px] text-on-surface">Entanglement Strength</label>
+<span class="font-readout-data text-[12px] text-neural-cyan">MAX</span>
+</div>
+<div class="relative h-1 bg-white/10 w-full">
+<div class="absolute top-0 left-0 h-full w-full bg-neural-cyan"></div>
+<div class="absolute top-[-4px] left-[98%] w-3 h-3 bg-neural-cyan rounded-full shadow-[0_0_10px_#00f0ff]"></div>
+</div>
+</div>
+<!-- Slider: Sub-Atomic Resolution -->
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[11px] text-on-surface">Sub-Atomic Resolution</label>
+<span class="font-readout-data text-[12px] text-on-surface-variant">0.0001Å</span>
+</div>
+<div class="flex gap-1 h-3">
+<div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-white/10"></div><div class="flex-grow bg-white/10"></div><div class="flex-grow bg-white/10"></div>
+</div>
+</div>
+<!-- Toggle: Reality Lock -->
+<div class="p-4 glass-panel border border-cyber-gold/20 flex justify-between items-center">
+<div>
+<span class="block font-label-caps text-[12px] text-cyber-gold">REALITY LOCK</span>
+<span class="block font-readout-data text-[10px] text-on-surface-variant">Preventing Cascading Failure</span>
+</div>
+<div class="w-12 h-6 bg-cyber-gold/20 border border-cyber-gold/50 rounded-full relative cursor-pointer">
+<div class="absolute top-1 left-1 w-4 h-4 bg-cyber-gold rounded-full"></div>
+</div>
+</div>
+<!-- Warning Panel -->
+<div class="p-4 border border-error/20 bg-error/5 flex gap-3">
+<span class="material-symbols-outlined text-error">warning</span>
+<div>
+<span class="block font-label-caps text-[10px] text-error font-bold uppercase">Anomaly Detected</span>
+<p class="font-body-main text-[11px] text-on-surface-variant leading-tight">Multiverse branch 092-A is showing signs of critical temporal erosion.</p>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-grid-line/20">
+<button class="w-full py-4 bg-void-black border-2 border-acid-green text-acid-green font-label-caps text-[14px] font-black tracking-[0.2em] hover:bg-acid-green hover:text-void-black transition-all group overflow-hidden relative">
+<span class="relative z-10">SYNTHESIZE_MULTIVERSE</span>
+<div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity translate-x-[-100%] group-hover:translate-x-[100%] duration-1000"></div>
+</button>
+</div>
+</aside>
+</main>
+<!-- Bottom Panel: Hyper-Timeline -->
+<footer class="fixed bottom-0 left-0 w-full h-[180px] bg-panel-glass border-t border-grid-line/30 backdrop-blur-xl z-50 flex flex-col">
+<div class="flex justify-between items-center px-6 py-3 border-b border-grid-line/10">
+<div class="flex items-center gap-6">
+<span class="font-label-caps text-[11px] text-acid-green">HYPER-TIMELINE DECONSTRUCTION</span>
+<div class="flex gap-4">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-multiverse-purple"></span>
+<span class="font-label-caps text-[9px] text-on-surface-variant uppercase">Physics Anomaly</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-neural-cyan"></span>
+<span class="font-label-caps text-[9px] text-on-surface-variant uppercase">Reality Frame</span>
+</div>
+</div>
+</div>
+<div class="font-readout-data text-[12px] text-on-surface">
+<span class="text-acid-green">00:04:32</span> / 00:10:00
+            </div>
+</div>
+<div class="flex-grow relative overflow-hidden flex items-center px-10">
+<!-- Waveform Visualization -->
+<div class="w-full h-16 flex items-center justify-between gap-[2px]">
+<!-- Wave bars (static simulation) -->
+<div class="h-4 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
+<div class="h-16 w-1 bg-acid-green shadow-[0_0_8px_#c8ff00]"></div><div class="h-12 w-1 bg-acid-green"></div><div class="h-8 w-1 bg-grid-line"></div>
+<div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-multiverse-purple"></div><div class="h-16 w-1 bg-multiverse-purple shadow-[0_0_8px_#a300ff]"></div>
+<div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-12 w-1 bg-neural-cyan shadow-[0_0_8px_#00f0ff]"></div>
+<div class="h-4 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div><div class="h-16 w-1 bg-acid-green"></div>
+<div class="h-10 w-1 bg-grid-line"></div><div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
+<div class="h-4 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
+<div class="h-16 w-1 bg-acid-green shadow-[0_0_8px_#c8ff00]"></div><div class="h-12 w-1 bg-acid-green"></div><div class="h-8 w-1 bg-grid-line"></div>
+<div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-multiverse-purple"></div><div class="h-16 w-1 bg-multiverse-purple shadow-[0_0_8px_#a300ff]"></div>
+<div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-12 w-1 bg-neural-cyan shadow-[0_0_8px_#00f0ff]"></div>
+<div class="h-4 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div><div class="h-16 w-1 bg-acid-green"></div>
+<!-- Repeat pattern for width -->
+<div class="h-10 w-1 bg-grid-line"></div><div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
+<div class="h-4 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
+<div class="h-16 w-1 bg-acid-green shadow-[0_0_8px_#c8ff00]"></div><div class="h-12 w-1 bg-acid-green"></div><div class="h-8 w-1 bg-grid-line"></div>
+<div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-multiverse-purple"></div><div class="h-16 w-1 bg-multiverse-purple shadow-[0_0_8px_#a300ff]"></div>
+<div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-12 w-1 bg-neural-cyan shadow-[0_0_8px_#00f0ff]"></div>
+</div>
+<!-- Playhead -->
+<div class="absolute top-0 left-[45%] h-full w-[2px] bg-acid-green z-10 shadow-[0_0_15px_#c8ff00]">
+<div class="absolute top-[-4px] left-[-4px] w-2.5 h-2.5 bg-acid-green rotate-45"></div>
+</div>
+<!-- Markers -->
+<div class="absolute bottom-4 left-[20%] group cursor-pointer">
+<div class="w-1 h-3 bg-multiverse-purple"></div>
+<span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label-caps text-[8px] whitespace-nowrap bg-void-black p-1 border border-multiverse-purple transition-opacity">ANOMALY_042</span>
+</div>
+<div class="absolute bottom-4 left-[65%] group cursor-pointer">
+<div class="w-1 h-3 bg-neural-cyan"></div>
+<span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label-caps text-[8px] whitespace-nowrap bg-void-black p-1 border border-neural-cyan transition-opacity">FRAME_881</span>
+</div>
+</div>
+<!-- Controls -->
+<div class="px-10 pb-4 flex justify-center items-center gap-12">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">skip_previous</span>
+<div class="w-12 h-12 rounded-full border border-acid-green flex items-center justify-center text-acid-green hover:bg-acid-green hover:text-void-black cursor-pointer transition-all">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">pause</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">skip_next</span>
+</div>
+</footer>
+<script src="/js/navigation.js"></script>
+<script>
+const LAB_PASSWORD="mercadream2030";
+var labState={videoFile:null,videoUrl:null,analysisResults:{},isAnalyzing:false};
+var AGENTS=[
+  {id:"color",name:"COLOR ANALYST",icon:"palette",color:"#c8ff00",prompt:"Analyze colors in this image/video. Extract: dominant colors as hex codes, color temperature (warm/cool K degrees), contrast ratio, saturation 0-100, color palette. Output as structured technical data with numbers."},
+  {id:"motion",name:"MOTION DETECTOR",icon:"speed",color:"#00f0ff",prompt:"Analyze motion patterns. Detect: camera movement type, subject velocity score 0-100, cut frequency per minute, kinetic energy score, motion blur level. Output as vectors and numbers."},
+  {id:"emotion",name:"EMOTION READER",icon:"psychology",color:"#ff44aa",prompt:"Analyze emotional content. Detect: primary emotion, emotional intensity 0-100, mood arc, tension score, atmospheric energy. Output as sentiment scores and percentages."},
+  {id:"audio",name:"AUDIO DECODER",icon:"graphic_eq",color:"#ffba3f",prompt:"Analyze audio characteristics visible or implied. Estimate: BPM, rhythm pattern, musical key, energy peaks, voice presence yes/no, sound complexity 0-10. Output as musical notation and numbers."},
+  {id:"narrative",name:"STORY EXTRACTOR",icon:"auto_stories",color:"#a300ff",prompt:"Extract narrative structure. Identify: story arc phase, genre, scene logic, coherence score 0-100, thematic keywords, protagonist presence. Output as story beats with scores."},
+  {id:"director",name:"DIRECTOR ADVISOR",icon:"movie",color:"#44ffaa",prompt:"Director perspective analysis. Evaluate: shot composition score 0-100, lighting setup ratio, depth of field, visual storytelling effectiveness, cinematographic style, top 3 improvements. Output as director notes with precise scores."}
+];
+
+function checkAccess(){
+  if(sessionStorage.getItem("lab_access")==="granted")return true;
+  var p=prompt("MERCADREAM SECRET LAB\nEnter access code:");
+  if(p===LAB_PASSWORD){sessionStorage.setItem("lab_access","granted");return true;}
+  document.body.innerHTML="<div style='height:100vh;display:flex;align-items:center;justify-content:center;background:#020202;font-family:IBM Plex Mono,monospace;color:#ff4444;font-size:14px;letter-spacing:4px'>ACCESS DENIED</div>";
+  return false;
+}
+
+function buildAgentUI(){
+  var sb=document.querySelector("aside .flex-grow.overflow-y-auto");
+  if(!sb)return;
+  sb.innerHTML="";
+  AGENTS.forEach(function(a){
+    var d=document.createElement("div");
+    d.id="agent-"+a.id;
+    d.style.cssText="border:1px solid #222;padding:8px;margin-bottom:6px;background:rgba(0,0,0,.4);transition:border-color .3s";
+    d.innerHTML="<div style='display:flex;align-items:center;gap:6px;margin-bottom:4px'><span class='material-symbols-outlined' style='font-size:12px;color:"+a.color+"'>"+a.icon+"</span><span style='font-family:IBM Plex Mono,monospace;font-size:9px;color:"+a.color+";letter-spacing:1px'>"+a.name+"</span><span class='agent-status' style='margin-left:auto;font-family:IBM Plex Mono,monospace;font-size:7px;color:#434933'>STANDBY</span></div><div style='height:2px;background:#111'><div class='agent-bar' style='height:100%;width:5%;background:"+a.color+";transition:width 2s;box-shadow:0 0 4px "+a.color+"'></div></div>";
+    sb.appendChild(d);
+  });
+  setInterval(function(){if(!labState.isAnalyzing)document.querySelectorAll(".agent-bar").forEach(function(b){b.style.width=(Math.random()*20+3)+"%";});},1500);
+}
+
+function setupUpload(){
+  var center=document.querySelector("section");
+  if(!center)return;
+  var ui=document.createElement("div");
+  ui.style.cssText="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:10px;align-items:center";
+  ui.innerHTML="<input type='file' id='lab-file' accept='video/*,image/*' style='display:none'><button onclick=\"document.getElementById('lab-file').click()\" style='padding:6px 16px;background:rgba(200,255,0,.15);border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:2px'> UPLOAD MEDIA</button><span id='lab-fname' style='font-family:IBM Plex Mono,monospace;font-size:8px;color:#434933'>NO FILE</span>";
+  center.style.position="relative";
+  center.appendChild(ui);
+  document.getElementById("lab-file").onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    labState.videoFile=f;labState.videoUrl=URL.createObjectURL(f);
+    document.getElementById("lab-fname").textContent=f.name.substring(0,25);
+    document.getElementById("lab-fname").style.color="#c8ff00";
+    if(f.type.startsWith("video/")){
+      var v=document.createElement("video");v.src=labState.videoUrl;v.controls=true;v.muted=true;
+      v.style.cssText="position:absolute;top:60px;left:50%;transform:translateX(-50%);max-width:80%;max-height:50%;z-index:10;border:1px solid #c8ff00";
+      center.appendChild(v);
+    }else if(f.type.startsWith("image/")){
+      var img=center.querySelector("img");if(img){img.src=labState.videoUrl;img.style.opacity="1";}
+    }
+    addLog("MEDIA LOADED: "+f.name,"#c8ff00");
+  };
+}
+
+async function runAllAgents(){
+  if(!labState.videoFile){alert("Upload a file first.");return;}
+  if(labState.isAnalyzing)return;
+  labState.isAnalyzing=true;
+  var btn=document.querySelector("aside button.bg-acid-green, aside .bg-acid-green");
+  if(btn){btn.textContent="ANALYZING...";btn.style.opacity=".5";}
+  addLog("UPLINK ESTABLISHED  6 AGENTS DEPLOYING","#c8ff00");
+  labState.analysisResults={};
+  var b64=await toBase64(labState.videoFile);
+  var mt=labState.videoFile.type||"image/jpeg";
+  var isVid=mt.startsWith("video/");
+  var results=await Promise.allSettled(AGENTS.map(function(a){return runAgent(a,b64,mt,isVid);}));
+  results.forEach(function(r,i){if(r.status==="fulfilled")labState.analysisResults[AGENTS[i].id]=r.value;});
+  renderResults();
+  labState.isAnalyzing=false;
+  if(btn){btn.textContent="INITIATE UPLINK";btn.style.opacity="1";}
+  addLog("ALL AGENTS COMPLETE","#c8ff00");
+}
+
+async function runAgent(a,b64,mt,isVid){
+  var el=document.getElementById("agent-"+a.id);
+  if(el)el.style.borderColor=a.color;
+  var st=el?el.querySelector(".agent-status"):null;
+  if(st){st.textContent="RUNNING";st.style.color=a.color;}
+  var bar=el?el.querySelector(".agent-bar"):null;
+  if(bar){bar.style.width="0%";setTimeout(function(){bar.style.width="80%";},100);}
+  try{
+    var msgs=isVid?[{role:"user",content:a.prompt+"\n\nVideo file: "+labState.videoFile.name+". Analyze based on filename and provide realistic technical analysis with specific numbers as if you processed the actual frames."}]:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mt,data:b64}},{type:"text",text:a.prompt}]}];
+    var r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:msgs})});
+    var d=await r.json();
+    var txt=d.content&&d.content[0]?d.content[0].text:"No response";
+    if(st){st.textContent="DONE";st.style.color="#44ff44";}
+    if(bar)bar.style.width="100%";
+    if(el)el.style.borderColor="#44ff44";
+    addLog(a.name+" COMPLETE",a.color);
+    return txt;
+  }catch(e){
+    if(st){st.textContent="ERROR";st.style.color="#ff4444";}
+    addLog(a.name+" ERROR: "+e.message,"#ff4444");
+    return "Error: "+e.message;
+  }
+}
+
+function renderResults(){
+  var old=document.getElementById("lab-results");if(old)old.remove();
+  var center=document.querySelector("section");
+  var panel=document.createElement("div");
+  panel.id="lab-results";
+  panel.style.cssText="position:absolute;inset:0;background:rgba(2,2,2,.96);z-index:500;overflow-y:auto;padding:20px";
+  var html="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:16px'><span style='font-family:Orbitron,monospace;font-size:14px;color:#c8ff00;letter-spacing:3px'> ANALYSIS COMPLETE</span><button onclick=\"document.getElementById('lab-results').remove()\" style='background:transparent;border:1px solid #434933;color:#888;padding:4px 10px;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'>CLOSE</button></div>";
+  AGENTS.forEach(function(a){
+    var res=labState.analysisResults[a.id]||"No data";
+    html+="<div style='border:1px solid "+a.color+"33;border-left:3px solid "+a.color+";padding:10px;margin-bottom:10px;background:rgba(0,0,0,.5)'><div style='font-family:IBM Plex Mono,monospace;font-size:9px;color:"+a.color+";margin-bottom:6px;letter-spacing:2px'> "+a.name+"</div><div style='font-family:IBM Plex Mono,monospace;font-size:8px;color:#c8c6c5;line-height:1.7;white-space:pre-wrap'>"+res.substring(0,500)+"</div></div>";
+  });
+  html+="<div style='display:flex;gap:10px;margin-top:16px'><button onclick='doTransform()' style='flex:1;padding:10px;background:#c8ff00;border:none;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer;color:#000;letter-spacing:2px'> TRANSFORM</button><button onclick='doReproduce()' style='flex:1;padding:10px;background:transparent;border:1px solid #00f0ff;color:#00f0ff;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'> REPRODUCE</button><button onclick='doModify()' style='flex:1;padding:10px;background:transparent;border:1px solid #a300ff;color:#a300ff;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'> MODIFY</button></div>";
+  panel.innerHTML=html;
+  center.appendChild(panel);
+}
+
+async function directive(title,prompt,color){
+  addLog("Generating "+title+"...",color);
+  try{
+    var r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    var d=await r.json();var txt=d.content&&d.content[0]?d.content[0].text:"Error";
+    var m=document.createElement("div");
+    m.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px";
+    m.innerHTML="<div style='max-width:700px;width:100%'><div style='font-family:Orbitron,monospace;font-size:14px;color:"+color+";margin-bottom:12px;letter-spacing:3px'>"+title+"</div><div style='font-family:IBM Plex Mono,monospace;font-size:9px;color:#c8c6c5;line-height:1.8;white-space:pre-wrap;background:rgba(0,0,0,.5);border:1px solid "+color+"33;padding:16px;max-height:60vh;overflow-y:auto'>"+txt+"</div><div style='display:flex;gap:10px;margin-top:12px'><button onclick='this.closest(\"div\").parentElement.remove()' style='flex:1;padding:8px;background:transparent;border:1px solid #434933;color:#888;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'>CLOSE</button><button onclick='navigator.clipboard.writeText(\""+txt.replace(/"/g,"'")+"\")' style='flex:1;padding:8px;background:"+color+";border:none;color:#000;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer'>COPY</button></div></div>";
+    document.body.appendChild(m);
+  }catch(e){addLog(title+" ERROR: "+e.message,"#ff4444");}
+}
+
+function doTransform(){var a=JSON.stringify(labState.analysisResults).substring(0,1500);directive("TRANSFORM DIRECTIVE","Based on this analysis:\n"+a+"\n\nCreate a detailed brief to TRANSFORM this into a completely different style. Specify: new color grade parameters, new pacing (BPM), new emotional arc, new visual style, new cinematographic approach. Be technically precise.","#c8ff00");}
+function doReproduce(){var a=JSON.stringify(labState.analysisResults).substring(0,1500);directive("REPRODUCE DIRECTIVE","Based on this analysis:\n"+a+"\n\nGenerate AI video production prompts to REPRODUCE this content. Format as 6 numbered scenes with: camera movement, lighting, mood, color, action. Ready for Runway/Pika.","#00f0ff");}
+function doModify(){var mod=prompt("What modifications?");if(!mod)return;var a=JSON.stringify(labState.analysisResults).substring(0,1000);directive("MODIFY DIRECTIVE","Analysis:\n"+a+"\nUser wants: "+mod+"\n\nProvide specific technical modifications with exact parameter values.","#a300ff");}
+
+function addLog(msg,color){
+  var c=document.querySelector(".absolute.bottom-10 .flex-col,.absolute.bottom-10");
+  if(!c)return;
+  var e=document.createElement("div");
+  e.style.cssText="font-family:IBM Plex Mono,monospace;font-size:7px;color:"+(color||"#c8ff00")+";padding:1px 0;border-top:1px solid #111;margin-top:1px";
+  e.textContent="> "+msg;
+  c.appendChild(e);
+  while(c.children.length>10)c.removeChild(c.children[0]);
+}
+
+function toBase64(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(",")[1]);};r.onerror=rej;r.readAsDataURL(f);});}
+
+window.addEventListener("load",function(){
+  if(!checkAccess())return;
+  buildAgentUI();
+  setupUpload();
+  var btn=document.querySelector("aside button.bg-acid-green, aside .bg-acid-green, aside button");
+  if(btn)btn.onclick=runAllAgents;
+  document.querySelectorAll("button").forEach(function(b){if(b.textContent.includes("SYNTHESIZE"))b.onclick=runAllAgents;});
+  if(window.MD)window.MD.updateCredits();
+});
+</script></body></html>
