@@ -1,30 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM | Production Interface</title>
+<title>MERCADREAM | Multi-Director Competition Suite v19.0</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
 body{background-color:#060606;color:#e5e2e1;overflow:hidden;height:100vh}
 .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
 .glow-acid{box-shadow:0px 0px 12px rgba(168,215,0,0.2)}
+.glow-multi{box-shadow:0px 0px 20px rgba(168,215,0,0.4)}
 .custom-scrollbar::-webkit-scrollbar{width:4px}
 .custom-scrollbar::-webkit-scrollbar-track{background:#0d0d0d}
 .custom-scrollbar::-webkit-scrollbar-thumb{background:#353534}
 .terminal-scroll::-webkit-scrollbar{width:2px}
 .terminal-scroll::-webkit-scrollbar-thumb{background:#a8d700}
+.dir-checkbox:checked + label { border-color: currentColor; background: rgba(255,255,255,0.05); }
 </style>
 <script id="tailwind-config">
 tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d700","surface-container-low":"#1c1b1b","surface-variant":"#353534","surface-container-lowest":"#0e0e0e","secondary-container":"#c48800","surface-container-high":"#2a2a2a","error-container":"#93000a","primary-container":"#c0f500","on-surface":"#e5e2e1","surface-bright":"#393939","on-surface-variant":"#c4caac","primary":"#ffffff","surface-container":"#201f1f","surface-container-highest":"#353534","inverse-surface":"#e5e2e1","on-background":"#e5e2e1","outline":"#8e9479","primary-fixed":"#c0f500","on-tertiary":"#313030","tertiary-container":"#e5e2e1","surface":"#131313","outline-variant":"#434933","secondary-fixed-dim":"#ffba3f","primary-fixed-dim":"#a8d700","on-secondary":"#432c00","secondary":"#ffba3f","background":"#131313"},"fontFamily":{"display-lg":["Orbitron"],"label-caps":["IBM Plex Mono"],"technical-md":["IBM Plex Mono"],"technical-sm":["IBM Plex Mono"],"headline-lg":["Orbitron"],"body-md":["Inter"],"body-sm":["Inter"]},"fontSize":{"display-lg":["48px",{"lineHeight":"1.1","letterSpacing":"0.05em","fontWeight":"700"}],"label-caps":["10px",{"lineHeight":"1","letterSpacing":"0.1em","fontWeight":"700"}],"technical-md":["14px",{"lineHeight":"1.6","letterSpacing":"0.01em","fontWeight":"400"}],"technical-sm":["12px",{"lineHeight":"1.4","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"1.2","letterSpacing":"0.02em","fontWeight":"600"}],"body-md":["16px",{"lineHeight":"1.6","fontWeight":"400"}],"body-sm":["14px",{"lineHeight":"1.5","fontWeight":"400"}]}}}}
 </script>
 </head>
 <body class="flex flex-col">
-<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-b border-outline-variant">
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-b border-outline-variant px-6">
 <div class="flex items-center gap-8">
 <span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span>
-<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v3.0</span>
+<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v19.0 PRO</span>
 <nav class="hidden md:flex items-center gap-4">
 <div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery"><span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span><span class="font-technical-md text-technical-md uppercase">Discovery</span></div>
 <div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer" id="nav-screenplay"><span class="font-technical-md text-technical-md uppercase">Screenplay</span></div>
@@ -50,15 +53,14 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 <span class="material-symbols-outlined text-surface-tint cursor-pointer" id="btn-wallet">account_balance_wallet</span>
 </div>
 </header>
-
 <main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden">
 <aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container border-r border-outline-variant flex flex-col z-40">
-<div class="p-6 border-b border-outline-variant">
+<div class="p-6 border-b border-outline-variant flex-1 overflow-y-auto custom-scrollbar">
 <div class="flex items-center justify-between mb-4">
 <h2 class="font-display-lg text-on-surface uppercase" style="font-size:14px">Crew Panel</h2>
-<span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">Active Session</span>
+<span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">V19 Multi-Sync</span>
 </div>
-<div class="space-y-4" id="crew-cards">
+<div class="space-y-6">
 <div class="bg-surface-variant border-l-2 border-surface-tint p-4 flex items-center gap-3">
 <div class="relative">
 <img alt="Gemini" class="w-10 h-10 border border-surface-tint object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
@@ -66,30 +68,76 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 </div>
 <div>
 <p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Screenplay Writer</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Lead Architect</p>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1">Competition Suite</p>
+<div class="grid grid-cols-1 gap-2" id="director-selection">
+<div class="flex items-center">
+<input checked="" class="hidden dir-checkbox" id="dir-drama" type="checkbox" value="drama"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-drama" style="color: #a8d700">
+<span class="w-2 h-2 rounded-full bg-[#a8d700]"></span>
+<span class="font-technical-sm uppercase">Drama</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-checkbox" id="dir-action" type="checkbox" value="action"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-action" style="color: #ff4444">
+<span class="w-2 h-2 rounded-full bg-[#ff4444]"></span>
+<span class="font-technical-sm uppercase">Action</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-checkbox" id="dir-comedy" type="checkbox" value="comedy"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-comedy" style="color: #ffba3f">
+<span class="w-2 h-2 rounded-full bg-[#ffba3f]"></span>
+<span class="font-technical-sm uppercase">Comedy</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-checkbox" id="dir-doc" type="checkbox" value="doc"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-doc" style="color: #44aaff">
+<span class="w-2 h-2 rounded-full bg-[#44aaff]"></span>
+<span class="font-technical-sm uppercase">Doc</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-checkbox" id="dir-music" type="checkbox" value="music"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-music" style="color: #ff44aa">
+<span class="w-2 h-2 rounded-full bg-[#ff44aa]"></span>
+<span class="font-technical-sm uppercase">Music</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-checkbox" id="dir-ads" type="checkbox" value="ads"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-ads" style="color: #44ffaa">
+<span class="w-2 h-2 rounded-full bg-[#44ffaa]"></span>
+<span class="font-technical-sm uppercase">Ads</span>
+</label>
 </div>
 </div>
 </div>
 </div>
-<div class="mt-auto p-6 bg-surface-container-low border-t border-outline-variant">
+</div>
+<div class="p-6 bg-surface-container-low border-t border-outline-variant">
 <div class="mb-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Production Cost</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Multi-Gen Cost</p>
 <div class="flex justify-between items-end">
-<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">10 credits</span>
+<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">10 cr/dir</span>
 </div>
 </div>
 <button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all" id="btn-recharge">+ Recharge</button>
 </div>
 </aside>
-
 <section class="ml-[280px] mr-[340px] flex-1 flex flex-col bg-background relative">
 <div class="p-6 border-b border-outline-variant flex items-center justify-between">
 <div>
 <h1 class="font-display-lg text-headline-lg text-on-surface" id="phase-title">Phase 1: Discovery</h1>
 <p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Task: Screenplay Concept Generation</p>
 </div>
-<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-4 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-colors" id="btn-action">
-<span class="material-symbols-outlined">bolt</span> Action
+<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-6 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-all glow-acid" id="btn-action">
+<span class="material-symbols-outlined">bolt</span> Multi-Sync Action
 </button>
 </div>
 <div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar" id="chat-messages"></div>
@@ -102,17 +150,16 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 </div>
 </div>
 </section>
-
 <aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container border-l border-outline-variant flex flex-col z-40">
 <div class="p-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Cockpit Screen</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Competitor Status</p>
 <div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center" id="cockpit-screen">
 <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
 <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
 <div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
 <div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
 <div class="text-center" id="cockpit-inner">
-<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">AWAITING_BRIEFING</span>
+<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">STANDBY_FOR_SYNC</span>
 <span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
 </div>
 <div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]"></div>
@@ -123,129 +170,108 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 <div class="space-y-4" id="pipeline-stages">
 <div class="stage-item space-y-2" data-stage="1">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">01/SCREENPLAY_WRITE</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">01/SCREENPLAY_SYNC</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 <div class="stage-item space-y-2 opacity-50" data-stage="2">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">02/SCENE_CLASSIFY</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">02/MULTI_DIR_ASSIGN</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 <div class="stage-item space-y-2 opacity-50" data-stage="3">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">03/DIRECTOR_ASSIGN</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">03/PARALLEL_GENERATE</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 <div class="stage-item space-y-2 opacity-50" data-stage="4">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">04/VIDEO_GENERATE</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant">04/COMPETITION_VALIDATE</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 </div>
 </div>
-<div class="bg-black border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col" style="height:160px" id="log-terminal">
+<div class="bg-black border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col" id="log-terminal" style="height:160px">
 <div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1">
 <span class="text-on-surface-variant uppercase">Live Log</span>
-<span class="text-surface-tint uppercase">v3.0</span>
+<span class="text-surface-tint uppercase">v19.0</span>
 </div>
 <div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1" id="log-lines"></div>
 </div>
 </aside>
 </main>
-
-<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-t border-outline-variant">
+<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-t border-outline-variant px-6">
 <div class="flex items-center gap-10">
 <div class="flex items-center gap-3">
 <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
 <span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits">0</span> ●</span>
 </div>
 <div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Team:</span>
-<div class="flex -space-x-2" id="footer-team-images"></div>
-<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-team-names">No crew selected</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Active Suite:</span>
+<div class="flex -space-x-1" id="footer-active-dirs"></div>
+<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-suite-names">1 Director selected</span>
 </div>
 </div>
 <div class="flex items-center gap-4">
-<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all" id="btn-assembly">
-<span class="material-symbols-outlined">factory</span> Send to Assembly Room
+<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi" id="btn-assembly">
+<span class="material-symbols-outlined">compare_arrows</span> Enter Jury Room
 </button>
 <div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm">
-<button class="px-4 bg-surface-tint text-black font-bold uppercase" id="btn-auto">Auto</button>
+<button class="px-4 bg-surface-tint text-black font-bold uppercase" id="btn-auto">Auto-Select</button>
 <button class="px-4 text-on-surface-variant hover:text-surface-tint uppercase transition-colors" id="btn-manual">Manual</button>
 </div>
 <button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid" id="btn-generate">
-<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest">Generate</span>
-<span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest">Generate Suite</span>
+<span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">rocket_launch</span>
 </button>
 </div>
 </footer>
-
 <script>
 // ═══════════════════════════════════════════════════════
-// MERCADREAM STUDIO v3.0 — Full Pipeline
+// MERCADREAM STUDIO v19.0 — Multi-Director Competition Suite
 // ═══════════════════════════════════════════════════════
 const API_CHAT     = '/api/chat';
 const API_DIRECTOR = '/api/director';
-const COST         = 10;
+const BASE_COST    = 10;
+
+const DIR_CONFIG = {
+    drama:  { color: '#a8d700', label: 'DRAMA' },
+    action: { color: '#ff4444', label: 'ACTION' },
+    comedy: { color: '#ffba3f', label: 'COMEDY' },
+    doc:    { color: '#44aaff', label: 'DOC' },
+    music:  { color: '#ff44aa', label: 'MUSIC' },
+    ads:    { color: '#44ffaa', label: 'ADS' }
+};
 
 const TX = {
   en: {
-    ph1:'Phase 1: Discovery', ph2:'Phase 2: Screenplay', ph3:'Phase 3: Production',
-    sub1:'Screenplay Concept Generation', sub2:'Script Analysis', sub3:'Director Generating Scenes',
+    ph1:'Phase 1: Discovery', ph2:'Phase 2: Director Duel', ph3:'Phase 3: Multi-Gen Production',
+    sub1:'Screenplay Concept Generation', sub2:'Selecting Competitors', sub3:'Parallel Generation Processing',
     placeholder:'Type your creative directive here...',
-    send:'Send', action:'Action', new_session:'New Session', generate:'Generate',
-    assembly:'Send to Assembly Room', auto:'Auto', manual:'Manual',
-    welcome:'Welcome. What type of project are you creating?',
+    send:'Send', action:'Sync Action', new_session:'New Session', generate:'Generate Suite',
+    assembly:'Enter Jury Room', auto:'Auto-Select', manual:'Manual',
+    welcome:'Welcome to Suite v19. Select your project type:',
     types:[{id:'film',icon:'🎬',label:'Film / Story'},{id:'ad',icon:'📢',label:'Advertisement'},{id:'music',icon:'🎵',label:'Music Video'},{id:'doc',icon:'📹',label:'Documentary'}],
     firstQ:{film:'What is your story about?',ad:'What product or service?',music:'What is the song about?',doc:'What subject are you documenting?'},
-    done:'Your 6-scene film is ready. Go to Assembly Room to export.',
-    err:'Connection error. Check /api/chat on Vercel.',
-    confirm_yes:'GENERATE', confirm_no:'CANCEL'
-  },
-  es: {
-    ph1:'Fase 1: Descubrimiento', ph2:'Fase 2: Guión', ph3:'Fase 3: Producción',
-    sub1:'Generación de Concepto', sub2:'Análisis del Guión', sub3:'Director Generando Escenas',
-    placeholder:'Escribe tu directiva creativa...',
-    send:'Enviar', action:'Acción', new_session:'Nueva Sesión', generate:'Generar',
-    assembly:'Enviar a Sala de Montaje', auto:'Auto', manual:'Manual',
-    welcome:'Bienvenido. ¿Qué tipo de proyecto creas?',
-    types:[{id:'film',icon:'🎬',label:'Película'},{id:'ad',icon:'📢',label:'Anuncio'},{id:'music',icon:'🎵',label:'Videoclip'},{id:'doc',icon:'📹',label:'Documental'}],
-    firstQ:{film:'¿De qué trata tu historia?',ad:'¿Qué producto?',music:'¿De qué trata la canción?',doc:'¿Qué tema documentas?'},
-    done:'Tu película está lista.',
-    err:'Error de conexión.',
-    confirm_yes:'GENERAR', confirm_no:'CANCELAR'
-  },
-  ar: {
-    ph1:'المرحلة 1: الاستكشاف', ph2:'المرحلة 2: السيناريو', ph3:'المرحلة 3: الإنتاج',
-    sub1:'توليد المفهوم الإبداعي', sub2:'تحليل السيناريو', sub3:'المخرج يولّد المشاهد',
-    placeholder:'اكتب توجيهاتك الإبداعية هنا...',
-    send:'إرسال', action:'إجراء', new_session:'جلسة جديدة', generate:'توليد',
-    assembly:'إرسال لغرفة المونتاج', auto:'تلقائي', manual:'يدوي',
-    welcome:'مرحباً. ما نوع مشروعك؟',
-    types:[{id:'film',icon:'🎬',label:'فيلم / قصة'},{id:'ad',icon:'📢',label:'إعلان'},{id:'music',icon:'🎵',label:'كليب'},{id:'doc',icon:'📹',label:'وثائقي'}],
-    firstQ:{film:'عمَّ تدور قصتك؟',ad:'ما المنتج أو الخدمة؟',music:'عمَّ تتحدث الأغنية؟',doc:'ما الموضوع الذي توثقه؟'},
-    done:'فيلمك جاهز. انتقل لغرفة المونتاج.',
-    err:'مشكلة في الاتصال.',
-    confirm_yes:'توليد', confirm_no:'إلغاء'
+    done:'All director iterations complete. Compare and export in Jury Room.',
+    err:'Sync Error. Check connectivity.',
+    confirm_yes:'START SUITE', confirm_no:'CANCEL'
   }
 };
 
 const SCREENWRITER = {
-  film:`You are the screenplay writer at MercaDream. ONE question per message, max 2 sentences. Ask about: energy/vibe, character, transformation, world. After 4-6 exchanges output EXACTLY: DREAM_CAPTURED`,
-  ad:`You are a commercial scriptwriter at MercaDream. Ask ONE question at a time: 1) product, 2) target audience, 3) key message. After 3 answers output EXACTLY: DREAM_CAPTURED`,
-  music:`You are a music video scriptwriter. Ask ONE question at a time: 1) song mood/genre, 2) artist visual style, 3) key visual concept. After 3 answers output EXACTLY: DREAM_CAPTURED`,
-  doc:`You are a documentary scriptwriter. Ask ONE question at a time: 1) subject, 2) angle, 3) central truth. After 3 answers output EXACTLY: DREAM_CAPTURED`
+  film:`You are the Lead Architect at MercaDream. ONE question per message, max 2 sentences. Ask about: energy/vibe, character, transformation, world. After 4-6 exchanges output EXACTLY: DREAM_CAPTURED`,
+  ad:`You are a commercial Lead Architect. Ask ONE question at a time: 1) product, 2) target audience, 3) key message. After 3 answers output EXACTLY: DREAM_CAPTURED`,
+  music:`You are a music video Lead Architect. Ask ONE question at a time: 1) song mood/genre, 2) artist visual style, 3) key visual concept. After 3 answers output EXACTLY: DREAM_CAPTURED`,
+  doc:`You are a documentary Lead Architect. Ask ONE question at a time: 1) subject, 2) angle, 3) central truth. After 3 answers output EXACTLY: DREAM_CAPTURED`
 };
-
-const DIR_MAP = {film:'drama', ad:'ads', music:'music', doc:'doc'};
 
 // STATE
 let lang = localStorage.getItem('md_lang') || 'en';
@@ -254,10 +280,12 @@ let history = [];
 let brief = null;
 let projectType = null;
 let isBusy = false;
+let multiDirectorResults = {};
+
 const $ = id => document.getElementById(id);
 
 // ── CREDITS ──
-function getCredits(){ return parseInt(localStorage.getItem('md_credits')||'0'); }
+function getCredits(){ return parseInt(localStorage.getItem('md_credits')||'100'); }
 function setCredits(v){
   localStorage.setItem('md_credits', v);
   $('header-credits').textContent = v.toLocaleString();
@@ -268,7 +296,7 @@ function setCredits(v){
 function log(msg, type='info'){
   const lines = $('log-lines');
   if(!lines) return;
-  const colors = {ok:'#a8d700', err:'#ffb4ab', warn:'#ffba3f', info:'rgba(168,215,0,0.6)'};
+  const colors = {ok:'#a8d700', err:'#ff4444', warn:'#ffba3f', info:'rgba(168,215,0,0.6)'};
   const p = document.createElement('p');
   p.className = 'leading-tight';
   const time = new Date().toLocaleTimeString('en',{hour12:false});
@@ -278,7 +306,6 @@ function log(msg, type='info'){
 
 // ── PIPELINE ──
 function setStage(num, status){
-  // status: idle | active | done
   document.querySelectorAll('.stage-item').forEach((el,i) => {
     const n = i+1;
     const bar = el.querySelector('.stage-bar');
@@ -295,361 +322,276 @@ function setStage(num, status){
 
 function setCockpit(html){ $('cockpit-inner').innerHTML = html; }
 
-// ── CREW ──
-function loadCrew(){
-  const dirs  = JSON.parse(localStorage.getItem('md_selected_directors')||'[]');
-  const names = JSON.parse(localStorage.getItem('md_director_names')||'[]');
-  const imgs  = JSON.parse(localStorage.getItem('md_director_images')||'[]');
-  const cards = $('crew-cards');
-
-  dirs.forEach((type,i) => {
-    const name = names[i] || type;
-    const img  = imgs[i]  || '';
-    const init = name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-    const card = document.createElement('div');
-    card.className = 'bg-surface-container-low border border-outline-variant p-4 flex items-center gap-3';
-    card.dataset.director = type;
-    card.innerHTML = `
-      <div class="relative">
-        ${img ? `<img src="${img}" alt="${name}" class="w-10 h-10 border border-outline-variant object-cover">` :
-                `<div class="w-10 h-10 border border-outline-variant flex items-center justify-center bg-surface-variant" style="font-family:Orbitron,monospace;font-size:10px;color:#a8d700">${init}</div>`}
-        <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-surface-variant director-dot" style="background:#525252"></div>
-      </div>
-      <div>
-        <p style="font-family:Orbitron,monospace;font-size:12px;color:#e5e2e1">${name}</p>
-        <p style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#c4caac;text-transform:uppercase;margin-top:4px">Director</p>
-      </div>`;
-    cards.appendChild(card);
-  });
-
-  // Footer team
-  const teamImgs  = $('footer-team-images');
-  const teamNames = $('footer-team-names');
-  if(teamImgs) teamImgs.innerHTML = imgs.slice(0,3).map((img,i) =>
-    img ? `<img src="${img}" class="w-6 h-6 rounded-full border border-black object-cover" alt="${names[i]||''}">` :
-          `<div class="w-6 h-6 rounded-full border border-black bg-surface-variant flex items-center justify-center" style="font-size:8px;color:#a8d700">${(names[i]||'?')[0]}</div>`
-  ).join('');
-  if(teamNames) teamNames.textContent = names.slice(0,2).join(' + ') || 'No crew selected';
+function getSelectedDirectors(){
+    return Array.from(document.querySelectorAll('.dir-checkbox:checked')).map(cb => cb.value);
 }
 
-function setDirectorStatus(type, status){
-  const card = document.querySelector(`[data-director="${type}"]`);
-  if(!card) return;
-  const dot = card.querySelector('.director-dot');
-  if(!dot) return;
-  const c = {standby:'#525252', active:'#a8d700', done:'#4ade80'};
-  dot.style.background = c[status]||c.standby;
-  if(status==='active') dot.style.boxShadow='0 0 8px #a8d700'; else dot.style.boxShadow='';
+function updateFooterSuite(){
+    const selected = getSelectedDirectors();
+    const container = $('footer-active-dirs');
+    const label = $('footer-suite-names');
+    if(container) {
+        container.innerHTML = selected.map(id => `<div class="w-4 h-4 rounded-full border border-black" style="background:${DIR_CONFIG[id].color}"></div>`).join('');
+    }
+    if(label) label.textContent = `${selected.length} Director${selected.length > 1 ? 's' : ''} Synced`;
 }
 
 // ── CHAT ──
 function addBot(html){
   const area = $('chat-messages');
-  const time = new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const div = document.createElement('div');
   div.className = 'flex flex-col gap-2 max-w-[80%]';
   div.innerHTML = `
     <div class="flex items-center gap-2">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a8d700;letter-spacing:.1em;text-transform:uppercase">Mercadream Engine</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c4caac">${time}</span>
+      <span class="font-label-caps text-[10px] text-surface-tint uppercase">Mercadream Engine</span>
     </div>
-    <div class="bg-surface-container p-6" style="border-left:4px solid #a8d700">
-      <div style="font-size:15px;line-height:1.7;color:#e5e2e1">${html}</div>
+    <div class="bg-surface-container p-6 border-l-4 border-surface-tint">
+      <div class="text-[15px] leading-relaxed color-[#e5e2e1]">${html}</div>
     </div>`;
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
-  history.push({role:'assistant', content: div.querySelector('div[style]').innerText});
+  history.push({role:'assistant', content: html});
 }
 
 function addUser(text){
   const area = $('chat-messages');
-  const time = new Date().toLocaleTimeString('en',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const div = document.createElement('div');
   div.className = 'flex flex-col gap-2 max-w-[80%] ml-auto items-end';
   div.innerHTML = `
     <div class="flex items-center gap-2">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c4caac">${time}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#ffba3f;letter-spacing:.1em;text-transform:uppercase">You</span>
+      <span class="font-label-caps text-[10px] text-secondary uppercase">You</span>
     </div>
-    <div class="p-6" style="background:rgba(168,215,0,0.08);border:1px solid rgba(168,215,0,0.25)">
-      <p style="font-size:15px;line-height:1.7;color:#e5e2e1">${text}</p>
+    <div class="p-6 bg-surface-tint/5 border border-surface-tint/20">
+      <p class="text-[15px] leading-relaxed color-[#e5e2e1]">${text}</p>
     </div>`;
   area.appendChild(div);
   area.scrollTop = area.scrollHeight;
   history.push({role:'user', content: text});
 }
 
-function showTyping(){
-  removeTyping();
-  const area = $('chat-messages');
-  const div = document.createElement('div');
-  div.id = 'typing-ind';
-  div.className = 'flex items-center gap-2';
-  div.style.color = '#c4caac';
-  div.innerHTML = `
-    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce"></span>
-    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce" style="animation-delay:.2s"></span>
-    <span class="w-1.5 h-1.5 bg-surface-tint rounded-full animate-bounce" style="animation-delay:.4s"></span>
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;margin-left:8px">Processing...</span>`;
-  area.appendChild(div);
-  area.scrollTop = area.scrollHeight;
-}
-function removeTyping(){ const el = $('typing-ind'); if(el) el.remove(); }
-
-// ── PROJECT TYPE SELECTOR ──
 function showTypeSelector(){
   const types = TX[lang].types;
   const grid = types.map(t =>
-    `<button onclick="selectType('${t.id}')" style="padding:10px 14px;background:#1e1e1e;border:1px solid #434933;color:#e5e2e1;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;transition:all .2s;width:100%" onmouseover="this.style.borderColor='#a8d700';this.style.color='#a8d700'" onmouseout="this.style.borderColor='#434933';this.style.color='#e5e2e1'">
-      <span style="font-size:16px">${t.icon}</span><span>${t.label}</span>
+    `<button onclick="selectType('${t.id}')" class="p-3 bg-surface-container-high border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all flex items-center gap-3 text-left w-full font-technical-sm">
+      <span class="text-lg">${t.icon}</span><span>${t.label}</span>
     </button>`
   ).join('');
-  const html = `<div style="margin-bottom:10px">${TX[lang].welcome}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">${grid}</div>`;
-  // Add directly without pushing to history
-  const area = $('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'flex flex-col gap-2 max-w-[80%]';
-  div.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a8d700;letter-spacing:.1em;text-transform:uppercase">Mercadream Engine</span>
-    </div>
-    <div class="bg-surface-container p-6" style="border-left:4px solid #a8d700">
-      <div style="font-size:15px;line-height:1.7;color:#e5e2e1">${html}</div>
-    </div>`;
-  area.appendChild(div);
+  addBot(`${TX[lang].welcome}<div class="grid grid-cols-2 gap-2 mt-4">${grid}</div>`);
 }
 
 function selectType(type){
   projectType = type;
-  localStorage.setItem('md_project_type', type);
   const q = TX[lang].firstQ[type];
-  history.push({role:'assistant', content: q});
   addBot(q);
-  history.pop(); history.pop(); // remove duplicate from addBot
-  history.push({role:'assistant', content: q});
-  log('Project type: ' + type, 'ok');
+  log('Project sync: ' + type, 'ok');
 }
 
-// ── API ──
-async function callAPI(system, msgs, tokens, mode){
-  const res = await fetch(API_CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system,messages:msgs,max_tokens:tokens,mode})});
-  if(!res.ok){ const b=await res.json().catch(()=>({})); throw new Error(b.error||'HTTP '+res.status); }
-  return (await res.json()).text || '';
+// ── PRODUCTION LOGIC ──
+async function startProduction(){
+  const selected = getSelectedDirectors();
+  if(selected.length === 0){
+      log('ERR: No directors selected', 'err');
+      alert('Select at least one director competitor.');
+      return;
+  }
+
+  const totalCost = selected.length * BASE_COST;
+  if(getCredits() < totalCost){
+      log('ERR: Insufficient credits', 'err');
+      alert('Insufficient credits for Multi-Gen sync.');
+      return;
+  }
+
+  phase='production'; isBusy=true;
+  $('phase-title').textContent = TX[lang].ph3;
+  $('phase-subtitle').textContent = `Parallel Sync: ${selected.length} Directors`;
+  setCredits(getCredits() - totalCost);
+  
+  log(`MULTI-SYNC ACTIVATED: ${selected.join(', ').toUpperCase()}`, 'ok');
+  setCockpit(`<span class="font-technical-sm text-[10px] text-surface-tint animate-pulse">PARALLEL_SYNCING_${selected.length}_THREADS</span>`);
+
+  setStage(1,'active'); await new Promise(r=>setTimeout(r,800));
+  setStage(1,'done'); 
+  setStage(2,'active'); await new Promise(r=>setTimeout(r,600));
+  setStage(2,'done');
+  setStage(3,'active');
+
+  const conv = history.map(m=>m.content).join('\n\n');
+  multiDirectorResults = {};
+
+  try {
+      for(const dirType of selected){
+          log(`Generating thread: ${dirType.toUpperCase()}`, 'info');
+          const res = await fetch(API_DIRECTOR,{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({type:dirType, conversation:conv, brief:brief||conv})
+          });
+          if(!res.ok) throw new Error(`${dirType} thread failed`);
+          const data = await res.json();
+          multiDirectorResults[dirType] = data.scenes || [];
+          log(`Thread ${dirType.toUpperCase()} complete: ${data.scenes?.length} scenes`, 'ok');
+      }
+
+      setStage(3,'done');
+      setStage(4,'done');
+      
+      localStorage.setItem('md_multi_director_output', JSON.stringify(multiDirectorResults));
+      // Legacy support for single dir
+      const primaryScenes = multiDirectorResults[selected[0]] || [];
+      localStorage.setItem('md_6scenes', JSON.stringify(primaryScenes));
+
+      // Fetch Pexels videos (3 options per scene)
+      log('Fetching Pexels visuals (3 options per scene)...', 'ok');
+      try {
+        const videoResults = await Promise.all(primaryScenes.map(async (s, i) => {
+          try {
+            const kw = (s.keywords || s.title || s.prompt || 'cinematic')
+              .replace(/Scene \d+\/6: /g, '').substring(0, 60);
+            const pr = await fetch('/api/pexels?q=' + encodeURIComponent(kw) + '&per_page=3');
+            if (!pr.ok) return {id:Date.now()+i, ...s, url:null, thumb:null, options:[]};
+            const pd = await pr.json();
+            const vids = pd.videos || [];
+            log('Scene '+(i+1)+': '+vids.length+' options found', 'ok');
+            return {
+              id: Date.now()+i,
+              title: 'Scene '+(i+1)+'/6: '+(s.title||''),
+              prompt: (s.prompt||'').substring(0, 500),
+              keywords: s.keywords || s.title || '',
+              director: selected[0],
+              url: vids[0] ? vids[0].url : null,
+              thumb: vids[0] ? vids[0].thumb : null,
+              duration: 10,
+              sceneNumber: i+1,
+              status: vids[0] ? 'ready' : 'pending',
+              options: vids.slice(0,3).map(v => ({id:v.id, url:v.url, thumb:v.thumb, duration:v.duration}))
+            };
+          } catch(e) {
+            return {id:Date.now()+i, ...s, url:null, thumb:null, options:[]};
+          }
+        }));
+        localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
+        log('Pexels sync complete: '+videoResults.filter(v=>v.url).length+'/'+videoResults.length+' visuals found', 'ok');
+        localStorage.setItem('md_project_type', selected[0]);
+      } catch(pex) {
+        log('Pexels sync skipped: '+pex.message, 'err');
+      }
+
+      showDirectorTabs(selected);
+      
+      setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
+      addBot(TX[lang].done);
+      $('btn-assembly').classList.remove('hidden');
+      $('btn-assembly').style.display='flex';
+
+  } catch(e) {
+      log('CRITICAL SYNC ERR: '+e.message, 'err');
+      addBot('Sync interrupted: '+e.message);
+  }
+  isBusy=false;
 }
 
-// ── SEND ──
+function showDirectorTabs(selected){
+    const area = $('chat-messages');
+    const container = document.createElement('div');
+    container.className = 'w-full space-y-4 border border-outline-variant p-4 bg-surface-container-lowest';
+    
+    let tabsHtml = `<div class="flex gap-2 border-b border-outline-variant pb-2">`;
+    selected.forEach((dir, i) => {
+        const color = DIR_CONFIG[dir].color;
+        tabsHtml += `<button onclick="switchDirView('${dir}')" class="px-4 py-2 font-display-lg text-[10px] border border-outline-variant transition-all hover:brightness-125" style="border-bottom: 2px solid ${color}; color: ${color};" id="tab-${dir}">${dir.toUpperCase()}</button>`;
+    });
+    tabsHtml += `</div><div id="dir-content-view" class="p-4 bg-surface-container min-h-[200px]"></div>`;
+    
+    container.innerHTML = tabsHtml;
+    area.appendChild(container);
+    area.scrollTop = area.scrollHeight;
+
+    // Default view
+    switchDirView(selected[0]);
+}
+
+window.switchDirView = function(dir){
+    const scenes = multiDirectorResults[dir] || [];
+    const color = DIR_CONFIG[dir].color;
+    const view = $('dir-content-view');
+    
+    // Highlight tab
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('bg-surface-variant'));
+    $(`tab-${dir}`).classList.add('bg-surface-variant');
+
+    let html = `<div class="grid grid-cols-1 gap-4">`;
+    scenes.slice(0,6).forEach((s, i) => {
+        html += `
+            <div class="p-3 border-l-2" style="border-color: ${color}">
+                <p class="font-label-caps text-[9px] mb-1 opacity-50">SCENE 0${i+1}</p>
+                <p class="font-technical-md text-surface-tint mb-1">${s.title}</p>
+                <p class="text-xs text-on-surface-variant line-clamp-2">${s.prompt}</p>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    view.innerHTML = html;
+}
+
 async function sendMessage(){
   if(isBusy) return;
   const input = $('chat-input');
   const text = input.value.trim();
   if(!text) return;
 
-  // Action shortcut
-  const actions = ['action','start','go','generate'];
-  if(actions.includes(text.toLowerCase())){
-    input.value='';
-    await triggerAction();
-    return;
-  }
-
   input.value=''; input.style.height='auto';
   isBusy=true;
   addUser(text);
-  showTyping();
-  log('>> ' + text.substring(0,50));
-
-  try{
-    if(phase==='discovery'){
+  
+  try {
       const system = SCREENWRITER[projectType||'film'];
-      const reply = await callAPI(system, history, 800, 'discovery');
-      removeTyping();
+      const res = await fetch(API_CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system,messages:history,max_tokens:800})});
+      const data = await res.json();
+      const reply = data.text || '';
+      
       if(reply.includes('DREAM_CAPTURED')){
-        brief = reply.replace('DREAM_CAPTURED','').trim() || history.map(m=>m.content).join('\n');
-        if(brief.length > 20) addBot(brief);
-        log('Dream captured!', 'ok');
-        showConfirm();
+          brief = reply.replace('DREAM_CAPTURED','').trim() || history.map(m=>m.content).join('\n');
+          addBot("Architect Sync Successful. Core concept captured. Choose your competitors in the sidebar and initiate Generate Suite.");
+          log('Dream Captured & Locked', 'ok');
       } else {
-        addBot(reply);
+          addBot(reply);
       }
-    }
-  } catch(e){
-    removeTyping();
-    addBot(TX[lang].err);
-    log('ERR: '+e.message, 'err');
+  } catch(e) {
+      log('ERR: '+e.message, 'err');
   }
   isBusy=false;
 }
 
-async function triggerAction(){
-  brief = history.map(m=>m.role.toUpperCase()+': '+m.content).join('\n\n');
-  showConfirm();
-}
-
-// ── CONFIRM MODAL ──
 function showConfirm(){
-  const credits = getCredits();
-  const canAfford = credits >= COST;
-  const el = document.createElement('div');
-  el.id='md-confirm';
-  el.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
-  el.innerHTML=`
-    <div style="background:#0d0d0d;border:1px solid rgba(168,215,0,.35);max-width:440px;width:100%;position:relative;padding:32px;overflow:hidden">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#a8d700,transparent)"></div>
-      <button onclick="document.getElementById('md-confirm').remove()" style="position:absolute;top:12px;right:14px;background:transparent;border:none;color:#666;cursor:pointer;font-size:18px">✕</button>
-      <h2 style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:#f0f0f0;text-align:center;margin-bottom:6px">Ready to Generate?</h2>
-      <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#666;text-align:center;margin-bottom:20px;letter-spacing:1px">YOUR SCREENPLAY IS COMPLETE</p>
-      <div style="background:rgba(168,215,0,.05);border:1px solid rgba(168,215,0,.18);padding:16px;text-align:center;margin-bottom:20px">
-        <div style="font-family:Orbitron,monospace;font-size:44px;font-weight:900;color:#a8d700;line-height:1">${COST}</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:#666;letter-spacing:2px;margin-top:4px">CREDITS</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:${canAfford?'#a8d700':'#ffb4ab'};margin-top:6px">Your balance: ${credits}</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <button onclick="document.getElementById('md-confirm').remove()" style="padding:12px;background:transparent;border:1px solid rgba(168,215,0,.25);color:#b0b0b0;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">${TX[lang].confirm_no}</button>
-        <button onclick="document.getElementById('md-confirm').remove();${canAfford?'startProduction()':'goRecharge()'}" style="padding:12px;background:${canAfford?'#a8d700':'#ffb4ab'};color:#000;border:none;font-family:Orbitron,monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer">${canAfford?TX[lang].confirm_yes:'+ Recharge'}</button>
-      </div>
-    </div>`;
-  document.body.appendChild(el);
-}
-
-function goRecharge(){ window.location.href='directors.html'; }
-
-// ── PRODUCTION ──
-async function startProduction(){
-  phase='production'; isBusy=true;
-  $('phase-title').textContent = TX[lang].ph3;
-  $('phase-subtitle').textContent = TX[lang].sub3;
-  setCredits(getCredits()-COST);
-  log('PIPELINE ACTIVATED', 'ok');
-  setCockpit('<span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px;animation:pulse 1s infinite">GENERATING_6_SCENES...</span>');
-
-  setStage(1,'active'); await new Promise(r=>setTimeout(r,600));
-  setStage(1,'done'); log('Stage 1: Screenplay complete', 'ok');
-  setStage(2,'active'); await new Promise(r=>setTimeout(r,400));
-
-  const dirType = DIR_MAP[projectType||'film']||'drama';
-  setStage(2,'done'); log('Stage 2: Director assigned: '+dirType, 'ok');
-  setStage(3,'active');
-  setDirectorStatus(dirType,'active');
-
-  const conv = history.map(m=>m.role.toUpperCase()+': '+m.content).join('\n\n');
-
-  try{
-    const res = await fetch(API_DIRECTOR,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:dirType,conversation:conv,brief:brief||conv})});
-    if(!res.ok) throw new Error('Director API HTTP '+res.status);
-    const data = await res.json();
-    const scenes = data.scenes||[];
-
-    setStage(3,'done'); setStage(4,'done');
-    setDirectorStatus(dirType,'done');
-    log('Stage 3: '+scenes.length+' scenes generated', 'ok');
-
-    localStorage.setItem('md_6scenes', JSON.stringify(scenes));
-    const videos = scenes.map((s,i)=>({id:Date.now()+i,url:null,prompt:(s.prompt||'').substring(0,500),timestamp:new Date().toISOString(),duration:10,title:'Scene '+(i+1)+'/6: '+(s.title||''),sceneNumber:i+1,status:'pending',keywords:s.keywords||s.title||s.prompt||'cinematic'}));
-
-    log('Fetching 3 options per scene from Pexels...','ok');
-    const videoResults = await Promise.all(videos.map(async (v,i)=>{
-      try{
-        const q=encodeURIComponent((v.keywords||'cinematic').substring(0,50));
-        const pr=await fetch('/api/pexels?q='+q+'&per_page=3');
-        if(!pr.ok) return v;
-        const pd=await pr.json();
-        const vids=pd.videos||[];
-        log('Scene '+(i+1)+': '+(vids.length)+' options found','ok');
-        return Object.assign({},v,{
-          url:vids[0]?vids[0].url:null,
-          thumb:vids[0]?vids[0].thumb:null,
-          status:vids[0]?'ready':'pending',
-          options:vids.slice(0,3).map(function(vid){return {id:vid.id,url:vid.url,thumb:vid.thumb,duration:vid.duration};})
-        });
-      }catch(e){
-        log('Scene '+(i+1)+' error: '+e.message,'err');
-        return v;
-      }
-    }));
-    localStorage.setItem('md_assembly_videos',JSON.stringify(videoResults));
-    scenes.forEach((s,i)=>log('Scene '+(i+1)+': '+s.title+' ('+((videoResults[i].options||[]).length)+' options)','ok'));
-
-
-    setCockpit('<div style="font-size:24px;margin-bottom:6px">✅</div><span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px">6 SCENES READY</span>');
-    addBot(TX[lang].done);
-
-    const btn = $('btn-assembly');
-    if(btn){ btn.classList.remove('hidden'); btn.style.display='flex'; }
-    log('Production complete!', 'ok');
-
-  } catch(e){
-    log('Director error: '+e.message, 'err');
-    addBot('Production error: '+e.message);
-    setDirectorStatus(dirType,'standby');
-  }
-  isBusy=false;
-}
-
-// ── LANGUAGE ──
-function setLang(l){
-  lang=l;
-  localStorage.setItem('md_lang',l);
-  const isRTL = l==='ar';
-  document.documentElement.lang=l;
-  document.documentElement.dir=isRTL?'rtl':'ltr';
-  document.body.style.fontFamily=isRTL?"'Cairo',sans-serif":'';
-  $('chat-input').placeholder = TX[l].placeholder;
-  ['en','es','ar'].forEach(code=>{
-    const el=$(('lang-'+code));
-    if(el) el.style.color = code===l?'#a8d700':'#c4caac';
-  });
-}
-
-// ── RESET ──
-function resetSession(){
-  phase='discovery'; history=[]; brief=null; projectType=null; isBusy=false;
-  $('chat-messages').innerHTML='';
-  $('phase-title').textContent=TX[lang].ph1;
-  $('phase-subtitle').textContent=TX[lang].sub1;
-  setCockpit('<span style="font-family:\'IBM Plex Mono\',monospace;font-size:8px;color:#a8d700;letter-spacing:2px">AWAITING_BRIEFING</span>');
-  setStage(0,'idle');
-  const btn=$('btn-assembly'); if(btn){btn.classList.add('hidden');btn.style.display='';}
-  log('Session reset','ok');
-  showTypeSelector();
+    const selected = getSelectedDirectors();
+    if(selected.length === 0) return alert('Select directors first.');
+    startProduction();
 }
 
 // ── INIT ──
 window.onload = function(){
   setCredits(getCredits());
-  loadCrew();
-  setLang(lang);
+  showTypeSelector();
+  updateFooterSuite();
 
   $('btn-send').onclick     = sendMessage;
-  $('btn-action').onclick   = triggerAction;
-  $('btn-new-session').onclick = resetSession;
+  $('btn-action').onclick   = showConfirm;
   $('btn-generate').onclick = showConfirm;
-  $('btn-assembly').onclick = ()=>{ window.location.href='assembly.html'; };
-  $('btn-wallet').onclick   = goRecharge;
-  $('btn-recharge').onclick = goRecharge;
-  $('btn-auto').onclick     = ()=>{ $('btn-auto').style.background='#a8d700'; $('btn-auto').style.color='#000'; $('btn-manual').style.background='transparent'; $('btn-manual').style.color='#c4caac'; };
-  $('btn-manual').onclick   = ()=>{ $('btn-manual').style.background='#a8d700'; $('btn-manual').style.color='#000'; $('btn-auto').style.background='transparent'; $('btn-auto').style.color='#c4caac'; };
-  $('lang-en').onclick      = ()=>setLang('en');
-  $('lang-es').onclick      = ()=>setLang('es');
-  $('lang-ar').onclick      = ()=>setLang('ar');
+  $('btn-new-session').onclick = () => location.reload();
+  $('btn-assembly').onclick = () => window.location.href='assembly.html';
+  $('btn-wallet').onclick   = () => window.location.href='directors.html';
+  $('btn-recharge').onclick = () => window.location.href='directors.html';
+  
+  document.querySelectorAll('.dir-checkbox').forEach(cb => {
+      cb.onchange = updateFooterSuite;
+  });
 
   $('chat-input').addEventListener('keydown', e=>{
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
   });
-  $('chat-input').addEventListener('input', function(){
-    this.style.height='auto';
-    this.style.height=Math.min(this.scrollHeight,120)+'px';
-  });
-
-  // Test API
-  fetch(API_CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'reply ok',messages:[{role:'user',content:'ping'}],max_tokens:5})})
-    .then(r=>log(r.ok?'✓ /api/chat connected':'✗ /api/chat error', r.ok?'ok':'err'))
-    .catch(()=>log('✗ /api/chat unreachable','err'));
-
-  log('MERCADREAM STUDIO v3.0 ready','ok');
-  showTypeSelector();
+  
+  log('MERCADREAM SUITE v19.0 - Multi-Sync Active','ok');
 };
 </script>
 <script>if(!localStorage.getItem('sb_session'))localStorage.setItem('sb_session','1');</script><script src="/js/navigation.js"></script></body></html>
-
-
-
