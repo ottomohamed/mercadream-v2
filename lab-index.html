@@ -1,411 +1,90 @@
-<!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM LAB v20.0 | SINGULARITY PORTAL</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>MERCADREAM SECRET LAB</title>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass-panel {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 240, 255, 0.1);
-        }
-        .acid-glow {
-            box-shadow: 0 0 20px rgba(200, 255, 0, 0.2);
-        }
-        .acid-glow-hover:hover {
-            box-shadow: 0 0 30px rgba(200, 255, 0, 0.4);
-            border-color: #c8ff00;
-        }
-        .neural-bg {
-            background-image: 
-                radial-gradient(circle at 2px 2px, rgba(0, 240, 255, 0.05) 1px, transparent 0);
-            background-size: 40px 40px;
-        }
-        @keyframes pulse-scan {
-            0% { transform: translateY(-100%); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translateY(100%); opacity: 0; }
-        }
-        .scanner-line {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #c8ff00, transparent);
-            animation: pulse-scan 4s linear infinite;
-        }
-    </style>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "secondary-container": "#00eefc",
-                      "outline": "#8e9479",
-                      "surface-dim": "#141313",
-                      "on-surface-variant": "#c4caac",
-                      "inverse-surface": "#e5e2e1",
-                      "primary-fixed": "#c0f500",
-                      "secondary": "#d3fbff",
-                      "surface": "#141313",
-                      "secondary-fixed": "#7df4ff",
-                      "surface-container-highest": "#353434",
-                      "on-background": "#e5e2e1",
-                      "error": "#ffb4ab",
-                      "on-primary-fixed-variant": "#3b4d00",
-                      "on-primary-container": "#546d00",
-                      "on-error-container": "#ffdad6",
-                      "tertiary-fixed": "#f2daff",
-                      "secondary-fixed-dim": "#00dbe9",
-                      "glow-green": "rgba(200, 255, 0, 0.3)",
-                      "panel-glass": "rgba(10, 10, 10, 0.6)",
-                      "surface-container-high": "#2a2a2a",
-                      "on-tertiary-fixed": "#2e004d",
-                      "on-secondary-fixed": "#002022",
-                      "surface-tint": "#a8d700",
-                      "error-container": "#93000a",
-                      "on-error": "#690005",
-                      "multiverse-purple": "#a300ff",
-                      "surface-container": "#201f1f",
-                      "on-secondary-container": "#00686f",
-                      "primary-fixed-dim": "#a8d700",
-                      "on-primary-fixed": "#161f00",
-                      "on-secondary-fixed-variant": "#004f54",
-                      "primary": "#ffffff",
-                      "tertiary": "#ffffff",
-                      "inverse-on-surface": "#313030",
-                      "on-tertiary-container": "#9800ee",
-                      "grid-line": "rgba(0, 240, 255, 0.1)",
-                      "on-tertiary": "#4c007b",
-                      "on-secondary": "#00363a",
-                      "surface-container-lowest": "#0e0e0e",
-                      "surface-variant": "#353434",
-                      "on-surface": "#e5e2e1",
-                      "outline-variant": "#434933",
-                      "tertiary-container": "#f2daff",
-                      "surface-bright": "#3a3939",
-                      "on-tertiary-fixed-variant": "#6d00ac",
-                      "surface-container-low": "#1c1b1b",
-                      "neural-cyan": "#00f0ff",
-                      "primary-container": "#c0f500",
-                      "inverse-primary": "#4f6600",
-                      "tertiary-fixed-dim": "#e1b6ff",
-                      "background": "#141313",
-                      "void-black": "#020202",
-                      "acid-green": "#c8ff00",
-                      "on-primary": "#273500"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
-              },
-              "spacing": {
-                      "container-max": "1440px",
-                      "unit": "4px",
-                      "gutter": "24px",
-                      "margin": "40px"
-              },
-              "fontFamily": {
-                      "headline-lg-mobile": ["Space Grotesk"],
-                      "headline-xl": ["Space Grotesk"],
-                      "label-caps": ["IBM Plex Mono"],
-                      "headline-lg": ["Space Grotesk"],
-                      "readout-data": ["IBM Plex Mono"],
-                      "body-main": ["Inter"]
-              },
-              "fontSize": {
-                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
-                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "600"}],
-                      "readout-data": ["16px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                      "body-main": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
-              }
-            },
-          },
-        }
-      </script>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#020202;color:#e5e2e1;font-family:IBM Plex Mono,monospace;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bg{background-image:linear-gradient(rgba(0,240,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.05) 1px,transparent 1px);background-size:40px 40px;position:fixed;inset:0;pointer-events:none}
+.card{padding:24px;cursor:pointer;border:1px solid rgba(200,255,0,0.1);background:rgba(5,5,5,0.8);transition:all .3s}
+.card:hover{border-color:#c8ff00;box-shadow:0 0 25px rgba(200,255,0,0.15);transform:translateY(-2px)}
+input{width:100%;background:#000;border:1px solid #434933;color:#c8ff00;padding:10px 14px;font-family:inherit;font-size:13px;outline:none;margin-bottom:12px}
+</style>
 </head>
-<body class="bg-void-black text-on-surface font-body-main selection:bg-acid-green selection:text-void-black overflow-hidden">
-<!-- Password Gate Overlay -->
-<div class="fixed inset-0 z-[100] bg-void-black flex items-center justify-center neural-bg overflow-hidden transition-opacity duration-700" id="password-gate">
-<div class="absolute inset-0 pointer-events-none">
-<div class="scanner-line absolute top-0 left-0 w-full opacity-20"></div>
+<body>
+<div class="bg"></div>
+
+<div id="gate" style="text-align:center">
+  <div style="font-size:26px;font-weight:700;color:#c8ff00;letter-spacing:6px;margin-bottom:4px">MERCADREAM LAB</div>
+  <div style="font-size:9px;color:#333;letter-spacing:8px;margin-bottom:36px">SECRET LABORATORY</div>
+  <div style="background:rgba(10,10,10,0.8);border:1px solid rgba(0,240,255,0.15);padding:28px;width:300px;margin:0 auto">
+    <div style="font-size:9px;color:#434933;letter-spacing:3px;margin-bottom:10px">ACCESS CODE</div>
+    <input id="pwd" type="password" placeholder="Enter access code..." onkeydown="if(event.key===Enter)check()"/>
+    <button onclick="check()" style="width:100%;padding:10px;background:#c8ff00;border:none;color:#000;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:2px;font-family:inherit">INITIALIZE ACCESS</button>
+    <div id="err" style="color:#ff4444;font-size:9px;margin-top:8px;display:none">ACCESS DENIED</div>
+  </div>
 </div>
-<div class="w-full max-w-md px- gutter flex flex-col items-center gap-8 relative z-10">
-<div class="text-center">
-<h1 class="font-headline-lg text-headline-lg text-acid-green tracking-tighter uppercase mb-2">MERCADREAM LAB</h1>
-<p class="font-label-caps text-label-caps text-neural-cyan opacity-60">AUTHENTICATION REQUIRED // LEVEL OMEGA</p>
+
+<div id="lab" style="display:none;width:100%;height:100vh;flex-direction:column">
+  <header style="height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid rgba(0,240,255,0.1);background:rgba(5,5,5,0.9)">
+    <div style="color:#c8ff00;font-size:15px;font-weight:700;letter-spacing:3px">MERCADREAM LAB</div>
+    <div style="display:flex;gap:10px">
+      <button onclick="window.location.href=directors.html" style="background:transparent;border:1px solid #434933;color:#888;padding:4px 12px;font-size:8px;cursor:pointer;font-family:inherit">BACK</button>
+      <button onclick="sessionStorage.clear();location.reload()" style="background:transparent;border:1px solid #ff4444;color:#ff4444;padding:4px 12px;font-size:8px;cursor:pointer;font-family:inherit">LOCK</button>
+    </div>
+  </header>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:32px">
+    <div style="max-width:820px;width:100%">
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="font-size:22px;font-weight:700;color:#c8ff00;letter-spacing:5px;margin-bottom:6px">NEURAL LABORATORY</div>
+        <div style="font-size:8px;color:#333;letter-spacing:6px">SELECT MODULE</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card" onclick="window.location.href=lab.html">
+          <div style="color:#c8ff00;font-size:11px;letter-spacing:3px;margin-bottom:8px">VIDEO ANALYSIS</div>
+          <div style="font-size:8px;color:#555;margin-bottom:10px">6 PARALLEL AI AGENTS</div>
+          <p style="font-size:9px;color:#444;line-height:1.7">Upload video - agents analyze color, motion, emotion, audio, narrative - extract vectors and equations - transform or reproduce.</p>
+        </div>
+        <div class="card" onclick="window.location.href=lab-entities.html">
+          <div style="color:#00f0ff;font-size:11px;letter-spacing:3px;margin-bottom:8px">ENTITY CREATION</div>
+          <div style="font-size:8px;color:#555;margin-bottom:10px">DNA SYNTHESIS ENGINE</div>
+          <p style="font-size:9px;color:#444;line-height:1.7">Build AI characters. Face, body, motion, voice, personality. Export production-ready entity briefs for any director.</p>
+        </div>
+        <div class="card" onclick="window.location.href=lab-environment.html">
+          <div style="color:#a300ff;font-size:11px;letter-spacing:3px;margin-bottom:8px">ENVIRONMENT ARCH</div>
+          <div style="font-size:8px;color:#555;margin-bottom:10px">SPATIAL SYNTHESIS v4</div>
+          <p style="font-size:9px;color:#444;line-height:1.7">Construct cinematic environments. Atmospheric depth, vegetation, lighting physics and spatial mesh for any production scene.</p>
+        </div>
+        <div class="card" onclick="window.location.href=lab-physics.html">
+          <div style="color:#FFD700;font-size:11px;letter-spacing:3px;margin-bottom:8px">PHYSICS CINEMA</div>
+          <div style="font-size:8px;color:#555;margin-bottom:10px">FORCE FIELD ENGINE</div>
+          <p style="font-size:9px;color:#444;line-height:1.7">Control cinematic physics. Gravity, fluid dynamics, collision logic, molecular bonds and entropy for hyper-realistic sequences.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="w-full flex flex-col gap-6 glass-panel p-8 border border-grid-line relative">
-<div class="flex flex-col gap-2">
-<label class="font-label-caps text-label-caps text-outline uppercase" for="secret-key">SECRET_KEY</label>
-<input class="bg-transparent border-b border-grid-line focus:border-acid-green outline-none text-acid-green font-readout-data text-readout-data py-2 transition-all focus:ring-0 placeholder:opacity-20" id="secret-key" placeholder="••••••••••••" type="password"/>
-</div>
-<button class="group relative w-full py-4 bg-acid-green text-void-black font-label-caps text-label-caps font-bold tracking-widest hover:bg-neutral-cyan transition-all active:scale-95 flex items-center justify-center gap-3" onclick="authenticate()">
-                    AUTHENTICATE
-                    <span class="material-symbols-outlined" data-icon="fingerprint">fingerprint</span>
-<div class="absolute inset-0 border border-acid-green group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-</button>
-<div class="flex justify-between mt-4">
-<div class="font-label-caps text-[10px] text-outline flex items-center gap-1">
-<span class="material-symbols-outlined text-[12px]" data-icon="lock_open">lock_open</span> SECURE NODE
-                    </div>
-<div class="font-label-caps text-[10px] text-outline flex items-center gap-1">
-                        IP: 192.88.24.404
-                    </div>
-</div>
-</div>
-<div class="hidden text-error font-readout-data text-[12px] animate-pulse" id="auth-error">
-                INVALID CREDENTIALS. SYSTEM LOCKDOWN IMMINENT.
-            </div>
-</div>
-</div>
-<!-- Main Application Shell -->
-<div class="opacity-0 invisible transition-opacity duration-700" id="main-hub">
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-panel-glass backdrop-blur-xl border-b border-grid-line shadow-[0_0_20px_rgba(0,240,255,0.1)]">
-<div class="flex items-center gap-4">
-<span class="font-headline-lg text-headline-lg font-bold tracking-tighter text-acid-green drop-shadow-[0_0_10px_rgba(200,255,0,0.5)]">MERCADREAM LAB v20.0</span>
-</div>
-<div class="flex items-center gap-6">
-<div class="hidden md:flex gap-8">
-<a class="text-acid-green font-bold border-b-2 border-acid-green pb-1 font-label-caps text-label-caps" href="#">HUB</a>
-<a class="text-on-surface-variant font-medium font-label-caps text-label-caps hover:text-neural-cyan transition-all" href="#">TERMINAL</a>
-<a class="text-on-surface-variant font-medium font-label-caps text-label-caps hover:text-neural-cyan transition-all" href="#">ASSETS</a>
-</div>
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-outline hover:text-neural-cyan transition-all cursor-pointer" data-icon="fingerprint">fingerprint</span>
-<span class="material-symbols-outlined text-outline hover:text-neural-cyan transition-all cursor-pointer" data-icon="settings">settings</span>
-<span class="material-symbols-outlined text-acid-green cursor-pointer" data-icon="power_settings_new" onclick="location.reload()">power_settings_new</span>
-</div>
-</div>
-</header>
-<!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-full w-64 bg-panel-glass backdrop-blur-2xl border-r border-grid-line flex flex-col pt-20 pb-margin z-40 hidden md:flex shadow-[5px_0_15px_rgba(0,0,0,0.5)]">
-<div class="px-6 mb-8">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-10 h-10 bg-grid-line border border-neural-cyan/30 flex items-center justify-center">
-<span class="material-symbols-outlined text-neural-cyan" data-icon="account_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">account_circle</span>
-</div>
-<div>
-<div class="font-label-caps text-label-caps text-acid-green">SINGULARITY</div>
-<div class="font-readout-data text-[10px] text-outline">Access Level: Omega</div>
-</div>
-</div>
-</div>
-<nav class="flex-1">
-<a class="flex items-center gap-3 bg-secondary-container/20 text-secondary-container border-l-4 border-secondary-container p-4 font-label-caps text-label-caps hover:bg-grid-line hover:text-acid-green transition-all duration-200 translate-x-1" href="#">
-<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
-                    Video Analysis
-                </a>
-<a class="flex items-center gap-3 text-on-surface-variant p-4 font-label-caps text-label-caps hover:bg-grid-line hover:text-acid-green transition-all duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="biotech">biotech</span>
-                    Entity Creation
-                </a>
-<a class="flex items-center gap-3 text-on-surface-variant p-4 font-label-caps text-label-caps hover:bg-grid-line hover:text-acid-green transition-all duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="language">language</span>
-                    Environment
-                </a>
-<a class="flex items-center gap-3 text-on-surface-variant p-4 font-label-caps text-label-caps hover:bg-grid-line hover:text-acid-green transition-all duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
-                    Physics
-                </a>
-</nav>
-<div class="px-4 mt-auto">
-<div class="flex flex-col gap-2 p-4 border border-grid-line bg-surface-container-lowest">
-<div class="flex items-center gap-2 font-label-caps text-[10px] text-neural-cyan">
-<span class="material-symbols-outlined text-[14px]" data-icon="memory">memory</span>
-                        DIAGNOSTICS: 99%
-                    </div>
-<div class="w-full bg-grid-line h-1">
-<div class="bg-acid-green h-full w-[99%]"></div>
-</div>
-</div>
-<div class="flex flex-col gap-1 mt-4">
-<button class="flex items-center gap-2 text-outline font-label-caps text-[10px] hover:text-acid-green transition-all">
-<span class="material-symbols-outlined text-[14px]" data-icon="terminal">terminal</span> LOGS_v4.0
-                    </button>
-</div>
-</div>
-</aside>
-<!-- Main Content Canvas -->
-<main class="md:ml-64 pt-24 px-gutter pb-24 neural-bg min-h-screen">
-<div class="max-w-container-max mx-auto">
-<!-- Hero Breadcrumb/Status -->
-<div class="mb-10 flex justify-between items-end border-b border-grid-line pb-4">
-<div>
-<div class="font-label-caps text-label-caps text-outline mb-1">SYSTEM_ROOT / NEURAL_PORTAL</div>
-<h2 class="font-headline-lg text-headline-lg text-primary uppercase tracking-tighter">Command Center</h2>
-</div>
-<div class="text-right hidden md:block">
-<div class="font-readout-data text-readout-data text-acid-green">LATENCY: 0.04ms</div>
-<div class="font-readout-data text-readout-data text-neural-cyan">UPTIME: 1,244:09:22</div>
-</div>
-</div>
-<!-- Bento Grid Modules -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-<!-- 1. VIDEO ANALYSIS -->
-<div class="group relative bg-panel-glass border border-surface-variant p-8 acid-glow-hover transition-all duration-500 overflow-hidden cursor-pointer">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-<span class="material-symbols-outlined text-[120px]" data-icon="videocam">videocam</span>
-</div>
-<div class="relative z-10">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 flex items-center justify-center border border-acid-green bg-acid-green/10">
-<span class="material-symbols-outlined text-acid-green text-[32px]" data-icon="biotech">biotech</span>
-</div>
-<h3 class="font-headline-lg text-headline-lg-mobile text-primary uppercase">VIDEO ANALYSIS</h3>
-</div>
-<p class="font-body-main text-on-surface-variant max-w-md mb-8">Neural asset decomposition. Real-time frame extraction and deep-learning layer isolation for multi-dimensional rendering.</p>
-<div class="flex gap-4">
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">RAW_DATA</div>
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">HEVC_S2</div>
-</div>
-</div>
-<div class="mt-8">
-<img class="w-full h-48 object-cover border border-grid-line filter grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="A cinematic, high-contrast digital scan of a server room with vibrant acid green laser lines cutting through the dark void. The lighting is moody and technical, emphasizing precision and the cyberpunk aesthetic of the Mercadream Lab. Floating data nodes and circuit patterns are visible in the background, creating a high-fidelity technological atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuoy75ZnBAq11SnOXppgcLovIwTXz7q8JiG6L4DSy7mnZckux36KpoH6ev_E7JlO3u0olFSYqMTWI1DsDsPa44x7jXuSHHS-rRnfJEPJ7g6pHCwi0s1eNrdjRKbgcKWGFuWe3u67dyNFQlYqt-EbeRJT5gSmCq7F1pXO-ZIE2bVkn8jdFA2wHjmgTH_0cAKRBCJ2LDPEyET2DUIPpxXluoETzFPr9vwXJHSQjj6hZ6x5sHptUoy3zfrL91chP8ht0TStxUAns89bQ"/>
-</div>
-</div>
-<!-- 2. ENTITY CREATION -->
-<div class="group relative bg-panel-glass border border-surface-variant p-8 acid-glow-hover transition-all duration-500 overflow-hidden cursor-pointer">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-<span class="material-symbols-outlined text-[120px]" data-icon="person">person</span>
-</div>
-<div class="relative z-10">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 flex items-center justify-center border border-acid-green bg-acid-green/10">
-<span class="material-symbols-outlined text-acid-green text-[32px]" data-icon="face">face</span>
-</div>
-<h3 class="font-headline-lg text-headline-lg-mobile text-primary uppercase">ENTITY CREATION</h3>
-</div>
-<p class="font-body-main text-on-surface-variant max-w-md mb-8">Biometric hero synthesis. Automated neural pathways generation for autonomous digital avatars and hyper-realistic NPC entities.</p>
-<div class="flex gap-4">
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">DNA_SYNC</div>
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">OMEGA_LAYER</div>
-</div>
-</div>
-<div class="mt-8 flex gap-4">
-<img class="w-1/2 h-48 object-cover border border-grid-line filter grayscale hover:grayscale-0 transition-all duration-500" data-alt="A hyper-realistic close-up of a digital human's neural interface, glowing with intricate cyan circuitry patterns on the skin. The background is a pitch-black void, allowing the vibrant neon highlights to pop. The lighting is sharp and focused, emphasizing the sophisticated biometric hero synthesis process within the Mercadream Lab universe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7oZRebABEaCGVOrbxSaf2G2B_bim5pePyAoVvPRo6-mwWgzdsFy8sALkQqlbuNs2OxK0YDnRiPq8dF9STz85dz7Id0PLgWCeA9ZR7iRBVB7nt1w6iAGJSf_0SHuyQDdHzhouYe_VQaVwdscx0PpTfun_42GUjP3bjY-En85pJvR0lMkQs2e1qCtCgvxpuRuF8452Y92tbAjSP9nmQZV83MSdE9_npDbO9RMEiBHRO0EMSRRvtQ72s4GmgAgtSC2kneGMoN5zU4NI"/>
-<div class="w-1/2 h-48 bg-surface-container-lowest border border-grid-line p-4 flex flex-col justify-center">
-<div class="font-readout-data text-[12px] text-acid-green mb-1 animate-pulse">SYNTHESIZING...</div>
-<div class="w-full bg-grid-line h-2">
-<div class="bg-acid-green h-full w-[65%]"></div>
-</div>
-<div class="mt-4 font-label-caps text-[10px] text-outline uppercase">Target: ARCHITECT_V2</div>
-</div>
-</div>
-</div>
-<!-- 3. ENVIRONMENT -->
-<div class="group relative bg-panel-glass border border-surface-variant p-8 acid-glow-hover transition-all duration-500 overflow-hidden cursor-pointer">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-<span class="material-symbols-outlined text-[120px]" data-icon="language">language</span>
-</div>
-<div class="relative z-10">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 flex items-center justify-center border border-acid-green bg-acid-green/10">
-<span class="material-symbols-outlined text-acid-green text-[32px]" data-icon="public">public</span>
-</div>
-<h3 class="font-headline-lg text-headline-lg-mobile text-primary uppercase">ENVIRONMENT</h3>
-</div>
-<p class="font-body-main text-on-surface-variant max-w-md mb-8">Spatial world architect. Procedural generation of hyper-spatial landscapes and infinite digital frontiers with variable gravity nodes.</p>
-<div class="flex gap-4">
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">PROC_GEN</div>
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">VOXEL_MESH</div>
-</div>
-</div>
-<div class="mt-8 border border-grid-line h-48 relative overflow-hidden">
-<div class="absolute inset-0 grid grid-cols-6 grid-rows-4 opacity-20 group-hover:opacity-40 transition-opacity">
-<div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div>
-<div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div>
-<div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div>
-<div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div><div class="border border-grid-line"></div>
-</div>
-<img class="w-full h-full object-cover filter grayscale-100 mix-blend-screen" data-alt="A sprawling digital city landscape viewed from above, rendered in a crisp glassmorphic style with neon cyan and acid green pathways. The scene is illuminated by floating holographic structures and a deep purple twilight sky. The mood is one of limitless power and futuristic sophistication, reflecting the spatial world architecture of the Mercadream Lab." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcrJyJS-zhli6nrDv0F6XqpZiDuHWiGimPkYWBMwChWtwL1sMgNOrplctKaLlcXUWVBwstHXt-BZx-9XvJqq9mz2esqh_y9gTYvWsr2XpDN_hQh2PFF4dygpHY-oTJDcufpS3vG8aH21HKOr-gzHDcuYiCisQPqIb3NZUSXUWB5ez4bElLwp1T4pjjxgQdscVw1uHIgBS3OHfpn_q7we9Lt6N490fPCPEihE9w5nag76UZK9HSDXxwGz6yihww05z3dUFpJcOa_kI"/>
-<div class="absolute bottom-2 left-2 font-label-caps text-[10px] text-acid-green bg-void-black/80 px-2 py-1 border border-acid-green">X: 12.04 Y: 88.3 Z: -0.01</div>
-</div>
-</div>
-<!-- 4. PHYSICS -->
-<div class="group relative bg-panel-glass border border-surface-variant p-8 acid-glow-hover transition-all duration-500 overflow-hidden cursor-pointer">
-<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-<span class="material-symbols-outlined text-[120px]" data-icon="psychology">psychology</span>
-</div>
-<div class="relative z-10">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 flex items-center justify-center border border-acid-green bg-acid-green/10">
-<span class="material-symbols-outlined text-acid-green text-[32px]" data-icon="settings_input_component">settings_input_component</span>
-</div>
-<h3 class="font-headline-lg text-headline-lg-mobile text-primary uppercase">PHYSICS</h3>
-</div>
-<p class="font-body-main text-on-surface-variant max-w-md mb-8">Regulatory engine for reality. Precise manipulation of universal constants, collision matrices, and neural-gravity interactions.</p>
-<div class="flex gap-4">
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">GRAV_V3</div>
-<div class="font-label-caps text-[10px] text-outline px-2 py-1 border border-grid-line">QUBIT_CALC</div>
-</div>
-</div>
-<div class="mt-8 bg-surface-container-low border border-grid-line p-6 flex items-center justify-center">
-<div class="relative w-32 h-32">
-<div class="absolute inset-0 border-2 border-dashed border-neural-cyan/30 rounded-full animate-spin"></div>
-<div class="absolute inset-4 border border-acid-green/50 rounded-full animate-pulse"></div>
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-acid-green rounded-full shadow-[0_0_10px_#c8ff00]"></div>
-</div>
-<div class="ml-8 font-readout-data text-[12px] text-outline">
-<div class="flex justify-between w-32 border-b border-grid-line mb-1"><span>CONSTANT</span> <span class="text-acid-green">G.88</span></div>
-<div class="flex justify-between w-32 border-b border-grid-line mb-1"><span>DRAG</span> <span class="text-acid-green">0.02</span></div>
-<div class="flex justify-between w-32 border-b border-grid-line mb-1"><span>ENTROPY</span> <span class="text-acid-green">NULL</span></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- Footer -->
-<footer class="md:ml-64 bg-void-black border-t border-grid-line/30 py-4 px-gutter flex flex-col md:flex-row justify-between items-center text-[10px] z-50">
-<div class="text-acid-green font-label-caps mb-4 md:mb-0">© 2144 MERCADREAM NEURAL SYSTEMS. ALL RIGHTS RESERVED.</div>
-<div class="flex gap-6">
-<a class="text-outline font-label-caps hover:text-neural-cyan transition-all uppercase" href="#">Security Protocol</a>
-<a class="text-outline font-label-caps hover:text-neural-cyan transition-all uppercase" href="#">API Access</a>
-<a class="text-outline font-label-caps hover:text-neural-cyan transition-all uppercase" href="#">System Health</a>
-</div>
-</footer>
-</div>
+
 <script>
-        function authenticate() {
-            const key = document.getElementById('secret-key').value;
-            const gate = document.getElementById('password-gate');
-            const hub = document.getElementById('main-hub');
-            const error = document.getElementById('auth-error');
-
-            if (key.length >= 4) {
-                // Success
-                gate.classList.add('opacity-0');
-                setTimeout(() => {
-                    gate.classList.add('hidden');
-                    hub.classList.remove('invisible');
-                    hub.classList.add('opacity-100');
-                    document.body.classList.remove('overflow-hidden');
-                }, 700);
-            } else {
-                // Failure
-                error.classList.remove('hidden');
-                setTimeout(() => {
-                    error.classList.add('hidden');
-                }, 2000);
-            }
-        }
-
-        // Allow Enter key to trigger authentication
-        document.getElementById('secret-key').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                authenticate();
-            }
-        });
-    </script>
-</body></html>
+function check(){
+  if(document.getElementById("pwd").value==="mercadream2030"){
+    sessionStorage.setItem("lab_access","granted");
+    document.getElementById("gate").style.display="none";
+    var lab=document.getElementById("lab");
+    lab.style.display="flex";
+  } else {
+    document.getElementById("err").style.display="block";
+    setTimeout(function(){document.getElementById("err").style.display="none";},2000);
+  }
+}
+window.addEventListener("load",function(){
+  if(sessionStorage.getItem("lab_access")==="granted"){
+    document.getElementById("gate").style.display="none";
+    document.getElementById("lab").style.display="flex";
+  }
+  document.getElementById("pwd").focus();
+});
+</script>
+</body>
+</html>
