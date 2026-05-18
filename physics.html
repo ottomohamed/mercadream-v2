@@ -159,7 +159,7 @@
 </div>
 <div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 border border-slate-data">
 <span class="material-symbols-outlined text-cyber-gold text-[18px]">account_balance_wallet</span>
-<span class="font-label-technical text-cyber-gold">60 CREDITS</span>
+<span class="font-label-technical text-cyber-gold">15 CREDITS</span>
 </div>
 <button class="p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-100">
 <span class="material-symbols-outlined">settings_input_component</span>
@@ -329,7 +329,7 @@
 </div>
 <button class="bg-neon-acid text-void-black px-12 h-14 flex items-center gap-4 group hover:shadow-[0_0_20px_rgba(200,255,0,0.5)] transition-all active:scale-95 flex-1 md:flex-initial">
 <span class="material-symbols-outlined group-hover:rotate-12 transition-transform">bolt</span>
-<span class="font-headline-lg-mobile text-headline-lg-mobile font-black tracking-tighter">SIMULATE — 60 CREDITS</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-black tracking-tighter">SIMULATE — 15 CREDITS</span>
 </button>
 </div>
 </footer>
@@ -351,4 +351,5 @@ var sliders=document.querySelectorAll("input[type=range]:not([disabled])");var d
 function go(){if(!sf){alert("Upload a file first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-physics");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=2;if(btn)btn.querySelector("span:last-child").textContent="SIMULATING "+simType+"... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.querySelector("span:last-child").textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},300);}
 window.addEventListener("load",function(){var btn=document.querySelector("footer button.bg-neon-acid");if(btn){btn.id="btn-physics";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
 </script><script src="/js/pipeline.js"></script></body></html>
+
 
