@@ -176,7 +176,7 @@
 <p class="font-body-md text-silver-technical max-w-xl italic">"Generate thousands of virtual extras with surgical precision and photorealistic behavior mapping."</p>
 </div>
 <div class="flex flex-col items-end">
-<div class="font-label-technical text-neon-acid text-2xl font-bold">15 CREDITS</div>
+<div class="font-label-technical text-neon-acid text-2xl font-bold">110 CREDITS</div>
 <div class="font-label-caps text-silver-technical">PER HIGH-RES RENDER</div>
 </div>
 </section>
@@ -333,7 +333,7 @@
 </div>
 <button class="bg-neon-acid hover:bg-neon-acid/90 text-void-black px-12 py-3 font-label-technical font-bold text-lg flex items-center gap-3 transition-all active:scale-95 group">
 <span class="material-symbols-outlined group-hover:animate-pulse" data-icon="bolt" data-weight="fill">bolt</span>
-            [ GENERATE CROWD — 15 CREDITS ]
+            [ GENERATE CROWD — 110 CREDITS ]
         </button>
 </div>
 <!-- Footer -->
@@ -357,5 +357,6 @@ document.querySelectorAll(".flex.border.border-outline-variant button").forEach(
 function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
 window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button.bg-neon-acid");if(btn){btn.id="btn-crowd";btn.onclick=go;}var bb=document.querySelector("header .material-symbols-outlined");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
 </script><script src="/js/pipeline.js"></script></body></html>
+
 
 

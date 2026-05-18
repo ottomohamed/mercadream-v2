@@ -197,7 +197,7 @@
 </div>
 <div class="bg-void-black technical-border p-6 flex flex-col items-center">
 <span class="font-label-caps text-label-caps text-silver-technical mb-1">COMPUTE_COST</span>
-<span class="font-headline-lg text-headline-lg text-neon-acid">120 CREDITS</span>
+<span class="font-headline-lg text-headline-lg text-neon-acid">15 CREDITS</span>
 </div>
 </div>
 </section>
@@ -343,7 +343,7 @@
 </div>
 <button class="w-full md:w-auto px-12 py-4 bg-neon-acid text-void-black font-headline-lg text-[18px] font-extrabold tracking-tight flex items-center justify-center gap-4 hover:shadow-[0_0_30px_rgba(200,255,0,0.4)] transition-all active:scale-95 group">
 <span class="material-symbols-outlined text-[24px]">bolt</span>
-            CAPTURE 3D — 120 CREDITS
+            CAPTURE 3D — 15 CREDITS
             <span class="material-symbols-outlined text-[20px] group-hover:translate-x-2 transition-transform">chevron_right</span>
 </button>
 <div class="hidden md:flex flex-col items-end">
@@ -367,5 +367,6 @@ var sl=document.querySelector("input[type=range]");var sd=document.querySelector
 function go(){if(!sf){alert("Upload a video first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-vol");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=1;if(btn)btn.querySelector("span:nth-child(2)").textContent="PROCESSING... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.querySelector("span:nth-child(2)").textContent=" COMPLETE  DOWNLOAD "+exportFmt;btn.onclick=function(){alert("3D model ready for download!");};}}},400);}
 window.addEventListener("load",function(){var btn=document.querySelector("footer button.bg-neon-acid");if(btn){btn.id="btn-vol";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};var nb=document.querySelector("nav button.bg-neon-acid");if(nb)nb.onclick=go;if(window.MD)window.MD.updateCredits();});
 </script><script src="/js/pipeline.js"></script></body></html>
+
 
 
