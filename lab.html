@@ -1,33 +1,52 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM SINGULARITY v3.0</title>
+<title>MERCADREAM LAB | VIDEO ANALYSIS CHAMBER</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
         body {
             background-color: #020202;
             color: #e5e2e1;
             overflow: hidden;
+            font-family: 'Inter', sans-serif;
         }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass-panel {
+        .panel-glass {
             background: rgba(10, 10, 10, 0.6);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 240, 255, 0.1);
+            -webkit-backdrop-filter: blur(20px);
         }
-        .acid-glow {
-            text-shadow: 0 0 10px rgba(200, 255, 0, 0.5);
+        .border-glow-green:active {
+            box-shadow: 0 0 15px rgba(200, 255, 0, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.2);
         }
         .scanline {
-            background: linear-gradient(to bottom, transparent 50%, rgba(0, 240, 255, 0.05) 50%);
+            background: linear-gradient(to bottom, transparent 50%, rgba(200, 255, 0, 0.05) 50%);
             background-size: 100% 4px;
+            pointer-events: none;
+        }
+        @keyframes pulse-green {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        .status-pulse {
+            animation: pulse-green 2s infinite ease-in-out;
         }
     </style>
 <script id="tailwind-config">
@@ -36,61 +55,60 @@
           theme: {
             extend: {
               "colors": {
-                      "error": "#ffb4ab",
-                      "on-background": "#e5e2e1",
-                      "tertiary-fixed": "#f2daff",
-                      "on-primary-fixed-variant": "#3b4d00",
-                      "on-primary-container": "#546d00",
-                      "on-error-container": "#ffdad6",
-                      "panel-glass": "rgba(10, 10, 10, 0.6)",
-                      "glow-green": "rgba(200, 255, 0, 0.3)",
-                      "secondary-fixed-dim": "#00dbe9",
-                      "on-secondary-fixed": "#002022",
-                      "surface-container-high": "#2a2a2a",
-                      "on-tertiary-fixed": "#2e004d",
-                      "on-error": "#690005",
-                      "surface-tint": "#a8d700",
-                      "error-container": "#93000a",
-                      "multiverse-purple": "#a300ff",
-                      "secondary-container": "#00eefc",
-                      "outline": "#8e9479",
-                      "on-surface-variant": "#c4caac",
-                      "inverse-surface": "#e5e2e1",
-                      "surface-dim": "#141313",
-                      "primary-fixed": "#c0f500",
-                      "secondary": "#d3fbff",
-                      "surface-container-highest": "#353434",
-                      "surface": "#141313",
-                      "secondary-fixed": "#7df4ff",
-                      "on-surface": "#e5e2e1",
-                      "tertiary-container": "#f2daff",
-                      "outline-variant": "#434933",
-                      "surface-container-low": "#1c1b1b",
-                      "on-tertiary-fixed-variant": "#6d00ac",
-                      "surface-bright": "#3a3939",
-                      "primary-container": "#c0f500",
-                      "neural-cyan": "#00f0ff",
-                      "tertiary-fixed-dim": "#e1b6ff",
-                      "background": "#141313",
-                      "inverse-primary": "#4f6600",
-                      "on-primary": "#273500",
-                      "void-black": "#020202",
                       "acid-green": "#c8ff00",
-                      "surface-container": "#201f1f",
-                      "on-secondary-container": "#00686f",
-                      "on-secondary-fixed-variant": "#004f54",
-                      "primary-fixed-dim": "#a8d700",
-                      "on-primary-fixed": "#161f00",
-                      "primary": "#ffffff",
                       "inverse-on-surface": "#313030",
-                      "tertiary": "#ffffff",
-                      "on-tertiary-container": "#9800ee",
-                      "on-tertiary": "#4c007b",
+                      "on-secondary-fixed-variant": "#004f54",
+                      "on-primary": "#273500",
+                      "inverse-primary": "#4f6600",
+                      "surface-bright": "#3a3939",
+                      "on-tertiary-fixed-variant": "#6d00ac",
                       "grid-line": "rgba(0, 240, 255, 0.1)",
+                      "on-error": "#690005",
+                      "on-background": "#e5e2e1",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-container-high": "#2a2a2a",
+                      "tertiary-fixed-dim": "#e1b6ff",
+                      "tertiary-container": "#f2daff",
+                      "primary-container": "#c0f500",
+                      "background": "#141313",
+                      "on-primary-fixed": "#161f00",
+                      "surface-dim": "#141313",
+                      "on-tertiary-fixed": "#2e004d",
+                      "on-secondary-container": "#00686f",
+                      "on-primary-container": "#546d00",
+                      "primary-fixed-dim": "#a8d700",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "secondary-fixed": "#7df4ff",
+                      "outline-variant": "#434933",
+                      "glow-green": "rgba(200, 255, 0, 0.3)",
+                      "on-surface": "#e5e2e1",
+                      "multiverse-purple": "#a300ff",
+                      "on-tertiary": "#4c007b",
+                      "error-container": "#93000a",
+                      "panel-glass": "rgba(10, 10, 10, 0.6)",
+                      "on-secondary-fixed": "#002022",
+                      "surface-tint": "#a8d700",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-highest": "#353434",
+                      "on-surface-variant": "#c4caac",
+                      "on-tertiary-container": "#9800ee",
+                      "error": "#ffb4ab",
+                      "surface-container": "#201f1f",
+                      "neural-cyan": "#00f0ff",
+                      "primary-fixed": "#c0f500",
+                      "primary": "#ffffff",
+                      "outline": "#8e9479",
+                      "void-black": "#020202",
+                      "tertiary": "#ffffff",
+                      "secondary": "#d3fbff",
+                      "surface-variant": "#353434",
+                      "tertiary-fixed": "#f2daff",
                       "surface-container-lowest": "#0e0e0e",
                       "on-secondary": "#00363a",
-                      "surface-variant": "#353434",
-                      "cyber-gold": "#ffba3f"
+                      "surface-container-low": "#1c1b1b",
+                      "surface": "#141313",
+                      "secondary-fixed-dim": "#00dbe9",
+                      "secondary-container": "#00eefc"
               },
               "borderRadius": {
                       "DEFAULT": "0.125rem",
@@ -99,484 +117,337 @@
                       "full": "0.75rem"
               },
               "spacing": {
+                      "container-max": "1440px",
                       "margin": "40px",
                       "unit": "4px",
-                      "gutter": "24px",
-                      "container-max": "1440px"
+                      "gutter": "24px"
               },
               "fontFamily": {
+                      "headline-xl": ["Space Grotesk"],
+                      "readout-data": ["IBM Plex Mono"],
                       "headline-lg": ["Space Grotesk"],
                       "label-caps": ["IBM Plex Mono"],
-                      "body-main": ["Inter"],
-                      "readout-data": ["IBM Plex Mono"],
-                      "headline-lg-mobile": ["Space Grotesk"],
-                      "headline-xl": ["Space Grotesk"]
+                      "body-main": ["Inter"]
               },
               "fontSize": {
+                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "readout-data": ["16px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "500"}],
                       "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "600"}],
                       "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
-                      "body-main": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                      "readout-data": ["16px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                      "body-main": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
               }
-            },
-          },
+            }
+          }
         }
     </script>
 </head>
-<body class="bg-void-black text-on-surface font-body-main selection:bg-acid-green selection:text-void-black h-screen flex flex-col overflow-hidden">
+<body class="h-screen flex flex-col bg-void-black selection:bg-acid-green selection:text-black">
 <!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-margin h-16 z-50 bg-panel-glass backdrop-blur-md border-b border-grid-line/20 shadow-[0_0_20px_rgba(200,255,0,0.15)]">
+<header class="bg-panel-glass backdrop-blur-md border-b border-grid-line/10 shadow-[0_0_15px_rgba(200,255,0,0.15)] flex justify-between items-center w-full px-margin h-16 shrink-0 z-50">
+<div class="font-headline-lg text-headline-lg font-bold tracking-tight text-acid-green">
+            MERCADREAM LAB | VIDEO ANALYSIS
+        </div>
 <div class="flex items-center gap-6">
-<span class="font-headline-lg text-headline-lg font-bold text-acid-green tracking-tighter uppercase">MERCADREAM SINGULARITY v3.0</span>
-<div class="flex items-center gap-2 border-l border-grid-line/40 pl-6 h-6">
-<div class="flex items-center gap-2 px-3 py-1 bg-acid-green/10 rounded-full border border-acid-green/30">
-<span class="w-2 h-2 rounded-full bg-acid-green shadow-[0_0_8px_#c8ff00]"></span>
-<span class="font-label-caps text-label-caps text-acid-green">UPLINK SECURE</span>
+<div class="relative flex items-center">
+<input class="bg-surface-container-low border-b border-outline/30 focus:border-acid-green focus:ring-0 text-label-caps font-label-caps py-1 px-4 w-64 placeholder:text-on-surface-variant/50" placeholder="QUERY NEURAL ARCHIVE..." type="text"/>
+<span class="material-symbols-outlined absolute right-2 text-on-surface-variant text-sm">search</span>
 </div>
-<div class="flex items-center gap-2 px-3 py-1 bg-cyber-gold/10 rounded-full border border-cyber-gold/30">
-<span class="material-symbols-outlined text-[14px] text-cyber-gold">encrypted</span>
-<span class="font-label-caps text-label-caps text-cyber-gold">OMEGA LEVEL</span>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-neural-cyan hover:bg-neural-cyan/5 transition-all duration-300 p-2 rounded">
+<span class="material-symbols-outlined">memory</span>
+</button>
+<button class="hover:text-neural-cyan hover:bg-neural-cyan/5 transition-all duration-300 p-2 rounded relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-acid-green rounded-full shadow-[0_0_5px_#c8ff00]"></span>
+</button>
+<button class="hover:text-neural-cyan hover:bg-neural-cyan/5 transition-all duration-300 p-2 rounded">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-grid-line/20">
+<div class="text-right">
+<div class="font-label-caps text-label-caps text-acid-green">ARCHITECT</div>
+<div class="text-[10px] text-on-surface-variant">NEURAL_CORE_V20</div>
 </div>
+<img alt="Neural Architect" class="w-8 h-8 rounded-full border border-acid-green/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOWsCMcqTVcVi60RYW3PdD_Ek2mzH64M636WHgv35x075W6ECj3FScV58UfPScE8Q2WSnNe4uZOEbmtOmVpsmP7q8qrYRdPXPWh_XT-tNfRHLShrwn1i9sJuqlhbQj9Co2Nvz1c8bFy_yzCIAuwJx5jDUkZ3raOv8BPI-iiiHVyrd7ygE4fo9Rl8vRU6D2sXB_AYRLju-6U6hKI-XqYh6AMxWJBLw9q-H4E4sb_4xh1H395trXjn7mkRpsmW9gToAZwdXQgv4F2_Y"/>
 </div>
-</div>
-<div class="flex items-center gap-8">
-<nav class="hidden md:flex gap-6 items-center">
-<a class="text-acid-green border-b-2 border-acid-green font-bold px-2 py-1 font-label-caps text-label-caps" href="#">Neural Stream</a>
-<a class="text-on-surface-variant font-medium px-2 py-1 font-label-caps text-label-caps hover:text-acid-green transition-colors" href="#">Quantum Preview</a>
-<a class="text-on-surface-variant font-medium px-2 py-1 font-label-caps text-label-caps hover:text-acid-green transition-colors" href="#">Timeline</a>
-<a class="text-on-surface-variant font-medium px-2 py-1 font-label-caps text-label-caps hover:text-acid-green transition-colors" href="#">Modulation</a>
-</nav>
-<div class="flex items-center gap-4 border-l border-grid-line/40 pl-6 h-6">
-<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">settings_input_component</span>
-<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">terminal</span>
-<span class="material-symbols-outlined text-acid-green cursor-pointer" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
 </div>
 </div>
 </header>
-<main class="flex-grow flex overflow-hidden">
-<!-- Left Sidebar: PhD Neural Mesh -->
-<aside class="fixed left-0 top-16 h-[calc(100vh-64px-180px)] w-72 flex flex-col border-r border-grid-line/20 bg-panel-glass backdrop-blur-xl z-40">
-<div class="p-6 border-b border-grid-line/10">
-<div class="flex flex-col">
-<span class="font-headline-lg-mobile text-headline-lg-mobile text-acid-green font-black">NEURAL STREAM</span>
-<span class="font-label-caps text-[10px] text-on-surface-variant tracking-[0.2em]">PHD AGENT OVERRIDE</span>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-panel-glass backdrop-blur-lg border-r border-grid-line/10 shadow-[5px_0_20px_rgba(0,240,255,0.05)] py-6 space-y-4 shrink-0">
+<div class="px-6 mb-6">
+<div class="font-headline-lg text-headline-lg text-acid-green font-bold leading-none">NEURAL CORE</div>
+<div class="font-label-caps text-[10px] text-on-surface-variant tracking-widest mt-1">v20.0 ARCHITECT</div>
 </div>
-</div>
-<div class="flex-grow overflow-y-auto p-4 space-y-4">
-<!-- Agent Feed Items -->
-<div class="space-y-6">
-<!-- Stream 1 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="font-label-caps text-[11px] text-acid-green">Quantum Gravity</span>
-<span class="font-readout-data text-[10px] text-on-surface-variant">0.998 Hz</span>
-</div>
-<div class="h-4 bg-void-black border border-grid-line/20 relative overflow-hidden">
-<div class="absolute inset-0 flex items-center gap-1 px-1">
-<div class="h-2 w-1 bg-acid-green/60"></div><div class="h-1 w-1 bg-acid-green/40"></div><div class="h-2 w-2 bg-acid-green"></div><div class="h-1 w-1 bg-acid-green/20"></div><div class="h-3 w-1 bg-acid-green"></div><div class="h-1 w-1 bg-acid-green/40"></div><div class="h-2 w-1 bg-acid-green/60"></div><div class="h-1 w-1 bg-acid-green/30"></div><div class="h-1 w-2 bg-acid-green/10"></div><div class="h-3 w-1 bg-acid-green/80"></div>
-<div class="h-2 w-1 bg-acid-green/60"></div><div class="h-1 w-1 bg-acid-green/40"></div><div class="h-2 w-2 bg-acid-green"></div><div class="h-1 w-1 bg-acid-green/20"></div><div class="h-3 w-1 bg-acid-green"></div>
-</div>
-</div>
-</div>
-<!-- Stream 2 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="font-label-caps text-[11px] text-on-surface">Temporal Flux</span>
-<span class="font-readout-data text-[10px] text-on-surface-variant">Σ-Δ: 4.2</span>
-</div>
-<div class="h-4 bg-void-black border border-grid-line/20 relative overflow-hidden">
-<div class="absolute top-0 left-0 h-full w-2/3 bg-acid-green/20"></div>
-<div class="absolute top-0 right-1/4 h-full w-[2px] bg-acid-green shadow-[0_0_8px_#c8ff00]"></div>
-</div>
-</div>
-<!-- Stream 3 -->
-<div class="space-y-2">
-<div class="flex justify-between items-end">
-<span class="font-label-caps text-[11px] text-on-surface">Molecular Synthesis</span>
-<span class="font-readout-data text-[10px] text-on-surface-variant">BOUND</span>
-</div>
-<div class="h-12 bg-void-black border border-grid-line/20 p-1">
-<div class="grid grid-cols-10 grid-rows-3 gap-1 h-full">
-<div class="bg-acid-green/40"></div><div class="bg-acid-green"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/60"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/80"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/40"></div>
-<div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/5"></div><div class="bg-acid-green/30"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/5"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/10"></div>
-<div class="bg-acid-green/20"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/80"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/20"></div><div class="bg-acid-green/40"></div><div class="bg-acid-green/10"></div><div class="bg-acid-green/60"></div>
-</div>
-</div>
-</div>
-<!-- Agents 4-10 collapsed for info density -->
-<div class="space-y-1 opacity-60">
-<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
-<span class="material-symbols-outlined text-[14px]">psychology</span>
-<span class="font-label-caps text-[10px]">COGNITIVE ECHO</span>
-</div>
-<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
-<span class="material-symbols-outlined text-[14px]">robot_2</span>
-<span class="font-label-caps text-[10px]">AGENT ALPHA</span>
-</div>
-<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
-<span class="material-symbols-outlined text-[14px]">dynamic_form</span>
-<span class="font-label-caps text-[10px]">SUBROUTINE BETA</span>
-</div>
-<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
-<span class="material-symbols-outlined text-[14px]">visibility_off</span>
-<span class="font-label-caps text-[10px]">GHOST PROTOCOL</span>
-</div>
-<div class="flex items-center gap-2 py-1 px-2 hover:bg-grid-line/10 transition-colors">
-<span class="material-symbols-outlined text-[14px]">hub</span>
-<span class="font-label-caps text-[10px]">NEURAL MESH</span>
-</div>
-</div>
-</div>
-</div>
-<div class="p-4 border-t border-grid-line/20 bg-void-black/40">
-<button class="w-full py-3 bg-acid-green text-void-black font-label-caps text-label-caps font-black hover:shadow-[0_0_20px_#c8ff00] transition-all active:scale-95">
-                    INITIATE UPLINK
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-acid-green bg-acid-green/10 border-r-4 border-acid-green transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-neural-cyan/10 hover:text-neural-cyan transition-all duration-200" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-caps text-label-caps">Entities</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-neural-cyan/10 hover:text-neural-cyan transition-all duration-200" href="#">
+<span class="material-symbols-outlined">language</span>
+<span class="font-label-caps text-label-caps">Environment</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-neural-cyan/10 hover:text-neural-cyan transition-all duration-200" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span class="font-label-caps text-label-caps">Physics</span>
+</a>
+</nav>
+<div class="px-4 pb-4">
+<button class="w-full py-3 bg-acid-green text-black font-bold font-label-caps text-label-caps hover:shadow-[0_0_20px_rgba(200,255,0,0.4)] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    RUN SIMULATION
                 </button>
-<div class="mt-4 flex justify-between items-center opacity-70">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">analytics</span>
-<span class="font-label-caps text-[9px]">DIAGNOSTICS</span>
 </div>
-<div class="flex items-center gap-2">
-<span class="font-label-caps text-[9px]">LOGOFF</span>
-<span class="material-symbols-outlined text-[18px]">logout</span>
-</div>
-</div>
+<div class="px-6 pt-4 border-t border-grid-line/10 space-y-4">
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-neural-cyan transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">list_alt</span>
+<span class="font-label-caps text-[10px]">System Logs</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-neural-cyan transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">settings_input_component</span>
+<span class="font-label-caps text-[10px]">Diagnostics</span>
+</a>
 </div>
 </aside>
-<!-- Center: The Singularity Core -->
-<section class="flex-grow ml-72 mr-80 relative overflow-hidden bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05)_0%,transparent_70%)]">
-<!-- Background Grid Layer -->
-<div class="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
-<div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 40px 40px;"></div>
-<!-- Main Hero: 3D Wireframe Form (Represented via High-Tech Image) -->
-<div class="absolute inset-0 flex items-center justify-center p-gutter">
-<div class="relative w-full h-full max-w-4xl max-h-[716px]">
-<img alt="Singularity Core Humanoid" class="w-full h-full object-contain opacity-80 mix-blend-screen grayscale brightness-125" data-alt="A high-fidelity 3D wireframe mesh of a human male figure, composed of glowing neon acid green digital lines and neural connection nodes. The figure is suspended in a dark, infinite virtual void with floating data fragments and crystalline reality splinters drifting around it. The lighting is dramatic, coming from within the figure itself, casting a lime-green glow on its surroundings. Professional high-tech UI cyberpunk aesthetic with medical-grade technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl0wWq7FqhEQWOSJsSX08Jtk_EXF6uJPfLoMHI5dVaTE1Ndpi4b6sFt9JQtiBsMzX_tKENaAnSfMUKlKqIScSDpsZcj7EXuT1s8d07kWU-eHz30ZR16h2bfRaiPQq3UuRgIv1FIiURcDAQVtDa9TCAzxbK9xWO1P5PQqA4m__ENODitif2pj8QD1OpoDs-eL_bFLQT5CZcu_R9uQEWQqvzMYkZCr7XGViIGfEQSg-C19MoC5XqFutDFfAmnuZ0z5udBs_bHKmfSwc"/>
-<!-- Floating Data Fragments -->
-<div class="absolute top-[20%] left-[10%] p-3 glass-panel border-l-2 border-acid-green">
-<span class="block font-label-caps text-[10px] text-acid-green">REALITY SPLINTER #772</span>
-<span class="block font-readout-data text-[12px] text-on-surface">COORDINATE DRIFT DETECTED</span>
+<!-- Main Content Area -->
+<main class="flex-1 flex overflow-hidden p-gutter gap-gutter relative">
+<!-- Background Coordinate Grid Decoration -->
+<div class="absolute inset-0 pointer-events-none opacity-20" style="background-image: radial-gradient(circle, rgba(0,240,255,0.1) 1px, transparent 1px); background-size: 40px 40px;"></div>
+<!-- Left Panel: ANALYST AGENTS -->
+<section class="w-80 flex flex-col gap-4 z-10">
+<div class="flex items-center justify-between border-b border-acid-green/30 pb-2">
+<h2 class="font-headline-lg text-headline-lg text-xl tracking-tight text-white">ANALYST AGENTS</h2>
+<span class="material-symbols-outlined text-acid-green text-lg">memory</span>
 </div>
-<div class="absolute bottom-[30%] right-[15%] p-3 glass-panel border-r-2 border-multiverse-purple">
-<span class="block font-label-caps text-[10px] text-multiverse-purple">QUANTUM LEAK</span>
-<span class="block font-readout-data text-[12px] text-on-surface">DECONSTRUCTION IN PROGRESS</span>
+<div class="flex-1 flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-2">
+<!-- Agent Card 1 -->
+<div class="panel-glass p-4 border border-grid-line group hover:border-acid-green/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-readout-data text-label-caps text-acid-green text-[10px]">ID: PX_DEC_01</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">check_circle</span>
 </div>
-</div>
-</div>
-<!-- Live Coordinate Tracking UI -->
-<div class="absolute bottom-10 left-10 p-4 border border-grid-line/20 bg-void-black/60 backdrop-blur-md">
-<div class="flex flex-col gap-2">
-<div class="flex items-center gap-4">
-<span class="font-label-caps text-[10px] text-on-surface-variant w-4">X</span>
-<span class="font-readout-data text-acid-green text-[14px]">442.9912.001</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="font-label-caps text-[10px] text-on-surface-variant w-4">Y</span>
-<span class="font-readout-data text-acid-green text-[14px]">881.0234.552</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="font-label-caps text-[10px] text-on-surface-variant w-4">Z</span>
-<span class="font-readout-data text-acid-green text-[14px]">-122.339.882</span>
-</div>
-<div class="pt-2 border-t border-grid-line/20">
-<span class="font-label-caps text-[10px] text-cyber-gold">TIME_INDEX: 4.09e-11s</span>
+<h3 class="font-headline-lg text-lg text-white mb-1">PIXEL_DECODER</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-3 uppercase tracking-wider">Colors &amp; RGB Analysis</p>
+<div class="w-full h-1 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-acid-green w-3/4 status-pulse"></div>
 </div>
 </div>
+<!-- Agent Card 2 -->
+<div class="panel-glass p-4 border border-grid-line group hover:border-acid-green/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-readout-data text-label-caps text-acid-green text-[10px]">ID: MV_VEC_02</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">settings_backup_restore</span>
 </div>
-<!-- Viewport Legend -->
-<div class="absolute bottom-4 right-4 flex items-center gap-4 px-3 py-1 bg-void-black/80 border border-grid-line/30">
-<span class="font-label-caps text-[10px] text-on-surface-variant">LENS: NEURAL_EYE_01</span>
-<span class="font-label-caps text-[10px] text-acid-green">FOV: 110.00</span>
-<span class="font-label-caps text-[10px] text-on-surface-variant">FPS: 144.02</span>
+<h3 class="font-headline-lg text-lg text-white mb-1">MOTION_VECTORIZER</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-3 uppercase tracking-wider">Motion Equations</p>
+<div class="w-full h-1 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-acid-green w-1/2 status-pulse"></div>
+</div>
+</div>
+<!-- Agent Card 3 -->
+<div class="panel-glass p-4 border border-grid-line group hover:border-acid-green/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-readout-data text-label-caps text-acid-green text-[10px]">ID: GM_MST_03</span>
+<span class="material-symbols-outlined text-acid-green text-sm">task_alt</span>
+</div>
+<h3 class="font-headline-lg text-lg text-white mb-1">GEOMETRY_MASTER</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-3 uppercase tracking-wider">Shapes &amp; Dimensions</p>
+<div class="w-full h-1 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-acid-green w-full"></div>
+</div>
+</div>
+<!-- Agent Card 4 -->
+<div class="panel-glass p-4 border border-grid-line group hover:border-acid-green/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-readout-data text-label-caps text-acid-green text-[10px]">ID: PH_CAL_04</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">hourglass_empty</span>
+</div>
+<h3 class="font-headline-lg text-lg text-white mb-1">PHYSICS_CALCULATOR</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-3 uppercase tracking-wider">Physics &amp; Forces</p>
+<div class="w-full h-1 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-acid-green w-1/4 status-pulse"></div>
+</div>
+</div>
+<!-- Agent Card 5 -->
+<div class="panel-glass p-4 border border-grid-line group hover:border-acid-green/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-readout-data text-label-caps text-acid-green text-[10px]">ID: PT_REC_05</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">cached</span>
+</div>
+<h3 class="font-headline-lg text-lg text-white mb-1">PATTERN_RECOGNIZER</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-3 uppercase tracking-wider">Patterns &amp; Repetition</p>
+<div class="w-full h-1 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-acid-green w-4/5 status-pulse"></div>
+</div>
+</div>
+<!-- Agent Card 6 -->
+<div class="panel-glass p-4 border border-grid-line group hover:border-acid-green/50 transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="font-readout-data text-label-caps text-acid-green text-[10px]">ID: MT_ENC_06</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">functions</span>
+</div>
+<h3 class="font-headline-lg text-lg text-white mb-1">MATH_ENCODER</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mb-3 uppercase tracking-wider">Mathematical Equations</p>
+<div class="w-full h-1 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-acid-green w-2/3 status-pulse"></div>
+</div>
+</div>
 </div>
 </section>
-<!-- Right Sidebar: Dimension Controller -->
-<aside class="fixed right-0 top-16 h-[calc(100vh-64px-180px)] w-80 flex flex-col border-l border-grid-line/20 bg-panel-glass backdrop-blur-xl z-40">
-<div class="p-6 border-b border-grid-line/10 bg-void-black/20">
-<span class="font-label-caps text-[11px] text-on-surface-variant tracking-[0.3em] uppercase">Control Module</span>
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">DIMENSION CONTROLLER</h2>
-</div>
-<div class="flex-grow p-6 space-y-8 overflow-y-auto">
-<!-- Slider: Event Horizon -->
-<div class="space-y-3">
-<div class="flex justify-between items-center">
-<label class="font-label-caps text-[11px] text-on-surface">Event Horizon Deviation</label>
-<span class="font-readout-data text-[12px] text-acid-green">14.02%</span>
-</div>
-<div class="relative h-1 bg-white/10 w-full">
-<div class="absolute top-0 left-0 h-full w-[14%] bg-acid-green"></div>
-<div class="absolute top-[-4px] left-[14%] w-3 h-3 bg-acid-green rounded-full shadow-[0_0_10px_#c8ff00]"></div>
-</div>
-</div>
-<!-- Slider: Quantum Entanglement -->
-<div class="space-y-3">
-<div class="flex justify-between items-center">
-<label class="font-label-caps text-[11px] text-on-surface">Entanglement Strength</label>
-<span class="font-readout-data text-[12px] text-neural-cyan">MAX</span>
-</div>
-<div class="relative h-1 bg-white/10 w-full">
-<div class="absolute top-0 left-0 h-full w-full bg-neural-cyan"></div>
-<div class="absolute top-[-4px] left-[98%] w-3 h-3 bg-neural-cyan rounded-full shadow-[0_0_10px_#00f0ff]"></div>
-</div>
-</div>
-<!-- Slider: Sub-Atomic Resolution -->
-<div class="space-y-3">
-<div class="flex justify-between items-center">
-<label class="font-label-caps text-[11px] text-on-surface">Sub-Atomic Resolution</label>
-<span class="font-readout-data text-[12px] text-on-surface-variant">0.0001Å</span>
-</div>
-<div class="flex gap-1 h-3">
-<div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-acid-green"></div><div class="flex-grow bg-white/10"></div><div class="flex-grow bg-white/10"></div><div class="flex-grow bg-white/10"></div>
+<!-- Center Panel: VIDEO UPLOAD AREA -->
+<section class="flex-1 flex flex-col gap-6 z-10">
+<div class="relative flex-1 group">
+<!-- High-tech frame decoration -->
+<div class="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-acid-green"></div>
+<div class="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-acid-green"></div>
+<div class="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-acid-green"></div>
+<div class="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-acid-green"></div>
+<div class="panel-glass border border-grid-line h-full flex flex-col items-center justify-center relative overflow-hidden group-hover:border-acid-green/30 transition-all cursor-pointer">
+<!-- Crosshair Decorations -->
+<div class="absolute top-1/2 left-4 w-4 h-px bg-neural-cyan/30"></div>
+<div class="absolute top-1/2 right-4 w-4 h-px bg-neural-cyan/30"></div>
+<div class="absolute top-4 left-1/2 w-px h-4 bg-neural-cyan/30"></div>
+<div class="absolute bottom-4 left-1/2 w-px h-4 bg-neural-cyan/30"></div>
+<div class="scanline absolute inset-0 opacity-10"></div>
+<span class="material-symbols-outlined text-6xl text-acid-green mb-4 group-hover:scale-110 transition-transform duration-300">videocam</span>
+<div class="font-headline-lg text-headline-lg text-2xl text-white text-center">INITIALIZE VIDEO UPLOAD</div>
+<div class="font-readout-data text-sm text-neural-cyan mt-2 opacity-60">DRAG SOURCE OR SELECT ARCHIVE LINK</div>
+<!-- Overlay Coordinates -->
+<div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-on-surface-variant">
+                            COORD: 34.02 // 118.49<br/>
+                            ELEVATION: 240M
+                        </div>
+<div class="absolute bottom-4 right-4 font-label-caps text-[10px] text-on-surface-variant text-right">
+                            RES: 8K_UNCOMPRESSED<br/>
+                            CODEC: NEURAL_RAW
+                        </div>
 </div>
 </div>
-<!-- Toggle: Reality Lock -->
-<div class="p-4 glass-panel border border-cyber-gold/20 flex justify-between items-center">
-<div>
-<span class="block font-label-caps text-[12px] text-cyber-gold">REALITY LOCK</span>
-<span class="block font-readout-data text-[10px] text-on-surface-variant">Preventing Cascading Failure</span>
+<!-- Live Telemetry -->
+<div class="h-48 panel-glass border border-grid-line p-4 flex flex-col">
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 bg-acid-green rounded-full shadow-[0_0_8px_#c8ff00]"></span>
+<h3 class="font-label-caps text-label-caps text-on-surface tracking-widest">LIVE TELEMETRY</h3>
 </div>
-<div class="w-12 h-6 bg-cyber-gold/20 border border-cyber-gold/50 rounded-full relative cursor-pointer">
-<div class="absolute top-1 left-1 w-4 h-4 bg-cyber-gold rounded-full"></div>
-</div>
-</div>
-<!-- Warning Panel -->
-<div class="p-4 border border-error/20 bg-error/5 flex gap-3">
-<span class="material-symbols-outlined text-error">warning</span>
-<div>
-<span class="block font-label-caps text-[10px] text-error font-bold uppercase">Anomaly Detected</span>
-<p class="font-body-main text-[11px] text-on-surface-variant leading-tight">Multiverse branch 092-A is showing signs of critical temporal erosion.</p>
+<div class="flex-1 grid grid-cols-4 gap-4">
+<div class="border-l border-grid-line pl-3">
+<div class="text-[10px] text-on-surface-variant font-label-caps mb-1">V_MOTION</div>
+<div class="font-readout-data text-acid-green text-xl">142.08 m/s²</div>
+<div class="w-full h-8 mt-2 opacity-50 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-neural-cyan/20 to-transparent"></div>
+<div class="h-full w-full flex items-end gap-1">
+<div class="bg-neural-cyan h-2 w-1"></div><div class="bg-neural-cyan h-4 w-1"></div><div class="bg-neural-cyan h-3 w-1"></div><div class="bg-neural-cyan h-5 w-1"></div><div class="bg-neural-cyan h-6 w-1"></div>
 </div>
 </div>
 </div>
-<div class="p-6 border-t border-grid-line/20">
-<button class="w-full py-4 bg-void-black border-2 border-acid-green text-acid-green font-label-caps text-[14px] font-black tracking-[0.2em] hover:bg-acid-green hover:text-void-black transition-all group overflow-hidden relative">
-<span class="relative z-10">SYNTHESIZE_MULTIVERSE</span>
-<div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity translate-x-[-100%] group-hover:translate-x-[100%] duration-1000"></div>
-</button>
+<div class="border-l border-grid-line pl-3">
+<div class="text-[10px] text-on-surface-variant font-label-caps mb-1">P_DENSITY</div>
+<div class="font-readout-data text-neural-cyan text-xl">0.0024 ρ</div>
+<div class="font-label-caps text-[9px] text-on-surface-variant/50 mt-2">Σ (x=1) → ∇²</div>
 </div>
-</aside>
+<div class="border-l border-grid-line pl-3">
+<div class="text-[10px] text-on-surface-variant font-label-caps mb-1">CHROMA_δ</div>
+<div class="font-readout-data text-white text-xl">#C8FF00</div>
+<div class="font-label-caps text-[9px] text-on-surface-variant/50 mt-2">ΔE: 0.012 (ACC)</div>
+</div>
+<div class="border-l border-grid-line pl-3">
+<div class="text-[10px] text-on-surface-variant font-label-caps mb-1">ENTROPY</div>
+<div class="font-readout-data text-multiverse-purple text-xl">98.42%</div>
+<div class="w-full h-1 bg-surface-container-highest mt-4"><div class="bg-multiverse-purple h-full w-[98%]"></div></div>
+</div>
+</div>
+</div>
+<button class="w-full py-5 bg-acid-green text-black font-bold font-headline-lg text-headline-lg hover:shadow-[0_0_40px_rgba(200,255,0,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-3xl">rocket_launch</span>
+                    DEPLOY ANALYSTS
+                </button>
+</section>
+<!-- Right Panel: OUTPUT CONSOLE -->
+<section class="w-96 flex flex-col gap-4 z-10">
+<div class="flex items-center justify-between border-b border-neural-cyan/30 pb-2">
+<h2 class="font-headline-lg text-headline-lg text-xl tracking-tight text-white uppercase">Output Console</h2>
+<span class="material-symbols-outlined text-neural-cyan text-lg">terminal</span>
+</div>
+<div class="flex-1 panel-glass border border-grid-line flex flex-col overflow-hidden">
+<div class="bg-surface-container-low px-4 py-2 border-b border-grid-line flex justify-between items-center">
+<span class="font-label-caps text-[10px] text-on-surface-variant">STREAM_ACTIVE: SESSION_881</span>
+<div class="flex gap-2">
+<div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+<div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+<div class="w-2 h-2 rounded-full bg-green-500"></div>
+</div>
+</div>
+<div class="flex-1 p-4 font-readout-data text-[12px] overflow-y-auto custom-scrollbar space-y-1" id="console">
+<div class="text-on-surface-variant opacity-40">[00:00:01] INITIALIZING NEURAL KERNEL...</div>
+<div class="text-neural-cyan">[00:00:02] LOADING AGENT: PIXEL_DECODER</div>
+<div class="text-neural-cyan">[00:00:02] LOADING AGENT: MOTION_VECTORIZER</div>
+<div class="text-acid-green">[00:00:03] STANDBY: AWAITING SOURCE BUFFER</div>
+<div class="text-on-surface-variant">------------------------------------------</div>
+<div class="text-multiverse-purple animate-pulse">&gt;&gt;&gt; SYNCING WITH MULTIVERSE CLUSTER...</div>
+<div class="text-on-surface-variant opacity-60 mt-4">V_VEC: (0.12, 0.45, 0.99)</div>
+<div class="text-on-surface-variant opacity-60">A_ACC: (1.20, 0.00, -0.4)</div>
+<div class="text-on-surface-variant opacity-60">G_MET: POLY_COUNT=14,204</div>
+<div class="text-on-surface-variant opacity-60">T_FLW: DIR_SW [45deg]</div>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-3 border border-neural-cyan text-neural-cyan font-label-caps text-label-caps hover:bg-neural-cyan/10 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        EXPORT DATA
+                    </button>
+<button class="flex-1 py-3 border border-outline text-on-surface-variant font-label-caps text-label-caps hover:bg-on-surface-variant/10 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                        COPY VECTORS
+                    </button>
+</div>
+<!-- Mini Map / Spatial Orientation -->
+<div class="h-32 panel-glass border border-grid-line overflow-hidden relative">
+<img class="w-full h-full object-cover opacity-40 grayscale" data-alt="A dark, high-contrast technological satellite view of a complex neural network city grid at night. The image is bathed in deep blacks and vibrant neon neural cyan and acid green pathways. Thin laser-like lines connect glowing nodes in a complex topological structure, reflecting a futuristic cyberpunk data-landscape. The lighting is moody, emphasizing the luminescence of the digital connections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGQ6RuNZMFG2MaAyY9g0hTdfhqkLwxFrXErXShBa9OVeeEvxJQGWN4ew7ula-pIm2j0TVFlrPTktffb-7b_AjaCgAQ69h95SiftBro5wW7Uo0PBoEbxa4Sg0IB4eI3bRZe80JyAsd9G5DHKp24b1ZenPka6xKuK39o_qwFQzu1Eju9BVWKjFMX1MDRQV6mPhdvC4DtUQLxCs9xn_mg1Sfx7h6-TtcbZoZBfPa078GXlZZEq1dL_bkSDoFJpsOpUNmXrpxFG5e5FXw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-void-black to-transparent"></div>
+<div class="absolute top-2 left-2 font-label-caps text-[9px] text-acid-green bg-black/80 px-1">SPATIAL_SYNC: ON</div>
+<div class="absolute bottom-2 right-2 font-label-caps text-[10px] text-white">GRID_QUADRANT: 7-X</div>
+</div>
+</section>
 </main>
-<!-- Bottom Panel: Hyper-Timeline -->
-<footer class="fixed bottom-0 left-0 w-full h-[180px] bg-panel-glass border-t border-grid-line/30 backdrop-blur-xl z-50 flex flex-col">
-<div class="flex justify-between items-center px-6 py-3 border-b border-grid-line/10">
-<div class="flex items-center gap-6">
-<span class="font-label-caps text-[11px] text-acid-green">HYPER-TIMELINE DECONSTRUCTION</span>
-<div class="flex gap-4">
-<div class="flex items-center gap-1">
-<span class="w-2 h-2 rounded-full bg-multiverse-purple"></span>
-<span class="font-label-caps text-[9px] text-on-surface-variant uppercase">Physics Anomaly</span>
 </div>
-<div class="flex items-center gap-1">
-<span class="w-2 h-2 rounded-full bg-neural-cyan"></span>
-<span class="font-label-caps text-[9px] text-on-surface-variant uppercase">Reality Frame</span>
-</div>
-</div>
-</div>
-<div class="font-readout-data text-[12px] text-on-surface">
-<span class="text-acid-green">00:04:32</span> / 00:10:00
-            </div>
-</div>
-<div class="flex-grow relative overflow-hidden flex items-center px-10">
-<!-- Waveform Visualization -->
-<div class="w-full h-16 flex items-center justify-between gap-[2px]">
-<!-- Wave bars (static simulation) -->
-<div class="h-4 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
-<div class="h-16 w-1 bg-acid-green shadow-[0_0_8px_#c8ff00]"></div><div class="h-12 w-1 bg-acid-green"></div><div class="h-8 w-1 bg-grid-line"></div>
-<div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-multiverse-purple"></div><div class="h-16 w-1 bg-multiverse-purple shadow-[0_0_8px_#a300ff]"></div>
-<div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-12 w-1 bg-neural-cyan shadow-[0_0_8px_#00f0ff]"></div>
-<div class="h-4 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div><div class="h-16 w-1 bg-acid-green"></div>
-<div class="h-10 w-1 bg-grid-line"></div><div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
-<div class="h-4 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
-<div class="h-16 w-1 bg-acid-green shadow-[0_0_8px_#c8ff00]"></div><div class="h-12 w-1 bg-acid-green"></div><div class="h-8 w-1 bg-grid-line"></div>
-<div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-multiverse-purple"></div><div class="h-16 w-1 bg-multiverse-purple shadow-[0_0_8px_#a300ff]"></div>
-<div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-12 w-1 bg-neural-cyan shadow-[0_0_8px_#00f0ff]"></div>
-<div class="h-4 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div><div class="h-16 w-1 bg-acid-green"></div>
-<!-- Repeat pattern for width -->
-<div class="h-10 w-1 bg-grid-line"></div><div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
-<div class="h-4 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-grid-line"></div>
-<div class="h-16 w-1 bg-acid-green shadow-[0_0_8px_#c8ff00]"></div><div class="h-12 w-1 bg-acid-green"></div><div class="h-8 w-1 bg-grid-line"></div>
-<div class="h-10 w-1 bg-grid-line"></div><div class="h-14 w-1 bg-multiverse-purple"></div><div class="h-16 w-1 bg-multiverse-purple shadow-[0_0_8px_#a300ff]"></div>
-<div class="h-8 w-1 bg-grid-line"></div><div class="h-6 w-1 bg-grid-line"></div><div class="h-12 w-1 bg-neural-cyan shadow-[0_0_8px_#00f0ff]"></div>
-</div>
-<!-- Playhead -->
-<div class="absolute top-0 left-[45%] h-full w-[2px] bg-acid-green z-10 shadow-[0_0_15px_#c8ff00]">
-<div class="absolute top-[-4px] left-[-4px] w-2.5 h-2.5 bg-acid-green rotate-45"></div>
-</div>
-<!-- Markers -->
-<div class="absolute bottom-4 left-[20%] group cursor-pointer">
-<div class="w-1 h-3 bg-multiverse-purple"></div>
-<span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label-caps text-[8px] whitespace-nowrap bg-void-black p-1 border border-multiverse-purple transition-opacity">ANOMALY_042</span>
-</div>
-<div class="absolute bottom-4 left-[65%] group cursor-pointer">
-<div class="w-1 h-3 bg-neural-cyan"></div>
-<span class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label-caps text-[8px] whitespace-nowrap bg-void-black p-1 border border-neural-cyan transition-opacity">FRAME_881</span>
-</div>
-</div>
-<!-- Controls -->
-<div class="px-10 pb-4 flex justify-center items-center gap-12">
-<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">skip_previous</span>
-<div class="w-12 h-12 rounded-full border border-acid-green flex items-center justify-center text-acid-green hover:bg-acid-green hover:text-void-black cursor-pointer transition-all">
-<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">pause</span>
-</div>
-<span class="material-symbols-outlined text-on-surface-variant hover:text-acid-green cursor-pointer">skip_next</span>
-</div>
-</footer>
-<script src="/js/navigation.js"></script>
+<!-- UI Overlay Sound / Interactive Layer script -->
 <script>
-const LAB_PASSWORD="mercadream2030";
-var labState={videoFile:null,videoUrl:null,analysisResults:{},isAnalyzing:false};
-var AGENTS=[
-  {id:"color",name:"COLOR ANALYST",icon:"palette",color:"#c8ff00",prompt:"Analyze colors in this image/video. Extract: dominant colors as hex codes, color temperature (warm/cool K degrees), contrast ratio, saturation 0-100, color palette. Output as structured technical data with numbers."},
-  {id:"motion",name:"MOTION DETECTOR",icon:"speed",color:"#00f0ff",prompt:"Analyze motion patterns. Detect: camera movement type, subject velocity score 0-100, cut frequency per minute, kinetic energy score, motion blur level. Output as vectors and numbers."},
-  {id:"emotion",name:"EMOTION READER",icon:"psychology",color:"#ff44aa",prompt:"Analyze emotional content. Detect: primary emotion, emotional intensity 0-100, mood arc, tension score, atmospheric energy. Output as sentiment scores and percentages."},
-  {id:"audio",name:"AUDIO DECODER",icon:"graphic_eq",color:"#ffba3f",prompt:"Analyze audio characteristics visible or implied. Estimate: BPM, rhythm pattern, musical key, energy peaks, voice presence yes/no, sound complexity 0-10. Output as musical notation and numbers."},
-  {id:"narrative",name:"STORY EXTRACTOR",icon:"auto_stories",color:"#a300ff",prompt:"Extract narrative structure. Identify: story arc phase, genre, scene logic, coherence score 0-100, thematic keywords, protagonist presence. Output as story beats with scores."},
-  {id:"director",name:"DIRECTOR ADVISOR",icon:"movie",color:"#44ffaa",prompt:"Director perspective analysis. Evaluate: shot composition score 0-100, lighting setup ratio, depth of field, visual storytelling effectiveness, cinematographic style, top 3 improvements. Output as director notes with precise scores."}
-];
+        // Micro-interaction: Log streaming simulation
+        const consoleEl = document.getElementById('console');
+        const logs = [
+            "CALCULATING PH_CAL_04 FORCES...",
+            "PT_REC_05 IDENTIFIED RECURRING FRACTAL...",
+            "BUFFER OVERFLOW MITIGATED AT 0x44F2",
+            "VECTOR MAPPING [X:44, Y:12, Z:0.02]",
+            "PIXEL VARIANCE: Δ0.0031",
+            "GEOMETRY BUFFER SYNCED",
+            "NEURAL PATHWAY STABILIZED"
+        ];
 
-function checkAccess(){
-  if(sessionStorage.getItem("lab_access")==="granted")return true;
-  var p=prompt("MERCADREAM SECRET LAB\nEnter access code:");
-  if(p===LAB_PASSWORD){sessionStorage.setItem("lab_access","granted");return true;}
-  document.body.innerHTML="<div style='height:100vh;display:flex;align-items:center;justify-content:center;background:#020202;font-family:IBM Plex Mono,monospace;color:#ff4444;font-size:14px;letter-spacing:4px'>ACCESS DENIED</div>";
-  return false;
-}
+        setInterval(() => {
+            const div = document.createElement('div');
+            div.className = 'text-on-surface-variant opacity-60 animate-fade-in';
+            const timestamp = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            const log = logs[Math.floor(Math.random() * logs.length)];
+            div.innerText = `[${timestamp}] ${log}`;
+            consoleEl.appendChild(div);
+            if (consoleEl.childNodes.length > 30) {
+                consoleEl.removeChild(consoleEl.firstChild);
+            }
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }, 3000);
 
-function buildAgentUI(){
-  var sb=document.querySelector("aside .flex-grow.overflow-y-auto");
-  if(!sb)return;
-  sb.innerHTML="";
-  AGENTS.forEach(function(a){
-    var d=document.createElement("div");
-    d.id="agent-"+a.id;
-    d.style.cssText="border:1px solid #222;padding:8px;margin-bottom:6px;background:rgba(0,0,0,.4);transition:border-color .3s";
-    d.innerHTML="<div style='display:flex;align-items:center;gap:6px;margin-bottom:4px'><span class='material-symbols-outlined' style='font-size:12px;color:"+a.color+"'>"+a.icon+"</span><span style='font-family:IBM Plex Mono,monospace;font-size:9px;color:"+a.color+";letter-spacing:1px'>"+a.name+"</span><span class='agent-status' style='margin-left:auto;font-family:IBM Plex Mono,monospace;font-size:7px;color:#434933'>STANDBY</span></div><div style='height:2px;background:#111'><div class='agent-bar' style='height:100%;width:5%;background:"+a.color+";transition:width 2s;box-shadow:0 0 4px "+a.color+"'></div></div>";
-    sb.appendChild(d);
-  });
-  setInterval(function(){if(!labState.isAnalyzing)document.querySelectorAll(".agent-bar").forEach(function(b){b.style.width=(Math.random()*20+3)+"%";});},1500);
-}
-
-function setupUpload(){
-  var center=document.querySelector("section");
-  if(!center)return;
-  var ui=document.createElement("div");
-  ui.style.cssText="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:10px;align-items:center";
-  ui.innerHTML="<input type='file' id='lab-file' accept='video/*,image/*' style='display:none'><button onclick=\"document.getElementById('lab-file').click()\" style='padding:6px 16px;background:rgba(200,255,0,.15);border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:2px'> UPLOAD MEDIA</button><span id='lab-fname' style='font-family:IBM Plex Mono,monospace;font-size:8px;color:#434933'>NO FILE</span>";
-  center.style.position="relative";
-  center.appendChild(ui);
-  document.getElementById("lab-file").onchange=function(e){
-    var f=e.target.files[0];if(!f)return;
-    labState.videoFile=f;labState.videoUrl=URL.createObjectURL(f);
-    document.getElementById("lab-fname").textContent=f.name.substring(0,25);
-    document.getElementById("lab-fname").style.color="#c8ff00";
-    if(f.type.startsWith("video/")){
-      var v=document.createElement("video");v.src=labState.videoUrl;v.controls=true;v.muted=true;
-      v.style.cssText="position:absolute;top:60px;left:50%;transform:translateX(-50%);max-width:80%;max-height:50%;z-index:10;border:1px solid #c8ff00";
-      center.appendChild(v);
-    }else if(f.type.startsWith("image/")){
-      var img=center.querySelector("img");if(img){img.src=labState.videoUrl;img.style.opacity="1";}
-    }
-    addLog("MEDIA LOADED: "+f.name,"#c8ff00");
-  };
-}
-
-async function runAllAgents(){
-  if(!labState.videoFile){alert("Upload a file first.");return;}
-  if(labState.isAnalyzing)return;
-  labState.isAnalyzing=true;
-  var btn=document.querySelector("aside button.bg-acid-green, aside .bg-acid-green");
-  if(btn){btn.textContent="ANALYZING...";btn.style.opacity=".5";}
-  addLog("UPLINK ESTABLISHED  6 AGENTS DEPLOYING","#c8ff00");
-  labState.analysisResults={};
-  var b64=await toBase64(labState.videoFile);
-  var mt=labState.videoFile.type||"image/jpeg";
-  var isVid=mt.startsWith("video/");
-  var results=await Promise.allSettled(AGENTS.map(function(a){return runAgent(a,b64,mt,isVid);}));
-  results.forEach(function(r,i){if(r.status==="fulfilled")labState.analysisResults[AGENTS[i].id]=r.value;});
-  renderResults();
-  labState.isAnalyzing=false;
-  if(btn){btn.textContent="INITIATE UPLINK";btn.style.opacity="1";}
-  addLog("ALL AGENTS COMPLETE","#c8ff00");
-}
-
-async function runAgent(a,b64,mt,isVid){
-  var el=document.getElementById("agent-"+a.id);
-  if(el)el.style.borderColor=a.color;
-  var st=el?el.querySelector(".agent-status"):null;
-  if(st){st.textContent="RUNNING";st.style.color=a.color;}
-  var bar=el?el.querySelector(".agent-bar"):null;
-  if(bar){bar.style.width="0%";setTimeout(function(){bar.style.width="80%";},100);}
-  try{
-    var msgs=isVid?[{role:"user",content:a.prompt+"\n\nVideo file: "+labState.videoFile.name+". Analyze based on filename and provide realistic technical analysis with specific numbers as if you processed the actual frames."}]:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mt,data:b64}},{type:"text",text:a.prompt}]}];
-    var r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:msgs})});
-    var d=await r.json();
-    var txt=d.content&&d.content[0]?d.content[0].text:"No response";
-    if(st){st.textContent="DONE";st.style.color="#44ff44";}
-    if(bar)bar.style.width="100%";
-    if(el)el.style.borderColor="#44ff44";
-    addLog(a.name+" COMPLETE",a.color);
-    return txt;
-  }catch(e){
-    if(st){st.textContent="ERROR";st.style.color="#ff4444";}
-    addLog(a.name+" ERROR: "+e.message,"#ff4444");
-    return "Error: "+e.message;
-  }
-}
-
-function renderResults(){
-  var old=document.getElementById("lab-results");if(old)old.remove();
-  var center=document.querySelector("section");
-  var panel=document.createElement("div");
-  panel.id="lab-results";
-  panel.style.cssText="position:absolute;inset:0;background:rgba(2,2,2,.96);z-index:500;overflow-y:auto;padding:20px";
-  var html="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:16px'><span style='font-family:Orbitron,monospace;font-size:14px;color:#c8ff00;letter-spacing:3px'> ANALYSIS COMPLETE</span><button onclick=\"document.getElementById('lab-results').remove()\" style='background:transparent;border:1px solid #434933;color:#888;padding:4px 10px;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'>CLOSE</button></div>";
-  AGENTS.forEach(function(a){
-    var res=labState.analysisResults[a.id]||"No data";
-    html+="<div style='border:1px solid "+a.color+"33;border-left:3px solid "+a.color+";padding:10px;margin-bottom:10px;background:rgba(0,0,0,.5)'><div style='font-family:IBM Plex Mono,monospace;font-size:9px;color:"+a.color+";margin-bottom:6px;letter-spacing:2px'> "+a.name+"</div><div style='font-family:IBM Plex Mono,monospace;font-size:8px;color:#c8c6c5;line-height:1.7;white-space:pre-wrap'>"+res.substring(0,500)+"</div></div>";
-  });
-  html+="<div style='display:flex;gap:10px;margin-top:16px'><button onclick='doTransform()' style='flex:1;padding:10px;background:#c8ff00;border:none;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer;color:#000;letter-spacing:2px'> TRANSFORM</button><button onclick='doReproduce()' style='flex:1;padding:10px;background:transparent;border:1px solid #00f0ff;color:#00f0ff;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'> REPRODUCE</button><button onclick='doModify()' style='flex:1;padding:10px;background:transparent;border:1px solid #a300ff;color:#a300ff;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'> MODIFY</button></div>";
-  panel.innerHTML=html;
-  center.appendChild(panel);
-}
-
-async function directive(title,prompt,color){
-  addLog("Generating "+title+"...",color);
-  try{
-    var r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
-    var d=await r.json();var txt=d.content&&d.content[0]?d.content[0].text:"Error";
-    var m=document.createElement("div");
-    m.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px";
-    m.innerHTML="<div style='max-width:700px;width:100%'><div style='font-family:Orbitron,monospace;font-size:14px;color:"+color+";margin-bottom:12px;letter-spacing:3px'>"+title+"</div><div style='font-family:IBM Plex Mono,monospace;font-size:9px;color:#c8c6c5;line-height:1.8;white-space:pre-wrap;background:rgba(0,0,0,.5);border:1px solid "+color+"33;padding:16px;max-height:60vh;overflow-y:auto'>"+txt+"</div><div style='display:flex;gap:10px;margin-top:12px'><button onclick='this.closest(\"div\").parentElement.remove()' style='flex:1;padding:8px;background:transparent;border:1px solid #434933;color:#888;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'>CLOSE</button><button onclick='navigator.clipboard.writeText(\""+txt.replace(/"/g,"'")+"\")' style='flex:1;padding:8px;background:"+color+";border:none;color:#000;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer'>COPY</button></div></div>";
-    document.body.appendChild(m);
-  }catch(e){addLog(title+" ERROR: "+e.message,"#ff4444");}
-}
-
-function doTransform(){var a=JSON.stringify(labState.analysisResults).substring(0,1500);directive("TRANSFORM DIRECTIVE","Based on this analysis:\n"+a+"\n\nCreate a detailed brief to TRANSFORM this into a completely different style. Specify: new color grade parameters, new pacing (BPM), new emotional arc, new visual style, new cinematographic approach. Be technically precise.","#c8ff00");}
-function doReproduce(){var a=JSON.stringify(labState.analysisResults).substring(0,1500);directive("REPRODUCE DIRECTIVE","Based on this analysis:\n"+a+"\n\nGenerate AI video production prompts to REPRODUCE this content. Format as 6 numbered scenes with: camera movement, lighting, mood, color, action. Ready for Runway/Pika.","#00f0ff");}
-function doModify(){var mod=prompt("What modifications?");if(!mod)return;var a=JSON.stringify(labState.analysisResults).substring(0,1000);directive("MODIFY DIRECTIVE","Analysis:\n"+a+"\nUser wants: "+mod+"\n\nProvide specific technical modifications with exact parameter values.","#a300ff");}
-
-function addLog(msg,color){
-  var c=document.querySelector(".absolute.bottom-10 .flex-col,.absolute.bottom-10");
-  if(!c)return;
-  var e=document.createElement("div");
-  e.style.cssText="font-family:IBM Plex Mono,monospace;font-size:7px;color:"+(color||"#c8ff00")+";padding:1px 0;border-top:1px solid #111;margin-top:1px";
-  e.textContent="> "+msg;
-  c.appendChild(e);
-  while(c.children.length>10)c.removeChild(c.children[0]);
-}
-
-function toBase64(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(",")[1]);};r.onerror=rej;r.readAsDataURL(f);});}
-
-window.addEventListener("load",function(){
-  if(!checkAccess())return;
-  buildAgentUI();
-  setupUpload();
-  var btn=document.querySelector("aside button.bg-acid-green, aside .bg-acid-green, aside button");
-  if(btn)btn.onclick=runAllAgents;
-  document.querySelectorAll("button").forEach(function(b){if(b.textContent.includes("SYNTHESIZE"))b.onclick=runAllAgents;});
-  if(window.MD)window.MD.updateCredits();
-});
-</script></body></html>
+        // Hover sounds logic (pseudo)
+        document.querySelectorAll('button, a, .panel-glass').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                // Add atmospheric subtle interaction feedback here if desired
+            });
+        });
+    </script>
+</body></html>
