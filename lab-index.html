@@ -20,7 +20,7 @@ input{width:100%;background:#000;border:1px solid #434933;color:#c8ff00;padding:
   <div style="font-size:9px;color:#333;letter-spacing:8px;margin-bottom:36px">SECRET LABORATORY</div>
   <div style="background:rgba(10,10,10,0.8);border:1px solid rgba(0,240,255,0.15);padding:28px;width:300px;margin:0 auto">
     <div style="font-size:9px;color:#434933;letter-spacing:3px;margin-bottom:10px">ACCESS CODE</div>
-    <input id="pwd" type="password" placeholder="Enter access code..." onkeydown="if(event.key===Enter)check()"/>
+    <input id="pwd" type="password" placeholder="Enter access code..." onkeydown="if(event.key==='Enter')check()"/>
     <button onclick="check()" style="width:100%;padding:10px;background:#c8ff00;border:none;color:#000;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:2px;font-family:inherit">INITIALIZE ACCESS</button>
     <div id="err" style="color:#ff4444;font-size:9px;margin-top:8px;display:none">ACCESS DENIED</div>
   </div>
@@ -30,7 +30,7 @@ input{width:100%;background:#000;border:1px solid #434933;color:#c8ff00;padding:
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid rgba(0,240,255,0.1);background:rgba(5,5,5,0.9)">
     <div style="color:#c8ff00;font-size:15px;font-weight:700;letter-spacing:3px">MERCADREAM LAB</div>
     <div style="display:flex;gap:10px">
-      <button onclick="window.location.href=directors.html" style="background:transparent;border:1px solid #434933;color:#888;padding:4px 12px;font-size:8px;cursor:pointer;font-family:inherit">BACK</button>
+      <button onclick="window.location.href='directors.html'" style="background:transparent;border:1px solid #434933;color:#888;padding:4px 12px;font-size:8px;cursor:pointer;font-family:inherit">BACK</button>
       <button onclick="sessionStorage.clear();location.reload()" style="background:transparent;border:1px solid #ff4444;color:#ff4444;padding:4px 12px;font-size:8px;cursor:pointer;font-family:inherit">LOCK</button>
     </div>
   </header>
@@ -41,22 +41,22 @@ input{width:100%;background:#000;border:1px solid #434933;color:#c8ff00;padding:
         <div style="font-size:8px;color:#333;letter-spacing:6px">SELECT MODULE</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="card" onclick="window.location.href=lab.html">
+        <div class="card" onclick="window.location.href='lab.html'">
           <div style="color:#c8ff00;font-size:11px;letter-spacing:3px;margin-bottom:8px">VIDEO ANALYSIS</div>
           <div style="font-size:8px;color:#555;margin-bottom:10px">6 PARALLEL AI AGENTS</div>
           <p style="font-size:9px;color:#444;line-height:1.7">Upload video - agents analyze color, motion, emotion, audio, narrative - extract vectors and equations - transform or reproduce.</p>
         </div>
-        <div class="card" onclick="window.location.href=lab-entities.html">
+        <div class="card" onclick="window.location.href='lab-entities.html'">
           <div style="color:#00f0ff;font-size:11px;letter-spacing:3px;margin-bottom:8px">ENTITY CREATION</div>
           <div style="font-size:8px;color:#555;margin-bottom:10px">DNA SYNTHESIS ENGINE</div>
           <p style="font-size:9px;color:#444;line-height:1.7">Build AI characters. Face, body, motion, voice, personality. Export production-ready entity briefs for any director.</p>
         </div>
-        <div class="card" onclick="window.location.href=lab-environment.html">
+        <div class="card" onclick="window.location.href='lab-environment.html'">
           <div style="color:#a300ff;font-size:11px;letter-spacing:3px;margin-bottom:8px">ENVIRONMENT ARCH</div>
           <div style="font-size:8px;color:#555;margin-bottom:10px">SPATIAL SYNTHESIS v4</div>
           <p style="font-size:9px;color:#444;line-height:1.7">Construct cinematic environments. Atmospheric depth, vegetation, lighting physics and spatial mesh for any production scene.</p>
         </div>
-        <div class="card" onclick="window.location.href=lab-physics.html">
+        <div class="card" onclick="window.location.href='lab-physics.html'">
           <div style="color:#FFD700;font-size:11px;letter-spacing:3px;margin-bottom:8px">PHYSICS CINEMA</div>
           <div style="font-size:8px;color:#555;margin-bottom:10px">FORCE FIELD ENGINE</div>
           <p style="font-size:9px;color:#444;line-height:1.7">Control cinematic physics. Gravity, fluid dynamics, collision logic, molecular bonds and entropy for hyper-realistic sequences.</p>
@@ -88,3 +88,4 @@ window.addEventListener("load",function(){
 </script>
 </body>
 </html>
+
