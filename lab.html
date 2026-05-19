@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -788,4 +788,26 @@ window.addEventListener("load", function() {
   if (window.MD) window.MD.updateCredits();
 });
 </script>
-</body></html>
+<input type="file" id="lab-file-input" accept="video/*,image/*" style="display:none">
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  document.getElementById("lab-file-input").onchange = function(e){
+    var f = e.target.files[0];
+    if(!f) return;
+    window.LAB_FILE = f;
+    var nm = document.getElementById("file-name-display");
+    if(nm){nm.textContent="LOADED: "+f.name.substring(0,25);nm.style.color="#c8ff00";}
+    var zone = document.getElementById("upload-zone");
+    if(zone) zone.style.borderColor="#c8ff00";
+    if(window.addLog) window.addLog("FILE LOADED: "+f.name,"#c8ff00");
+  };
+  // Wire all upload-related elements
+  var zone = document.getElementById("upload-zone");
+  if(zone) zone.onclick = function(){ document.getElementById("lab-file-input").click(); };
+  document.querySelectorAll("button").forEach(function(btn){
+    if(btn.textContent.includes("SELECT")||btn.textContent.includes("UPLOAD")||btn.textContent.includes("INITIALIZE")){
+      btn.onclick = function(e){ e.stopPropagation(); document.getElementById("lab-file-input").click(); };
+    }
+  });
+});
+</script></body></html>
