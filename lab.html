@@ -308,7 +308,7 @@
 <div class="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-acid-green"></div>
 <div class="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-acid-green"></div>
 <div class="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-acid-green"></div>
-<div class="panel-glass border border-grid-line h-full flex flex-col items-center justify-center relative overflow-hidden group-hover:border-acid-green/30 transition-all cursor-pointer">
+<div id="upload-zone" class="panel-glass border border-grid-line h-full flex flex-col items-center justify-center relative overflow-hidden group-hover:border-acid-green/30 transition-all cursor-pointer">
 <!-- Crosshair Decorations -->
 <div class="absolute top-1/2 left-4 w-4 h-px bg-neural-cyan/30"></div>
 <div class="absolute top-1/2 right-4 w-4 h-px bg-neural-cyan/30"></div>
@@ -317,6 +317,8 @@
 <div class="scanline absolute inset-0 opacity-10"></div>
 <span class="material-symbols-outlined text-6xl text-acid-green mb-4 group-hover:scale-110 transition-transform duration-300">videocam</span>
 <div class="font-headline-lg text-headline-lg text-2xl text-white text-center">INITIALIZE VIDEO UPLOAD</div>
+<div id="file-name-display" style="font-family:IBM Plex Mono,monospace;font-size:10px;color:#434933;margin-top:8px;letter-spacing:2px">CLICK TO SELECT FILE</div>
+<button onclick="document.getElementById('upload-zone').click()" style="margin-top:16px;padding:8px 24px;background:rgba(200,255,0,0.15);border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:2px">⬆ SELECT FILE</button>
 <div class="font-readout-data text-sm text-neural-cyan mt-2 opacity-60">DRAG SOURCE OR SELECT ARCHIVE LINK</div>
 <!-- Overlay Coordinates -->
 <div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-on-surface-variant">
@@ -553,36 +555,38 @@ function buildAgents() {
 
 // Setup file upload
 function setupUpload() {
-  var dropzone = document.getElementById("upload-zone") ||
-                 document.querySelector("[class*='border-dashed']") ||
-                 document.querySelector(".upload-area");
+  var dropzone = document.getElementById("upload-zone");
+  if (!dropzone) {
+    console.warn("Upload zone not found");
+    return;
+  }
 
-  if (!dropzone) return;
-  dropzone.style.cursor = "pointer";
-  dropzone.onclick = function() {
+  function openFilePicker() {
     var inp = document.createElement("input");
     inp.type = "file";
     inp.accept = "video/*,image/*";
+    inp.style.display = "none";
+    document.body.appendChild(inp);
     inp.onchange = function(e) {
       var f = e.target.files[0];
       if (!f) return;
       LAB_FILE = f;
-
-      // Update UI
-      var nameEl = dropzone.querySelector("p, span, div");
-      if (nameEl) nameEl.textContent = "✓ " + f.name.substring(0,30);
+      var nm = document.getElementById("file-name-display");
+      if (nm) { nm.textContent = "✓ " + f.name.substring(0,30); nm.style.color = "#c8ff00"; }
       dropzone.style.borderColor = "#c8ff00";
-
-      // Show preview for image
       if (f.type.startsWith("image/")) {
-        var img = dropzone.querySelector("img");
-        if (img) { img.src = URL.createObjectURL(f); img.style.opacity = "1"; }
+        var preview = document.createElement("img");
+        preview.src = URL.createObjectURL(f);
+        preview.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;z-index:0";
+        dropzone.appendChild(preview);
       }
-
       addLog("FILE LOADED: " + f.name, "#c8ff00");
+      document.body.removeChild(inp);
     };
     inp.click();
-  };
+  }
+
+  dropzone.onclick = openFilePicker;
 }
 
 // Run all 6 agents
