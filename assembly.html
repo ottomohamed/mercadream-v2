@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark text-[10px]" lang="en"><head>
 <meta charset="utf-8"/>
@@ -758,4 +758,11 @@ window.addEventListener('load', function() {
   if (window.MD) window.MD.updateCredits();
 });
 </script>
-</body></html>
+<script>
+window.addEventListener("load", function(){
+  setTimeout(function(){
+    if(typeof loadFromStudio === "function") loadFromStudio();
+    else if(typeof init === "function") init();
+  }, 800);
+});
+</script></body></html>
