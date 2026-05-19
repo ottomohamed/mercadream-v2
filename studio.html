@@ -572,7 +572,7 @@ function showConfirm(){
 // ── INIT ──
 window.onload = function(){
   setCredits(getCredits());
-  showTypeSelector();
+  try{ showTypeSelector(); }catch(e){ console.warn('typeSelector:',e); }
   updateFooterSuite();
 
   $('btn-send').onclick     = sendMessage;
@@ -595,4 +595,5 @@ window.onload = function(){
 };
 </script>
 <script>if(!localStorage.getItem('sb_session'))localStorage.setItem('sb_session','1');</script><script src="/js/navigation.js"></script></body></html>
+
 
