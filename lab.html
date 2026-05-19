@@ -647,18 +647,29 @@ async function runAgent(agent, b64, mt, isVideo) {
       }];
     }
 
-    var r = await fetch("https://api.anthropic.com/v1/messages", {
+    var GEMINI_KEY = "AIzaSyAC55fBlv1PN26vY23n6RNHP0AAS5qwZo4";
+    var GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+GEMINI_KEY;
+
+    var parts;
+    if (isVideo) {
+      parts = [{ text: agent.system + "\n\n" + agent.prompt + "\n\nFile: " + LAB_FILE.name + "\nGenerate realistic mathematical analysis." }];
+    } else {
+      parts = [{ inline_data: { mime_type: mt, data: b64 } }, { text: agent.system + "\n\n" + agent.prompt }];
+    }
+
+    var r = await fetch(GEMINI_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 600,
-        messages: messages
+        contents: [{ parts: parts }],
+        generationConfig: { maxOutputTokens: 600, temperature: 0.1 }
       })
     });
 
     var d = await r.json();
-    var text = d.content && d.content[0] ? d.content[0].text : "No response";
+    var text = d.candidates && d.candidates[0] && d.candidates[0].content
+      ? d.candidates[0].content.parts.map(function(p){return p.text||"";}).join("")
+      : (d.error ? "Error: "+d.error.message : "No response");
 
     if (el) el.style.borderColor = "#44ff44";
     if (st) { st.textContent = "✓ DONE"; st.style.color = "#44ff44"; }
