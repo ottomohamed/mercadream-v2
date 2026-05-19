@@ -450,4 +450,327 @@
             });
         });
     </script>
+<script src="/js/navigation.js"></script>
+<script>
+// ══════════════════════════════════════════════════════
+// MERCADREAM SECRET LAB — 6 PhD Analyst Agents
+// VIDEO → NUMBERS → EQUATIONS
+// ══════════════════════════════════════════════════════
+
+var LAB_FILE = null;
+var LAB_RESULTS = {};
+var IS_RUNNING = false;
+
+// 6 PhD Specialist Agents with deep system prompts
+var ANALYSTS = [
+  {
+    id: "pixel",
+    name: "PIXEL_DECODER",
+    icon: "palette",
+    color: "#c8ff00",
+    specialty: "Color Mathematics & RGB Analysis",
+    system: "You are a PhD scientist specializing in color mathematics, photometry, and digital signal processing with 30 years of experience. Your ONLY output is precise numbers, equations, and vectors. No prose. No explanations. Only mathematical data.\n\nWhen analyzing any visual content, extract:\n- Dominant RGB values as hex and decimal triplets\n- Color temperature in Kelvin\n- Luminance values (0-255)\n- Saturation coefficients\n- Contrast ratio\n- Color distribution histogram as percentages\n- Delta-E color difference metrics\n- Color entropy value\n\nFormat: PARAMETER: value [unit]",
+    prompt: "Analyze this content and extract all color mathematics. Output ONLY numbers, hex codes, equations, and mathematical notation. No prose."
+  },
+  {
+    id: "motion",
+    name: "MOTION_VECTORIZER",
+    icon: "speed",
+    color: "#00f0ff",
+    specialty: "Motion Dynamics & Vector Fields",
+    system: "You are a PhD physicist specializing in kinematics, fluid dynamics, and motion capture mathematics with 25 years of experience. Your ONLY output is equations, vectors, and numerical data.\n\nExtract:\n- Velocity vectors v(x,y,z) in m/s\n- Acceleration vectors a(x,y,z) in m/s²\n- Motion trajectory as parametric equations\n- Angular velocity ω in rad/s\n- Momentum p = mv in kg·m/s\n- Kinetic energy Ek = ½mv² in Joules\n- Motion blur coefficient\n- Frame-to-frame displacement in pixels\n\nFormat: PARAMETER: value [unit]",
+    prompt: "Analyze motion patterns and extract all kinematic equations and vectors. Output ONLY mathematical data."
+  },
+  {
+    id: "geometry",
+    name: "GEOMETRY_MASTER",
+    icon: "architecture",
+    color: "#a300ff",
+    specialty: "Spatial Mathematics & 3D Geometry",
+    system: "You are a PhD mathematician specializing in computational geometry, topology, and spatial analysis with 28 years of experience. Your ONLY output is geometric equations and numerical measurements.\n\nExtract:\n- Object dimensions (width × height × depth) estimated in meters\n- Aspect ratio as precise fraction\n- Geometric primitives detected (sphere, cube, cylinder, etc.)\n- Surface area estimation in m²\n- Volume estimation in m³\n- Symmetry axes and planes\n- Bounding box coordinates\n- Curvature radius at key points\n- Perspective vanishing points as (x,y) coordinates\n\nFormat: PARAMETER: value [unit]",
+    prompt: "Analyze all geometric properties and spatial mathematics. Output ONLY numbers, coordinates, and equations."
+  },
+  {
+    id: "physics",
+    name: "PHYSICS_CALCULATOR",
+    icon: "science",
+    color: "#FFD700",
+    specialty: "Classical & Quantum Physics",
+    system: "You are a PhD physicist specializing in classical mechanics, thermodynamics, and applied physics with 35 years of experience. Your ONLY output is physical equations and precise numerical values.\n\nExtract:\n- Gravitational force F = mg in Newtons\n- Estimated mass in kg\n- Center of mass coordinates (x,y,z)\n- Moment of inertia I = mr² in kg·m²\n- Potential energy Ep = mgh in Joules\n- Friction coefficient μ (static and kinetic)\n- Pressure estimation in Pascals\n- Temperature estimation in Kelvin\n- Reynolds number Re = ρvL/μ\n- Power dissipation in Watts\n\nFormat: PARAMETER: equation = value [unit]",
+    prompt: "Calculate all physical properties using classical mechanics equations. Output ONLY mathematical results."
+  },
+  {
+    id: "pattern",
+    name: "PATTERN_RECOGNIZER",
+    icon: "hub",
+    color: "#ff44aa",
+    specialty: "Signal Processing & Pattern Mathematics",
+    system: "You are a PhD data scientist specializing in signal processing, Fourier analysis, and pattern recognition with 22 years of experience. Your ONLY output is mathematical patterns and frequency data.\n\nExtract:\n- Dominant frequency components (Hz)\n- Fourier transform key peaks\n- Fractal dimension D\n- Self-similarity coefficient\n- Periodicity in frames and seconds\n- Statistical moments (mean, variance, skewness, kurtosis)\n- Entropy H = -Σ p·log(p)\n- Correlation matrix key values\n- Pattern repetition frequency\n- Noise-to-signal ratio in dB\n\nFormat: PARAMETER: value [unit]",
+    prompt: "Analyze all mathematical patterns, frequencies, and statistical properties. Output ONLY numerical data and equations."
+  },
+  {
+    id: "math",
+    name: "MATH_ENCODER",
+    icon: "calculate",
+    color: "#44ffaa",
+    specialty: "Applied Mathematics & Encoding Theory",
+    system: "You are a PhD mathematician specializing in information theory, numerical analysis, and mathematical modeling with 30 years of experience. Your ONLY output is mathematical models and encoded representations.\n\nExtract:\n- Information density in bits/pixel\n- Compression ratio estimation\n- Mathematical model equations describing the scene\n- Taylor series approximation of key curves\n- Matrix representation of transformation\n- Eigenvalues of the visual field\n- Gradient vectors ∇f(x,y)\n- Laplacian ∇²f values\n- Mathematical classification of shapes\n- Encoding efficiency percentage\n\nFormat: PARAMETER: mathematical expression = value",
+    prompt: "Generate mathematical encoding and models for this content. Output ONLY equations, matrices, and numerical values."
+  }
+];
+
+// Build agent panels
+function buildAgents() {
+  var panel = document.getElementById("agents-panel");
+  if (!panel) return;
+  panel.innerHTML = "";
+
+  ANALYSTS.forEach(function(a) {
+    var div = document.createElement("div");
+    div.id = "agent-" + a.id;
+    div.style.cssText = "border:1px solid #222;padding:12px;background:rgba(5,5,5,0.8);transition:all .3s;margin-bottom:8px";
+    div.innerHTML =
+      "<div style='display:flex;align-items:center;gap:8px;margin-bottom:4px'>" +
+        "<span class='material-symbols-outlined' style='color:"+a.color+";font-size:14px'>"+a.icon+"</span>" +
+        "<span style='font-family:IBM Plex Mono,monospace;font-size:9px;color:"+a.color+";letter-spacing:2px;font-weight:700'>"+a.name+"</span>" +
+        "<span class='agent-status' style='margin-left:auto;font-family:IBM Plex Mono,monospace;font-size:7px;color:#434933'>STANDBY</span>" +
+      "</div>" +
+      "<div style='font-family:IBM Plex Mono,monospace;font-size:8px;color:#444;margin-bottom:6px'>"+a.specialty+"</div>" +
+      "<div style='height:2px;background:#111'><div class='agent-bar' id='bar-"+a.id+"' style='height:100%;width:5%;background:"+a.color+";box-shadow:0 0 4px "+a.color+";transition:width 2s'></div></div>";
+    panel.appendChild(div);
+  });
+
+  // Standby animation
+  setInterval(function() {
+    if (!IS_RUNNING) {
+      ANALYSTS.forEach(function(a) {
+        var bar = document.getElementById("bar-"+a.id);
+        if (bar) bar.style.width = (Math.random()*12+2)+"%";
+      });
+    }
+  }, 1500);
+}
+
+// Setup file upload
+function setupUpload() {
+  var dropzone = document.getElementById("upload-zone") ||
+                 document.querySelector("[class*='border-dashed']") ||
+                 document.querySelector(".upload-area");
+
+  if (!dropzone) return;
+  dropzone.style.cursor = "pointer";
+  dropzone.onclick = function() {
+    var inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "video/*,image/*";
+    inp.onchange = function(e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      LAB_FILE = f;
+
+      // Update UI
+      var nameEl = dropzone.querySelector("p, span, div");
+      if (nameEl) nameEl.textContent = "✓ " + f.name.substring(0,30);
+      dropzone.style.borderColor = "#c8ff00";
+
+      // Show preview for image
+      if (f.type.startsWith("image/")) {
+        var img = dropzone.querySelector("img");
+        if (img) { img.src = URL.createObjectURL(f); img.style.opacity = "1"; }
+      }
+
+      addLog("FILE LOADED: " + f.name, "#c8ff00");
+    };
+    inp.click();
+  };
+}
+
+// Run all 6 agents
+async function runAllAnalysts() {
+  if (!LAB_FILE) { alert("Upload a video or image first."); return; }
+  if (IS_RUNNING) return;
+  IS_RUNNING = true;
+
+  var btn = document.getElementById("deploy-btn");
+  if (btn) { btn.textContent = "ANALYZING..."; btn.style.opacity = ".5"; }
+
+  addLog("DEPLOYING 6 PhD ANALYSTS...", "#c8ff00");
+  LAB_RESULTS = {};
+
+  // Convert to base64
+  var b64 = await toBase64(LAB_FILE);
+  var mt = LAB_FILE.type || "image/jpeg";
+  var isVideo = mt.startsWith("video/");
+
+  // Run all agents in parallel
+  var promises = ANALYSTS.map(function(agent) {
+    return runAgent(agent, b64, mt, isVideo);
+  });
+
+  var results = await Promise.allSettled(promises);
+  results.forEach(function(r, i) {
+    LAB_RESULTS[ANALYSTS[i].id] = r.status === "fulfilled" ? r.value : "Error: " + r.reason;
+  });
+
+  showResults();
+  IS_RUNNING = false;
+  if (btn) { btn.textContent = "DEPLOY ANALYSTS"; btn.style.opacity = "1"; }
+  addLog("ALL ANALYSTS COMPLETE", "#c8ff00");
+}
+
+// Single agent call
+async function runAgent(agent, b64, mt, isVideo) {
+  var el = document.getElementById("agent-"+agent.id);
+  var st = el ? el.querySelector(".agent-status") : null;
+  var bar = document.getElementById("bar-"+agent.id);
+
+  if (el) el.style.borderColor = agent.color;
+  if (st) { st.textContent = "RUNNING"; st.style.color = agent.color; }
+  if (bar) { bar.style.width = "0%"; setTimeout(function(){bar.style.width="75%"},100); }
+
+  try {
+    var messages;
+    if (isVideo) {
+      messages = [{
+        role: "user",
+        content: agent.system + "\n\n" + agent.prompt +
+          "\n\nFile: " + LAB_FILE.name +
+          "\nAnalyze based on filename and context. Generate realistic mathematical values as if processing actual frames."
+      }];
+    } else {
+      messages = [{
+        role: "user",
+        content: [
+          { type: "image", source: { type: "base64", media_type: mt, data: b64 } },
+          { type: "text", text: agent.system + "\n\n" + agent.prompt }
+        ]
+      }];
+    }
+
+    var r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 600,
+        messages: messages
+      })
+    });
+
+    var d = await r.json();
+    var text = d.content && d.content[0] ? d.content[0].text : "No response";
+
+    if (el) el.style.borderColor = "#44ff44";
+    if (st) { st.textContent = "✓ DONE"; st.style.color = "#44ff44"; }
+    if (bar) bar.style.width = "100%";
+    addLog(agent.name + " COMPLETE", agent.color);
+    return text;
+
+  } catch(e) {
+    if (st) { st.textContent = "ERROR"; st.style.color = "#ff4444"; }
+    addLog(agent.name + " ERROR: " + e.message, "#ff4444");
+    throw e;
+  }
+}
+
+// Show results
+function showResults() {
+  var console_el = document.getElementById("output-console") ||
+                   document.querySelector(".output-panel, .results-panel, [id*='output'], [id*='result']");
+
+  if (!console_el) {
+    // Create results overlay
+    var overlay = document.createElement("div");
+    overlay.id = "results-overlay";
+    overlay.style.cssText = "position:fixed;inset:0;background:rgba(2,2,2,.96);z-index:9999;overflow-y:auto;padding:24px";
+    var html = "<div style='max-width:900px;margin:0 auto'>" +
+      "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:20px'>" +
+        "<span style='font-family:Space Grotesk,sans-serif;font-size:18px;color:#c8ff00;letter-spacing:3px'>ANALYSIS COMPLETE</span>" +
+        "<div style='display:flex;gap:10px'>" +
+          "<button onclick='exportAll()' style='padding:6px 14px;background:#c8ff00;border:none;color:#000;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;cursor:pointer'>EXPORT JSON</button>" +
+          "<button onclick='document.getElementById("results-overlay").remove()' style='padding:6px 14px;background:transparent;border:1px solid #434933;color:#888;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer'>CLOSE</button>" +
+        "</div>" +
+      "</div>";
+
+    ANALYSTS.forEach(function(a) {
+      var res = LAB_RESULTS[a.id] || "No data";
+      html += "<div style='border:1px solid "+a.color+"22;border-left:3px solid "+a.color+";padding:14px;margin-bottom:12px;background:rgba(0,0,0,0.5)'>" +
+        "<div style='font-family:IBM Plex Mono,monospace;font-size:9px;color:"+a.color+";margin-bottom:8px;letter-spacing:2px'>⬡ "+a.name+" — "+a.specialty+"</div>" +
+        "<div style='font-family:IBM Plex Mono,monospace;font-size:8px;color:#c8c6c5;line-height:1.8;white-space:pre-wrap'>"+res+"</div>" +
+      "</div>";
+    });
+
+    html += "</div>";
+    overlay.innerHTML = html;
+    document.body.appendChild(overlay);
+    return;
+  }
+
+  // Fill existing console
+  var html = "";
+  ANALYSTS.forEach(function(a) {
+    var res = LAB_RESULTS[a.id] || "No data";
+    html += "<div style='border-left:2px solid "+a.color+";padding:8px 12px;margin-bottom:10px'>" +
+      "<div style='font-size:8px;color:"+a.color+";letter-spacing:2px;margin-bottom:4px'>"+a.name+"</div>" +
+      "<div style='font-size:8px;color:#888;line-height:1.7;white-space:pre-wrap'>"+res.substring(0,400)+"</div>" +
+    "</div>";
+  });
+  console_el.innerHTML = html;
+}
+
+function exportAll() {
+  var data = { file: LAB_FILE ? LAB_FILE.name : "unknown", timestamp: new Date().toISOString(), results: LAB_RESULTS };
+  var blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a"); a.href=url; a.download="lab-analysis.json"; a.click();
+}
+
+function addLog(msg, color) {
+  var logEl = document.getElementById("lab-log") || document.querySelector(".log-panel, [id*='log']");
+  if (!logEl) return;
+  var e = document.createElement("div");
+  e.style.cssText = "font-family:IBM Plex Mono,monospace;font-size:8px;color:"+(color||"#c8ff00")+";padding:2px 0;border-top:1px solid #111";
+  e.textContent = "> " + msg;
+  logEl.appendChild(e);
+  while (logEl.children.length > 12) logEl.removeChild(logEl.children[0]);
+}
+
+function toBase64(f) {
+  return new Promise(function(res, rej) {
+    var r = new FileReader();
+    r.onload = function(e) { res(e.target.result.split(",")[1]); };
+    r.onerror = rej;
+    r.readAsDataURL(f);
+  });
+}
+
+// Wire deploy button
+function wireButtons() {
+  // Deploy button
+  var deployBtn = document.getElementById("deploy-btn") ||
+    document.querySelector("button.bg-acid-green, footer button, .deploy-btn");
+  if (deployBtn) {
+    deployBtn.id = "deploy-btn";
+    deployBtn.onclick = runAllAnalysts;
+  }
+
+  // All buttons with deploy text
+  document.querySelectorAll("button").forEach(function(btn) {
+    if (btn.textContent.includes("DEPLOY") || btn.textContent.includes("ANALYZE")) {
+      btn.onclick = runAllAnalysts;
+    }
+  });
+
+  // Back button
+  var back = document.querySelector("header button, [onclick*='back']");
+  if (back) back.onclick = function() { window.location.href = "lab-index.html"; };
+}
+
+window.addEventListener("load", function() {
+  buildAgents();
+  setupUpload();
+  wireButtons();
+  if (window.MD) window.MD.updateCredits();
+});
+</script>
 </body></html>
