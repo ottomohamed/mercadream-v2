@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -75,42 +75,42 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 <p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1">Competition Suite</p>
 <div class="grid grid-cols-1 gap-2" id="director-selection">
 <div class="flex items-center">
-<input checked="" class="hidden dir-checkbox" id="dir-drama" type="checkbox" value="drama"/>
+<input checked="" class="hidden dir-radio" id="dir-drama" type="radio" name="director-select" value="drama"/>
 <label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-drama" style="color: #a8d700">
 <span class="w-2 h-2 rounded-full bg-[#a8d700]"></span>
 <span class="font-technical-sm uppercase">Drama</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-checkbox" id="dir-action" type="checkbox" value="action"/>
+<input class="hidden dir-radio" id="dir-action" type="radio" name="director-select" value="action"/>
 <label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-action" style="color: #ff4444">
 <span class="w-2 h-2 rounded-full bg-[#ff4444]"></span>
 <span class="font-technical-sm uppercase">Action</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-checkbox" id="dir-comedy" type="checkbox" value="comedy"/>
+<input class="hidden dir-radio" id="dir-comedy" type="radio" name="director-select" value="comedy"/>
 <label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-comedy" style="color: #ffba3f">
 <span class="w-2 h-2 rounded-full bg-[#ffba3f]"></span>
 <span class="font-technical-sm uppercase">Comedy</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-checkbox" id="dir-doc" type="checkbox" value="doc"/>
+<input class="hidden dir-radio" id="dir-doc" type="radio" name="director-select" value="doc"/>
 <label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-doc" style="color: #44aaff">
 <span class="w-2 h-2 rounded-full bg-[#44aaff]"></span>
 <span class="font-technical-sm uppercase">Doc</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-checkbox" id="dir-music" type="checkbox" value="music"/>
+<input class="hidden dir-radio" id="dir-music" type="radio" name="director-select" value="music"/>
 <label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-music" style="color: #ff44aa">
 <span class="w-2 h-2 rounded-full bg-[#ff44aa]"></span>
 <span class="font-technical-sm uppercase">Music</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-checkbox" id="dir-ads" type="checkbox" value="ads"/>
+<input class="hidden dir-radio" id="dir-ads" type="radio" name="director-select" value="ads"/>
 <label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-ads" style="color: #44ffaa">
 <span class="w-2 h-2 rounded-full bg-[#44ffaa]"></span>
 <span class="font-technical-sm uppercase">Ads</span>
@@ -221,7 +221,7 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 </div>
 <div class="flex items-center gap-4">
 <button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi" id="btn-assembly">
-<span class="material-symbols-outlined">compare_arrows</span> Enter Jury Room
+<span class="material-symbols-outlined">compare_arrows</span> OPEN ASSEMBLY →
 </button>
 <div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm">
 <button class="px-4 bg-surface-tint text-black font-bold uppercase" id="btn-auto">Auto-Select</button>
@@ -239,7 +239,7 @@ tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d7
 // ═══════════════════════════════════════════════════════
 const API_CHAT     = '/api/chat';
 const API_DIRECTOR = '/api/director';
-const BASE_COST    = 10;
+const BASE_COST    = 0;
 
 const DIR_CONFIG = {
     drama:  { color: '#a8d700', label: 'DRAMA' },
@@ -256,7 +256,7 @@ const TX = {
     sub1:'Screenplay Concept Generation', sub2:'Selecting Competitors', sub3:'Parallel Generation Processing',
     placeholder:'Type your creative directive here...',
     send:'Send', action:'Sync Action', new_session:'New Session', generate:'Generate Suite',
-    assembly:'Enter Jury Room', auto:'Auto-Select', manual:'Manual',
+    assembly:'OPEN ASSEMBLY →', auto:'Auto-Select', manual:'Manual',
     welcome:'Welcome to Suite v19. Select your project type:',
     types:[{id:'film',icon:'🎬',label:'Film / Story'},{id:'ad',icon:'📢',label:'Advertisement'},{id:'music',icon:'🎵',label:'Music Video'},{id:'doc',icon:'📹',label:'Documentary'}],
     firstQ:{film:'What is your story about?',ad:'What product or service?',music:'What is the song about?',doc:'What subject are you documenting?'},
@@ -323,7 +323,8 @@ function setStage(num, status){
 function setCockpit(html){ $('cockpit-inner').innerHTML = html; }
 
 function getSelectedDirectors(){
-    return Array.from(document.querySelectorAll('.dir-checkbox:checked')).map(cb => cb.value);
+    const checked = document.querySelector('.dir-radio:checked');
+    return checked ? [checked.value] : [];
 }
 
 function updateFooterSuite(){
@@ -441,43 +442,36 @@ async function startProduction(){
       const primaryScenes = multiDirectorResults[selected[0]] || [];
       localStorage.setItem('md_6scenes', JSON.stringify(primaryScenes));
 
-      // Fetch Pexels videos (3 options per scene)
-      log('Fetching Pexels visuals (3 options per scene)...', 'ok');
-      try {
-        const videoResults = await Promise.all(primaryScenes.map(async (s, i) => {
-          try {
-            const kw = (s.keywords || s.title || s.prompt || 'cinematic')
-              .replace(/Scene \d+\/6: /g, '').substring(0, 60);
-            const pr = await fetch('/api/pexels?q=' + encodeURIComponent(kw) + '&per_page=3');
-            if (!pr.ok) return {id:Date.now()+i, ...s, url:null, thumb:null, options:[]};
-            const pd = await pr.json();
-            const vids = pd.videos || [];
-            log('Scene '+(i+1)+': '+vids.length+' options found', 'ok');
-            return {
-              id: Date.now()+i,
-              title: 'Scene '+(i+1)+'/6: '+(s.title||''),
-              prompt: (s.prompt||'').substring(0, 500),
-              keywords: s.keywords || s.title || '',
-              director: selected[0],
-              url: vids[0] ? vids[0].url : null,
-              thumb: vids[0] ? vids[0].thumb : null,
-              duration: 10,
-              sceneNumber: i+1,
-              status: vids[0] ? 'ready' : 'pending',
-              options: vids.slice(0,3).map(v => ({id:v.id, url:v.url, thumb:v.thumb, duration:v.duration}))
-            };
-          } catch(e) {
-            return {id:Date.now()+i, ...s, url:null, thumb:null, options:[]};
-          }
-        }));
-        localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
-        log('Pexels sync complete: '+videoResults.filter(v=>v.url).length+'/'+videoResults.length+' visuals found', 'ok');
-        localStorage.setItem('md_project_type', selected[0]);
-      } catch(pex) {
-        log('Pexels sync skipped: '+pex.message, 'err');
-      }
+      // Save scenes for Assembly (no Pexels - WaveSpeed will generate)
+      const videoResults = primaryScenes.map((s, i) => ({
+        id: Date.now()+i,
+        title: 'Scene '+(i+1)+'/'+primaryScenes.length+': '+(s.title||''),
+        prompt: (s.prompt||s.title||'').substring(0, 400),
+        keywords: s.keywords || s.title || '',
+        director: selected[0],
+        url: null,
+        thumb: null,
+        duration: 10,
+        sceneNumber: i+1,
+        status: 'pending',
+        options: []
+      }));
+      localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
+      localStorage.setItem('md_project_type', selected[0]);
+      log('Scenes saved: '+videoResults.length+' scenes ready for Assembly', 'ok');
 
       showDirectorTabs(selected);
+      
+      // Show transparency message
+      const sceneCount = primaryScenes.length;
+      const costPerScene = 15;
+      const totalCost = sceneCount * costPerScene;
+      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'ok');
+      log('YOUR VISION: '+sceneCount+' scenes × 10s = '+(sceneCount*10)+'s film', 'ok');
+      log('Cost per scene: '+costPerScene+' credits', 'ok');  
+      log('Total if all generated: '+totalCost+' credits', 'ok');
+      log('You only pay for scenes you generate!', 'ok');
+      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'ok');
       
       setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
       addBot(TX[lang].done);
