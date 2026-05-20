@@ -61,6 +61,13 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 260px;overflow:hidden}
 .tl-slot.active{border-color:#c8ff00}
 .export-bar{padding:10px;border-top:1px solid #222;display:flex;flex-direction:column;gap:6px}
 .status-bar{font-size:8px;color:#434933;letter-spacing:1px;text-align:center}
+
+.gen-btn{width:100%;padding:5px;background:linear-gradient(135deg,#c8ff00,#aad900);border:none;color:#000;font-family:inherit;font-size:8px;font-weight:700;cursor:pointer;letter-spacing:2px;margin-top:6px;transition:all .2s}
+.gen-btn:hover{box-shadow:0 0 12px rgba(200,255,0,.5)}
+.gen-btn:disabled{opacity:.4;cursor:not-allowed}
+.gen-status{font-size:8px;text-align:center;padding:4px;margin-top:4px;font-family:inherit;letter-spacing:1px}
+.gen-video{width:100%;aspect-ratio:16/9;margin-top:6px;border:1px solid #c8ff00;display:none}
+.insufficient{color:#ff4444}
 </style>
 </head>
 <body>
@@ -118,6 +125,8 @@ var _currentIdx = -1;
 
 // ── Init ──
 window.addEventListener('load', function(){
+  // inject test credits if none
+  if(!localStorage.getItem('md_credits')) localStorage.setItem('md_credits','1000');
   loadCredits();
   loadScenes();
 });
@@ -177,9 +186,15 @@ function renderScenes(){
       });
       html += '</div>';
       html += '<button class="fetch-btn" onclick="fetchScene('+i+')">↻ NEW OPTIONS</button>';
+      html += '<div id="gen-status-'+i+'" class="gen-status" style="color:#434933">15 CREDITS TO GENERATE</div>';
+      html += '<button class="gen-btn" id="gen-btn-'+i+'" onclick="generateVideo('+i+')">⚡ GENERATE VIDEO</button>';
+      html += '<video id="gen-video-'+i+'" class="gen-video" controls loop></video>';
     } else {
-      html += '<div class="no-options">No options yet</div>';
+      html += '<div class="no-options">No clips yet</div>';
       html += '<button class="fetch-btn" onclick="fetchScene('+i+')">FETCH 3 CLIPS</button>';
+      html += '<div id="gen-status-'+i+'" class="gen-status" style="color:#434933">15 CREDITS TO GENERATE</div>';
+      html += '<button class="gen-btn" id="gen-btn-'+i+'" onclick="generateVideo('+i+')">⚡ GENERATE VIDEO</button>';
+      html += '<video id="gen-video-'+i+'" class="gen-video" controls loop></video>';
     }
 
     row.innerHTML = html;
@@ -231,6 +246,9 @@ function renderSingleRow(i, row){
   });
   html += '</div>';
   html += '<button class="fetch-btn" onclick="fetchScene('+i+')">↻ NEW OPTIONS</button>';
+      html += '<div id="gen-status-'+i+'" class="gen-status" style="color:#434933">15 CREDITS TO GENERATE</div>';
+      html += '<button class="gen-btn" id="gen-btn-'+i+'" onclick="generateVideo('+i+')">⚡ GENERATE VIDEO</button>';
+      html += '<video id="gen-video-'+i+'" class="gen-video" controls loop></video>';
   row.innerHTML = html;
 }
 
@@ -345,6 +363,106 @@ async function fetchAllScenes(){
 
 function saveProgress(){
   localStorage.setItem('md_asm_v4',JSON.stringify({selected:_selected}));
+}
+
+
+// ── Generate Video with WaveSpeed ──
+var CREDITS_PER_VIDEO = 15;
+var _generatedVideos = {};
+
+async function generateVideo(si) {
+  var scene = _scenes[si];
+  if(!scene) return;
+
+  // Check credits
+  var credits = parseInt(localStorage.getItem('md_credits')||'0');
+  if(credits < CREDITS_PER_VIDEO) {
+    var btn = document.getElementById('gen-btn-'+si);
+    var st  = document.getElementById('gen-status-'+si);
+    if(st) { st.textContent = 'INSUFFICIENT CREDITS — RECHARGE'; st.className='gen-status insufficient'; }
+    setTimeout(function(){ window.location.href='pricing.html'; }, 1500);
+    return;
+  }
+
+  var btn = document.getElementById('gen-btn-'+si);
+  var st  = document.getElementById('gen-status-'+si);
+  var vid = document.getElementById('gen-video-'+si);
+
+  if(btn) { btn.disabled=true; btn.textContent='GENERATING...'; }
+  if(st)  { st.textContent='SENDING TO AI...'; st.style.color='#c8ff00'; }
+
+  // Build cinematic prompt from scene
+  var prompt = scene.prompt || scene.title || 'cinematic scene';
+  prompt = prompt.substring(0, 300) + ', cinematic, high quality, 16:9';
+
+  try {
+    // Step 1: Submit
+    var r = await fetch('/api/wavespeed', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({prompt:prompt, duration:5})
+    });
+    var d = await r.json();
+
+    if(d.error || !d.id) {
+      if(st) { st.textContent='ERROR: '+(d.error||'Unknown'); st.className='gen-status insufficient'; }
+      if(btn) { btn.disabled=false; btn.textContent='⚡ GENERATE VIDEO'; }
+      return;
+    }
+
+    var predId = d.id;
+    if(st) st.textContent = 'AI GENERATING...';
+
+    // Step 2: Poll every 3s up to 2 minutes
+    var tries = 0;
+    var maxTries = 40;
+    var pollInterval = setInterval(async function() {
+      tries++;
+      try {
+        var pr = await fetch('/api/wavespeed', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({action:'poll', id:predId})
+        });
+        var pd = await pr.json();
+
+        if(st) st.textContent = 'AI GENERATING... ('+(tries*3)+'s)';
+
+        if(pd.status === 'completed' && pd.url) {
+          clearInterval(pollInterval);
+
+          // Deduct credits
+          var newCredits = credits - CREDITS_PER_VIDEO;
+          localStorage.setItem('md_credits', newCredits);
+          document.getElementById('hdr-credits').textContent = newCredits.toLocaleString() + ' CR';
+
+          // Show video
+          if(vid) { vid.src=pd.url; vid.style.display='block'; vid.play().catch(function(){}); }
+          if(st) { st.textContent='✓ GENERATED — '+CREDITS_PER_VIDEO+' CR USED'; st.style.color='#44ff44'; }
+          if(btn) { btn.textContent='↻ REGENERATE'; btn.disabled=false; }
+
+          // Save generated video
+          _generatedVideos[si] = pd.url;
+          _selected[si] = {id:'gen-'+si, url:pd.url, thumb:'', duration:5, generated:true};
+          renderTimeline();
+          saveProgress();
+
+        } else if(pd.status === 'failed' || tries >= maxTries) {
+          clearInterval(pollInterval);
+          if(st) { st.textContent='GENERATION FAILED'; st.className='gen-status insufficient'; }
+          if(btn) { btn.disabled=false; btn.textContent='⚡ RETRY'; }
+        }
+      } catch(e) {
+        clearInterval(pollInterval);
+        if(st) { st.textContent='ERROR: '+e.message; st.className='gen-status insufficient'; }
+        if(btn) { btn.disabled=false; btn.textContent='⚡ RETRY'; }
+      }
+    }, 3000);
+
+  } catch(e) {
+    if(st) { st.textContent='ERROR: '+e.message; st.className='gen-status insufficient'; }
+    if(btn) { btn.disabled=false; btn.textContent='⚡ GENERATE VIDEO'; }
+  }
 }
 
 function buildFilm(){
