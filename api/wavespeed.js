@@ -1,4 +1,4 @@
-module.exports = async function(req, res) {
+﻿module.exports = async function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -6,8 +6,6 @@ module.exports = async function(req, res) {
 
   var KEY = process.env.WAVESPEED_KEY;
   var body = req.body || {};
-  var prompt = body.prompt || req.query.prompt || "cinematic scene";
-  var duration = parseInt(body.duration || req.query.duration) || 5;
   var action = body.action || req.query.action || "generate";
 
   // Poll existing prediction
@@ -15,7 +13,7 @@ module.exports = async function(req, res) {
     var pollId = body.id || req.query.id;
     if(!pollId) return res.status(400).json({error:"No prediction ID"});
     try {
-      var pr = await fetch("https://api.wavespeed.ai/api/v2/predictions/"+pollId, {
+      var pr = await fetch("https://api.wavespeed.ai/api/v3/predictions/"+pollId, {
         headers:{"Authorization":"Bearer "+KEY}
       });
       var pd = await pr.json();
@@ -28,8 +26,11 @@ module.exports = async function(req, res) {
   }
 
   // Generate new video
+  var prompt = body.prompt || req.query.prompt || "cinematic scene";
+  var duration = parseInt(body.duration || req.query.duration) || 5;
+
   try {
-    var r = await fetch("https://api.wavespeed.ai/api/v2/wavespeed-ai/wan-t2v-480p/predictions", {
+    var r = await fetch("https://api.wavespeed.ai/api/v3/vidu/q3/text-to-video", {
       method: "POST",
       headers: {
         "Authorization": "Bearer "+KEY,
@@ -38,7 +39,11 @@ module.exports = async function(req, res) {
       body: JSON.stringify({
         prompt: prompt,
         duration: duration,
-        size: "480*832"
+        resolution: "720p",
+        aspect_ratio: "16:9",
+        style: "cinematic",
+        generate_audio: false,
+        movement_amplitude: "auto"
       })
     });
     var data = await r.json();
