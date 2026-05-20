@@ -70,6 +70,7 @@ main{flex:1;display:grid;grid-template-columns:280px 1fr 260px;overflow:hidden}
   <div style="display:flex;align-items:center;gap:10px">
     <span class="credits" id="hdr-credits">— CR</span>
     <button class="btn" onclick="fetchAllScenes()">⚡ FETCH ALL</button>
+    <button class="btn" onclick="loadScenes();renderScenes();renderTimeline();updateCount();">↻ RELOAD</button>
     <button class="btn" onclick="window.location.href='studio.html'">← STUDIO</button>
   </div>
 </header>
@@ -130,6 +131,7 @@ function loadScenes(){
   var av = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
   var ss = JSON.parse(localStorage.getItem('md_6scenes')||'[]');
   _scenes = av.length ? av : ss;
+  console.log('[Assembly] md_assembly_videos:', av.length, 'md_6scenes:', ss.length, 'total scenes:', _scenes.length);
 
   if(!_scenes.length){
     document.getElementById('scenes-list').innerHTML =
