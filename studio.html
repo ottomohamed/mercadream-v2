@@ -1,594 +1,1689 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM | Multi-Director Competition Suite v19.0</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-body{background-color:#060606;color:#e5e2e1;overflow:hidden;height:100vh}
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-.glow-acid{box-shadow:0px 0px 12px rgba(168,215,0,0.2)}
-.glow-multi{box-shadow:0px 0px 20px rgba(168,215,0,0.4)}
-.custom-scrollbar::-webkit-scrollbar{width:4px}
-.custom-scrollbar::-webkit-scrollbar-track{background:#0d0d0d}
-.custom-scrollbar::-webkit-scrollbar-thumb{background:#353534}
-.terminal-scroll::-webkit-scrollbar{width:2px}
-.terminal-scroll::-webkit-scrollbar-thumb{background:#a8d700}
-.dir-checkbox:checked + label { border-color: currentColor; background: rgba(255,255,255,0.05); }
-</style>
+<style>    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+    }
+    .mic-active { animation: pulse-red 1.5s infinite !important; color: #ff4444 !important; border-color: #ff4444 !important; }
+    .mic-active #voice-listening-tooltip { display: flex !important; }
+    .mic-active + #btn-send { opacity: 0.5; pointer-events: none; }
+    .waveform-bar {
+        width: 4px;
+        height: 20px;
+        background: #a8d700;
+        margin: 0 2px;
+        animation: wave 1s ease-in-out infinite;
+    }
+    @keyframes wave {
+        0%, 100% { height: 10px; }
+        50% { height: 40px; }
+    }
+    .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+    .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+    .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+    .waveform-bar:nth-child(5) { animation-delay: 0.4s; }</style>
 <script id="tailwind-config">
-tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#a8d700","surface-container-low":"#1c1b1b","surface-variant":"#353534","surface-container-lowest":"#0e0e0e","secondary-container":"#c48800","surface-container-high":"#2a2a2a","error-container":"#93000a","primary-container":"#c0f500","on-surface":"#e5e2e1","surface-bright":"#393939","on-surface-variant":"#c4caac","primary":"#ffffff","surface-container":"#201f1f","surface-container-highest":"#353534","inverse-surface":"#e5e2e1","on-background":"#e5e2e1","outline":"#8e9479","primary-fixed":"#c0f500","on-tertiary":"#313030","tertiary-container":"#e5e2e1","surface":"#131313","outline-variant":"#434933","secondary-fixed-dim":"#ffba3f","primary-fixed-dim":"#a8d700","on-secondary":"#432c00","secondary":"#ffba3f","background":"#131313"},"fontFamily":{"display-lg":["Orbitron"],"label-caps":["IBM Plex Mono"],"technical-md":["IBM Plex Mono"],"technical-sm":["IBM Plex Mono"],"headline-lg":["Orbitron"],"body-md":["Inter"],"body-sm":["Inter"]},"fontSize":{"display-lg":["48px",{"lineHeight":"1.1","letterSpacing":"0.05em","fontWeight":"700"}],"label-caps":["10px",{"lineHeight":"1","letterSpacing":"0.1em","fontWeight":"700"}],"technical-md":["14px",{"lineHeight":"1.6","letterSpacing":"0.01em","fontWeight":"400"}],"technical-sm":["12px",{"lineHeight":"1.4","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"1.2","letterSpacing":"0.02em","fontWeight":"600"}],"body-md":["16px",{"lineHeight":"1.6","fontWeight":"400"}],"body-sm":["14px",{"lineHeight":"1.5","fontWeight":"400"}]}}}}
-</script>
-</head>
-<body class="flex flex-col">
-<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-b border-outline-variant px-6">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#a8d700",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-variant": "#353534",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#c48800",
+                        "surface-container-high": "#2a2a2a",
+                        "error-container": "#93000a",
+                        "primary-container": "#c0f500",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c4caac",
+                        "primary": "#ffffff",
+                        "surface-container": "#201f1f",
+                        "surface-container-highest": "#353534",
+                        "inverse-surface": "#e5e2e1",
+                        "on-background": "#e5e2e1",
+                        "outline": "#8e9479",
+                        "primary-fixed": "#c0f500",
+                        "on-tertiary": "#313030",
+                        "tertiary-container": "#e5e2e1",
+                        "surface": "#131313",
+                        "outline-variant": "#434933",
+                        "secondary-fixed-dim": "#ffba3f",
+                        "primary-fixed-dim": "#a8d700",
+                        "on-secondary": "#432c00",
+                        "secondary": "#ffba3f",
+                        "background": "#131313"
+                    },
+                    fontFamily: {
+                        "display-lg": ["Orbitron"],
+                        "label-caps": ["IBM Plex Mono"],
+                        "technical-md": ["IBM Plex Mono"],
+                        "technical-sm": ["IBM Plex Mono"],
+                        "headline-lg": ["Orbitron"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-b border-outline-variant glass-panel">
 <div class="flex items-center gap-8">
 <span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span>
-<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v19.0 PRO</span>
+<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v20.1 PRO</span>
 <nav class="hidden md:flex items-center gap-4">
-<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery"><span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span><span class="font-technical-md text-technical-md uppercase">Discovery</span></div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer" id="nav-screenplay"><span class="font-technical-md text-technical-md uppercase">Screenplay</span></div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer" id="nav-production"><span class="font-technical-md text-technical-md uppercase">Production</span></div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery">
+<span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span>
+<span class="font-technical-md text-technical-md uppercase" id="nav-txt-discovery">Discovery</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-screenplay">
+<span class="font-technical-md text-technical-md uppercase" id="nav-txt-screenplay">Screenplay</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-production">
+<span class="font-technical-md text-technical-md uppercase" id="nav-txt-production">Production</span>
+</div>
 </nav>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-outline-variant">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="hdr-credits-label">Credits:</span>
 <span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits">0</span> ●</span>
 </div>
 <div class="flex items-center gap-2 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-surface-tint cursor-pointer" id="lang-en">EN</span>
+<span class="text-surface-tint cursor-pointer font-bold" id="lang-en">EN</span>
 <span class="opacity-30">|</span>
 <span class="hover:text-surface-tint cursor-pointer" id="lang-es">ES</span>
 <span class="opacity-30">|</span>
 <span class="hover:text-surface-tint cursor-pointer" id="lang-ar">AR</span>
 </div>
-<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group" id="btn-new-session">
+<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group hover-scale" id="btn-new-session">
 <span class="material-symbols-outlined text-sm group-hover:text-black">refresh</span>
-<span class="font-technical-md text-technical-md uppercase">New Session</span>
+<span class="font-technical-md text-technical-md uppercase" id="btn-txt-new">New Session</span>
 </button>
-<span class="material-symbols-outlined text-surface-tint cursor-pointer" id="btn-wallet">account_balance_wallet</span>
+<span class="material-symbols-outlined text-surface-tint cursor-pointer hover:scale-110 transition-transform" id="btn-wallet">account_balance_wallet</span>
 </div>
 </header>
 <main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden">
-<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container border-r border-outline-variant flex flex-col z-40">
+<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-r border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-crew">
 <div class="p-6 border-b border-outline-variant flex-1 overflow-y-auto custom-scrollbar">
 <div class="flex items-center justify-between mb-4">
-<h2 class="font-display-lg text-on-surface uppercase" style="font-size:14px">Crew Panel</h2>
+<h2 class="font-display-lg text-on-surface uppercase" id="lbl-crew-panel" style="font-size:14px">Crew Panel</h2>
 <span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">V19 Multi-Sync</span>
 </div>
 <div class="space-y-6">
-<div class="bg-surface-variant border-l-2 border-surface-tint p-4 flex items-center gap-3">
+<div class="bg-surface-variant/40 border-l-2 border-surface-tint p-4 flex items-center gap-3">
 <div class="relative">
 <img alt="Gemini" class="w-10 h-10 border border-surface-tint object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
 <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]" id="gemini-status"></div>
 </div>
 <div>
 <p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1">Lead Architect</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1" id="lbl-gemini-role">Lead Architect</p><p class="font-technical-sm text-[9px] text-secondary hidden uppercase mt-0.5 tracking-tighter" id="gemini-voice-cmd-mode">[ VOICE COMMAND MODE ]</p><p class="font-technical-sm text-[10px] text-surface-tint/60 hidden uppercase mt-1 italic tracking-widest" id="gemini-voice-status">Listening...</p>
 </div>
 </div>
 <div>
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1">Competition Suite</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1" id="lbl-competition-wings">Competition Wings</p><div class="mb-4 p-3 bg-surface-container-high/40 border border-surface-tint/30 rounded-sm glass-panel">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">record_voice_over</span> Command Library
+        </span>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
+<span>"START SESSION"</span>
+<span class="text-surface-tint">EXEC</span>
+</div>
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
+<span>"SYNC DRAMA"</span>
+<span class="text-surface-tint">MOD</span>
+</div>
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
+<span>"GENERATE SUITE"</span>
+<span class="text-secondary">SYNC</span>
+</div>
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant">
+<span>"OPEN ASSEMBLY"</span>
+<span class="text-surface-tint">NAV</span>
+</div>
+</div>
+</div>
 <div class="grid grid-cols-1 gap-2" id="director-selection">
 <div class="flex items-center">
-<input checked="" class="hidden dir-radio" id="dir-drama" type="radio" name="director-select" value="drama"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-drama" style="color: #a8d700">
+<input checked="" class="hidden dir-radio" id="dir-drama" name="director-select" type="radio" value="drama"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-drama" style="color: #a8d700">
 <span class="w-2 h-2 rounded-full bg-[#a8d700]"></span>
-<span class="font-technical-sm uppercase">Drama</span>
+<span class="font-technical-sm uppercase" id="dir-lbl-drama">Drama</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-radio" id="dir-action" type="radio" name="director-select" value="action"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-action" style="color: #ff4444">
+<input class="hidden dir-radio" id="dir-action" name="director-select" type="radio" value="action"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-action" style="color: #ff4444">
 <span class="w-2 h-2 rounded-full bg-[#ff4444]"></span>
-<span class="font-technical-sm uppercase">Action</span>
+<span class="font-technical-sm uppercase" id="dir-lbl-action">Action</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-radio" id="dir-comedy" type="radio" name="director-select" value="comedy"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-comedy" style="color: #ffba3f">
+<input class="hidden dir-radio" id="dir-comedy" name="director-select" type="radio" value="comedy"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-comedy" style="color: #ffba3f">
 <span class="w-2 h-2 rounded-full bg-[#ffba3f]"></span>
-<span class="font-technical-sm uppercase">Comedy</span>
+<span class="font-technical-sm uppercase" id="dir-lbl-comedy">Comedy</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-radio" id="dir-doc" type="radio" name="director-select" value="doc"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-doc" style="color: #44aaff">
+<input class="hidden dir-radio" id="dir-doc" name="director-select" type="radio" value="doc"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-doc" style="color: #44aaff">
 <span class="w-2 h-2 rounded-full bg-[#44aaff]"></span>
-<span class="font-technical-sm uppercase">Doc</span>
+<span class="font-technical-sm uppercase" id="dir-lbl-doc">Documentary</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-radio" id="dir-music" type="radio" name="director-select" value="music"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-music" style="color: #ff44aa">
+<input class="hidden dir-radio" id="dir-music" name="director-select" type="radio" value="music"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-music" style="color: #ff44aa">
 <span class="w-2 h-2 rounded-full bg-[#ff44aa]"></span>
-<span class="font-technical-sm uppercase">Music</span>
+<span class="font-technical-sm uppercase" id="dir-lbl-music">Music</span>
 </label>
 </div>
 <div class="flex items-center">
-<input class="hidden dir-radio" id="dir-ads" type="radio" name="director-select" value="ads"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-colors" for="dir-ads" style="color: #44ffaa">
+<input class="hidden dir-radio" id="dir-ads" name="director-select" type="radio" value="ads"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-ads" style="color: #44ffaa">
 <span class="w-2 h-2 rounded-full bg-[#44ffaa]"></span>
-<span class="font-technical-sm uppercase">Ads</span>
+<span class="font-technical-sm uppercase" id="dir-lbl-ads">Ads</span>
 </label>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="p-6 bg-surface-container-low border-t border-outline-variant">
+<div class="p-6 bg-surface-container-low/50 border-t border-outline-variant">
 <div class="mb-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1">Multi-Gen Cost</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1" id="lbl-sync-cost">Sync Cost</p>
 <div class="flex justify-between items-end">
-<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">10 cr/dir</span>
+<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">0 cr/dir</span>
 </div>
 </div>
-<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all" id="btn-recharge">+ Recharge</button>
+<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all hover-scale" id="btn-recharge">+ RECHARGE</button>
 </div>
 </aside>
-<section class="ml-[280px] mr-[340px] flex-1 flex flex-col bg-background relative">
-<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<section class="ml-[280px] mr-[340px]" id="main-content" style="flex: 1; display: flex; flex-direction: column; background: #131313; position: relative;">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between glass-panel z-10 relative">
 <div>
 <h1 class="font-display-lg text-headline-lg text-on-surface" id="phase-title">Phase 1: Discovery</h1>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Task: Screenplay Concept Generation</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Mission: Generate Script Concept</p>
 </div>
-<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-6 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-all glow-acid" id="btn-action">
-<span class="material-symbols-outlined">bolt</span> Multi-Sync Action
-</button>
+<div class="flex gap-4">
+<button class="hidden flex items-center gap-2 border border-[#ffba3f] text-[#ffba3f] px-6 py-2 font-technical-md uppercase hover:bg-[#ffba3f] hover:text-black transition-all hover-scale" id="btn-jury-toggle">
+<span class="material-symbols-outlined">gavel</span> JURY ROOM
+                    </button>
+<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-6 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-all glow-acid hover-scale" id="btn-action">
+<span class="material-symbols-outlined">bolt</span> SYNC ACTION
+                    </button>
 </div>
-<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar" id="chat-messages"></div>
-<div class="p-6 bg-surface-container-lowest border-t border-outline-variant">
+</div>
+<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar relative" id="chat-messages"></div>
+<!-- JURY ROOM OVERLAY -->
+<div class="absolute inset-0 bg-black/90 z-20 hidden backdrop-blur-xl flex flex-col" id="jury-room-overlay">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-display-lg text-headline-lg text-secondary">JURY ROOM: SIDE-BY-SIDE ANALYSIS</h2>
+<button class="text-on-surface-variant hover:text-white" id="close-jury"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="flex-1 overflow-x-auto p-6 flex gap-6 custom-scrollbar" id="jury-comparison-grid">
+<!-- Comparison columns go here -->
+</div>
+</div>
+<div class="p-6 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant glass-panel">
 <div class="relative group">
-<textarea class="w-full bg-surface-container border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pr-32 resize-none h-20 transition-all" id="chat-input" placeholder="Type your creative directive here..."></textarea>
-<div class="absolute right-4 bottom-4 flex items-center gap-4">
-<button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid" id="btn-send">Send</button>
+<textarea class="w-full bg-surface-container/50 border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pl-4 pr-32 resize-none h-20 transition-all" id="chat-input" placeholder="Type your creative directive here..."></textarea>
+<div class="absolute right-4 bottom-4 flex items-center gap-4 group">
+<div class="absolute -top-12 right-0 bg-black/80 border border-surface-tint/50 px-3 py-1.5 rounded-full backdrop-blur-md hidden group-[.mic-active]:flex items-center gap-2" id="voice-listening-tooltip">
+<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+<span class="text-[10px] font-technical-sm text-on-surface uppercase tracking-widest" id="txt-listening-cmd">Listening for command...</span>
+</div><button class="flex items-center justify-center border border-outline-variant w-10 h-10 hover:bg-surface-variant transition-all hover-scale group" id="btn-mic" onclick="this.classList.toggle('mic-active'); document.getElementById('gemini-voice-cmd-mode').classList.toggle('hidden');" title="Voice Chat"><span class="material-symbols-outlined text-on-surface-variant group-hover:text-surface-tint">mic</span></button><button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid hover-scale" id="btn-send">SEND</button>
 </div>
 </div>
 </div>
-</section>
-<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container border-l border-outline-variant flex flex-col z-40">
+<div class="absolute inset-0 bg-black/60 backdrop-blur-md z-30 hidden flex flex-col items-center justify-center" id="voice-overlay">
+<div class="glass-panel p-10 flex flex-col items-center gap-6 border-surface-tint">
+<h2 class="font-display-lg text-2xl text-surface-tint tracking-widest uppercase" id="voice-status-text">Listening...</h2>
+<div class="flex items-end h-12">
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+</div>
+<button class="mt-4 border border-outline-variant px-6 py-2 font-technical-sm hover:bg-surface-variant uppercase" id="btn-close-voice">Cancel</button>
+</div>
+</div></section>
+<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-l border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-pipeline">
 <div class="p-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Competitor Status</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase" id="lbl-competitor-status">Competitor Status</p>
 <div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center" id="cockpit-screen">
+<div class="scanline"></div>
 <div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
 <div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
 <div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
 <div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
-<div class="text-center" id="cockpit-inner">
-<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block">STANDBY_FOR_SYNC</span>
+<div class="text-center relative z-10" id="cockpit-inner">
+<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block" id="txt-awaiting">AWAITING SYNC</span>
 <span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
 </div>
 <div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]"></div>
 </div>
 </div>
 <div class="p-4 flex-1 overflow-y-auto">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Pipeline Stages</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase" id="lbl-pipeline-stages">Pipeline Stages</p>
 <div class="space-y-4" id="pipeline-stages">
 <div class="stage-item space-y-2" data-stage="1">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">01/SCREENPLAY_SYNC</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s1">01/Script_Sync</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 <div class="stage-item space-y-2 opacity-50" data-stage="2">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">02/MULTI_DIR_ASSIGN</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s2">02/Assign_Directors</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 <div class="stage-item space-y-2 opacity-50" data-stage="3">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">03/PARALLEL_GENERATE</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s3">03/Parallel_Generation</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 <div class="stage-item space-y-2 opacity-50" data-stage="4">
 <div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant">04/COMPETITION_VALIDATE</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s4">04/Competition_Review</span>
 <span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
 </div>
 <div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
 </div>
 </div>
 </div>
-<div class="bg-black border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col" id="log-terminal" style="height:160px">
-<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1">
-<span class="text-on-surface-variant uppercase">Live Log</span>
+<div class="bg-black/80 border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col relative" id="log-terminal" style="height:160px">
+<div class="scanline"></div>
+<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1 relative z-10">
+<span class="text-on-surface-variant uppercase" id="lbl-sync-log">Live Sync Log</span>
 <span class="text-surface-tint uppercase">v19.0</span>
 </div>
-<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1" id="log-lines"></div>
+<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1 relative z-10 typing-cursor" id="log-lines"></div>
 </div>
 </aside>
 </main>
-<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop bg-surface-container-lowest h-[60px] border-t border-outline-variant px-6">
+<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-t border-outline-variant glass-panel">
 <div class="flex items-center gap-10">
 <div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Credits:</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-credits-label">Credits:</span>
 <span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits">0</span> ●</span>
 </div>
 <div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Active Suite:</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-active-suite">Active Suite:</span>
 <div class="flex -space-x-1" id="footer-active-dirs"></div>
-<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-suite-names">1 Director selected</span>
+<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-suite-names">1 Director Selected</span>
 </div>
 </div>
 <div class="flex items-center gap-4">
-<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi" id="btn-assembly">
+<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi hover-scale" id="btn-assembly">
 <span class="material-symbols-outlined">compare_arrows</span> OPEN ASSEMBLY →
-</button>
-<div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm">
-<button class="px-4 bg-surface-tint text-black font-bold uppercase" id="btn-auto">Auto-Select</button>
+            </button>
+<div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm bg-surface-container/50">
+<button class="px-4 bg-surface-tint text-black font-bold uppercase transition-all hover:brightness-110" id="btn-auto">Auto Select</button>
 <button class="px-4 text-on-surface-variant hover:text-surface-tint uppercase transition-colors" id="btn-manual">Manual</button>
 </div>
-<button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid" id="btn-generate">
-<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest">Generate Suite</span>
+<button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid hover-scale" id="btn-generate">
+<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest" id="btn-txt-generate">Generate Suite</span>
 <span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">rocket_launch</span>
 </button>
 </div>
 </footer>
 <script>
-// ═══════════════════════════════════════════════════════
-// MERCADREAM STUDIO v19.0 — Multi-Director Competition Suite
-// ═══════════════════════════════════════════════════════
-const API_CHAT     = '/api/chat';
-const API_DIRECTOR = '/api/director';
-const BASE_COST    = 0;
+        const API_CHAT = '/api/chat';
+        const API_DIRECTOR = '/api/director';
+        const BASE_COST = 0;
 
-const DIR_CONFIG = {
-    drama:  { color: '#a8d700', label: 'DRAMA' },
-    action: { color: '#ff4444', label: 'ACTION' },
-    comedy: { color: '#ffba3f', label: 'COMEDY' },
-    doc:    { color: '#44aaff', label: 'DOC' },
-    music:  { color: '#ff44aa', label: 'MUSIC' },
-    ads:    { color: '#44ffaa', label: 'ADS' }
-};
+        const DIR_CONFIG = {
+            drama: { color: '#a8d700', label: 'DRAMA', icon: 'theater_comedy' },
+            action: { color: '#ff4444', label: 'ACTION', icon: 'explosion' },
+            comedy: { color: '#ffba3f', label: 'COMEDY', icon: 'sentiment_very_satisfied' },
+            doc: { color: '#44aaff', label: 'DOC', icon: 'visibility' },
+            music: { color: '#ff44aa', label: 'MUSIC', icon: 'music_note' },
+            ads: { color: '#44ffaa', label: 'ADS', icon: 'campaign' }
+        };
 
-const TX = {
-  en: {
-    ph1:'Phase 1: Discovery', ph2:'Phase 2: Director Duel', ph3:'Phase 3: Multi-Gen Production',
-    sub1:'Screenplay Concept Generation', sub2:'Selecting Competitors', sub3:'Parallel Generation Processing',
-    placeholder:'Type your creative directive here...',
-    send:'Send', action:'Sync Action', new_session:'New Session', generate:'Generate Suite',
-    assembly:'OPEN ASSEMBLY →', auto:'Auto-Select', manual:'Manual',
-    welcome:'Welcome to Suite v19. Select your project type:',
-    types:[{id:'film',icon:'🎬',label:'Film / Story'},{id:'ad',icon:'📢',label:'Advertisement'},{id:'music',icon:'🎵',label:'Music Video'},{id:'doc',icon:'📹',label:'Documentary'}],
-    firstQ:{film:'What is your story about?',ad:'What product or service?',music:'What is the song about?',doc:'What subject are you documenting?'},
-    done:'All director iterations complete. Compare and export in Jury Room.',
-    err:'Sync Error. Check connectivity.',
-    confirm_yes:'START SUITE', confirm_no:'CANCEL'
-  }
-};
+        const TX = {
+            en: {
+                ph1: 'Phase 1: Discovery', ph2: 'Phase 2: Director Duel', ph3: 'Phase 3: Multi-Sync Production',
+                sub1: 'Generate Script Concept', sub2: 'Select Contenders', sub3: 'Parallel Generation Processing',
+                placeholder: 'Type your creative directive here...',
+                send: 'SEND', action: 'SYNC ACTION', new_session: 'NEW SESSION', generate: 'GENERATE SUITE',
+                assembly: 'OPEN ASSEMBLY →', auto: 'AUTO SELECT', manual: 'MANUAL',
+                welcome: 'Welcome to Suite v19. Choose your project type:',
+                types: [{ id: 'film', icon: '🎬', label: 'Film / Story' }, { id: 'ad', icon: '📢', label: 'Commercial' }, { id: 'music', icon: '🎵', label: 'Music Video' }, { id: 'doc', icon: '📹', label: 'Documentary' }],
+                firstQ: { film: 'What is your story about?', ad: 'What is the product or service?', music: 'What is the song about?', doc: 'What subject are you documenting?' },
+                done: 'All director iterations complete. Compare and export in Assembly room.',
+                err: 'Sync Error. Check connection.',
+                confirm_yes: 'START SUITE', confirm_no: 'CANCEL',
+                credits: 'Credits', active_suite: 'Active Suite', sync_log: 'Live Sync Log', status: 'Competitor Status', awaiting: 'Awaiting Sync', pipeline: 'Pipeline Stages',
+                nav_disc: 'Discovery', nav_scr: 'Screenplay', nav_prod: 'Production',
+                panel_crew: 'Crew Panel', wings: 'Competition Wings', sync_cost: 'Sync Cost', role: 'Lead Architect',
+                transp_msg: (count, cost) => `Rarity Captured: ${count} scenes x 10s. Scene Cost: 15 cr. Total: ${cost} cr. Pay only what you generate!`
+            },
+            es: {
+                ph1: 'Fase 1: Descubrimiento', ph2: 'Fase 2: Duelo de Directores', ph3: 'Fase 3: Producción Multi-Sinc',
+                sub1: 'Generar Concepto de Guion', sub2: 'Seleccionar Contendientes', sub3: 'Procesamiento de Generación Paralela',
+                placeholder: 'Escribe tu directiva creativa aquí...',
+                send: 'ENVIAR', action: 'ACCIÓN DE SINC', new_session: 'NUEVA SESIÓN', generate: 'GENERAR SUITE',
+                assembly: 'ABRIR ENSAMBLAJE →', auto: 'AUTO SELECCIÓN', manual: 'MANUAL',
+                welcome: 'Bienvenido a Suite v19. Elige tu tipo de proyecto:',
+                types: [{ id: 'film', icon: '🎬', label: 'Película / Historia' }, { id: 'ad', icon: '📢', label: 'Comercial' }, { id: 'music', icon: '🎵', label: 'Video Musical' }, { id: 'doc', icon: '📹', label: 'Documental' }],
+                firstQ: { film: '¿De qué trata tu historia?', ad: '¿Cuál es el producto o servicio?', music: '¿De qué trata la canción?', doc: '¿Qué tema estás documentando?' },
+                done: 'Todas las iteraciones completadas. Compara y exporta en la sala de ensamblaje.',
+                err: 'Error de sincronización. Revisa la conexión.',
+                confirm_yes: 'INICIAR SUITE', confirm_no: 'CANCELAR',
+                credits: 'Créditos', active_suite: 'Suite Activa', sync_log: 'Registro de Sinc', status: 'Estado de Competidor', awaiting: 'Esperando Sinc', pipeline: 'Etapas de Pipeline',
+                nav_disc: 'Descubrimiento', nav_scr: 'Guion', nav_prod: 'Producción',
+                panel_crew: 'Panel de Tripulación', wings: 'Alas de Competencia', sync_cost: 'Costo de Sinc', role: 'Arquitecto Principal',
+                transp_msg: (count, cost) => `Rareza Capturada: ${count} escenas x 10s. Costo de escena: 15 cr. Total: ${cost} cr. ¡Solo pagas lo que generas!`
+            },
+            ar: {
+                ph1: 'المرحلة الأولى: الاستكشاف', ph2: 'المرحلة الثانية: مبارزة المخرجين', ph3: 'المرحلة الثالثة: إنتاج متعدد المزامنة',
+                sub1: 'توليد مفهوم السيناريو', sub2: 'اختيار المتنافسين', sub3: 'معالجة التوليد الموازي',
+                placeholder: 'اكتب توجيهك الإبداعي هنا...',
+                send: 'إرسال', action: 'إجراء المزامنة', new_session: 'جلسة جديدة', generate: 'توليد المجموعة',
+                assembly: 'OPEN ASSEMBLY →', auto: 'اختيار تلقائي', manual: 'يدوي',
+                welcome: 'مرحباً بك في جناح v19. اختر نوع مشروعك:',
+                types: [{ id: 'film', icon: '🎬', label: 'فيلم / قصة' }, { id: 'ad', icon: '📢', label: 'إعلان' }, { id: 'music', icon: '🎵', label: 'فيديو موسيقي' }, { id: 'doc', icon: 'وثائقي' }],
+                firstQ: { film: 'عن ماذا تدور قصتك؟', ad: 'ما هو المنتج أو الخدمة؟', music: 'عن ماذا تدور الأغنية؟', doc: 'ما هو الموضوع الذي توثقه؟' },
+                done: 'اكتملت جميع تكرارات المخرجين. قارن وصدر في غرفة التحكيم.',
+                err: 'خطأ في المزامنة. تحقق من الاتصال.',
+                confirm_yes: 'ابدأ المجموعة', confirm_no: 'إلغاء',
+                credits: 'الرصيد', active_suite: 'المجموعة النشطة', sync_log: 'سجل المزامنة المباشر', status: 'حالة المنافس', awaiting: 'في انتظار المزامنة', pipeline: 'مراحل خط الإنتاج',
+                nav_disc: 'استكشاف', nav_scr: 'السيناريو', nav_prod: 'الإنتاج',
+                panel_crew: 'لوحة الطاقم', wings: 'أجنحة المنافسة', sync_cost: 'تكلفة المزامنة', role: 'المهندس الرئيسي',
+                transp_msg: (count, cost) => `تم التقاط الرؤية: ${count} مشاهد × 10 ثوانٍ. تكلفة المشهد: 15 رصيداً. الإجمالي: ${cost} رصيداً. ادفع فقط مقابل ما تولده!`
+            }
+        };
 
-const SCREENWRITER = {
-  film:`You are the Lead Architect at MercaDream. ONE question per message, max 2 sentences. Ask about: energy/vibe, character, transformation, world. After 4-6 exchanges output EXACTLY: DREAM_CAPTURED`,
-  ad:`You are a commercial Lead Architect. Ask ONE question at a time: 1) product, 2) target audience, 3) key message. After 3 answers output EXACTLY: DREAM_CAPTURED`,
-  music:`You are a music video Lead Architect. Ask ONE question at a time: 1) song mood/genre, 2) artist visual style, 3) key visual concept. After 3 answers output EXACTLY: DREAM_CAPTURED`,
-  doc:`You are a documentary Lead Architect. Ask ONE question at a time: 1) subject, 2) angle, 3) central truth. After 3 answers output EXACTLY: DREAM_CAPTURED`
-};
+        const SCREENWRITER = {
+            film: `You are the Lead Architect in MercaDream. Only one question per message, max 2 sentences. Ask about: Energy/Mood, Character, Transformation, World. After 4-6 exchanges output exactly: DREAM_CAPTURED`,
+            ad: `You are a Commercial Lead Architect. Ask one question at a time: 1) Product, 2) Target Audience, 3) Core Message. After 3 answers output exactly: DREAM_CAPTURED`,
+            music: `You are a Music Video Lead Architect. Ask one question at a time: 1) Mood/Genre of song, 2) Artist visual style, 3) Key visual concept. After 3 answers output exactly: DREAM_CAPTURED`,
+            doc: `You are a Documentary Lead Architect. Ask one question at a time: 1) Subject, 2) Angle, 3) Central Truth. After 3 answers output exactly: DREAM_CAPTURED`
+        };
 
-// STATE
-let lang = localStorage.getItem('md_lang') || 'en';
-let phase = 'discovery';
-let history = [];
-let brief = null;
-let projectType = null;
-let isBusy = false;
-let multiDirectorResults = {};
+        // STATE
+        let lang = 'en';
+        let phase = 'discovery';
+        let history = [];
+        let brief = null;
+        let projectType = null;
+        let isBusy = false;
+        let multiDirectorResults = {};
 
-const $ = id => document.getElementById(id);
+        const $ = id => document.getElementById(id);
 
-// ── CREDITS ──
-function getCredits(){ return parseInt(localStorage.getItem('md_credits')||'100'); }
-function setCredits(v){
-  localStorage.setItem('md_credits', v);
-  $('header-credits').textContent = v.toLocaleString();
-  $('footer-credits').textContent = v.toLocaleString();
-}
+        function setLanguage(l) {
+            lang = l;
+            document.documentElement.lang = l;
+            document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
 
-// ── LOG ──
-function log(msg, type='info'){
-  const lines = $('log-lines');
-  if(!lines) return;
-  const colors = {ok:'#a8d700', err:'#ff4444', warn:'#ffba3f', info:'rgba(168,215,0,0.6)'};
-  const p = document.createElement('p');
-  p.className = 'leading-tight';
-  const time = new Date().toLocaleTimeString('en',{hour12:false});
-  p.innerHTML = `<span style="opacity:.5">[${time}]</span> <span style="color:${colors[type]||colors.info}">${msg}</span>`;
-  lines.insertBefore(p, lines.firstChild);
-}
+            ['en', 'es', 'ar'].forEach(id => {
+                const el = $(`lang-${id}`);
+                if (el) {
+                    el.classList.toggle('text-surface-tint', id === l);
+                    el.classList.toggle('font-bold', id === l);
+                }
+            });
 
-// ── PIPELINE ──
-function setStage(num, status){
-  document.querySelectorAll('.stage-item').forEach((el,i) => {
-    const n = i+1;
-    const bar = el.querySelector('.stage-bar');
-    const lbl = el.querySelector('.stage-status');
-    if(n < num){ el.classList.remove('opacity-50'); if(bar){bar.style.width='100%';bar.style.background='#a8d700';} if(lbl){lbl.textContent='DONE';lbl.style.color='#a8d700';} }
-    else if(n === num){
-      el.classList.remove('opacity-50');
-      if(status==='active'){ if(bar){bar.style.width='65%';bar.style.background='#a8d700';} if(lbl){lbl.textContent='ACTIVE';lbl.style.color='#a8d700';} }
-      else if(status==='done'){ if(bar){bar.style.width='100%';bar.style.background='#a8d700';} if(lbl){lbl.textContent='DONE';lbl.style.color='#a8d700';} }
+            $('nav-txt-discovery').textContent = TX[l].nav_disc;
+            $('nav-txt-screenplay').textContent = TX[l].nav_scr;
+            $('nav-txt-production').textContent = TX[l].nav_prod;
+            $('hdr-credits-label').textContent = TX[l].credits + ':';
+            $('btn-txt-new').textContent = TX[l].new_session;
+            $('lbl-crew-panel').textContent = TX[l].panel_crew;
+            $('lbl-gemini-role').textContent = TX[l].role;
+            $('lbl-competition-wings').textContent = TX[l].wings;
+            $('lbl-sync-cost').textContent = TX[l].sync_cost;
+            $('phase-title').textContent = phase === 'discovery' ? TX[l].ph1 : (phase === 'production' ? TX[l].ph3 : TX[l].ph2);
+            $('phase-subtitle').textContent = phase === 'discovery' ? TX[l].sub1 : (phase === 'production' ? TX[l].sub3 : TX[l].sub2);
+            $('chat-input').placeholder = TX[l].placeholder;
+            $('btn-send').textContent = TX[l].send;
+            $('btn-action').innerHTML = `<span class="material-symbols-outlined">bolt</span> ${TX[l].action}`;
+            $('lbl-competitor-status').textContent = TX[l].status;
+            $('txt-awaiting').textContent = TX[l].awaiting;
+            $('lbl-pipeline-stages').textContent = TX[l].pipeline;
+            $('lbl-sync-log').textContent = TX[l].sync_log;
+            $('ftr-credits-label').textContent = TX[l].credits + ':';
+            $('ftr-active-suite').textContent = TX[l].active_suite + ':';
+            $('btn-auto').textContent = TX[l].auto;
+            $('btn-manual').textContent = TX[l].manual;
+            $('btn-txt-generate').textContent = TX[l].generate;
+
+            const main = $('main-content');
+            const crew = $('sidebar-crew');
+            const pipe = $('sidebar-pipeline');
+            if (l === 'ar') {
+                crew.style.left = 'auto'; crew.style.right = '0'; crew.style.borderLeft = '1px solid #353534'; crew.style.borderRight = 'none';
+                pipe.style.right = 'auto'; pipe.style.left = '0'; pipe.style.borderRight = '1px solid #353534'; pipe.style.borderLeft = 'none';
+                main.style.marginLeft = '340px'; main.style.marginRight = '280px';
+                main.classList.add('text-right');
+            } else {
+                crew.style.right = 'auto'; crew.style.left = '0'; crew.style.borderRight = '1px solid #353534'; crew.style.borderLeft = 'none';
+                pipe.style.left = 'auto'; pipe.style.right = '0'; pipe.style.borderLeft = '1px solid #353534'; pipe.style.borderRight = 'none';
+                main.style.marginRight = '340px'; main.style.marginLeft = '280px';
+                main.classList.remove('text-right');
+            }
+
+            updateFooterSuite();
+            log(`Environment Synchronized: ${l.toUpperCase()}`, 'ok');
+        }
+
+        function getCredits() { return parseInt(localStorage.getItem('md_credits') || '100'); }
+        function setCredits(v) {
+            localStorage.setItem('md_credits', v);
+            $('header-credits').textContent = v.toLocaleString();
+            $('footer-credits').textContent = v.toLocaleString();
+        }
+
+        function log(msg, type = 'info') {
+            const lines = $('log-lines');
+            if (!lines) return;
+            const colors = { ok: '#a8d700', err: '#ff4444', warn: '#ffba3f', info: 'rgba(168,215,0,0.6)' };
+            const p = document.createElement('p');
+            p.className = `leading-tight ${lang === 'ar' ? 'text-right' : ''} border-l border-surface-variant/30 pl-2`;
+            const time = new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour12: false });
+            p.innerHTML = `<span style="opacity:.4">[${time}]</span> <span style="color:${colors[type] || colors.info}">● ${msg}</span>`;
+            lines.insertBefore(p, lines.firstChild);
+        }
+
+        function setStage(num, status) {
+            document.querySelectorAll('.stage-item').forEach((el, i) => {
+                const n = i + 1;
+                const bar = el.querySelector('.stage-bar');
+                const lbl = el.querySelector('.stage-status');
+                const labels = { en: { idle: 'IDLE', active: 'ACTIVE', done: 'COMPLETE' }, ar: { idle: 'خامل', active: 'نشط', done: 'مكتمل' }, es: { idle: 'INACTIVO', active: 'ACTIVO', done: 'COMPLETO' } };
+
+                if (n < num) { el.classList.remove('opacity-50'); if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
+                else if (n === num) {
+                    el.classList.remove('opacity-50');
+                    if (status === 'active') { if (bar) { bar.style.width = '65%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].active; lbl.style.color = '#a8d700'; } }
+                    else if (status === 'done') { if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
+                }
+                else { el.classList.add('opacity-50'); if (bar) { bar.style.width = '0'; } if (lbl) { lbl.textContent = labels[lang].idle; lbl.style.color = ''; } }
+            });
+        }
+
+        function setCockpit(html) { $('cockpit-inner').innerHTML = html; }
+
+        function getSelectedDirectors() {
+            const checked = document.querySelector('.dir-radio:checked');
+            return checked ? [checked.value] : [];
+        }
+
+        function updateFooterSuite() {
+            const selected = getSelectedDirectors();
+            const container = $('footer-active-dirs');
+            const label = $('footer-suite-names');
+            if (container) {
+                container.innerHTML = selected.map(id => `<div class="w-4 h-4 rounded-full border border-black shadow-lg" style="background:${DIR_CONFIG[id].color}"></div>`).join('');
+            }
+            if (label) {
+                if (lang === 'ar') label.textContent = selected.length > 0 ? `مخرج واحد مختار` : `لا يوجد مخرج مختار`;
+                else if (lang === 'es') label.textContent = selected.length > 0 ? `1 Director Seleccionado` : `Ningún Director`;
+                else label.textContent = selected.length > 0 ? `1 Director Selected` : `No Director Selected`;
+            }
+        }
+
+        function addBot(html) {
+            const area = $('chat-messages');
+            const div = document.createElement('div');
+            const ltr = lang !== 'ar';
+            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? '' : 'mr-auto'}`;
+            div.innerHTML = `
+                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
+                    <span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest">${lang === 'ar' ? 'محرك Mercadream' : 'Mercadream Engine'}</span>
+                </div>
+                <div class="bg-surface-container/30 backdrop-blur-sm p-6 border-${ltr ? 'l' : 'r'}-4 border-surface-tint glass-panel">
+                    <div class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${html}</div>
+                </div>`;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+            history.push({ role: 'assistant', content: html });
+        }
+
+        function addUser(text) {
+            const area = $('chat-messages');
+            const div = document.createElement('div');
+            const ltr = lang !== 'ar';
+            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? 'ml-auto items-end' : 'mr-auto items-start'}`;
+            div.innerHTML = `
+                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
+                    <span class="font-label-caps text-[10px] text-secondary uppercase tracking-widest">${lang === 'ar' ? 'أنت' : 'You'}</span>
+                </div>
+                <div class="p-6 bg-surface-tint/5 border border-surface-tint/20 glass-panel">
+                    <p class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${text}</p>
+                </div>`;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+            history.push({ role: 'user', content: text });
+        }
+
+        function showTypeSelector() {
+            const types = TX[lang].types;
+            const grid = types.map(t =>
+                `<button onclick="selectType('${t.id}')" class="p-4 bg-surface-container-high/40 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all hover-scale flex items-center gap-4 ${lang === 'ar' ? 'text-right flex-row-reverse' : 'text-left'} w-full font-technical-sm group">
+                    <span class="text-2xl group-hover:scale-125 transition-transform">${t.icon}</span>
+                    <span class="font-bold tracking-wider">${t.label}</span>
+                </button>`
+            ).join('');
+            addBot(`${TX[lang].welcome}<div class="grid grid-cols-2 gap-3 mt-5">${grid}</div>`);
+        }
+
+        function selectType(type) {
+            projectType = type;
+            const q = TX[lang].firstQ[type];
+            addBot(q);
+            log('Project Sync: ' + type.toUpperCase(), 'ok');
+        }
+
+        async function startProduction() {
+            const selected = getSelectedDirectors();
+            if (selected.length === 0) {
+                log('Error: No Director Selected', 'err');
+                alert(lang === 'ar' ? 'اختر مخرجاً واحداً للمنافسة.' : 'Select one director for competition.');
+                return;
+            }
+
+            const totalCost = selected.length * BASE_COST;
+            if (getCredits() < totalCost) {
+                log('Error: Insufficient Credits', 'err');
+                return;
+            }
+
+            phase = 'production'; isBusy = true;
+            $('phase-title').textContent = TX[lang].ph3;
+            $('phase-subtitle').textContent = lang === 'ar' ? 'مزامنة موازية: مخرج واحد' : 'Parallel Sync: 1 Director';
+            setCredits(getCredits() - totalCost);
+
+            log(`Sync Activated: ${selected[0].toUpperCase()}`, 'ok');
+            setCockpit(`<span class="font-technical-sm text-[10px] text-surface-tint animate-pulse">${lang === 'ar' ? 'جاري_المزامنة' : 'SYNCING_ENGINE'}</span>`);
+
+            setStage(1, 'active'); await new Promise(r => setTimeout(r, 800));
+            setStage(1, 'done');
+            setStage(2, 'active'); await new Promise(r => setTimeout(r, 600));
+            setStage(2, 'done');
+            setStage(3, 'active');
+
+            const conv = history.map(m => m.content).join('\n\n');
+            multiDirectorResults = {};
+
+            try {
+                const dirType = selected[0];
+                log(`Thread Start: ${dirType.toUpperCase()}`, 'info');
+                const res = await fetch(API_DIRECTOR, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: dirType, conversation: conv, brief: brief || conv })
+                });
+                if (!res.ok) throw new Error(`${dirType} failed`);
+                const data = await res.json();
+
+                const cleanedScenes = (data.scenes || []).map((s, i) => ({
+                    title: s.title || (lang === 'ar' ? `مشهد ${i + 1}` : `Scene ${i + 1}`),
+                    prompt: s.prompt || '',
+                    director: dirType,
+                    sceneNumber: i + 1,
+                    status: 'pending'
+                }));
+
+                multiDirectorResults[dirType] = cleanedScenes;
+                log(`Success: ${dirType.toUpperCase()} - ${cleanedScenes.length} scenes captured`, 'ok');
+
+                setStage(3, 'done');
+                setStage(4, 'done');
+
+                localStorage.setItem('md_multi_director_output', JSON.stringify(multiDirectorResults));
+                localStorage.setItem('md_6scenes', JSON.stringify(cleanedScenes));
+                localStorage.setItem('md_assembly_videos', JSON.stringify(cleanedScenes));
+                localStorage.setItem('md_project_type', dirType);
+
+                showDirectorTabs(selected);
+
+                const sceneCount = cleanedScenes.length;
+                const sceneTotalCost = sceneCount * 15;
+
+                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
+                log(TX[lang].transp_msg(sceneCount, sceneTotalCost), 'ok');
+                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
+
+                setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
+                addBot(TX[lang].done);
+                $('btn-assembly').classList.remove('hidden');
+                $('btn-assembly').style.display = 'flex';
+                $('btn-jury-toggle').classList.remove('hidden');
+
+            } catch (e) {
+                log('Critical Sync Fail: ' + e.message, 'err');
+                addBot('Sync interrupted: ' + e.message);
+            }
+            isBusy = false;
+        }
+
+        function showDirectorTabs(selected) {
+            const area = $('chat-messages');
+            const container = document.createElement('div');
+            container.className = 'w-full space-y-4 border border-outline-variant p-6 bg-surface-container-lowest/50 backdrop-blur-md glass-panel';
+
+            let tabsHtml = `<div class="flex gap-2 border-b border-outline-variant pb-2">`;
+            selected.forEach((dir, i) => {
+                const color = DIR_CONFIG[dir].color;
+                tabsHtml += `<button onclick="switchDirView('${dir}')" class="px-6 py-2 font-display-lg text-[11px] border border-outline-variant transition-all hover:brightness-125 uppercase tracking-widest" style="border-bottom: 2px solid ${color}; color: ${color};" id="tab-${dir}">${dir}</button>`;
+            });
+            tabsHtml += `</div><div id="dir-content-view" class="p-6 bg-surface-container/30 min-h-[250px] space-y-4"></div>`;
+
+            container.innerHTML = tabsHtml;
+            area.appendChild(container);
+            area.scrollTop = area.scrollHeight;
+
+            switchDirView(selected[0]);
+        }
+
+        window.switchDirView = function (dir) {
+            const scenes = multiDirectorResults[dir] || [];
+            const config = DIR_CONFIG[dir];
+            const view = $('dir-content-view');
+
+            document.querySelectorAll('[id^="tab-"]').forEach(t => {
+                t.classList.remove('bg-surface-variant/40');
+                t.style.opacity = '0.6';
+            });
+            const target = $(`tab-${dir}`);
+            if (target) {
+                target.classList.add('bg-surface-variant/40');
+                target.style.opacity = '1';
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+            scenes.slice(0, 6).forEach((s, i) => {
+                const keywords = s.prompt.split(' ').slice(0, 5).join(' ');
+                html += `
+                    <div class="p-4 border-l-4 border-surface-variant bg-surface-container-lowest/40 hover:border-${dir} transition-all hover-scale group" style="border-left-color: ${config.color}">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="font-label-caps text-[9px] opacity-40 uppercase tracking-tighter">Segment 0${i + 1} // Sync_Ref</span>
+                            <span class="material-symbols-outlined text-[16px]" style="color: ${config.color}">${config.icon}</span>
+                        </div>
+                        <h4 class="font-display-lg text-xs mb-2 text-on-surface uppercase group-hover:text-surface-tint transition-colors">${s.title}</h4>
+                        <p class="text-[13px] leading-relaxed text-on-surface-variant mb-3 italic">"${s.prompt}"</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10" style="color: ${config.color}">#${dir.toUpperCase()}</span>
+                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10 opacity-60">DYNAMIC_LIT</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+
+        async function sendMessage() {
+            if (isBusy) return;
+            const input = $('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = ''; input.style.height = 'auto';
+            isBusy = true;
+            addUser(text);
+
+            try {
+                const system = SCREENWRITER[projectType || 'film'];
+                const res = await fetch(API_CHAT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, messages: history, max_tokens: 800 }) });
+                const data = await res.json();
+                const reply = data.text || '';
+
+                if (reply.includes('DREAM_CAPTURED')) {
+                    brief = reply.replace('DREAM_CAPTURED', '').trim() || history.map(m => m.content).join('\n');
+                    const captureMsg = lang === 'ar' ? "تمت مزامنة المهندس بنجاح. المفهوم الأساسي مقفل. اختر منافسيك وابدأ التوليد." : (lang === 'es' ? "Arquitecto sincronizado. Concepto bloqueado. Elige tus competidores y comienza." : "Architect synced successfully. Core concept locked. Choose your contenders in the sidebar and start generation.");
+                    addBot(captureMsg);
+                    log('Dream Captured & Locked', 'ok');
+                } else {
+                    addBot(reply);
+                }
+            } catch (e) {
+                log('Error: ' + e.message, 'err');
+            }
+            isBusy = false;
+        }
+
+        // Jury Room Toggle Logic
+        $('btn-jury-toggle').onclick = () => {
+            const overlay = $('jury-room-overlay');
+            const grid = $('jury-comparison-grid');
+            overlay.classList.toggle('hidden');
+
+            if (!overlay.classList.contains('hidden')) {
+                grid.innerHTML = '';
+                const dirs = Object.keys(multiDirectorResults);
+                dirs.forEach(dirKey => {
+                    const scenes = multiDirectorResults[dirKey];
+                    const config = DIR_CONFIG[dirKey];
+                    const col = document.createElement('div');
+                    col.className = 'min-w-[400px] flex-1 bg-surface-container/40 p-6 border-t-4 glass-panel';
+                    col.style.borderColor = config.color;
+                    
+                    let sceneListHtml = `<div class="mb-6 flex items-center justify-between">
+                        <h3 class="font-display-lg text-headline-lg" style="color:${config.color}">${dirKey.toUpperCase()}</h3>
+                        <span class="material-symbols-outlined text-4xl opacity-50" style="color:${config.color}">${config.icon}</span>
+                    </div><div class="space-y-4">`;
+                    
+                    scenes.slice(0, 4).forEach(s => {
+                        sceneListHtml += `
+                            <div class="p-4 bg-black/40 border border-outline-variant/30 rounded">
+                                <p class="font-label-caps text-[10px] text-surface-tint mb-2">SCENE ${s.sceneNumber}</p>
+                                <p class="font-technical-md mb-2 text-on-surface">${s.title}</p>
+                                <p class="text-xs text-on-surface-variant leading-relaxed opacity-80">${s.prompt}</p>
+                            </div>
+                        `;
+                    });
+                    sceneListHtml += `</div><button class="w-full mt-6 py-4 bg-surface-variant hover:bg-surface-tint hover:text-black transition-all uppercase font-display-lg text-xs" onclick="window.</script><script>
+    (function() {
+        const micBtn = document.getElementById('btn-mic');
+        const voiceOverlay = document.getElementById('voice-overlay');
+        const closeVoiceBtn = document.getElementById('btn-close-voice');
+        const voiceStatusText = document.getElementById('voice-status-text');
+        const geminiVoiceStatus = document.getElementById('gemini-voice-status');
+
+        const voiceTranslations = {
+            en: { listening: 'Listening...', speaking: 'Speaking...', cancel: 'Cancel', mic_title: 'Voice Chat' },
+            es: { listening: 'Escuchando...', speaking: 'Hablando...', cancel: 'Cancelar', mic_title: 'Chat de Voz' },
+            ar: { listening: 'جاري الاستماع...', speaking: 'جاري التحدث...', cancel: 'إلغاء', mic_title: 'دردشة صوتية' }
+        };
+
+        function updateVoiceUI() {
+            const currentLang = document.documentElement.lang || 'en';
+            const t = voiceTranslations[currentLang] || voiceTranslations.en;
+            voiceStatusText.textContent = t.listening;
+            geminiVoiceStatus.textContent = t.listening;
+            closeVoiceBtn.textContent = t.cancel;
+            micBtn.title = t.mic_title;
+        }
+
+        micBtn.onclick = () => {
+            micBtn.classList.toggle('mic-active');
+            const isActive = micBtn.classList.contains('mic-active');
+            voiceOverlay.classList.toggle('hidden', !isActive);
+            geminiVoiceStatus.classList.toggle('hidden', !isActive);
+            if (isActive) updateVoiceUI();
+        };
+
+        closeVoiceBtn.onclick = () => {
+            micBtn.classList.remove('mic-active');
+            voiceOverlay.classList.add('hidden');
+            geminiVoiceStatus.classList.add('hidden');
+        };
+
+        // Monitor lang changes from existing app logic
+        const observer = new MutationObserver(() => updateVoiceUI());
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    })();
+</script
+</head>
+<body class="flex flex-col bg-[#060606]">
+charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | Multi-Director Competition Suite v19.0</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
     }
-    else{ el.classList.add('opacity-50'); if(bar){bar.style.width='0';} if(lbl){lbl.textContent='IDLE';lbl.style.color='';} }
-  });
-}
-
-function setCockpit(html){ $('cockpit-inner').innerHTML = html; }
-
-function getSelectedDirectors(){
-    const checked = document.querySelector('.dir-radio:checked');
-    return checked ? [checked.value] : [];
-}
-
-function updateFooterSuite(){
-    const selected = getSelectedDirectors();
-    const container = $('footer-active-dirs');
-    const label = $('footer-suite-names');
-    if(container) {
-        container.innerHTML = selected.map(id => `<div class="w-4 h-4 rounded-full border border-black" style="background:${DIR_CONFIG[id].color}"></div>`).join('');
+    .mic-active { animation: pulse-red 1.5s infinite !important; color: #ff4444 !important; border-color: #ff4444 !important; }
+    .mic-active #voice-listening-tooltip { display: flex !important; }
+    .mic-active + #btn-send { opacity: 0.5; pointer-events: none; }
+    .waveform-bar {
+        width: 4px;
+        height: 20px;
+        background: #a8d700;
+        margin: 0 2px;
+        animation: wave 1s ease-in-out infinite;
     }
-    if(label) label.textContent = `${selected.length} Director${selected.length > 1 ? 's' : ''} Synced`;
-}
+    @keyframes wave {
+        0%, 100% { height: 10px; }
+        50% { height: 40px; }
+    }
+    .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+    .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+    .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+    .waveform-bar:nth-child(5) { animation-delay: 0.4s; }</style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#a8d700",
+                        "surface-container-low": "#1c1b1b",
+                        "surface-variant": "#353534",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#c48800",
+                        "surface-container-high": "#2a2a2a",
+                        "error-container": "#93000a",
+                        "primary-container": "#c0f500",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-surface-variant": "#c4caac",
+                        "primary": "#ffffff",
+                        "surface-container": "#201f1f",
+                        "surface-container-highest": "#353534",
+                        "inverse-surface": "#e5e2e1",
+                        "on-background": "#e5e2e1",
+                        "outline": "#8e9479",
+                        "primary-fixed": "#c0f500",
+                        "on-tertiary": "#313030",
+                        "tertiary-container": "#e5e2e1",
+                        "surface": "#131313",
+                        "outline-variant": "#434933",
+                        "secondary-fixed-dim": "#ffba3f",
+                        "primary-fixed-dim": "#a8d700",
+                        "on-secondary": "#432c00",
+                        "secondary": "#ffba3f",
+                        "background": "#131313"
+                    },
+                    fontFamily: {
+                        "display-lg": ["Orbitron"],
+                        "label-caps": ["IBM Plex Mono"],
+                        "technical-md": ["IBM Plex Mono"],
+                        "technical-sm": ["IBM Plex Mono"],
+                        "headline-lg": ["Orbitron"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-b border-outline-variant glass-panel">
+<div class="flex items-center gap-8">
+<span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span>
+<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v20.1 PRO</span>
+<nav class="hidden md:flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery">
+<span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span>
+<span class="font-technical-md text-technical-md uppercase" id="nav-txt-discovery">Discovery</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-screenplay">
+<span class="font-technical-md text-technical-md uppercase" id="nav-txt-screenplay">Screenplay</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-production">
+<span class="font-technical-md text-technical-md uppercase" id="nav-txt-production">Production</span>
+</div>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-outline-variant">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="hdr-credits-label">Credits:</span>
+<span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits">0</span> ●</span>
+</div>
+<div class="flex items-center gap-2 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-surface-tint cursor-pointer font-bold" id="lang-en">EN</span>
+<span class="opacity-30">|</span>
+<span class="hover:text-surface-tint cursor-pointer" id="lang-es">ES</span>
+<span class="opacity-30">|</span>
+<span class="hover:text-surface-tint cursor-pointer" id="lang-ar">AR</span>
+</div>
+<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group hover-scale" id="btn-new-session">
+<span class="material-symbols-outlined text-sm group-hover:text-black">refresh</span>
+<span class="font-technical-md text-technical-md uppercase" id="btn-txt-new">New Session</span>
+</button>
+<span class="material-symbols-outlined text-surface-tint cursor-pointer hover:scale-110 transition-transform" id="btn-wallet">account_balance_wallet</span>
+</div>
+</header>
+<main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden">
+<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-r border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-crew">
+<div class="p-6 border-b border-outline-variant flex-1 overflow-y-auto custom-scrollbar">
+<div class="flex items-center justify-between mb-4">
+<h2 class="font-display-lg text-on-surface uppercase" id="lbl-crew-panel" style="font-size:14px">Crew Panel</h2>
+<span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">V19 Multi-Sync</span>
+</div>
+<div class="space-y-6">
+<div class="bg-surface-variant/40 border-l-2 border-surface-tint p-4 flex items-center gap-3">
+<div class="relative">
+<img alt="Gemini" class="w-10 h-10 border border-surface-tint object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
+<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]" id="gemini-status"></div>
+</div>
+<div>
+<p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1" id="lbl-gemini-role">Lead Architect</p><p class="font-technical-sm text-[9px] text-secondary hidden uppercase mt-0.5 tracking-tighter" id="gemini-voice-cmd-mode">[ VOICE COMMAND MODE ]</p><p class="font-technical-sm text-[10px] text-surface-tint/60 hidden uppercase mt-1 italic tracking-widest" id="gemini-voice-status">Listening...</p>
+</div>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1" id="lbl-competition-wings">Competition Wings</p><div class="mb-4 p-3 bg-surface-container-high/40 border border-surface-tint/30 rounded-sm glass-panel">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">record_voice_over</span> Command Library
+        </span>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
+<span>"START SESSION"</span>
+<span class="text-surface-tint">EXEC</span>
+</div>
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
+<span>"SYNC DRAMA"</span>
+<span class="text-surface-tint">MOD</span>
+</div>
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
+<span>"GENERATE SUITE"</span>
+<span class="text-secondary">SYNC</span>
+</div>
+<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant">
+<span>"OPEN ASSEMBLY"</span>
+<span class="text-surface-tint">NAV</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-2" id="director-selection">
+<div class="flex items-center">
+<input checked="" class="hidden dir-radio" id="dir-drama" name="director-select" type="radio" value="drama"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-drama" style="color: #a8d700">
+<span class="w-2 h-2 rounded-full bg-[#a8d700]"></span>
+<span class="font-technical-sm uppercase" id="dir-lbl-drama">Drama</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-action" name="director-select" type="radio" value="action"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-action" style="color: #ff4444">
+<span class="w-2 h-2 rounded-full bg-[#ff4444]"></span>
+<span class="font-technical-sm uppercase" id="dir-lbl-action">Action</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-comedy" name="director-select" type="radio" value="comedy"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-comedy" style="color: #ffba3f">
+<span class="w-2 h-2 rounded-full bg-[#ffba3f]"></span>
+<span class="font-technical-sm uppercase" id="dir-lbl-comedy">Comedy</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-doc" name="director-select" type="radio" value="doc"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-doc" style="color: #44aaff">
+<span class="w-2 h-2 rounded-full bg-[#44aaff]"></span>
+<span class="font-technical-sm uppercase" id="dir-lbl-doc">Documentary</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-music" name="director-select" type="radio" value="music"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-music" style="color: #ff44aa">
+<span class="w-2 h-2 rounded-full bg-[#ff44aa]"></span>
+<span class="font-technical-sm uppercase" id="dir-lbl-music">Music</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-ads" name="director-select" type="radio" value="ads"/>
+<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-ads" style="color: #44ffaa">
+<span class="w-2 h-2 rounded-full bg-[#44ffaa]"></span>
+<span class="font-technical-sm uppercase" id="dir-lbl-ads">Ads</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low/50 border-t border-outline-variant">
+<div class="mb-4">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1" id="lbl-sync-cost">Sync Cost</p>
+<div class="flex justify-between items-end">
+<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">0 cr/dir</span>
+</div>
+</div>
+<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all hover-scale" id="btn-recharge">+ RECHARGE</button>
+</div>
+</aside>
+<section class="ml-[280px] mr-[340px]" id="main-content" style="flex: 1; display: flex; flex-direction: column; background: #131313; position: relative;">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between glass-panel z-10 relative">
+<div>
+<h1 class="font-display-lg text-headline-lg text-on-surface" id="phase-title">Phase 1: Discovery</h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Mission: Generate Script Concept</p>
+</div>
+<div class="flex gap-4">
+<button class="hidden flex items-center gap-2 border border-[#ffba3f] text-[#ffba3f] px-6 py-2 font-technical-md uppercase hover:bg-[#ffba3f] hover:text-black transition-all hover-scale" id="btn-jury-toggle">
+<span class="material-symbols-outlined">gavel</span> JURY ROOM
+                    </button>
+<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-6 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-all glow-acid hover-scale" id="btn-action">
+<span class="material-symbols-outlined">bolt</span> SYNC ACTION
+                    </button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar relative" id="chat-messages"></div>
+<!-- JURY ROOM OVERLAY -->
+<div class="absolute inset-0 bg-black/90 z-20 hidden backdrop-blur-xl flex flex-col" id="jury-room-overlay">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-display-lg text-headline-lg text-secondary">JURY ROOM: SIDE-BY-SIDE ANALYSIS</h2>
+<button class="text-on-surface-variant hover:text-white" id="close-jury"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="flex-1 overflow-x-auto p-6 flex gap-6 custom-scrollbar" id="jury-comparison-grid">
+<!-- Comparison columns go here -->
+</div>
+</div>
+<div class="p-6 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant glass-panel">
+<div class="relative group">
+<textarea class="w-full bg-surface-container/50 border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pl-4 pr-32 resize-none h-20 transition-all" id="chat-input" placeholder="Type your creative directive here..."></textarea>
+<div class="absolute right-4 bottom-4 flex items-center gap-4 group">
+<div class="absolute -top-12 right-0 bg-black/80 border border-surface-tint/50 px-3 py-1.5 rounded-full backdrop-blur-md hidden group-[.mic-active]:flex items-center gap-2" id="voice-listening-tooltip">
+<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+<span class="text-[10px] font-technical-sm text-on-surface uppercase tracking-widest" id="txt-listening-cmd">Listening for command...</span>
+</div><button class="flex items-center justify-center border border-outline-variant w-10 h-10 hover:bg-surface-variant transition-all hover-scale group" id="btn-mic" onclick="this.classList.toggle('mic-active'); document.getElementById('gemini-voice-cmd-mode').classList.toggle('hidden');" title="Voice Chat"><span class="material-symbols-outlined text-on-surface-variant group-hover:text-surface-tint">mic</span></button><button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid hover-scale" id="btn-send">SEND</button>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 bg-black/60 backdrop-blur-md z-30 hidden flex flex-col items-center justify-center" id="voice-overlay">
+<div class="glass-panel p-10 flex flex-col items-center gap-6 border-surface-tint">
+<h2 class="font-display-lg text-2xl text-surface-tint tracking-widest uppercase" id="voice-status-text">Listening...</h2>
+<div class="flex items-end h-12">
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+</div>
+<button class="mt-4 border border-outline-variant px-6 py-2 font-technical-sm hover:bg-surface-variant uppercase" id="btn-close-voice">Cancel</button>
+</div>
+</div></section>
+<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-l border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-pipeline">
+<div class="p-4">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase" id="lbl-competitor-status">Competitor Status</p>
+<div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center" id="cockpit-screen">
+<div class="scanline"></div>
+<div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
+<div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
+<div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
+<div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
+<div class="text-center relative z-10" id="cockpit-inner">
+<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block" id="txt-awaiting">AWAITING SYNC</span>
+<span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
+</div>
+<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]"></div>
+</div>
+</div>
+<div class="p-4 flex-1 overflow-y-auto">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase" id="lbl-pipeline-stages">Pipeline Stages</p>
+<div class="space-y-4" id="pipeline-stages">
+<div class="stage-item space-y-2" data-stage="1">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s1">01/Script_Sync</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
+</div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
+</div>
+<div class="stage-item space-y-2 opacity-50" data-stage="2">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s2">02/Assign_Directors</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
+</div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
+</div>
+<div class="stage-item space-y-2 opacity-50" data-stage="3">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s3">03/Parallel_Generation</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
+</div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
+</div>
+<div class="stage-item space-y-2 opacity-50" data-stage="4">
+<div class="flex justify-between items-center">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s4">04/Competition_Review</span>
+<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
+</div>
+<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
+</div>
+</div>
+</div>
+<div class="bg-black/80 border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col relative" id="log-terminal" style="height:160px">
+<div class="scanline"></div>
+<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1 relative z-10">
+<span class="text-on-surface-variant uppercase" id="lbl-sync-log">Live Sync Log</span>
+<span class="text-surface-tint uppercase">v19.0</span>
+</div>
+<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1 relative z-10 typing-cursor" id="log-lines"></div>
+</div>
+</aside>
+</main>
+<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-t border-outline-variant glass-panel">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-credits-label">Credits:</span>
+<span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits">0</span> ●</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-active-suite">Active Suite:</span>
+<div class="flex -space-x-1" id="footer-active-dirs"></div>
+<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-suite-names">1 Director Selected</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi hover-scale" id="btn-assembly">
+<span class="material-symbols-outlined">compare_arrows</span> OPEN ASSEMBLY →
+            </button>
+<div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm bg-surface-container/50">
+<button class="px-4 bg-surface-tint text-black font-bold uppercase transition-all hover:brightness-110" id="btn-auto">Auto Select</button>
+<button class="px-4 text-on-surface-variant hover:text-surface-tint uppercase transition-colors" id="btn-manual">Manual</button>
+</div>
+<button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid hover-scale" id="btn-generate">
+<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest" id="btn-txt-generate">Generate Suite</span>
+<span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">rocket_launch</span>
+</button>
+</div>
+</footer>
+<script>
+        const API_CHAT = '/api/chat';
+        const API_DIRECTOR = '/api/director';
+        const BASE_COST = 0;
 
-// ── CHAT ──
-function addBot(html){
-  const area = $('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'flex flex-col gap-2 max-w-[80%]';
-  div.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span class="font-label-caps text-[10px] text-surface-tint uppercase">Mercadream Engine</span>
-    </div>
-    <div class="bg-surface-container p-6 border-l-4 border-surface-tint">
-      <div class="text-[15px] leading-relaxed color-[#e5e2e1]">${html}</div>
-    </div>`;
-  area.appendChild(div);
-  area.scrollTop = area.scrollHeight;
-  history.push({role:'assistant', content: html});
-}
+        const DIR_CONFIG = {
+            drama: { color: '#a8d700', label: 'DRAMA', icon: 'theater_comedy' },
+            action: { color: '#ff4444', label: 'ACTION', icon: 'explosion' },
+            comedy: { color: '#ffba3f', label: 'COMEDY', icon: 'sentiment_very_satisfied' },
+            doc: { color: '#44aaff', label: 'DOC', icon: 'visibility' },
+            music: { color: '#ff44aa', label: 'MUSIC', icon: 'music_note' },
+            ads: { color: '#44ffaa', label: 'ADS', icon: 'campaign' }
+        };
 
-function addUser(text){
-  const area = $('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'flex flex-col gap-2 max-w-[80%] ml-auto items-end';
-  div.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span class="font-label-caps text-[10px] text-secondary uppercase">You</span>
-    </div>
-    <div class="p-6 bg-surface-tint/5 border border-surface-tint/20">
-      <p class="text-[15px] leading-relaxed color-[#e5e2e1]">${text}</p>
-    </div>`;
-  area.appendChild(div);
-  area.scrollTop = area.scrollHeight;
-  history.push({role:'user', content: text});
-}
+        const TX = {
+            en: {
+                ph1: 'Phase 1: Discovery', ph2: 'Phase 2: Director Duel', ph3: 'Phase 3: Multi-Sync Production',
+                sub1: 'Generate Script Concept', sub2: 'Select Contenders', sub3: 'Parallel Generation Processing',
+                placeholder: 'Type your creative directive here...',
+                send: 'SEND', action: 'SYNC ACTION', new_session: 'NEW SESSION', generate: 'GENERATE SUITE',
+                assembly: 'OPEN ASSEMBLY →', auto: 'AUTO SELECT', manual: 'MANUAL',
+                welcome: 'Welcome to Suite v19. Choose your project type:',
+                types: [{ id: 'film', icon: '🎬', label: 'Film / Story' }, { id: 'ad', icon: '📢', label: 'Commercial' }, { id: 'music', icon: '🎵', label: 'Music Video' }, { id: 'doc', icon: '📹', label: 'Documentary' }],
+                firstQ: { film: 'What is your story about?', ad: 'What is the product or service?', music: 'What is the song about?', doc: 'What subject are you documenting?' },
+                done: 'All director iterations complete. Compare and export in Assembly room.',
+                err: 'Sync Error. Check connection.',
+                confirm_yes: 'START SUITE', confirm_no: 'CANCEL',
+                credits: 'Credits', active_suite: 'Active Suite', sync_log: 'Live Sync Log', status: 'Competitor Status', awaiting: 'Awaiting Sync', pipeline: 'Pipeline Stages',
+                nav_disc: 'Discovery', nav_scr: 'Screenplay', nav_prod: 'Production',
+                panel_crew: 'Crew Panel', wings: 'Competition Wings', sync_cost: 'Sync Cost', role: 'Lead Architect',
+                transp_msg: (count, cost) => `Rarity Captured: ${count} scenes x 10s. Scene Cost: 15 cr. Total: ${cost} cr. Pay only what you generate!`
+            },
+            es: {
+                ph1: 'Fase 1: Descubrimiento', ph2: 'Fase 2: Duelo de Directores', ph3: 'Fase 3: Producción Multi-Sinc',
+                sub1: 'Generar Concepto de Guion', sub2: 'Seleccionar Contendientes', sub3: 'Procesamiento de Generación Paralela',
+                placeholder: 'Escribe tu directiva creativa aquí...',
+                send: 'ENVIAR', action: 'ACCIÓN DE SINC', new_session: 'NUEVA SESIÓN', generate: 'GENERAR SUITE',
+                assembly: 'ABRIR ENSAMBLAJE →', auto: 'AUTO SELECCIÓN', manual: 'MANUAL',
+                welcome: 'Bienvenido a Suite v19. Elige tu tipo de proyecto:',
+                types: [{ id: 'film', icon: '🎬', label: 'Película / Historia' }, { id: 'ad', icon: '📢', label: 'Comercial' }, { id: 'music', icon: '🎵', label: 'Video Musical' }, { id: 'doc', icon: '📹', label: 'Documental' }],
+                firstQ: { film: '¿De qué trata tu historia?', ad: '¿Cuál es el producto o servicio?', music: '¿De qué trata la canción?', doc: '¿Qué tema estás documentando?' },
+                done: 'Todas las iteraciones completadas. Compara y exporta en la sala de ensamblaje.',
+                err: 'Error de sincronización. Revisa la conexión.',
+                confirm_yes: 'INICIAR SUITE', confirm_no: 'CANCELAR',
+                credits: 'Créditos', active_suite: 'Suite Activa', sync_log: 'Registro de Sinc', status: 'Estado de Competidor', awaiting: 'Esperando Sinc', pipeline: 'Etapas de Pipeline',
+                nav_disc: 'Descubrimiento', nav_scr: 'Guion', nav_prod: 'Producción',
+                panel_crew: 'Panel de Tripulación', wings: 'Alas de Competencia', sync_cost: 'Costo de Sinc', role: 'Arquitecto Principal',
+                transp_msg: (count, cost) => `Rareza Capturada: ${count} escenas x 10s. Costo de escena: 15 cr. Total: ${cost} cr. ¡Solo pagas lo que generas!`
+            },
+            ar: {
+                ph1: 'المرحلة الأولى: الاستكشاف', ph2: 'المرحلة الثانية: مبارزة المخرجين', ph3: 'المرحلة الثالثة: إنتاج متعدد المزامنة',
+                sub1: 'توليد مفهوم السيناريو', sub2: 'اختيار المتنافسين', sub3: 'معالجة التوليد الموازي',
+                placeholder: 'اكتب توجيهك الإبداعي هنا...',
+                send: 'إرسال', action: 'إجراء المزامنة', new_session: 'جلسة جديدة', generate: 'توليد المجموعة',
+                assembly: 'OPEN ASSEMBLY →', auto: 'اختيار تلقائي', manual: 'يدوي',
+                welcome: 'مرحباً بك في جناح v19. اختر نوع مشروعك:',
+                types: [{ id: 'film', icon: '🎬', label: 'فيلم / قصة' }, { id: 'ad', icon: '📢', label: 'إعلان' }, { id: 'music', icon: '🎵', label: 'فيديو موسيقي' }, { id: 'doc', icon: 'وثائقي' }],
+                firstQ: { film: 'عن ماذا تدور قصتك؟', ad: 'ما هو المنتج أو الخدمة؟', music: 'عن ماذا تدور الأغنية؟', doc: 'ما هو الموضوع الذي توثقه؟' },
+                done: 'اكتملت جميع تكرارات المخرجين. قارن وصدر في غرفة التحكيم.',
+                err: 'خطأ في المزامنة. تحقق من الاتصال.',
+                confirm_yes: 'ابدأ المجموعة', confirm_no: 'إلغاء',
+                credits: 'الرصيد', active_suite: 'المجموعة النشطة', sync_log: 'سجل المزامنة المباشر', status: 'حالة المنافس', awaiting: 'في انتظار المزامنة', pipeline: 'مراحل خط الإنتاج',
+                nav_disc: 'استكشاف', nav_scr: 'السيناريو', nav_prod: 'الإنتاج',
+                panel_crew: 'لوحة الطاقم', wings: 'أجنحة المنافسة', sync_cost: 'تكلفة المزامنة', role: 'المهندس الرئيسي',
+                transp_msg: (count, cost) => `تم التقاط الرؤية: ${count} مشاهد × 10 ثوانٍ. تكلفة المشهد: 15 رصيداً. الإجمالي: ${cost} رصيداً. ادفع فقط مقابل ما تولده!`
+            }
+        };
 
-function showTypeSelector(){
-  const types = TX[lang].types;
-  const grid = types.map(t =>
-    `<button onclick="selectType('${t.id}')" class="p-3 bg-surface-container-high border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all flex items-center gap-3 text-left w-full font-technical-sm">
-      <span class="text-lg">${t.icon}</span><span>${t.label}</span>
-    </button>`
-  ).join('');
-  addBot(`${TX[lang].welcome}<div class="grid grid-cols-2 gap-2 mt-4">${grid}</div>`);
-}
+        const SCREENWRITER = {
+            film: `You are the Lead Architect in MercaDream. Only one question per message, max 2 sentences. Ask about: Energy/Mood, Character, Transformation, World. After 4-6 exchanges output exactly: DREAM_CAPTURED`,
+            ad: `You are a Commercial Lead Architect. Ask one question at a time: 1) Product, 2) Target Audience, 3) Core Message. After 3 answers output exactly: DREAM_CAPTURED`,
+            music: `You are a Music Video Lead Architect. Ask one question at a time: 1) Mood/Genre of song, 2) Artist visual style, 3) Key visual concept. After 3 answers output exactly: DREAM_CAPTURED`,
+            doc: `You are a Documentary Lead Architect. Ask one question at a time: 1) Subject, 2) Angle, 3) Central Truth. After 3 answers output exactly: DREAM_CAPTURED`
+        };
 
-function selectType(type){
-  projectType = type;
-  const q = TX[lang].firstQ[type];
-  addBot(q);
-  log('Project sync: ' + type, 'ok');
-}
+        // STATE
+        let lang = 'en';
+        let phase = 'discovery';
+        let history = [];
+        let brief = null;
+        let projectType = null;
+        let isBusy = false;
+        let multiDirectorResults = {};
 
-// ── PRODUCTION LOGIC ──
-async function startProduction(){
-  const selected = getSelectedDirectors();
-  if(selected.length === 0){
-      log('ERR: No directors selected', 'err');
-      alert('Select at least one director competitor.');
-      return;
-  }
+        const $ = id => document.getElementById(id);
 
-  const totalCost = selected.length * BASE_COST;
-  if(getCredits() < totalCost){
-      log('ERR: Insufficient credits', 'err');
-      alert('Insufficient credits for Multi-Gen sync.');
-      return;
-  }
+        function setLanguage(l) {
+            lang = l;
+            document.documentElement.lang = l;
+            document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
 
-  phase='production'; isBusy=true;
-  $('phase-title').textContent = TX[lang].ph3;
-  $('phase-subtitle').textContent = `Parallel Sync: ${selected.length} Directors`;
-  setCredits(getCredits() - totalCost);
-  
-  log(`MULTI-SYNC ACTIVATED: ${selected.join(', ').toUpperCase()}`, 'ok');
-  setCockpit(`<span class="font-technical-sm text-[10px] text-surface-tint animate-pulse">PARALLEL_SYNCING_${selected.length}_THREADS</span>`);
+            ['en', 'es', 'ar'].forEach(id => {
+                const el = $(`lang-${id}`);
+                if (el) {
+                    el.classList.toggle('text-surface-tint', id === l);
+                    el.classList.toggle('font-bold', id === l);
+                }
+            });
 
-  setStage(1,'active'); await new Promise(r=>setTimeout(r,800));
-  setStage(1,'done'); 
-  setStage(2,'active'); await new Promise(r=>setTimeout(r,600));
-  setStage(2,'done');
-  setStage(3,'active');
+            $('nav-txt-discovery').textContent = TX[l].nav_disc;
+            $('nav-txt-screenplay').textContent = TX[l].nav_scr;
+            $('nav-txt-production').textContent = TX[l].nav_prod;
+            $('hdr-credits-label').textContent = TX[l].credits + ':';
+            $('btn-txt-new').textContent = TX[l].new_session;
+            $('lbl-crew-panel').textContent = TX[l].panel_crew;
+            $('lbl-gemini-role').textContent = TX[l].role;
+            $('lbl-competition-wings').textContent = TX[l].wings;
+            $('lbl-sync-cost').textContent = TX[l].sync_cost;
+            $('phase-title').textContent = phase === 'discovery' ? TX[l].ph1 : (phase === 'production' ? TX[l].ph3 : TX[l].ph2);
+            $('phase-subtitle').textContent = phase === 'discovery' ? TX[l].sub1 : (phase === 'production' ? TX[l].sub3 : TX[l].sub2);
+            $('chat-input').placeholder = TX[l].placeholder;
+            $('btn-send').textContent = TX[l].send;
+            $('btn-action').innerHTML = `<span class="material-symbols-outlined">bolt</span> ${TX[l].action}`;
+            $('lbl-competitor-status').textContent = TX[l].status;
+            $('txt-awaiting').textContent = TX[l].awaiting;
+            $('lbl-pipeline-stages').textContent = TX[l].pipeline;
+            $('lbl-sync-log').textContent = TX[l].sync_log;
+            $('ftr-credits-label').textContent = TX[l].credits + ':';
+            $('ftr-active-suite').textContent = TX[l].active_suite + ':';
+            $('btn-auto').textContent = TX[l].auto;
+            $('btn-manual').textContent = TX[l].manual;
+            $('btn-txt-generate').textContent = TX[l].generate;
 
-  const conv = history.map(m=>m.content).join('\n\n');
-  multiDirectorResults = {};
+            const main = $('main-content');
+            const crew = $('sidebar-crew');
+            const pipe = $('sidebar-pipeline');
+            if (l === 'ar') {
+                crew.style.left = 'auto'; crew.style.right = '0'; crew.style.borderLeft = '1px solid #353534'; crew.style.borderRight = 'none';
+                pipe.style.right = 'auto'; pipe.style.left = '0'; pipe.style.borderRight = '1px solid #353534'; pipe.style.borderLeft = 'none';
+                main.style.marginLeft = '340px'; main.style.marginRight = '280px';
+                main.classList.add('text-right');
+            } else {
+                crew.style.right = 'auto'; crew.style.left = '0'; crew.style.borderRight = '1px solid #353534'; crew.style.borderLeft = 'none';
+                pipe.style.left = 'auto'; pipe.style.right = '0'; pipe.style.borderLeft = '1px solid #353534'; pipe.style.borderRight = 'none';
+                main.style.marginRight = '340px'; main.style.marginLeft = '280px';
+                main.classList.remove('text-right');
+            }
 
-  try {
-      for(const dirType of selected){
-          log(`Generating thread: ${dirType.toUpperCase()}`, 'info');
-          const res = await fetch(API_DIRECTOR,{
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body:JSON.stringify({type:dirType, conversation:conv, brief:brief||conv})
-          });
-          if(!res.ok) throw new Error(`${dirType} thread failed`);
-          const data = await res.json();
-          multiDirectorResults[dirType] = data.scenes || [];
-          log(`Thread ${dirType.toUpperCase()} complete: ${data.scenes?.length} scenes`, 'ok');
-      }
+            updateFooterSuite();
+            log(`Environment Synchronized: ${l.toUpperCase()}`, 'ok');
+        }
 
-      setStage(3,'done');
-      setStage(4,'done');
-      
-      localStorage.setItem('md_multi_director_output', JSON.stringify(multiDirectorResults));
-      // Legacy support for single dir
-      const primaryScenes = multiDirectorResults[selected[0]] || [];
-      localStorage.setItem('md_6scenes', JSON.stringify(primaryScenes));
+        function getCredits() { return parseInt(localStorage.getItem('md_credits') || '100'); }
+        function setCredits(v) {
+            localStorage.setItem('md_credits', v);
+            $('header-credits').textContent = v.toLocaleString();
+            $('footer-credits').textContent = v.toLocaleString();
+        }
 
-      // Save scenes for Assembly (no Pexels - WaveSpeed will generate)
-      const videoResults = primaryScenes.map((s, i) => ({
-        id: Date.now()+i,
-        title: 'Scene '+(i+1)+'/'+primaryScenes.length+': '+(s.title||''),
-        prompt: (s.prompt||s.title||'').substring(0, 400),
-        keywords: s.keywords || s.title || '',
-        director: selected[0],
-        url: null,
-        thumb: null,
-        duration: 10,
-        sceneNumber: i+1,
-        status: 'pending',
-        options: []
-      }));
-      localStorage.setItem('md_assembly_videos', JSON.stringify(videoResults));
-      localStorage.setItem('md_project_type', selected[0]);
-      log('Scenes saved: '+videoResults.length+' scenes ready for Assembly', 'ok');
+        function log(msg, type = 'info') {
+            const lines = $('log-lines');
+            if (!lines) return;
+            const colors = { ok: '#a8d700', err: '#ff4444', warn: '#ffba3f', info: 'rgba(168,215,0,0.6)' };
+            const p = document.createElement('p');
+            p.className = `leading-tight ${lang === 'ar' ? 'text-right' : ''} border-l border-surface-variant/30 pl-2`;
+            const time = new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour12: false });
+            p.innerHTML = `<span style="opacity:.4">[${time}]</span> <span style="color:${colors[type] || colors.info}">● ${msg}</span>`;
+            lines.insertBefore(p, lines.firstChild);
+        }
 
-      showDirectorTabs(selected);
-      
-      // Show transparency message
-      const sceneCount = primaryScenes.length;
-      const costPerScene = 15;
-      const totalCost = sceneCount * costPerScene;
-      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'ok');
-      log('YOUR VISION: '+sceneCount+' scenes × 10s = '+(sceneCount*10)+'s film', 'ok');
-      log('Cost per scene: '+costPerScene+' credits', 'ok');  
-      log('Total if all generated: '+totalCost+' credits', 'ok');
-      log('You only pay for scenes you generate!', 'ok');
-      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'ok');
-      
-      setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
-      addBot(TX[lang].done);
-      $('btn-assembly').classList.remove('hidden');
-      $('btn-assembly').style.display='flex';
+        function setStage(num, status) {
+            document.querySelectorAll('.stage-item').forEach((el, i) => {
+                const n = i + 1;
+                const bar = el.querySelector('.stage-bar');
+                const lbl = el.querySelector('.stage-status');
+                const labels = { en: { idle: 'IDLE', active: 'ACTIVE', done: 'COMPLETE' }, ar: { idle: 'خامل', active: 'نشط', done: 'مكتمل' }, es: { idle: 'INACTIVO', active: 'ACTIVO', done: 'COMPLETO' } };
 
-  } catch(e) {
-      log('CRITICAL SYNC ERR: '+e.message, 'err');
-      addBot('Sync interrupted: '+e.message);
-  }
-  isBusy=false;
-}
+                if (n < num) { el.classList.remove('opacity-50'); if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
+                else if (n === num) {
+                    el.classList.remove('opacity-50');
+                    if (status === 'active') { if (bar) { bar.style.width = '65%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].active; lbl.style.color = '#a8d700'; } }
+                    else if (status === 'done') { if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
+                }
+                else { el.classList.add('opacity-50'); if (bar) { bar.style.width = '0'; } if (lbl) { lbl.textContent = labels[lang].idle; lbl.style.color = ''; } }
+            });
+        }
 
-function showDirectorTabs(selected){
-    const area = $('chat-messages');
-    const container = document.createElement('div');
-    container.className = 'w-full space-y-4 border border-outline-variant p-4 bg-surface-container-lowest';
-    
-    let tabsHtml = `<div class="flex gap-2 border-b border-outline-variant pb-2">`;
-    selected.forEach((dir, i) => {
-        const color = DIR_CONFIG[dir].color;
-        tabsHtml += `<button onclick="switchDirView('${dir}')" class="px-4 py-2 font-display-lg text-[10px] border border-outline-variant transition-all hover:brightness-125" style="border-bottom: 2px solid ${color}; color: ${color};" id="tab-${dir}">${dir.toUpperCase()}</button>`;
-    });
-    tabsHtml += `</div><div id="dir-content-view" class="p-4 bg-surface-container min-h-[200px]"></div>`;
-    
-    container.innerHTML = tabsHtml;
-    area.appendChild(container);
-    area.scrollTop = area.scrollHeight;
+        function setCockpit(html) { $('cockpit-inner').innerHTML = html; }
 
-    // Default view
-    switchDirView(selected[0]);
-}
+        function getSelectedDirectors() {
+            const checked = document.querySelector('.dir-radio:checked');
+            return checked ? [checked.value] : [];
+        }
 
-window.switchDirView = function(dir){
-    const scenes = multiDirectorResults[dir] || [];
-    const color = DIR_CONFIG[dir].color;
-    const view = $('dir-content-view');
-    
-    // Highlight tab
-    document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.remove('bg-surface-variant'));
-    $(`tab-${dir}`).classList.add('bg-surface-variant');
+        function updateFooterSuite() {
+            const selected = getSelectedDirectors();
+            const container = $('footer-active-dirs');
+            const label = $('footer-suite-names');
+            if (container) {
+                container.innerHTML = selected.map(id => `<div class="w-4 h-4 rounded-full border border-black shadow-lg" style="background:${DIR_CONFIG[id].color}"></div>`).join('');
+            }
+            if (label) {
+                if (lang === 'ar') label.textContent = selected.length > 0 ? `مخرج واحد مختار` : `لا يوجد مخرج مختار`;
+                else if (lang === 'es') label.textContent = selected.length > 0 ? `1 Director Seleccionado` : `Ningún Director`;
+                else label.textContent = selected.length > 0 ? `1 Director Selected` : `No Director Selected`;
+            }
+        }
 
-    let html = `<div class="grid grid-cols-1 gap-4">`;
-    scenes.slice(0,6).forEach((s, i) => {
-        html += `
-            <div class="p-3 border-l-2" style="border-color: ${color}">
-                <p class="font-label-caps text-[9px] mb-1 opacity-50">SCENE 0${i+1}</p>
-                <p class="font-technical-md text-surface-tint mb-1">${s.title}</p>
-                <p class="text-xs text-on-surface-variant line-clamp-2">${s.prompt}</p>
-            </div>
-        `;
-    });
-    html += `</div>`;
-    view.innerHTML = html;
-}
+        function addBot(html) {
+            const area = $('chat-messages');
+            const div = document.createElement('div');
+            const ltr = lang !== 'ar';
+            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? '' : 'mr-auto'}`;
+            div.innerHTML = `
+                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
+                    <span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest">${lang === 'ar' ? 'محرك Mercadream' : 'Mercadream Engine'}</span>
+                </div>
+                <div class="bg-surface-container/30 backdrop-blur-sm p-6 border-${ltr ? 'l' : 'r'}-4 border-surface-tint glass-panel">
+                    <div class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${html}</div>
+                </div>`;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+            history.push({ role: 'assistant', content: html });
+        }
 
-async function sendMessage(){
-  if(isBusy) return;
-  const input = $('chat-input');
-  const text = input.value.trim();
-  if(!text) return;
+        function addUser(text) {
+            const area = $('chat-messages');
+            const div = document.createElement('div');
+            const ltr = lang !== 'ar';
+            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? 'ml-auto items-end' : 'mr-auto items-start'}`;
+            div.innerHTML = `
+                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
+                    <span class="font-label-caps text-[10px] text-secondary uppercase tracking-widest">${lang === 'ar' ? 'أنت' : 'You'}</span>
+                </div>
+                <div class="p-6 bg-surface-tint/5 border border-surface-tint/20 glass-panel">
+                    <p class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${text}</p>
+                </div>`;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+            history.push({ role: 'user', content: text });
+        }
 
-  input.value=''; input.style.height='auto';
-  isBusy=true;
-  addUser(text);
-  
-  try {
-      const system = SCREENWRITER[projectType||'film'];
-      const res = await fetch(API_CHAT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system,messages:history,max_tokens:800})});
-      const data = await res.json();
-      const reply = data.text || '';
-      
-      if(reply.includes('DREAM_CAPTURED')){
-          brief = reply.replace('DREAM_CAPTURED','').trim() || history.map(m=>m.content).join('\n');
-          addBot("Architect Sync Successful. Core concept captured. Choose your competitors in the sidebar and initiate Generate Suite.");
-          log('Dream Captured & Locked', 'ok');
-      } else {
-          addBot(reply);
-      }
-  } catch(e) {
-      log('ERR: '+e.message, 'err');
-  }
-  isBusy=false;
-}
+        function showTypeSelector() {
+            const types = TX[lang].types;
+            const grid = types.map(t =>
+                `<button onclick="selectType('${t.id}')" class="p-4 bg-surface-container-high/40 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all hover-scale flex items-center gap-4 ${lang === 'ar' ? 'text-right flex-row-reverse' : 'text-left'} w-full font-technical-sm group">
+                    <span class="text-2xl group-hover:scale-125 transition-transform">${t.icon}</span>
+                    <span class="font-bold tracking-wider">${t.label}</span>
+                </button>`
+            ).join('');
+            addBot(`${TX[lang].welcome}<div class="grid grid-cols-2 gap-3 mt-5">${grid}</div>`);
+        }
 
-function showConfirm(){
-    const selected = getSelectedDirectors();
-    if(selected.length === 0) return alert('Select directors first.');
-    startProduction();
-}
+        function selectType(type) {
+            projectType = type;
+            const q = TX[lang].firstQ[type];
+            addBot(q);
+            log('Project Sync: ' + type.toUpperCase(), 'ok');
+        }
 
-// ── INIT ──
-window.onload = function(){
-  setCredits(getCredits());
-  try{ showTypeSelector(); }catch(e){ console.warn('typeSelector:',e); }
-  updateFooterSuite();
+        async function startProduction() {
+            const selected = getSelectedDirectors();
+            if (selected.length === 0) {
+                log('Error: No Director Selected', 'err');
+                alert(lang === 'ar' ? 'اختر مخرجاً واحداً للمنافسة.' : 'Select one director for competition.');
+                return;
+            }
 
-  $('btn-send').onclick     = sendMessage;
-  $('btn-action').onclick   = showConfirm;
-  $('btn-generate').onclick = showConfirm;
-  $('btn-new-session').onclick = () => location.reload();
-  $('btn-assembly').onclick = () => window.location.href='assembly.html';
-  $('btn-wallet').onclick   = () => window.location.href='directors.html';
-  $('btn-recharge').onclick = () => window.location.href='directors.html';
-  
-  document.querySelectorAll('.dir-checkbox').forEach(cb => {
-      cb.onchange = updateFooterSuite;
-  });
+            const totalCost = selected.length * BASE_COST;
+            if (getCredits() < totalCost) {
+                log('Error: Insufficient Credits', 'err');
+                return;
+            }
 
-  $('chat-input').addEventListener('keydown', e=>{
-    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
-  });
-  
-  log('MERCADREAM SUITE v19.0 - Multi-Sync Active','ok');
-};
+            phase = 'production'; isBusy = true;
+            $('phase-title').textContent = TX[lang].ph3;
+            $('phase-subtitle').textContent = lang === 'ar' ? 'مزامنة موازية: مخرج واحد' : 'Parallel Sync: 1 Director';
+            setCredits(getCredits() - totalCost);
+
+            log(`Sync Activated: ${selected[0].toUpperCase()}`, 'ok');
+            setCockpit(`<span class="font-technical-sm text-[10px] text-surface-tint animate-pulse">${lang === 'ar' ? 'جاري_المزامنة' : 'SYNCING_ENGINE'}</span>`);
+
+            setStage(1, 'active'); await new Promise(r => setTimeout(r, 800));
+            setStage(1, 'done');
+            setStage(2, 'active'); await new Promise(r => setTimeout(r, 600));
+            setStage(2, 'done');
+            setStage(3, 'active');
+
+            const conv = history.map(m => m.content).join('\n\n');
+            multiDirectorResults = {};
+
+            try {
+                const dirType = selected[0];
+                log(`Thread Start: ${dirType.toUpperCase()}`, 'info');
+                const res = await fetch(API_DIRECTOR, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: dirType, conversation: conv, brief: brief || conv })
+                });
+                if (!res.ok) throw new Error(`${dirType} failed`);
+                const data = await res.json();
+
+                const cleanedScenes = (data.scenes || []).map((s, i) => ({
+                    title: s.title || (lang === 'ar' ? `مشهد ${i + 1}` : `Scene ${i + 1}`),
+                    prompt: s.prompt || '',
+                    director: dirType,
+                    sceneNumber: i + 1,
+                    status: 'pending'
+                }));
+
+                multiDirectorResults[dirType] = cleanedScenes;
+                log(`Success: ${dirType.toUpperCase()} - ${cleanedScenes.length} scenes captured`, 'ok');
+
+                setStage(3, 'done');
+                setStage(4, 'done');
+
+                localStorage.setItem('md_multi_director_output', JSON.stringify(multiDirectorResults));
+                localStorage.setItem('md_6scenes', JSON.stringify(cleanedScenes));
+                localStorage.setItem('md_assembly_videos', JSON.stringify(cleanedScenes));
+                localStorage.setItem('md_project_type', dirType);
+
+                showDirectorTabs(selected);
+
+                const sceneCount = cleanedScenes.length;
+                const sceneTotalCost = sceneCount * 15;
+
+                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
+                log(TX[lang].transp_msg(sceneCount, sceneTotalCost), 'ok');
+                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
+
+                setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
+                addBot(TX[lang].done);
+                $('btn-assembly').classList.remove('hidden');
+                $('btn-assembly').style.display = 'flex';
+                $('btn-jury-toggle').classList.remove('hidden');
+
+            } catch (e) {
+                log('Critical Sync Fail: ' + e.message, 'err');
+                addBot('Sync interrupted: ' + e.message);
+            }
+            isBusy = false;
+        }
+
+        function showDirectorTabs(selected) {
+            const area = $('chat-messages');
+            const container = document.createElement('div');
+            container.className = 'w-full space-y-4 border border-outline-variant p-6 bg-surface-container-lowest/50 backdrop-blur-md glass-panel';
+
+            let tabsHtml = `<div class="flex gap-2 border-b border-outline-variant pb-2">`;
+            selected.forEach((dir, i) => {
+                const color = DIR_CONFIG[dir].color;
+                tabsHtml += `<button onclick="switchDirView('${dir}')" class="px-6 py-2 font-display-lg text-[11px] border border-outline-variant transition-all hover:brightness-125 uppercase tracking-widest" style="border-bottom: 2px solid ${color}; color: ${color};" id="tab-${dir}">${dir}</button>`;
+            });
+            tabsHtml += `</div><div id="dir-content-view" class="p-6 bg-surface-container/30 min-h-[250px] space-y-4"></div>`;
+
+            container.innerHTML = tabsHtml;
+            area.appendChild(container);
+            area.scrollTop = area.scrollHeight;
+
+            switchDirView(selected[0]);
+        }
+
+        window.switchDirView = function (dir) {
+            const scenes = multiDirectorResults[dir] || [];
+            const config = DIR_CONFIG[dir];
+            const view = $('dir-content-view');
+
+            document.querySelectorAll('[id^="tab-"]').forEach(t => {
+                t.classList.remove('bg-surface-variant/40');
+                t.style.opacity = '0.6';
+            });
+            const target = $(`tab-${dir}`);
+            if (target) {
+                target.classList.add('bg-surface-variant/40');
+                target.style.opacity = '1';
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+            scenes.slice(0, 6).forEach((s, i) => {
+                const keywords = s.prompt.split(' ').slice(0, 5).join(' ');
+                html += `
+                    <div class="p-4 border-l-4 border-surface-variant bg-surface-container-lowest/40 hover:border-${dir} transition-all hover-scale group" style="border-left-color: ${config.color}">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="font-label-caps text-[9px] opacity-40 uppercase tracking-tighter">Segment 0${i + 1} // Sync_Ref</span>
+                            <span class="material-symbols-outlined text-[16px]" style="color: ${config.color}">${config.icon}</span>
+                        </div>
+                        <h4 class="font-display-lg text-xs mb-2 text-on-surface uppercase group-hover:text-surface-tint transition-colors">${s.title}</h4>
+                        <p class="text-[13px] leading-relaxed text-on-surface-variant mb-3 italic">"${s.prompt}"</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10" style="color: ${config.color}">#${dir.toUpperCase()}</span>
+                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10 opacity-60">DYNAMIC_LIT</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            view.innerHTML = html;
+        }
+
+        async function sendMessage() {
+            if (isBusy) return;
+            const input = $('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = ''; input.style.height = 'auto';
+            isBusy = true;
+            addUser(text);
+
+            try {
+                const system = SCREENWRITER[projectType || 'film'];
+                const res = await fetch(API_CHAT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, messages: history, max_tokens: 800 }) });
+                const data = await res.json();
+                const reply = data.text || '';
+
+                if (reply.includes('DREAM_CAPTURED')) {
+                    brief = reply.replace('DREAM_CAPTURED', '').trim() || history.map(m => m.content).join('\n');
+                    const captureMsg = lang === 'ar' ? "تمت مزامنة المهندس بنجاح. المفهوم الأساسي مقفل. اختر منافسيك وابدأ التوليد." : (lang === 'es' ? "Arquitecto sincronizado. Concepto bloqueado. Elige tus competidores y comienza." : "Architect synced successfully. Core concept locked. Choose your contenders in the sidebar and start generation.");
+                    addBot(captureMsg);
+                    log('Dream Captured & Locked', 'ok');
+                } else {
+                    addBot(reply);
+                }
+            } catch (e) {
+                log('Error: ' + e.message, 'err');
+            }
+            isBusy = false;
+        }
+
+        // Jury Room Toggle Logic
+        $('btn-jury-toggle').onclick = () => {
+            const overlay = $('jury-room-overlay');
+            const grid = $('jury-comparison-grid');
+            overlay.classList.toggle('hidden');
+
+            if (!overlay.classList.contains('hidden')) {
+                grid.innerHTML = '';
+                const dirs = Object.keys(multiDirectorResults);
+                dirs.forEach(dirKey => {
+                    const scenes = multiDirectorResults[dirKey];
+                    const config = DIR_CONFIG[dirKey];
+                    const col = document.createElement('div');
+                    col.className = 'min-w-[400px] flex-1 bg-surface-container/40 p-6 border-t-4 glass-panel';
+                    col.style.borderColor = config.color;
+                    
+                    let sceneListHtml = `<div class="mb-6 flex items-center justify-between">
+                        <h3 class="font-display-lg text-headline-lg" style="color:${config.color}">${dirKey.toUpperCase()}</h3>
+                        <span class="material-symbols-outlined text-4xl opacity-50" style="color:${config.color}">${config.icon}</span>
+                    </div><div class="space-y-4">`;
+                    
+                    scenes.slice(0, 4).forEach(s => {
+                        sceneListHtml += `
+                            <div class="p-4 bg-black/40 border border-outline-variant/30 rounded">
+                                <p class="font-label-caps text-[10px] text-surface-tint mb-2">SCENE ${s.sceneNumber}</p>
+                                <p class="font-technical-md mb-2 text-on-surface">${s.title}</p>
+                                <p class="text-xs text-on-surface-variant leading-relaxed opacity-80">${s.prompt}</p>
+                            </div>
+                        `;
+                    });
+                    sceneListHtml += `</div><button class="w-full mt-6 py-4 bg-surface-variant hover:bg-surface-tint hover:text-black transition-all uppercase font-display-lg text-xs" onclick="window.</script><script>
+    (function() {
+        const micBtn = document.getElementById('btn-mic');
+        const voiceOverlay = document.getElementById('voice-overlay');
+        const closeVoiceBtn = document.getElementById('btn-close-voice');
+        const voiceStatusText = document.getElementById('voice-status-text');
+        const geminiVoiceStatus = document.getElementById('gemini-voice-status');
+
+        const voiceTranslations = {
+            en: { listening: 'Listening...', speaking: 'Speaking...', cancel: 'Cancel', mic_title: 'Voice Chat' },
+            es: { listening: 'Escuchando...', speaking: 'Hablando...', cancel: 'Cancelar', mic_title: 'Chat de Voz' },
+            ar: { listening: 'جاري الاستماع...', speaking: 'جاري التحدث...', cancel: 'إلغاء', mic_title: 'دردشة صوتية' }
+        };
+
+        function updateVoiceUI() {
+            const currentLang = document.documentElement.lang || 'en';
+            const t = voiceTranslations[currentLang] || voiceTranslations.en;
+            voiceStatusText.textContent = t.listening;
+            geminiVoiceStatus.textContent = t.listening;
+            closeVoiceBtn.textContent = t.cancel;
+            micBtn.title = t.mic_title;
+        }
+
+        micBtn.onclick = () => {
+            micBtn.classList.toggle('mic-active');
+            const isActive = micBtn.classList.contains('mic-active');
+            voiceOverlay.classList.toggle('hidden', !isActive);
+            geminiVoiceStatus.classList.toggle('hidden', !isActive);
+            if (isActive) updateVoiceUI();
+        };
+
+        closeVoiceBtn.onclick = () => {
+            micBtn.classList.remove('mic-active');
+            voiceOverlay.classList.add('hidden');
+            geminiVoiceStatus.classList.add('hidden');
+        };
+
+        // Monitor lang changes from existing app logic
+        const observer = new MutationObserver(() => updateVoiceUI());
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    })();
 </script>
-<script>if(!localStorage.getItem('sb_session'))localStorage.setItem('sb_session','1');</script><script src="/js/navigation.js"></script></body></html>
-
-
-
+</body>
+</html>
