@@ -1,446 +1,637 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>MERCADREAM STUDIO - ASSEMBLY ROOM</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;family=Orbitron:wght@600;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <style>
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        .scanline-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 50%, rgba(168, 215, 0, 0.02) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .scanline-pulse {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(168, 215, 0, 0.08);
-            animation: scanline 4s linear infinite;
-            z-index: 11;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0e0e0e;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #444934;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #c3f432;
-        }
-        body {
-            background-color: #060606;
-            color: #e5e2e1;
-            overflow: hidden;
-            height: 100vh;
-        }
-    </style>
-    <script id="tailwind-config">
+
+<html class="dark" dir="ltr" lang="en"><head>
+<meta charset="utf-8"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
         tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "background": "#131313",
-                      "on-tertiary-fixed-variant": "#543a75",
-                      "on-secondary-container": "#3e2800",
-                      "inverse-primary": "#4f6700",
-                      "on-tertiary": "#3d235d",
-                      "inverse-on-surface": "#313030",
-                      "surface-container-low": "#1c1b1b",
-                      "secondary-container": "#c48800",
-                      "surface": "#131313",
-                      "tertiary-fixed-dim": "#d8b9fe",
-                      "on-surface": "#e5e2e1",
-                      "tertiary-fixed": "#eedcff",
-                      "secondary-fixed": "#ffdeae",
-                      "inverse-surface": "#e5e2e1",
-                      "text-dim": "#a1a1a1",
-                      "on-secondary-fixed-variant": "#604100",
-                      "on-primary-container": "#455a00",
-                      "primary-container": "#a8d700",
-                      "on-secondary-fixed": "#281900",
-                      "on-error": "#690005",
-                      "on-error-container": "#ffdad6",
-                      "error-red": "#ff4444",
-                      "deep-black": "#060606",
-                      "surface-bright": "#393939",
-                      "surface-container-lowest": "#0e0e0e",
-                      "primary-fixed-dim": "#a8d700",
-                      "on-primary": "#273500",
-                      "on-tertiary-fixed": "#270b47",
-                      "on-background": "#e5e2e1",
-                      "surface-container-highest": "#353534",
-                      "error": "#ffb4ab",
-                      "surface-tint": "#a8d700",
-                      "tertiary-container": "#d9baff",
-                      "on-secondary": "#432c00",
-                      "surface-raised": "#1e1e1e",
-                      "on-surface-variant": "#c4c9ae",
-                      "on-primary-fixed-variant": "#3b4d00",
-                      "secondary": "#ffba3f",
-                      "surface-container-high": "#2a2a2a",
-                      "error-container": "#93000a",
-                      "secondary-fixed-dim": "#ffba3f",
-                      "text-bright": "#e5e2e1",
-                      "tertiary": "#eedcff",
-                      "outline-variant": "#444934",
-                      "primary-fixed": "#c3f431",
-                      "on-primary-fixed": "#161f00",
-                      "surface-container": "#201f1f",
-                      "on-tertiary-container": "#614783",
-                      "surface-dim": "#131313",
-                      "outline": "#8e937b",
-                      "surface-variant": "#353534",
-                      "primary": "#c3f432"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "unit": "4px",
-                      "gutter": "12px",
-                      "sidebar-width": "260px",
-                      "timeline-height": "180px", /* تم تقليله قليلاً ليناسب الشاشات الصغيرة */
-                      "toolbar-width": "48px"
-              },
-              "fontFamily": {
-                      "label-tech-lg": ["IBM Plex Mono"],
-                      "body-lg": ["Inter"],
-                      "data-mono": ["IBM Plex Mono"],
-                      "body-md": ["Inter"],
-                      "label-tech-sm": ["IBM Plex Mono"],
-                      "headline-md": ["Orbitron"],
-                      "headline-lg": ["Orbitron"]
-              },
-              "fontSize": {
-                      "label-tech-lg": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
-                      "body-lg": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
-                      "data-mono": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
-                      "body-md": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
-                      "label-tech-sm": ["10px", {"lineHeight": "12px", "fontWeight": "400"}],
-                      "headline-md": ["18px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                      "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "0.1em", "fontWeight": "700"}]
-              }
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a8d700",
+                        "surface": "#131313",
+                        "surface-container": "#201f1f",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container-lowest": "#0e0e0e",
+                        "outline-variant": "rgba(255, 255, 255, 0.05)",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Space Grotesk", "sans-serif"],
+                        mono: ["IBM Plex Mono", "monospace"],
+                    },
+                },
             },
-          },
         }
     </script>
-</head>
-<body class="font-body-md text-on-surface select-none h-screen min-h-screen overflow-hidden flex flex-col m-0 p-0">
-
-<!-- TopNavBar -->
-<header class="bg-background/90 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center px-gutter h-toolbar-width w-full z-50 flex-none">
-    <div class="flex items-center gap-gutter">
-        <h1 class="font-headline-md text-headline-md text-primary tracking-widest">MERCADREAM</h1>
-        <nav class="hidden md:flex gap-4 items-center ml-6">
-            <a class="font-label-tech-lg text-label-tech-lg text-primary border-b border-primary hover:text-primary transition-colors duration-200" href="#">STUDIO</a>
-        </nav>
-    </div>
-    <div class="flex items-center gap-4">
-        <span class="font-label-tech-sm text-label-tech-sm text-on-surface-variant px-2 py-0.5 bg-surface-container-high">v21.0 ASSEMBLY</span>
-        <div class="flex items-center gap-3 text-on-surface-variant">
-            <button class="material-symbols-outlined text-[20px] hover:text-primary transition-colors duration-200" data-icon="language">language</button>
-            <button class="material-symbols-outlined text-[20px] hover:text-primary transition-colors duration-200" data-icon="account_balance_wallet">account_balance_wallet</button>
-            <div class="h-4 w-[1px] bg-outline-variant"></div>
-            <div class="flex items-center gap-1.5">
-                <span class="font-label-tech-sm text-label-tech-sm">SESSION_ACTIVE</span>
-                <button class="material-symbols-outlined text-primary text-[20px]" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</button>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- Main Workspace -->
-<div class="flex-1 flex overflow-hidden h-full min-h-0">
-    <!-- Left SideNavBar -->
-    <aside class="bg-surface-container-lowest/90 backdrop-blur-xl border-r border-outline-variant flex flex-col py-3 space-y-1 w-sidebar-width z-40 flex-none overflow-hidden h-full">
-        <div class="px-3 mb-4 flex-none">
-            <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-7 h-7 bg-primary/20 rounded flex items-center justify-center border border-primary/30">
-                    <span class="material-symbols-outlined text-primary text-[16px]" data-icon="token">token</span>
-                </div>
-                <div>
-                    <p class="font-label-tech-lg text-label-tech-lg text-primary leading-none">ASSEMBLY ROOM</p>
-                    <p class="font-label-tech-sm text-label-tech-sm text-on-surface-variant opacity-70">v21.0 MASTER</p>
-                </div>
-            </div>
-            <button class="w-full bg-primary text-deep-black font-label-tech-lg text-label-tech-lg py-1.5 rounded-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all">
-                <span class="material-symbols-outlined text-[16px]" data-icon="upload">upload</span>
-                UPLOAD ASSET
-            </button>
-        </div>
-        <!-- Sidebar Scrollable Content -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <div class="px-1.5 space-y-0.5">
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-primary bg-primary/10 border-r-2 border-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="video_library" style="font-variation-settings: 'FILL' 1;">video_library</span>
-                    Media
-                </button>
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="movie_filter">movie_filter</span>
-                    Clips
-                </button>
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="folder_open">folder_open</span>
-                    Assets
-                </button>
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="upload">upload</span>
-                    Upload
-                </button>
-            </div>
-            <div class="mt-6 px-3 pb-3">
-                <p class="font-label-tech-sm text-label-tech-sm text-on-surface-variant mb-2 uppercase tracking-wider">Generated Clips</p>
-                <div class="grid grid-cols-2 gap-1.5">
-                    <div class="aspect-square bg-surface-container-high border border-outline-variant relative group overflow-hidden cursor-pointer hover:border-primary transition-colors">
-                        <img alt="Clip 1" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJiGCQHR3Xpke4fTSDdvtbo4Um_7O7pLVF7y-x2VOswPcQO-Imn9SVvT5eFgl9qk1jic_N60JmeUlay-3ut2P1QMsXq0kjX8ZRQW1J06ZcksaXyqdMCGB0szQG5h7-7k_NypXr4gbROODUuuGXExdm2uZjW6EVIEEU6ISfn0Z6T6k-WA3HJNcAJFhy7U96re56NoGQK_Wx8nhdRSLNzcuYtrk1WJrfG-XdIpjWyYepxjGuxrnCEiRkp_cTY7_I0xhxQZ0G1XbX9z5f"/>
-                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:04</div>
-                    </div>
-                    <div class="aspect-square bg-surface-container-high border border-primary relative group overflow-hidden cursor-pointer shadow-[inset_0_0_8px_rgba(168,215,0,0.3)]">
-                        <img alt="Clip 2" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACEkjH_2GA7WyWAy2PfB3ELrlroPD73SbR0yhV0ngSzfn4qCfzlZky0mhcaF8JJAB46sOVgzbjWLWRuBjwGGi2ubNdfsIVR0vrrfGUoKHkFQfBDu7fLgSkNqh-5rI6XwyjLjrdrXIxnKDG8WjnSdYOwUJ1-3RoX_XYgwnZl9pnPdlosYGTPULDp2Cg7VT3xYmLr9vI_n4Mb_Pvjv8l3KcORrCsa1XtejVtuHlq8NfsqwKrtpBPsAxfI2K-wgoaSNFOTATkZK68SX9i"/>
-                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:12</div>
-                    </div>
-                    <div class="aspect-square bg-surface-container-high border border-outline-variant relative group overflow-hidden cursor-pointer hover:border-primary transition-colors">
-                        <img alt="Clip 3" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZHYFeL0IG8EN6YjCizZFwUSchGbKVBcQpyF40ezdtTXW-cw2RS1BilaA1Ht500TLTurKpgiT-v-Vm2xZc-IpO5yJxhZszgT4W9dy2MxEv8OogqgBHTJ5rxrSEp15EASuumgBJ6-sOByZtY3VGpgIiew1XP8fzV7Ig2QLs2ibOKnfrkf80EGiFOtEupV91hM4Pc2a0pb8EGV5VB-f8bOt1ngBhdaTXGkU7rnA7Fkm9hn9ZqNjc6L-QoKQLB61og5w7qxN1pLE8wIxU"/>
-                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:08</div>
-                    </div>
-                    <div class="aspect-square bg-surface-container-high border border-outline-variant flex items-center justify-center text-outline hover:text-primary cursor-pointer hover:border-primary transition-all">
-                        <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="px-1.5 pt-2 border-t border-outline-variant flex-none bg-surface-container-lowest">
-            <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                <span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
-                Settings
-            </button>
-            <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                <span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
-                Help
-            </button>
-        </div>
-    </aside>
-
-    <!-- Center Content: Monitor and Timeline -->
-    <main class="flex-1 flex flex-col min-w-0 bg-deep-black overflow-hidden h-full">
-        <!-- Program Monitor Area - تم إصلاح المرونة هنا بالـ min-h-0 و flex-shrink -->
-        <div class="flex-1 flex flex-col p-3 relative min-h-0 flex-shrink overflow-hidden">
-            <div class="flex justify-between items-center mb-1.5 px-1 flex-none">
-                <div class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-                    <h2 class="font-label-tech-lg text-label-tech-lg text-primary uppercase tracking-[0.2em]">Program Monitor</h2>
-                </div>
-                <div class="font-data-mono text-primary text-headline-md tracking-widest bg-primary/5 px-3 py-0.5 border border-primary/20" id="timecode-display">
-                    00:00:15:22
-                </div>
-            </div>
-            <div class="flex-1 bg-surface-container-lowest border border-outline-variant relative group overflow-hidden min-h-0">
-                <div class="absolute top-3 left-3 border-l border-t border-primary w-6 h-6 opacity-40"></div>
-                <div class="absolute top-3 right-3 border-r border-t border-primary w-6 h-6 opacity-40"></div>
-                <div class="absolute bottom-3 left-3 border-l border-b border-primary w-6 h-6 opacity-40"></div>
-                <div class="absolute bottom-3 right-3 border-r border-b border-primary w-6 h-6 opacity-40"></div>
-                <div class="scanline-overlay"></div>
-                <div class="scanline-pulse"></div>
-                <!-- تم تحديد max-h-full للصورة لضمان عدم خروجها عن الشاشة -->
-                <img alt="Video Feed" class="w-full h-full max-h-full object-contain opacity-90 group-hover:scale-[1.01] transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu0kSG6YMzzuAYuAqsO_Etk-SxelmqaoAWkDyRNb1seOmoahXzzYhPNx1d1HXvUMEwDFe22VNa0ZAh-G5L1XKYTskvEWciN-PNb-e1UBfqENs0-CMpeHincgqWkb8MhooyxynaAnPk5nBcwN2RnIxiDRC_y8UFAxPjZAMZaqM_HNMAMzekIjNvw1_EfY6LGhMNEzjukpaEbx-m66lpzEwcDuWsggJy0WEEodM6HwClljeuKIrZj9Uhr93qxbZ4XQxQCPEIZM68ybID"/>
-                
-                <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-deep-black/95 to-transparent flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div class="relative w-full h-1 bg-surface-bright rounded-full cursor-pointer">
-                        <div class="absolute left-0 top-0 h-full w-[45%] bg-primary"></div>
-                        <div class="absolute left-[45%] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rotate-45 shadow-[0_0_8px_rgba(168,215,0,0.8)]"></div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-4">
-                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-[20px]" data-icon="replay_10">replay_10</button>
-                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-3xl" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</button>
-                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-[20px]" data-icon="forward_10">forward_10</button>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="flex items-center gap-1.5">
-                                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-[18px]" data-icon="volume_up">volume_up</button>
-                                <div class="w-12 h-0.5 bg-outline-variant rounded-full relative overflow-hidden">
-                                    <div class="w-2/3 h-full bg-primary"></div>
-                                </div>
-                            </div>
-                            <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-[18px]" data-icon="fullscreen">fullscreen</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<style>
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+        }
+        .mic-active { animation: pulse-red 1.5s infinite !important; color: #ff4444 !important; border-color: #ff4444 !important; }
+        .mic-active #voice-listening-tooltip { display: flex !important; }
         
-        <!-- Timeline Section -->
-        <section class="h-timeline-height bg-surface-container-lowest border-t border-outline-variant flex flex-col flex-none">
-            <div class="flex items-center justify-between px-gutter py-1.5 border-b border-outline-variant bg-surface-container-low/50">
-                <div class="flex items-center gap-3">
-                    <span class="font-label-tech-lg text-label-tech-lg text-primary">TIMELINE</span>
-                    <div class="flex items-center bg-deep-black p-0.5 rounded border border-outline-variant/20">
-                        <button class="p-1 hover:text-primary text-on-surface-variant transition-colors" title="Snap">
-                            <span class="material-symbols-outlined text-[16px]" data-icon="bolt">bolt</span>
-                        </button>
-                        <button class="p-1 hover:text-primary text-on-surface-variant transition-colors" title="Razor">
-                            <span class="material-symbols-outlined text-[16px]" data-icon="content_cut">content_cut</span>
-                        </button>
-                        <button class="p-1 hover:text-error-red text-on-surface-variant transition-colors" title="Delete">
-                            <span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 font-data-mono text-label-tech-sm text-on-surface-variant">
-                    <span>24.00 FPS</span>
-                    <span>3840x2160</span>
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[14px]" data-icon="zoom_in">zoom_in</span>
-                        <div class="w-20 h-0.5 bg-outline-variant rounded-full"><div class="w-1/2 h-full bg-primary"></div></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex-1 overflow-hidden relative">
-                <div class="absolute left-[45%] top-0 bottom-0 w-px bg-primary z-20 pointer-events-none">
-                    <div class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] border-t-primary filter drop-shadow-[0_0_6px_rgba(168,215,0,1)]"></div>
-                </div>
-                <div class="h-full overflow-auto custom-scrollbar">
-                    <div class="flex h-12 border-b border-outline-variant/20 items-center min-w-max">
-                        <div class="w-16 bg-surface-container-high h-full flex items-center justify-center border-r border-outline-variant text-label-tech-sm font-label-tech-sm text-primary flex-none">V1</div>
-                        <div class="flex-1 relative h-full flex items-center gap-1 px-3">
-                            <div class="h-8 w-40 bg-primary/20 border border-primary text-primary px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move">
-                                <span>CLIP_SEQ_001.MOV</span>
-                                <span class="opacity-50">00:08</span>
-                            </div>
-                            <div class="h-8 w-56 bg-primary text-deep-black px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move shadow-[0_0_10px_rgba(168,215,0,0.2)]">
-                                <span>CLIP_SEQ_002_MASTER.MOV</span>
-                                <span class="font-bold">00:15</span>
-                            </div>
-                            <div class="h-8 w-24 bg-primary/20 border border-primary/40 text-primary/70 px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move">
-                                <span>CLIP_003.MP4</span>
-                                <span class="opacity-30">00:04</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex h-12 items-center min-w-max">
-                        <div class="w-16 bg-surface-container-high h-full flex items-center justify-center border-r border-outline-variant text-label-tech-sm font-label-tech-sm text-secondary flex-none">A1</div>
-                        <div class="flex-1 relative h-full flex items-center gap-1 px-3">
-                            <div class="h-8 w-[600px] bg-secondary/10 border border-secondary/30 relative overflow-hidden group cursor-move">
-                                <div class="absolute inset-0 flex items-center opacity-30">
-                                    <div class="flex items-end gap-[1px] h-full w-full py-1">
-                                        <div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[60%]"></div><div class="w-0.5 bg-secondary h-[30%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[70%]"></div><div class="w-0.5 bg-secondary h-[90%]"></div><div class="w-0.5 bg-secondary h-[50%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[80%]"></div><div class="w-0.5 bg-secondary h-[20%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[60%]"></div><div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[70%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[30%]"></div><div class="w-0.5 bg-secondary h-[50%]"></div><div class="w-0.5 bg-secondary h-[80%]"></div>
-                                    </div>
-                                </div>
-                                <span class="absolute left-2 top-0.5 text-[9px] font-label-tech-sm text-secondary">AUDIO_MIX_STEM.WAV</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+        .waveform-bar {
+            width: 3px;
+            height: 16px;
+            background: #a8d700;
+            margin: 0 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { height: 8px; }
+            50% { height: 32px; }
+        }
+        .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glow-primary { box-shadow: 0 0 20px rgba(168, 215, 0, 0.2); }
+        .hover-scale { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hover-scale:hover { transform: scale(1.02); }
+        
+        .dir-radio:checked + label {
+            background: rgba(168, 215, 0, 0.08);
+            border-color: #a8d700;
+        }
+        .dir-radio:checked + label .status-dot {
+            box-shadow: 0 0 12px currentColor;
+        }
 
-    <!-- Right SideNavBar -->
-    <aside class="w-sidebar-width bg-surface-container-lowest/90 backdrop-blur-xl border-l border-outline-variant flex flex-col p-3 z-40 flex-none overflow-hidden h-full">
-        <h3 class="font-label-tech-lg text-label-tech-lg text-primary mb-3 uppercase tracking-widest border-b border-outline-variant pb-1 flex-none">Controls</h3>
-        <div class="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1">
-            <div class="space-y-2.5">
-                <div class="flex justify-between items-center">
-                    <label class="font-label-tech-sm text-label-tech-sm text-on-surface-variant">VOLUME SYNC</label>
-                    <span class="font-data-mono text-primary text-[10px]">-3.2 dB</span>
-                </div>
-                <div class="relative h-1 bg-surface-bright rounded-full group cursor-pointer">
-                    <div class="absolute inset-y-0 left-0 w-[65%] bg-primary"></div>
-                    <div class="absolute left-[65%] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary border border-deep-black rounded-full shadow-[0_0_6px_rgba(168,215,0,0.5)]"></div>
-                </div>
-            </div>
-            <div class="space-y-2.5">
-                <label class="font-label-tech-sm text-label-tech-sm text-on-surface-variant block uppercase">Color Preset</label>
-                <div class="grid grid-cols-1 gap-1.5">
-                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-primary text-primary text-[10px] font-label-tech-sm">
-                        TECH_NOIR_01
-                        <span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
-                    </button>
-                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:border-primary/50 text-[10px] font-label-tech-sm transition-colors">
-                        ACID_GLITCH_V2
-                    </button>
-                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:border-primary/50 text-[10px] font-label-tech-sm transition-colors">
-                        MINIMAL_INDUSTRIAL
-                    </button>
-                </div>
-            </div>
-            <div class="bg-surface-container-high/40 p-3 border border-outline-variant space-y-2">
-                <div class="flex justify-between text-[10px] font-data-mono">
-                    <span class="text-on-surface-variant">BITRATE</span>
-                    <span class="text-primary">45.5 Mbps</span>
-                </div>
-                <div class="flex justify-between text-[10px] font-data-mono">
-                    <span class="text-on-surface-variant">CODEC</span>
-                    <span class="text-primary">H.265 / HEVC</span>
-                </div>
-                <div class="flex justify-between text-[10px] font-data-mono">
-                    <span class="text-on-surface-variant">COLOR</span>
-                    <span class="text-primary">Rec.2020</span>
-                </div>
-            </div>
-        </div>
-        <div class="mt-auto pt-3 space-y-2 flex-none bg-surface-container-lowest">
-            <button class="w-full bg-transparent border border-primary text-primary font-label-tech-lg text-label-tech-lg py-2 flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all">
-                <span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
-                EXPORT
-            </button>
-            <button class="w-full bg-primary text-deep-black font-label-tech-lg text-label-tech-lg py-2 flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all">
-                <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
-                DOWNLOAD
-            </button>
-        </div>
-    </aside>
+        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .grid-bg {
+            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(168, 215, 0, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="flex flex-col bg-[#080808] text-[#e5e2e1] min-h-screen font-sans selection:bg-primary selection:text-black">
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 h-[64px] border-b border-white/5 glass-panel">
+<div class="flex items-center gap-10">
+<div class="flex flex-col">
+<span class="font-display font-bold text-lg text-primary tracking-[-0.05em] leading-none">MERCADREAM</span>
+<span class="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em] mt-1">Production Suite</span>
 </div>
-
+<nav class="hidden md:flex items-center gap-2">
+<div class="px-4 py-2 text-primary font-display font-semibold text-xs tracking-wider cursor-pointer border-b-2 border-primary" id="nav-discovery">
+<span id="nav-txt-discovery">DISCOVERY</span>
+</div>
+<div class="px-4 py-2 text-white/40 font-display font-semibold text-xs tracking-wider transition-colors cursor-pointer hover:text-white" id="nav-screenplay">
+<span id="nav-txt-screenplay">SCREENPLAY</span>
+</div>
+<div class="px-4 py-2 text-white/40 font-display font-semibold text-xs tracking-wider transition-colors cursor-pointer hover:text-white" id="nav-production">
+<span id="nav-txt-production">PRODUCTION</span>
+</div>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3 px-3 py-1.5 bg-white/5 border border-white/5 rounded-sm">
+<span class="text-[10px] text-white/40 font-mono uppercase tracking-widest" id="hdr-credits-label">CREDITS:</span>
+<span class="text-xs font-mono text-primary font-bold"><span id="header-credits">500</span> <span class="opacity-50">●</span></span>
+</div>
+<div class="flex items-center gap-3 text-[10px] font-mono text-white/40">
+<span class="text-primary cursor-pointer font-bold" id="lang-en">EN</span>
+<span class="opacity-10">|</span>
+<span class="hover:text-primary transition-colors cursor-pointer" id="lang-es">ES</span>
+<span class="opacity-10">|</span>
+<span class="hover:text-primary transition-colors cursor-pointer" id="lang-ar">AR</span>
+</div>
+<button class="bg-white/5 border border-white/10 px-4 py-2 flex items-center gap-2 hover:bg-primary hover:text-black hover:border-primary transition-all duration-300 hover-scale" id="btn-new-session">
+<span class="material-symbols-outlined text-sm">refresh</span>
+<span class="text-[10px] font-display font-bold tracking-widest uppercase" id="btn-txt-new">NEW SESSION</span>
+</button>
+<span class="material-symbols-outlined text-primary/60 cursor-pointer hover:text-primary hover:scale-110 transition-all" id="btn-wallet">account_balance_wallet</span>
+</div>
+</header>
+<main class="flex flex-1 pt-[64px] pb-[64px] overflow-hidden grid-bg">
+<!-- CREW SIDEBAR -->
+<aside class="w-[300px] h-full flex flex-col z-40 glass-panel border-r border-white/5" id="sidebar-crew">
+<div class="p-8 flex-1 overflow-y-auto custom-scrollbar">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-[10px] font-display font-bold text-white/50 uppercase tracking-[0.2em]" id="lbl-crew-panel">Crew Panel</h2>
+<span class="text-[9px] font-mono text-primary bg-primary/10 px-2 py-0.5 border border-primary/20 rounded-sm">V20-ST</span>
+</div>
+<div class="space-y-8">
+<div class="group relative bg-white/5 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:bg-white/10">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="absolute -inset-1.5 bg-primary/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<img alt="Gemini" class="w-12 h-12 rounded-full border-2 border-primary/40 object-cover relative z-10 p-0.5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
+<div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-primary rounded-full border-[3px] border-[#131313] z-20 shadow-[0_0_10px_rgba(168,215,0,0.6)]" id="gemini-status"></div>
+</div>
+<div>
+<p class="text-[11px] font-display font-bold text-primary tracking-wider leading-none">GEMINI</p>
+<p class="text-[9px] text-white/40 font-mono uppercase tracking-widest mt-1.5" id="lbl-gemini-role">LEAD ARCHITECT</p>
+<div class="flex items-center gap-1.5 mt-2 hidden" id="gemini-voice-status">
+<span class="w-1 h-1 rounded-full bg-primary animate-ping"></span>
+<span class="text-[9px] text-primary/60 font-mono italic tracking-widest uppercase">Listening...</span>
+</div>
+</div>
+</div>
+</div>
+<div>
+<p class="text-[9px] font-mono text-white/30 mb-4 uppercase tracking-[0.2em] border-b border-white/5 pb-2" id="lbl-competition-wings">COMMAND LIBRARY</p>
+<div class="mb-6 p-4 bg-white/5 border border-white/5 rounded-lg font-mono">
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] text-white/40 hover:text-white transition-colors cursor-pointer py-1 border-b border-white/5">
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary/40 rounded-full"></span>"START SESSION"</span>
+<span class="text-primary/70">EXEC</span>
+</div>
+<div class="flex justify-between text-[10px] text-white/40 hover:text-white transition-colors cursor-pointer py-1 border-b border-white/5">
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-primary/40 rounded-full"></span>"SYNC THREAD"</span>
+<span class="text-primary/70">MOD</span>
+</div>
+<div class="flex justify-between text-[10px] text-white/40 hover:text-white transition-colors cursor-pointer py-1">
+<span class="flex items-center gap-2"><span class="w-1 h-1 bg-orange-400/40 rounded-full"></span>"GENERATE"</span>
+<span class="text-orange-400/70">SYNC</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-2" id="director-selection">
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-drama" name="director" onchange="updateSingleSelection()" type="radio" value="drama"/>
+<label class="flex-1 flex items-center gap-3 p-3 border border-white/5 rounded-lg cursor-pointer hover:bg-white/5 transition-all hover-scale" for="dir-drama" style="color: #a8d700">
+<span class="status-dot w-2 h-2 rounded-full bg-current"></span>
+<span class="text-[10px] uppercase font-mono tracking-wider" id="dir-lbl-drama">Drama</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-action" name="director" onchange="updateSingleSelection()" type="radio" value="action"/>
+<label class="flex-1 flex items-center gap-3 p-3 border border-white/5 rounded-lg cursor-pointer hover:bg-white/5 transition-all hover-scale" for="dir-action" style="color: #ff4444">
+<span class="status-dot w-2 h-2 rounded-full bg-current"></span>
+<span class="text-[10px] uppercase font-mono tracking-wider" id="dir-lbl-action">Action</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-comedy" name="director" onchange="updateSingleSelection()" type="radio" value="comedy"/>
+<label class="flex-1 flex items-center gap-3 p-3 border border-white/5 rounded-lg cursor-pointer hover:bg-white/5 transition-all hover-scale" for="dir-comedy" style="color: #ffba3f">
+<span class="status-dot w-2 h-2 rounded-full bg-current"></span>
+<span class="text-[10px] uppercase font-mono tracking-wider" id="dir-lbl-comedy">Comedy</span>
+</label>
+</div>
+<div class="flex items-center">
+<input class="hidden dir-radio" id="dir-doc" name="director" onchange="updateSingleSelection()" type="radio" value="doc"/>
+<label class="flex-1 flex items-center gap-3 p-3 border border-white/5 rounded-lg cursor-pointer hover:bg-white/5 transition-all hover-scale" for="dir-doc" style="color: #44aaff">
+<span class="status-dot w-2 h-2 rounded-full bg-current"></span>
+<span class="text-[10px] uppercase font-mono tracking-wider" id="dir-lbl-doc">Documentary</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-8 bg-white/5 border-t border-white/5 backdrop-blur-xl">
+<div class="mb-6">
+<p class="text-[9px] text-white/30 uppercase mb-2 font-mono tracking-widest" id="lbl-sync-cost">SYNC COST</p>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-display font-bold text-orange-500" id="crew-cost">0</span>
+<span class="text-xs font-mono text-orange-500/50">cr</span>
+</div>
+</div>
+<button class="w-full bg-orange-500 py-3.5 text-black text-[10px] font-display font-black uppercase tracking-[0.2em] hover:bg-orange-400 transition-all duration-300 hover-scale shadow-lg shadow-orange-500/10" id="btn-recharge">+ RECHARGE</button>
+</div>
+</aside>
+<!-- MAIN CHAT AREA -->
+<section class="flex-1 flex flex-col relative" id="main-content">
+<div class="px-10 py-6 border-b border-white/5 flex items-center justify-between glass-panel z-10 relative">
+<div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_rgba(168,215,0,0.8)]"></div>
+<h1 class="text-base font-display font-bold text-white uppercase tracking-wider" id="phase-title">Phase 1: Discovery</h1>
+</div>
+<p class="text-[9px] font-mono text-white/30 tracking-[0.1em] mt-1" id="phase-subtitle">SYSTEM STATUS: READY / MISSION: GENERATE SCRIPT CONCEPT</p>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 border border-primary text-primary px-6 py-2.5 text-[10px] font-display font-bold uppercase tracking-widest hover:bg-primary hover:text-black transition-all duration-300 glow-primary hover-scale" id="btn-action">
+<span class="material-symbols-outlined text-sm">bolt</span> SYNC ACTION
+                </button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar relative" id="chat-messages">
+<!-- Welcome Message -->
+<div class="flex gap-6 max-w-4xl">
+<div class="w-10 h-10 flex-shrink-0 border border-primary/20 flex items-center justify-center bg-primary/5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-xl">smart_toy</span>
+</div>
+<div class="space-y-3">
+<p class="text-[10px] text-primary/70 font-mono uppercase tracking-[0.2em]">GEMINI // ARCHITECT</p>
+<div class="p-6 bg-white/5 border border-white/5 rounded-2xl text-[13px] text-white/70 leading-relaxed font-sans">
+                        Welcome back. I've optimized the workflow for <span class="text-primary font-mono font-bold">SINGLE-SYNC v20.2</span>. Select a director to focus your creative energy on a single high-fidelity thread. Screenplay segments are free (0cr), while Production segments require 15cr.
+                    </div>
+</div>
+</div>
+</div>
+<!-- INPUT AREA -->
+<div class="p-10 border-t border-white/5 glass-panel">
+<div class="relative group max-w-5xl mx-auto">
+<textarea class="w-full bg-white/5 border border-white/10 rounded-2xl focus:border-primary focus:ring-0 text-white text-sm p-6 pr-40 resize-none h-32 transition-all duration-300 custom-scrollbar font-sans" id="chat-input" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}" placeholder="Enter creative directive for your selected director..."></textarea>
+<div class="absolute right-6 bottom-6 flex items-center gap-4">
+<div class="absolute -top-14 right-0 bg-[#131313] border border-primary/30 px-4 py-2 rounded-full backdrop-blur-md hidden group-[.mic-active]:flex items-center gap-3" id="voice-listening-tooltip">
+<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+<span class="text-[10px] font-mono text-white uppercase tracking-widest" id="txt-listening-cmd">Voice Active...</span>
+</div>
+<button class="flex items-center justify-center border border-white/10 w-12 h-12 rounded-xl hover:bg-white/5 transition-all hover-scale group" id="btn-mic" onclick="toggleVoice()">
+<span class="material-symbols-outlined text-white/40 group-hover:text-primary transition-colors">mic</span>
+</button>
+<button class="bg-primary text-black px-10 h-12 rounded-xl text-[10px] font-display font-black uppercase tracking-widest glow-primary hover-scale" id="btn-send" onclick="sendMsg()">SEND MESSAGE</button>
+</div>
+</div>
+</div>
+<!-- VOICE OVERLAY -->
+<div class="absolute inset-0 bg-black/80 backdrop-blur-2xl z-[100] hidden flex flex-col items-center justify-center" id="voice-overlay">
+<div class="p-12 flex flex-col items-center gap-8 border border-white/5 bg-white/5 rounded-3xl">
+<div class="flex items-end h-16 gap-1">
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+<div class="waveform-bar"></div>
+</div>
+<h2 class="text-lg text-primary tracking-[0.3em] uppercase font-display font-bold" id="voice-status-text">LISTENING</h2>
+<button class="mt-4 border border-white/10 px-8 py-3 text-[9px] font-mono uppercase tracking-[0.2em] rounded-full hover:bg-white/5 transition-all" onclick="toggleVoice()">Terminate Sync</button>
+</div>
+</div>
+</section>
+<!-- PIPELINE SIDEBAR -->
+<aside class="w-[360px] h-full flex flex-col z-40 glass-panel border-l border-white/5" id="sidebar-pipeline">
+<div class="p-8 pb-4">
+<p class="text-[9px] font-mono text-white/30 mb-4 uppercase tracking-[0.2em]" id="lbl-competitor-status">DIRECTOR FOCUS</p>
+<div class="aspect-video bg-black/40 border border-white/10 rounded-lg relative overflow-hidden flex flex-col" id="cockpit-screen">
+<!-- Program Monitor UI -->
+<div class="scanline absolute inset-0 z-10 opacity-30"></div>
+<div class="absolute inset-0 border border-primary/5 pointer-events-none z-20"></div>
+<!-- Corner Brackets -->
+<div class="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-primary/30"></div>
+<div class="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-primary/30"></div>
+<div class="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-primary/30"></div>
+<div class="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-primary/30"></div>
+<!-- Technical Metadata -->
+<div class="absolute top-4 left-10 text-[7px] font-mono text-primary/40 uppercase tracking-widest">CAM_01 // REF_4491</div>
+<div class="absolute top-4 right-10 text-[7px] font-mono text-primary/40 uppercase tracking-widest">REC [●] PAUSE</div>
+<div class="absolute bottom-4 right-10 text-[7px] font-mono text-primary/40 uppercase tracking-widest">ISO 800 // 24FPS</div>
+<div class="flex-1 flex items-center justify-center relative z-20" id="cockpit-inner">
+<div class="text-center">
+<span class="text-[10px] font-mono text-primary animate-pulse tracking-[0.4em] font-bold" id="txt-awaiting">AWAITING SYNC</span>
+<div class="w-16 h-[1px] bg-primary/20 mx-auto mt-2"></div>
+<span class="text-[7px] font-mono text-white/20 uppercase mt-2 block tracking-widest">Focal Thread: Idle_State</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-8 pt-4 flex-1 overflow-y-auto custom-scrollbar">
+<p class="text-[9px] font-mono text-white/30 mb-6 uppercase tracking-[0.2em]" id="lbl-pipeline-stages">PIPELINE STATUS</p>
+<div class="space-y-6" id="pipeline-stages">
+<div class="stage-item group" data-stage="1">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[9px] font-mono text-white/50 tracking-widest" id="pipe-s1">01/SCRIPT_SYNC</span>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 rounded-full bg-white/20"></span>
+<span class="stage-status text-[8px] text-white/30 font-mono font-bold tracking-tighter">IDLE</span>
+</div>
+</div>
+<div class="h-[2px] bg-white/5 w-full rounded-full overflow-hidden">
+<div class="stage-bar h-full bg-primary w-0 transition-all duration-700 shadow-[0_0_8px_rgba(168,215,0,0.5)]"></div>
+</div>
+</div>
+<div class="stage-item opacity-40 group" data-stage="2">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[9px] font-mono text-white/50 tracking-widest" id="pipe-s2">02/DESIGN_ASSETS</span>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 rounded-full bg-white/20"></span>
+<span class="stage-status text-[8px] text-white/30 font-mono font-bold tracking-tighter">IDLE</span>
+</div>
+</div>
+<div class="h-[2px] bg-white/5 w-full rounded-full overflow-hidden">
+<div class="stage-bar h-full bg-primary w-0 transition-all duration-700 shadow-[0_0_8px_rgba(168,215,0,0.5)]"></div>
+</div>
+</div>
+<div class="stage-item opacity-40 group" data-stage="3">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[9px] font-mono text-white/50 tracking-widest" id="pipe-s3">03/FOCAL_GENERATION</span>
+<div class="flex items-center gap-2">
+<span class="w-1 h-1 rounded-full bg-white/20"></span>
+<span class="stage-status text-[8px] text-white/30 font-mono font-bold tracking-tighter">IDLE</span>
+</div>
+</div>
+<div class="h-[2px] bg-white/5 w-full rounded-full overflow-hidden">
+<div class="stage-bar h-full bg-primary w-0 transition-all duration-700 shadow-[0_0_8px_rgba(168,215,0,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-black/60 border-t border-white/5 p-6 text-[9px] flex flex-col relative" id="log-terminal" style="height:200px">
+<div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+<span class="text-white/40 uppercase tracking-[0.2em] font-mono font-bold" id="lbl-sync-log">LIVE SYNC LOG</span>
+<span class="text-primary font-mono font-bold">V20.2-LIVE</span>
+</div>
+<div class="flex-1 overflow-y-auto text-primary/60 font-mono space-y-1.5 custom-scrollbar leading-tight" id="log-lines">
+<p class="text-primary/30">&gt; System Kernel Initialized...</p>
+<p class="text-primary/30">&gt; Neural Buffers Synchronized...</p>
+<p>&gt; Ready for Creative Input</p>
+</div>
+</div>
+</aside>
+</main>
+<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-8 h-[64px] border-t border-white/5 glass-panel">
+<div class="flex items-center gap-12">
+<div class="flex items-center gap-3">
+<span class="text-[10px] text-white/40 font-mono uppercase tracking-[0.2em]" id="ftr-credits-label">CREDITS:</span>
+<span class="text-sm font-mono text-primary font-bold"><span id="footer-credits">500</span> <span class="opacity-30">●</span></span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-[10px] text-white/40 font-mono uppercase tracking-[0.2em]" id="ftr-active-suite">FOCUS:</span>
+<div class="flex items-center gap-3">
+<div class="flex gap-1.5" id="footer-active-dirs"></div>
+<span class="text-[10px] font-mono text-white/70 uppercase tracking-widest" id="footer-suite-names">NO SELECTION</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex border border-white/10 rounded-lg overflow-hidden bg-white/5 p-1">
+<button class="px-5 py-1.5 bg-primary text-black text-[9px] font-display font-black uppercase tracking-widest rounded-md shadow-lg shadow-primary/10 transition-all hover:brightness-110" id="btn-auto">AUTO</button>
+<button class="px-5 py-1.5 text-white/40 text-[9px] font-display font-bold uppercase tracking-widest hover:text-white transition-colors" id="btn-manual">MANUAL</button>
+</div>
+<button class="bg-orange-500 h-[42px] px-10 rounded-lg flex items-center gap-4 group hover:bg-orange-400 transition-all duration-300 glow-primary hover-scale" id="btn-generate" onclick="startProduction()">
+<span class="text-[10px] text-black uppercase font-display font-black tracking-[0.2em]" id="btn-txt-generate">GENERATE</span>
+<span class="material-symbols-outlined text-black font-bold group-hover:translate-x-1.5 transition-transform text-lg">rocket_launch</span>
+</button>
+</div>
+</footer>
 <script>
-    // Micro-interaction Scripts
-    document.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('mousedown', () => {
-            btn.style.transform = 'scale(0.97)';
+    const directors = {
+        drama: { label: 'Drama', color: '#a8d700' },
+        action: { label: 'Action', color: '#ff4444' },
+        comedy: { label: 'Comedy', color: '#ffba3f' },
+        doc: { label: 'Documentary', color: '#44aaff' }
+    };
+
+    const i18n = {
+        en: { credits: "CREDITS:", activeSuite: "FOCUS:", generate: "GENERATE", selected: "SELECTED", none: "NO SELECTION", cost: "SYNC COST", syncLog: "LIVE SYNC LOG", discovery: "DISCOVERY", screenplay: "SCREENPLAY", production: "PRODUCTION" },
+        es: { credits: "CRÉDITOS:", activeSuite: "ENFOQUE:", generate: "GENERAR", selected: "SELECCIONADO", none: "SIN SELECCIÓN", cost: "COSTO SYNC", syncLog: "LOG DE SYNC", discovery: "DESCUBRIMIENTO", screenplay: "GUION", production: "PRODUCCIÓN" },
+        ar: { credits: "الرصيد:", activeSuite: "التركيز:", generate: "إنشاء", selected: "مختار", none: "لا يوجد", cost: "التكلفة", syncLog: "السجل", discovery: "اكتشاف", screenplay: "سيناريو", production: "إنتاج" }
+    };
+
+    let currentPhase = 'discovery';
+
+    function updateSingleSelection() {
+        const selectedRadio = document.querySelector('.dir-radio:checked');
+        const lang = document.querySelector('.text-primary.font-bold').id.split('-')[1];
+        
+        const costLabel = document.getElementById('crew-cost');
+        const dotsContainer = document.getElementById('footer-active-dirs');
+        const countText = document.getElementById('footer-suite-names');
+
+        if (selectedRadio) {
+            const val = selectedRadio.value;
+            const dirData = directors[val];
+            let costValue = currentPhase === 'production' ? 15 : 0;
+            costLabel.innerText = costValue;
+
+            dotsContainer.innerHTML = '';
+            const dot = document.createElement('div');
+            dot.className = 'w-2 h-2 rounded-full shadow-lg';
+            dot.style.backgroundColor = dirData.color;
+            dot.style.boxShadow = `0 0 10px ${dirData.color}`;
+            dotsContainer.appendChild(dot);
+
+            countText.innerText = `${dirData.label.toUpperCase()} ${i18n[lang].selected}`;
+            addLogLine(`Focus thread shifted to: ${dirData.label.toUpperCase()}`);
+        } else {
+            costLabel.innerText = `0`;
+            dotsContainer.innerHTML = '';
+            countText.innerText = i18n[lang].none;
+        }
+    }
+
+    function addLogLine(msg) {
+        const log = document.getElementById('log-lines');
+        const p = document.createElement('p');
+        p.innerText = `> ${msg}`;
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    // ── Real API Integration ──
+    const API_CHAT     = '/api/chat';
+    const API_DIRECTOR = '/api/director';
+    let isBusy = false;
+    let history = [];
+    let brief = null;
+    let projectType = 'film';
+    let phase = 'discovery';
+    let multiDirectorResults = {};
+
+    const SCREENWRITER = {
+        film:  'You are the Lead Architect in MercaDream. Ask one question at a time about: mood, characters, world, transformation. After 3-4 exchanges output exactly: DREAM_CAPTURED',
+        ad:    'You are a Commercial Lead Architect. Ask one question at a time: 1) Product, 2) Target Audience, 3) Core Message. After 3 answers output exactly: DREAM_CAPTURED',
+        music: 'You are a Music Video Lead Architect. Ask one question at a time: 1) Mood/Genre, 2) Visual style, 3) Key concept. After 3 answers output exactly: DREAM_CAPTURED',
+        doc:   'You are a Documentary Lead Architect. Ask one question at a time: 1) Subject, 2) Angle, 3) Central Truth. After 3 answers output exactly: DREAM_CAPTURED'
+    };
+
+    function addBot(html){
+        const area = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = 'flex flex-col gap-2 max-w-[85%]';
+        div.innerHTML = '<div class="text-[10px] text-primary/60 uppercase font-mono mb-1">Mercadream Engine</div><div class="bg-surface-container/50 p-5 border-l-2 border-primary/30 text-sm leading-relaxed">' + html + '</div>';
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight;
+        history.push({role:'assistant', content:html});
+    }
+
+    function addUser(text){
+        const area = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = 'flex flex-col gap-2 max-w-[85%] ml-auto items-end';
+        div.innerHTML = '<div class="text-[10px] text-primary/60 uppercase font-mono mb-1 text-right">You</div><div class="bg-primary/10 p-5 border border-primary/20 text-sm">' + text + '</div>';
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight;
+        history.push({role:'user', content:text});
+    }
+
+    async function sendMsg(){
+        if(isBusy) return;
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if(!text) return;
+        input.value = '';
+        isBusy = true;
+        addUser(text);
+        try{
+            const res = await fetch(API_CHAT, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:SCREENWRITER[projectType],messages:history,max_tokens:600})});
+            const data = await res.json();
+            const reply = data.text || '';
+            if(reply.includes('DREAM_CAPTURED')){
+                brief = history.map(m=>m.content).join('\n');
+                addBot('Vision captured. Choose your director and press GENERATE.');
+                addLogLine('DREAM CAPTURED — Ready for production');
+            } else {
+                addBot(reply);
+            }
+        }catch(e){ addLogLine('Error: '+e.message); }
+        isBusy = false;
+    }
+
+    async function startProduction() {
+        const selectedRadio = document.querySelector('.dir-radio:checked');
+        if (!selectedRadio) {
+            addLogLine("SYSTEM ERROR: Focal point undefined. Select director.");
+            return;
+        }
+        if(isBusy){ addLogLine("BUSY — wait for current operation"); return; }
+        isBusy = true;
+
+        const dirType = selectedRadio.value;
+        const label = directors[dirType].label;
+        addLogLine("INITIALIZING NEURAL SYNC: ["+label.toUpperCase()+"]");
+        document.getElementById('txt-awaiting').innerText = "SYNC IN PROGRESS";
+
+        // Animate stages
+        const stages = document.querySelectorAll('.stage-item');
+        stages.forEach(s => {
+            s.classList.add('opacity-40');
+            s.querySelector('.stage-bar').style.width = "0%";
+            s.querySelector('.stage-status').innerText = "IDLE";
         });
-        btn.addEventListener('mouseup', () => {
-            btn.style.transform = '';
-        });
+
+        const conv = brief || history.map(m=>m.content).join('\n') || document.getElementById('chat-input').value || 'creative film';
+        
+        try{
+            if(stages[0]){stages[0].classList.remove('opacity-40');stages[0].querySelector('.stage-bar').style.width='100%';stages[0].querySelector('.stage-status').innerText='DONE';}
+            if(stages[1]){stages[1].classList.remove('opacity-40');stages[1].querySelector('.stage-bar').style.width='100%';stages[1].querySelector('.stage-status').innerText='DONE';}
+            if(stages[2]){stages[2].classList.remove('opacity-40');stages[2].querySelector('.stage-bar').style.width='50%';stages[2].querySelector('.stage-status').innerText='RUNNING';}
+
+            addLogLine("Contacting director: "+label.toUpperCase()+"...");
+
+            const res = await fetch(API_DIRECTOR, {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({type:dirType, conversation:conv, brief:conv})
+            });
+            if(!res.ok) throw new Error('Director API failed: '+res.status);
+            const data = await res.json();
+
+            const scenes = (data.scenes||[]).map((s,i) => ({
+                id: Date.now()+i,
+                title: 'Scene '+(i+1)+'/'+(data.scenes.length)+': '+(s.title||''),
+                prompt: (s.prompt||'').substring(0,400),
+                director: dirType,
+                sceneNumber: i+1,
+                status: 'pending',
+                url: null, thumb: null, options: []
+            }));
+
+            // Save to localStorage
+            localStorage.setItem('md_assembly_videos', JSON.stringify(scenes));
+            localStorage.setItem('md_6scenes', JSON.stringify(scenes));
+            localStorage.setItem('md_project_type', dirType);
+
+            if(stages[2]){stages[2].querySelector('.stage-bar').style.width='100%';stages[2].querySelector('.stage-status').innerText='DONE';}
+            if(stages[3]){stages[3].classList.remove('opacity-40');stages[3].querySelector('.stage-bar').style.width='100%';stages[3].querySelector('.stage-status').innerText='DONE';}
+
+            document.getElementById('txt-awaiting').innerText = "SYNC COMPLETE";
+            addLogLine("SUCCESS: "+scenes.length+" scenes generated");
+            addLogLine("━━━━━━━━━━━━━━━━━━━━━");
+            addLogLine("VISION: "+scenes.length+" scenes × 10s = "+(scenes.length*10)+"s");
+            addLogLine("COST per scene: 15 credits");
+            addLogLine("TOTAL if all generated: "+(scenes.length*15)+" credits");
+            addLogLine("You pay ONLY what you generate!");
+            addLogLine("━━━━━━━━━━━━━━━━━━━━━");
+
+            // Show assembly button
+            let asmBtn = document.getElementById('btn-assembly');
+            if(!asmBtn){
+                asmBtn = document.createElement('button');
+                asmBtn.id = 'btn-assembly';
+                asmBtn.style.cssText = 'background:#c8ff00;color:#000;border:none;padding:10px 24px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:2px;margin-left:12px';
+                asmBtn.textContent = 'OPEN ASSEMBLY →';
+                asmBtn.onclick = function(){ window.location.href='assembly.html'; };
+                const footer = document.querySelector('footer .flex');
+                if(footer) footer.appendChild(asmBtn);
+            }
+            asmBtn.style.display = 'inline-flex';
+
+        }catch(e){
+            addLogLine('SYNC FAILED: '+e.message);
+            document.getElementById('txt-awaiting').innerText = "SYNC ERROR";
+        }
+        isBusy = false;
+    }
+
+    function toggleVoice() {
+        const overlay = document.getElementById('voice-overlay');
+        const btn = document.getElementById('btn-mic');
+        const voiceStatus = document.getElementById('gemini-voice-status');
+
+        const isActive = btn.classList.toggle('mic-active');
+        overlay.classList.toggle('hidden');
+        voiceStatus.classList.toggle('hidden');
+
+        if (isActive) {
+            addLogLine("VOICE COMMANDS: ACTIVE");
+        }
+    }
+
+    document.querySelectorAll('[id^="lang-"]').forEach(btn => {
+        btn.onclick = (e) => {
+            const lang = e.target.id.split('-')[1];
+            document.querySelectorAll('[id^="lang-"]').forEach(b => b.classList.remove('text-primary', 'font-bold'));
+            e.target.classList.add('text-primary', 'font-bold');
+            
+            document.getElementById('hdr-credits-label').innerText = i18n[lang].credits;
+            document.getElementById('ftr-credits-label').innerText = i18n[lang].credits;
+            document.getElementById('ftr-active-suite').innerText = i18n[lang].activeSuite;
+            document.getElementById('btn-txt-generate').innerText = i18n[lang].generate;
+            document.getElementById('lbl-sync-log').innerText = i18n[lang].syncLog;
+            document.getElementById('lbl-sync-cost').innerText = i18n[lang].cost;
+            document.getElementById('nav-txt-discovery').innerText = i18n[lang].discovery;
+            document.getElementById('nav-txt-screenplay').innerText = i18n[lang].screenplay;
+            document.getElementById('nav-txt-production').innerText = i18n[lang].production;
+            
+            updateSingleSelection();
+        }
     });
 
-    // Timecode update simulation
-    let frame = 22;
-    let seconds = 15;
-    const timeDisplay = document.getElementById('timecode-display');
-    
-    setInterval(() => {
-        frame++;
-        if (frame >= 24) {
-            frame = 0;
-            seconds++;
-        }
-        if (seconds >= 60) seconds = 0;
-        const s = seconds.toString().padStart(2, '0');
-        const f = frame.toString().padStart(2, '0');
-        if (timeDisplay) timeDisplay.textContent = `00:00:${s}:${f}`;
-    }, 41);
-</script>
-</body>
-</html>
+    document.getElementById('nav-discovery').onclick = () => { currentPhase = 'discovery'; addLogLine('Phase set to Discovery'); updateSingleSelection(); };
+    document.getElementById('nav-screenplay').onclick = () => { currentPhase = 'screenplay'; addLogLine('Phase set to Screenplay'); updateSingleSelection(); };
+    document.getElementById('nav-production').onclick = () => { currentPhase = 'production'; addLogLine('Phase set to Production'); updateSingleSelection(); };
+
+    updateSingleSelection();
+
+    // Init
+    window.addEventListener('load', function(){
+        const c = parseInt(localStorage.getItem('md_credits')||'0');
+        if(!c) localStorage.setItem('md_credits','500');
+        const credits = parseInt(localStorage.getItem('md_credits'));
+        document.getElementById('header-credits').textContent = credits;
+        document.getElementById('footer-credits').textContent = credits;
+        
+        // Start welcome message
+        setTimeout(function(){
+            addBot('Welcome to MercaDream Studio. Select your director and describe your vision. What would you like to create?');
+        }, 500);
+    });
+    </script>
+</body></html>
