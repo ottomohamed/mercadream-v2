@@ -1,1689 +1,446 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM | Multi-Director Competition Suite v19.0</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>    @keyframes pulse-red {
-        0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
-        70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
-    }
-    .mic-active { animation: pulse-red 1.5s infinite !important; color: #ff4444 !important; border-color: #ff4444 !important; }
-    .mic-active #voice-listening-tooltip { display: flex !important; }
-    .mic-active + #btn-send { opacity: 0.5; pointer-events: none; }
-    .waveform-bar {
-        width: 4px;
-        height: 20px;
-        background: #a8d700;
-        margin: 0 2px;
-        animation: wave 1s ease-in-out infinite;
-    }
-    @keyframes wave {
-        0%, 100% { height: 10px; }
-        50% { height: 40px; }
-    }
-    .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
-    .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
-    .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
-    .waveform-bar:nth-child(5) { animation-delay: 0.4s; }</style>
-<script id="tailwind-config">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MERCADREAM STUDIO - ASSEMBLY ROOM</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;family=Orbitron:wght@600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(168, 215, 0, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .scanline-pulse {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(168, 215, 0, 0.08);
+            animation: scanline 4s linear infinite;
+            z-index: 11;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0e0e0e;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #444934;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #c3f432;
+        }
+        body {
+            background-color: #060606;
+            color: #e5e2e1;
+            overflow: hidden;
+            height: 100vh;
+        }
+    </style>
+    <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "surface-tint": "#a8d700",
-                        "surface-container-low": "#1c1b1b",
-                        "surface-variant": "#353534",
-                        "surface-container-lowest": "#0e0e0e",
-                        "secondary-container": "#c48800",
-                        "surface-container-high": "#2a2a2a",
-                        "error-container": "#93000a",
-                        "primary-container": "#c0f500",
-                        "on-surface": "#e5e2e1",
-                        "surface-bright": "#393939",
-                        "on-surface-variant": "#c4caac",
-                        "primary": "#ffffff",
-                        "surface-container": "#201f1f",
-                        "surface-container-highest": "#353534",
-                        "inverse-surface": "#e5e2e1",
-                        "on-background": "#e5e2e1",
-                        "outline": "#8e9479",
-                        "primary-fixed": "#c0f500",
-                        "on-tertiary": "#313030",
-                        "tertiary-container": "#e5e2e1",
-                        "surface": "#131313",
-                        "outline-variant": "#434933",
-                        "secondary-fixed-dim": "#ffba3f",
-                        "primary-fixed-dim": "#a8d700",
-                        "on-secondary": "#432c00",
-                        "secondary": "#ffba3f",
-                        "background": "#131313"
-                    },
-                    fontFamily: {
-                        "display-lg": ["Orbitron"],
-                        "label-caps": ["IBM Plex Mono"],
-                        "technical-md": ["IBM Plex Mono"],
-                        "technical-sm": ["IBM Plex Mono"],
-                        "headline-lg": ["Orbitron"],
-                        "body-md": ["Inter"],
-                        "body-sm": ["Inter"]
-                    }
-                }
-            }
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#131313",
+                      "on-tertiary-fixed-variant": "#543a75",
+                      "on-secondary-container": "#3e2800",
+                      "inverse-primary": "#4f6700",
+                      "on-tertiary": "#3d235d",
+                      "inverse-on-surface": "#313030",
+                      "surface-container-low": "#1c1b1b",
+                      "secondary-container": "#c48800",
+                      "surface": "#131313",
+                      "tertiary-fixed-dim": "#d8b9fe",
+                      "on-surface": "#e5e2e1",
+                      "tertiary-fixed": "#eedcff",
+                      "secondary-fixed": "#ffdeae",
+                      "inverse-surface": "#e5e2e1",
+                      "text-dim": "#a1a1a1",
+                      "on-secondary-fixed-variant": "#604100",
+                      "on-primary-container": "#455a00",
+                      "primary-container": "#a8d700",
+                      "on-secondary-fixed": "#281900",
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "error-red": "#ff4444",
+                      "deep-black": "#060606",
+                      "surface-bright": "#393939",
+                      "surface-container-lowest": "#0e0e0e",
+                      "primary-fixed-dim": "#a8d700",
+                      "on-primary": "#273500",
+                      "on-tertiary-fixed": "#270b47",
+                      "on-background": "#e5e2e1",
+                      "surface-container-highest": "#353534",
+                      "error": "#ffb4ab",
+                      "surface-tint": "#a8d700",
+                      "tertiary-container": "#d9baff",
+                      "on-secondary": "#432c00",
+                      "surface-raised": "#1e1e1e",
+                      "on-surface-variant": "#c4c9ae",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "secondary": "#ffba3f",
+                      "surface-container-high": "#2a2a2a",
+                      "error-container": "#93000a",
+                      "secondary-fixed-dim": "#ffba3f",
+                      "text-bright": "#e5e2e1",
+                      "tertiary": "#eedcff",
+                      "outline-variant": "#444934",
+                      "primary-fixed": "#c3f431",
+                      "on-primary-fixed": "#161f00",
+                      "surface-container": "#201f1f",
+                      "on-tertiary-container": "#614783",
+                      "surface-dim": "#131313",
+                      "outline": "#8e937b",
+                      "surface-variant": "#353534",
+                      "primary": "#c3f432"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "gutter": "12px",
+                      "sidebar-width": "260px",
+                      "timeline-height": "180px", /* تم تقليله قليلاً ليناسب الشاشات الصغيرة */
+                      "toolbar-width": "48px"
+              },
+              "fontFamily": {
+                      "label-tech-lg": ["IBM Plex Mono"],
+                      "body-lg": ["Inter"],
+                      "data-mono": ["IBM Plex Mono"],
+                      "body-md": ["Inter"],
+                      "label-tech-sm": ["IBM Plex Mono"],
+                      "headline-md": ["Orbitron"],
+                      "headline-lg": ["Orbitron"]
+              },
+              "fontSize": {
+                      "label-tech-lg": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-lg": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "data-mono": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                      "body-md": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "label-tech-sm": ["10px", {"lineHeight": "12px", "fontWeight": "400"}],
+                      "headline-md": ["18px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "0.1em", "fontWeight": "700"}]
+              }
+            },
+          },
         }
     </script>
-<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-b border-outline-variant glass-panel">
-<div class="flex items-center gap-8">
-<span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span>
-<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v20.1 PRO</span>
-<nav class="hidden md:flex items-center gap-4">
-<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery">
-<span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span>
-<span class="font-technical-md text-technical-md uppercase" id="nav-txt-discovery">Discovery</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-screenplay">
-<span class="font-technical-md text-technical-md uppercase" id="nav-txt-screenplay">Screenplay</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-production">
-<span class="font-technical-md text-technical-md uppercase" id="nav-txt-production">Production</span>
-</div>
-</nav>
-</div>
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-outline-variant">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="hdr-credits-label">Credits:</span>
-<span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits">0</span> ●</span>
-</div>
-<div class="flex items-center gap-2 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-surface-tint cursor-pointer font-bold" id="lang-en">EN</span>
-<span class="opacity-30">|</span>
-<span class="hover:text-surface-tint cursor-pointer" id="lang-es">ES</span>
-<span class="opacity-30">|</span>
-<span class="hover:text-surface-tint cursor-pointer" id="lang-ar">AR</span>
-</div>
-<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group hover-scale" id="btn-new-session">
-<span class="material-symbols-outlined text-sm group-hover:text-black">refresh</span>
-<span class="font-technical-md text-technical-md uppercase" id="btn-txt-new">New Session</span>
-</button>
-<span class="material-symbols-outlined text-surface-tint cursor-pointer hover:scale-110 transition-transform" id="btn-wallet">account_balance_wallet</span>
-</div>
-</header>
-<main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden">
-<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-r border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-crew">
-<div class="p-6 border-b border-outline-variant flex-1 overflow-y-auto custom-scrollbar">
-<div class="flex items-center justify-between mb-4">
-<h2 class="font-display-lg text-on-surface uppercase" id="lbl-crew-panel" style="font-size:14px">Crew Panel</h2>
-<span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">V19 Multi-Sync</span>
-</div>
-<div class="space-y-6">
-<div class="bg-surface-variant/40 border-l-2 border-surface-tint p-4 flex items-center gap-3">
-<div class="relative">
-<img alt="Gemini" class="w-10 h-10 border border-surface-tint object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
-<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]" id="gemini-status"></div>
-</div>
-<div>
-<p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1" id="lbl-gemini-role">Lead Architect</p><p class="font-technical-sm text-[9px] text-secondary hidden uppercase mt-0.5 tracking-tighter" id="gemini-voice-cmd-mode">[ VOICE COMMAND MODE ]</p><p class="font-technical-sm text-[10px] text-surface-tint/60 hidden uppercase mt-1 italic tracking-widest" id="gemini-voice-status">Listening...</p>
-</div>
-</div>
-<div>
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1" id="lbl-competition-wings">Competition Wings</p><div class="mb-4 p-3 bg-surface-container-high/40 border border-surface-tint/30 rounded-sm glass-panel">
-<div class="flex items-center justify-between mb-2">
-<span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px]">record_voice_over</span> Command Library
-        </span>
-</div>
-<div class="space-y-1">
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
-<span>"START SESSION"</span>
-<span class="text-surface-tint">EXEC</span>
-</div>
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
-<span>"SYNC DRAMA"</span>
-<span class="text-surface-tint">MOD</span>
-</div>
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
-<span>"GENERATE SUITE"</span>
-<span class="text-secondary">SYNC</span>
-</div>
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant">
-<span>"OPEN ASSEMBLY"</span>
-<span class="text-surface-tint">NAV</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 gap-2" id="director-selection">
-<div class="flex items-center">
-<input checked="" class="hidden dir-radio" id="dir-drama" name="director-select" type="radio" value="drama"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-drama" style="color: #a8d700">
-<span class="w-2 h-2 rounded-full bg-[#a8d700]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-drama">Drama</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-action" name="director-select" type="radio" value="action"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-action" style="color: #ff4444">
-<span class="w-2 h-2 rounded-full bg-[#ff4444]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-action">Action</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-comedy" name="director-select" type="radio" value="comedy"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-comedy" style="color: #ffba3f">
-<span class="w-2 h-2 rounded-full bg-[#ffba3f]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-comedy">Comedy</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-doc" name="director-select" type="radio" value="doc"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-doc" style="color: #44aaff">
-<span class="w-2 h-2 rounded-full bg-[#44aaff]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-doc">Documentary</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-music" name="director-select" type="radio" value="music"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-music" style="color: #ff44aa">
-<span class="w-2 h-2 rounded-full bg-[#ff44aa]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-music">Music</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-ads" name="director-select" type="radio" value="ads"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-ads" style="color: #44ffaa">
-<span class="w-2 h-2 rounded-full bg-[#44ffaa]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-ads">Ads</span>
-</label>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="p-6 bg-surface-container-low/50 border-t border-outline-variant">
-<div class="mb-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1" id="lbl-sync-cost">Sync Cost</p>
-<div class="flex justify-between items-end">
-<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">0 cr/dir</span>
-</div>
-</div>
-<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all hover-scale" id="btn-recharge">+ RECHARGE</button>
-</div>
-</aside>
-<section class="ml-[280px] mr-[340px]" id="main-content" style="flex: 1; display: flex; flex-direction: column; background: #131313; position: relative;">
-<div class="p-6 border-b border-outline-variant flex items-center justify-between glass-panel z-10 relative">
-<div>
-<h1 class="font-display-lg text-headline-lg text-on-surface" id="phase-title">Phase 1: Discovery</h1>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Mission: Generate Script Concept</p>
-</div>
-<div class="flex gap-4">
-<button class="hidden flex items-center gap-2 border border-[#ffba3f] text-[#ffba3f] px-6 py-2 font-technical-md uppercase hover:bg-[#ffba3f] hover:text-black transition-all hover-scale" id="btn-jury-toggle">
-<span class="material-symbols-outlined">gavel</span> JURY ROOM
-                    </button>
-<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-6 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-all glow-acid hover-scale" id="btn-action">
-<span class="material-symbols-outlined">bolt</span> SYNC ACTION
-                    </button>
-</div>
-</div>
-<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar relative" id="chat-messages"></div>
-<!-- JURY ROOM OVERLAY -->
-<div class="absolute inset-0 bg-black/90 z-20 hidden backdrop-blur-xl flex flex-col" id="jury-room-overlay">
-<div class="p-6 border-b border-outline-variant flex justify-between items-center">
-<h2 class="font-display-lg text-headline-lg text-secondary">JURY ROOM: SIDE-BY-SIDE ANALYSIS</h2>
-<button class="text-on-surface-variant hover:text-white" id="close-jury"><span class="material-symbols-outlined">close</span></button>
-</div>
-<div class="flex-1 overflow-x-auto p-6 flex gap-6 custom-scrollbar" id="jury-comparison-grid">
-<!-- Comparison columns go here -->
-</div>
-</div>
-<div class="p-6 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant glass-panel">
-<div class="relative group">
-<textarea class="w-full bg-surface-container/50 border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pl-4 pr-32 resize-none h-20 transition-all" id="chat-input" placeholder="Type your creative directive here..."></textarea>
-<div class="absolute right-4 bottom-4 flex items-center gap-4 group">
-<div class="absolute -top-12 right-0 bg-black/80 border border-surface-tint/50 px-3 py-1.5 rounded-full backdrop-blur-md hidden group-[.mic-active]:flex items-center gap-2" id="voice-listening-tooltip">
-<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-<span class="text-[10px] font-technical-sm text-on-surface uppercase tracking-widest" id="txt-listening-cmd">Listening for command...</span>
-</div><button class="flex items-center justify-center border border-outline-variant w-10 h-10 hover:bg-surface-variant transition-all hover-scale group" id="btn-mic" onclick="this.classList.toggle('mic-active'); document.getElementById('gemini-voice-cmd-mode').classList.toggle('hidden');" title="Voice Chat"><span class="material-symbols-outlined text-on-surface-variant group-hover:text-surface-tint">mic</span></button><button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid hover-scale" id="btn-send">SEND</button>
-</div>
-</div>
-</div>
-<div class="absolute inset-0 bg-black/60 backdrop-blur-md z-30 hidden flex flex-col items-center justify-center" id="voice-overlay">
-<div class="glass-panel p-10 flex flex-col items-center gap-6 border-surface-tint">
-<h2 class="font-display-lg text-2xl text-surface-tint tracking-widest uppercase" id="voice-status-text">Listening...</h2>
-<div class="flex items-end h-12">
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-</div>
-<button class="mt-4 border border-outline-variant px-6 py-2 font-technical-sm hover:bg-surface-variant uppercase" id="btn-close-voice">Cancel</button>
-</div>
-</div></section>
-<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-l border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-pipeline">
-<div class="p-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase" id="lbl-competitor-status">Competitor Status</p>
-<div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center" id="cockpit-screen">
-<div class="scanline"></div>
-<div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
-<div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
-<div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
-<div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
-<div class="text-center relative z-10" id="cockpit-inner">
-<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block" id="txt-awaiting">AWAITING SYNC</span>
-<span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
-</div>
-<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]"></div>
-</div>
-</div>
-<div class="p-4 flex-1 overflow-y-auto">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase" id="lbl-pipeline-stages">Pipeline Stages</p>
-<div class="space-y-4" id="pipeline-stages">
-<div class="stage-item space-y-2" data-stage="1">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s1">01/Script_Sync</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-<div class="stage-item space-y-2 opacity-50" data-stage="2">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s2">02/Assign_Directors</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-<div class="stage-item space-y-2 opacity-50" data-stage="3">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s3">03/Parallel_Generation</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-<div class="stage-item space-y-2 opacity-50" data-stage="4">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s4">04/Competition_Review</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-</div>
-</div>
-<div class="bg-black/80 border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col relative" id="log-terminal" style="height:160px">
-<div class="scanline"></div>
-<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1 relative z-10">
-<span class="text-on-surface-variant uppercase" id="lbl-sync-log">Live Sync Log</span>
-<span class="text-surface-tint uppercase">v19.0</span>
-</div>
-<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1 relative z-10 typing-cursor" id="log-lines"></div>
-</div>
-</aside>
-</main>
-<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-t border-outline-variant glass-panel">
-<div class="flex items-center gap-10">
-<div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-credits-label">Credits:</span>
-<span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits">0</span> ●</span>
-</div>
-<div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-active-suite">Active Suite:</span>
-<div class="flex -space-x-1" id="footer-active-dirs"></div>
-<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-suite-names">1 Director Selected</span>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi hover-scale" id="btn-assembly">
-<span class="material-symbols-outlined">compare_arrows</span> OPEN ASSEMBLY →
-            </button>
-<div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm bg-surface-container/50">
-<button class="px-4 bg-surface-tint text-black font-bold uppercase transition-all hover:brightness-110" id="btn-auto">Auto Select</button>
-<button class="px-4 text-on-surface-variant hover:text-surface-tint uppercase transition-colors" id="btn-manual">Manual</button>
-</div>
-<button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid hover-scale" id="btn-generate">
-<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest" id="btn-txt-generate">Generate Suite</span>
-<span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">rocket_launch</span>
-</button>
-</div>
-</footer>
-<script>
-        const API_CHAT = '/api/chat';
-        const API_DIRECTOR = '/api/director';
-        const BASE_COST = 0;
-
-        const DIR_CONFIG = {
-            drama: { color: '#a8d700', label: 'DRAMA', icon: 'theater_comedy' },
-            action: { color: '#ff4444', label: 'ACTION', icon: 'explosion' },
-            comedy: { color: '#ffba3f', label: 'COMEDY', icon: 'sentiment_very_satisfied' },
-            doc: { color: '#44aaff', label: 'DOC', icon: 'visibility' },
-            music: { color: '#ff44aa', label: 'MUSIC', icon: 'music_note' },
-            ads: { color: '#44ffaa', label: 'ADS', icon: 'campaign' }
-        };
-
-        const TX = {
-            en: {
-                ph1: 'Phase 1: Discovery', ph2: 'Phase 2: Director Duel', ph3: 'Phase 3: Multi-Sync Production',
-                sub1: 'Generate Script Concept', sub2: 'Select Contenders', sub3: 'Parallel Generation Processing',
-                placeholder: 'Type your creative directive here...',
-                send: 'SEND', action: 'SYNC ACTION', new_session: 'NEW SESSION', generate: 'GENERATE SUITE',
-                assembly: 'OPEN ASSEMBLY →', auto: 'AUTO SELECT', manual: 'MANUAL',
-                welcome: 'Welcome to Suite v19. Choose your project type:',
-                types: [{ id: 'film', icon: '🎬', label: 'Film / Story' }, { id: 'ad', icon: '📢', label: 'Commercial' }, { id: 'music', icon: '🎵', label: 'Music Video' }, { id: 'doc', icon: '📹', label: 'Documentary' }],
-                firstQ: { film: 'What is your story about?', ad: 'What is the product or service?', music: 'What is the song about?', doc: 'What subject are you documenting?' },
-                done: 'All director iterations complete. Compare and export in Assembly room.',
-                err: 'Sync Error. Check connection.',
-                confirm_yes: 'START SUITE', confirm_no: 'CANCEL',
-                credits: 'Credits', active_suite: 'Active Suite', sync_log: 'Live Sync Log', status: 'Competitor Status', awaiting: 'Awaiting Sync', pipeline: 'Pipeline Stages',
-                nav_disc: 'Discovery', nav_scr: 'Screenplay', nav_prod: 'Production',
-                panel_crew: 'Crew Panel', wings: 'Competition Wings', sync_cost: 'Sync Cost', role: 'Lead Architect',
-                transp_msg: (count, cost) => `Rarity Captured: ${count} scenes x 10s. Scene Cost: 15 cr. Total: ${cost} cr. Pay only what you generate!`
-            },
-            es: {
-                ph1: 'Fase 1: Descubrimiento', ph2: 'Fase 2: Duelo de Directores', ph3: 'Fase 3: Producción Multi-Sinc',
-                sub1: 'Generar Concepto de Guion', sub2: 'Seleccionar Contendientes', sub3: 'Procesamiento de Generación Paralela',
-                placeholder: 'Escribe tu directiva creativa aquí...',
-                send: 'ENVIAR', action: 'ACCIÓN DE SINC', new_session: 'NUEVA SESIÓN', generate: 'GENERAR SUITE',
-                assembly: 'ABRIR ENSAMBLAJE →', auto: 'AUTO SELECCIÓN', manual: 'MANUAL',
-                welcome: 'Bienvenido a Suite v19. Elige tu tipo de proyecto:',
-                types: [{ id: 'film', icon: '🎬', label: 'Película / Historia' }, { id: 'ad', icon: '📢', label: 'Comercial' }, { id: 'music', icon: '🎵', label: 'Video Musical' }, { id: 'doc', icon: '📹', label: 'Documental' }],
-                firstQ: { film: '¿De qué trata tu historia?', ad: '¿Cuál es el producto o servicio?', music: '¿De qué trata la canción?', doc: '¿Qué tema estás documentando?' },
-                done: 'Todas las iteraciones completadas. Compara y exporta en la sala de ensamblaje.',
-                err: 'Error de sincronización. Revisa la conexión.',
-                confirm_yes: 'INICIAR SUITE', confirm_no: 'CANCELAR',
-                credits: 'Créditos', active_suite: 'Suite Activa', sync_log: 'Registro de Sinc', status: 'Estado de Competidor', awaiting: 'Esperando Sinc', pipeline: 'Etapas de Pipeline',
-                nav_disc: 'Descubrimiento', nav_scr: 'Guion', nav_prod: 'Producción',
-                panel_crew: 'Panel de Tripulación', wings: 'Alas de Competencia', sync_cost: 'Costo de Sinc', role: 'Arquitecto Principal',
-                transp_msg: (count, cost) => `Rareza Capturada: ${count} escenas x 10s. Costo de escena: 15 cr. Total: ${cost} cr. ¡Solo pagas lo que generas!`
-            },
-            ar: {
-                ph1: 'المرحلة الأولى: الاستكشاف', ph2: 'المرحلة الثانية: مبارزة المخرجين', ph3: 'المرحلة الثالثة: إنتاج متعدد المزامنة',
-                sub1: 'توليد مفهوم السيناريو', sub2: 'اختيار المتنافسين', sub3: 'معالجة التوليد الموازي',
-                placeholder: 'اكتب توجيهك الإبداعي هنا...',
-                send: 'إرسال', action: 'إجراء المزامنة', new_session: 'جلسة جديدة', generate: 'توليد المجموعة',
-                assembly: 'OPEN ASSEMBLY →', auto: 'اختيار تلقائي', manual: 'يدوي',
-                welcome: 'مرحباً بك في جناح v19. اختر نوع مشروعك:',
-                types: [{ id: 'film', icon: '🎬', label: 'فيلم / قصة' }, { id: 'ad', icon: '📢', label: 'إعلان' }, { id: 'music', icon: '🎵', label: 'فيديو موسيقي' }, { id: 'doc', icon: 'وثائقي' }],
-                firstQ: { film: 'عن ماذا تدور قصتك؟', ad: 'ما هو المنتج أو الخدمة؟', music: 'عن ماذا تدور الأغنية؟', doc: 'ما هو الموضوع الذي توثقه؟' },
-                done: 'اكتملت جميع تكرارات المخرجين. قارن وصدر في غرفة التحكيم.',
-                err: 'خطأ في المزامنة. تحقق من الاتصال.',
-                confirm_yes: 'ابدأ المجموعة', confirm_no: 'إلغاء',
-                credits: 'الرصيد', active_suite: 'المجموعة النشطة', sync_log: 'سجل المزامنة المباشر', status: 'حالة المنافس', awaiting: 'في انتظار المزامنة', pipeline: 'مراحل خط الإنتاج',
-                nav_disc: 'استكشاف', nav_scr: 'السيناريو', nav_prod: 'الإنتاج',
-                panel_crew: 'لوحة الطاقم', wings: 'أجنحة المنافسة', sync_cost: 'تكلفة المزامنة', role: 'المهندس الرئيسي',
-                transp_msg: (count, cost) => `تم التقاط الرؤية: ${count} مشاهد × 10 ثوانٍ. تكلفة المشهد: 15 رصيداً. الإجمالي: ${cost} رصيداً. ادفع فقط مقابل ما تولده!`
-            }
-        };
-
-        const SCREENWRITER = {
-            film: `You are the Lead Architect in MercaDream. Only one question per message, max 2 sentences. Ask about: Energy/Mood, Character, Transformation, World. After 4-6 exchanges output exactly: DREAM_CAPTURED`,
-            ad: `You are a Commercial Lead Architect. Ask one question at a time: 1) Product, 2) Target Audience, 3) Core Message. After 3 answers output exactly: DREAM_CAPTURED`,
-            music: `You are a Music Video Lead Architect. Ask one question at a time: 1) Mood/Genre of song, 2) Artist visual style, 3) Key visual concept. After 3 answers output exactly: DREAM_CAPTURED`,
-            doc: `You are a Documentary Lead Architect. Ask one question at a time: 1) Subject, 2) Angle, 3) Central Truth. After 3 answers output exactly: DREAM_CAPTURED`
-        };
-
-        // STATE
-        let lang = 'en';
-        let phase = 'discovery';
-        let history = [];
-        let brief = null;
-        let projectType = null;
-        let isBusy = false;
-        let multiDirectorResults = {};
-
-        const $ = id => document.getElementById(id);
-
-        function setLanguage(l) {
-            lang = l;
-            document.documentElement.lang = l;
-            document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
-
-            ['en', 'es', 'ar'].forEach(id => {
-                const el = $(`lang-${id}`);
-                if (el) {
-                    el.classList.toggle('text-surface-tint', id === l);
-                    el.classList.toggle('font-bold', id === l);
-                }
-            });
-
-            $('nav-txt-discovery').textContent = TX[l].nav_disc;
-            $('nav-txt-screenplay').textContent = TX[l].nav_scr;
-            $('nav-txt-production').textContent = TX[l].nav_prod;
-            $('hdr-credits-label').textContent = TX[l].credits + ':';
-            $('btn-txt-new').textContent = TX[l].new_session;
-            $('lbl-crew-panel').textContent = TX[l].panel_crew;
-            $('lbl-gemini-role').textContent = TX[l].role;
-            $('lbl-competition-wings').textContent = TX[l].wings;
-            $('lbl-sync-cost').textContent = TX[l].sync_cost;
-            $('phase-title').textContent = phase === 'discovery' ? TX[l].ph1 : (phase === 'production' ? TX[l].ph3 : TX[l].ph2);
-            $('phase-subtitle').textContent = phase === 'discovery' ? TX[l].sub1 : (phase === 'production' ? TX[l].sub3 : TX[l].sub2);
-            $('chat-input').placeholder = TX[l].placeholder;
-            $('btn-send').textContent = TX[l].send;
-            $('btn-action').innerHTML = `<span class="material-symbols-outlined">bolt</span> ${TX[l].action}`;
-            $('lbl-competitor-status').textContent = TX[l].status;
-            $('txt-awaiting').textContent = TX[l].awaiting;
-            $('lbl-pipeline-stages').textContent = TX[l].pipeline;
-            $('lbl-sync-log').textContent = TX[l].sync_log;
-            $('ftr-credits-label').textContent = TX[l].credits + ':';
-            $('ftr-active-suite').textContent = TX[l].active_suite + ':';
-            $('btn-auto').textContent = TX[l].auto;
-            $('btn-manual').textContent = TX[l].manual;
-            $('btn-txt-generate').textContent = TX[l].generate;
-
-            const main = $('main-content');
-            const crew = $('sidebar-crew');
-            const pipe = $('sidebar-pipeline');
-            if (l === 'ar') {
-                crew.style.left = 'auto'; crew.style.right = '0'; crew.style.borderLeft = '1px solid #353534'; crew.style.borderRight = 'none';
-                pipe.style.right = 'auto'; pipe.style.left = '0'; pipe.style.borderRight = '1px solid #353534'; pipe.style.borderLeft = 'none';
-                main.style.marginLeft = '340px'; main.style.marginRight = '280px';
-                main.classList.add('text-right');
-            } else {
-                crew.style.right = 'auto'; crew.style.left = '0'; crew.style.borderRight = '1px solid #353534'; crew.style.borderLeft = 'none';
-                pipe.style.left = 'auto'; pipe.style.right = '0'; pipe.style.borderLeft = '1px solid #353534'; pipe.style.borderRight = 'none';
-                main.style.marginRight = '340px'; main.style.marginLeft = '280px';
-                main.classList.remove('text-right');
-            }
-
-            updateFooterSuite();
-            log(`Environment Synchronized: ${l.toUpperCase()}`, 'ok');
-        }
-
-        function getCredits() { return parseInt(localStorage.getItem('md_credits') || '100'); }
-        function setCredits(v) {
-            localStorage.setItem('md_credits', v);
-            $('header-credits').textContent = v.toLocaleString();
-            $('footer-credits').textContent = v.toLocaleString();
-        }
-
-        function log(msg, type = 'info') {
-            const lines = $('log-lines');
-            if (!lines) return;
-            const colors = { ok: '#a8d700', err: '#ff4444', warn: '#ffba3f', info: 'rgba(168,215,0,0.6)' };
-            const p = document.createElement('p');
-            p.className = `leading-tight ${lang === 'ar' ? 'text-right' : ''} border-l border-surface-variant/30 pl-2`;
-            const time = new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour12: false });
-            p.innerHTML = `<span style="opacity:.4">[${time}]</span> <span style="color:${colors[type] || colors.info}">● ${msg}</span>`;
-            lines.insertBefore(p, lines.firstChild);
-        }
-
-        function setStage(num, status) {
-            document.querySelectorAll('.stage-item').forEach((el, i) => {
-                const n = i + 1;
-                const bar = el.querySelector('.stage-bar');
-                const lbl = el.querySelector('.stage-status');
-                const labels = { en: { idle: 'IDLE', active: 'ACTIVE', done: 'COMPLETE' }, ar: { idle: 'خامل', active: 'نشط', done: 'مكتمل' }, es: { idle: 'INACTIVO', active: 'ACTIVO', done: 'COMPLETO' } };
-
-                if (n < num) { el.classList.remove('opacity-50'); if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
-                else if (n === num) {
-                    el.classList.remove('opacity-50');
-                    if (status === 'active') { if (bar) { bar.style.width = '65%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].active; lbl.style.color = '#a8d700'; } }
-                    else if (status === 'done') { if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
-                }
-                else { el.classList.add('opacity-50'); if (bar) { bar.style.width = '0'; } if (lbl) { lbl.textContent = labels[lang].idle; lbl.style.color = ''; } }
-            });
-        }
-
-        function setCockpit(html) { $('cockpit-inner').innerHTML = html; }
-
-        function getSelectedDirectors() {
-            const checked = document.querySelector('.dir-radio:checked');
-            return checked ? [checked.value] : [];
-        }
-
-        function updateFooterSuite() {
-            const selected = getSelectedDirectors();
-            const container = $('footer-active-dirs');
-            const label = $('footer-suite-names');
-            if (container) {
-                container.innerHTML = selected.map(id => `<div class="w-4 h-4 rounded-full border border-black shadow-lg" style="background:${DIR_CONFIG[id].color}"></div>`).join('');
-            }
-            if (label) {
-                if (lang === 'ar') label.textContent = selected.length > 0 ? `مخرج واحد مختار` : `لا يوجد مخرج مختار`;
-                else if (lang === 'es') label.textContent = selected.length > 0 ? `1 Director Seleccionado` : `Ningún Director`;
-                else label.textContent = selected.length > 0 ? `1 Director Selected` : `No Director Selected`;
-            }
-        }
-
-        function addBot(html) {
-            const area = $('chat-messages');
-            const div = document.createElement('div');
-            const ltr = lang !== 'ar';
-            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? '' : 'mr-auto'}`;
-            div.innerHTML = `
-                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
-                    <span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest">${lang === 'ar' ? 'محرك Mercadream' : 'Mercadream Engine'}</span>
-                </div>
-                <div class="bg-surface-container/30 backdrop-blur-sm p-6 border-${ltr ? 'l' : 'r'}-4 border-surface-tint glass-panel">
-                    <div class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${html}</div>
-                </div>`;
-            area.appendChild(div);
-            area.scrollTop = area.scrollHeight;
-            history.push({ role: 'assistant', content: html });
-        }
-
-        function addUser(text) {
-            const area = $('chat-messages');
-            const div = document.createElement('div');
-            const ltr = lang !== 'ar';
-            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? 'ml-auto items-end' : 'mr-auto items-start'}`;
-            div.innerHTML = `
-                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
-                    <span class="font-label-caps text-[10px] text-secondary uppercase tracking-widest">${lang === 'ar' ? 'أنت' : 'You'}</span>
-                </div>
-                <div class="p-6 bg-surface-tint/5 border border-surface-tint/20 glass-panel">
-                    <p class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${text}</p>
-                </div>`;
-            area.appendChild(div);
-            area.scrollTop = area.scrollHeight;
-            history.push({ role: 'user', content: text });
-        }
-
-        function showTypeSelector() {
-            const types = TX[lang].types;
-            const grid = types.map(t =>
-                `<button onclick="selectType('${t.id}')" class="p-4 bg-surface-container-high/40 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all hover-scale flex items-center gap-4 ${lang === 'ar' ? 'text-right flex-row-reverse' : 'text-left'} w-full font-technical-sm group">
-                    <span class="text-2xl group-hover:scale-125 transition-transform">${t.icon}</span>
-                    <span class="font-bold tracking-wider">${t.label}</span>
-                </button>`
-            ).join('');
-            addBot(`${TX[lang].welcome}<div class="grid grid-cols-2 gap-3 mt-5">${grid}</div>`);
-        }
-
-        function selectType(type) {
-            projectType = type;
-            const q = TX[lang].firstQ[type];
-            addBot(q);
-            log('Project Sync: ' + type.toUpperCase(), 'ok');
-        }
-
-        async function startProduction() {
-            const selected = getSelectedDirectors();
-            if (selected.length === 0) {
-                log('Error: No Director Selected', 'err');
-                alert(lang === 'ar' ? 'اختر مخرجاً واحداً للمنافسة.' : 'Select one director for competition.');
-                return;
-            }
-
-            const totalCost = selected.length * BASE_COST;
-            if (getCredits() < totalCost) {
-                log('Error: Insufficient Credits', 'err');
-                return;
-            }
-
-            phase = 'production'; isBusy = true;
-            $('phase-title').textContent = TX[lang].ph3;
-            $('phase-subtitle').textContent = lang === 'ar' ? 'مزامنة موازية: مخرج واحد' : 'Parallel Sync: 1 Director';
-            setCredits(getCredits() - totalCost);
-
-            log(`Sync Activated: ${selected[0].toUpperCase()}`, 'ok');
-            setCockpit(`<span class="font-technical-sm text-[10px] text-surface-tint animate-pulse">${lang === 'ar' ? 'جاري_المزامنة' : 'SYNCING_ENGINE'}</span>`);
-
-            setStage(1, 'active'); await new Promise(r => setTimeout(r, 800));
-            setStage(1, 'done');
-            setStage(2, 'active'); await new Promise(r => setTimeout(r, 600));
-            setStage(2, 'done');
-            setStage(3, 'active');
-
-            const conv = history.map(m => m.content).join('\n\n');
-            multiDirectorResults = {};
-
-            try {
-                const dirType = selected[0];
-                log(`Thread Start: ${dirType.toUpperCase()}`, 'info');
-                const res = await fetch(API_DIRECTOR, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: dirType, conversation: conv, brief: brief || conv })
-                });
-                if (!res.ok) throw new Error(`${dirType} failed`);
-                const data = await res.json();
-
-                const cleanedScenes = (data.scenes || []).map((s, i) => ({
-                    title: s.title || (lang === 'ar' ? `مشهد ${i + 1}` : `Scene ${i + 1}`),
-                    prompt: s.prompt || '',
-                    director: dirType,
-                    sceneNumber: i + 1,
-                    status: 'pending'
-                }));
-
-                multiDirectorResults[dirType] = cleanedScenes;
-                log(`Success: ${dirType.toUpperCase()} - ${cleanedScenes.length} scenes captured`, 'ok');
-
-                setStage(3, 'done');
-                setStage(4, 'done');
-
-                localStorage.setItem('md_multi_director_output', JSON.stringify(multiDirectorResults));
-                localStorage.setItem('md_6scenes', JSON.stringify(cleanedScenes));
-                localStorage.setItem('md_assembly_videos', JSON.stringify(cleanedScenes));
-                localStorage.setItem('md_project_type', dirType);
-
-                showDirectorTabs(selected);
-
-                const sceneCount = cleanedScenes.length;
-                const sceneTotalCost = sceneCount * 15;
-
-                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
-                log(TX[lang].transp_msg(sceneCount, sceneTotalCost), 'ok');
-                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
-
-                setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
-                addBot(TX[lang].done);
-                $('btn-assembly').classList.remove('hidden');
-                $('btn-assembly').style.display = 'flex';
-                $('btn-jury-toggle').classList.remove('hidden');
-
-            } catch (e) {
-                log('Critical Sync Fail: ' + e.message, 'err');
-                addBot('Sync interrupted: ' + e.message);
-            }
-            isBusy = false;
-        }
-
-        function showDirectorTabs(selected) {
-            const area = $('chat-messages');
-            const container = document.createElement('div');
-            container.className = 'w-full space-y-4 border border-outline-variant p-6 bg-surface-container-lowest/50 backdrop-blur-md glass-panel';
-
-            let tabsHtml = `<div class="flex gap-2 border-b border-outline-variant pb-2">`;
-            selected.forEach((dir, i) => {
-                const color = DIR_CONFIG[dir].color;
-                tabsHtml += `<button onclick="switchDirView('${dir}')" class="px-6 py-2 font-display-lg text-[11px] border border-outline-variant transition-all hover:brightness-125 uppercase tracking-widest" style="border-bottom: 2px solid ${color}; color: ${color};" id="tab-${dir}">${dir}</button>`;
-            });
-            tabsHtml += `</div><div id="dir-content-view" class="p-6 bg-surface-container/30 min-h-[250px] space-y-4"></div>`;
-
-            container.innerHTML = tabsHtml;
-            area.appendChild(container);
-            area.scrollTop = area.scrollHeight;
-
-            switchDirView(selected[0]);
-        }
-
-        window.switchDirView = function (dir) {
-            const scenes = multiDirectorResults[dir] || [];
-            const config = DIR_CONFIG[dir];
-            const view = $('dir-content-view');
-
-            document.querySelectorAll('[id^="tab-"]').forEach(t => {
-                t.classList.remove('bg-surface-variant/40');
-                t.style.opacity = '0.6';
-            });
-            const target = $(`tab-${dir}`);
-            if (target) {
-                target.classList.add('bg-surface-variant/40');
-                target.style.opacity = '1';
-            }
-
-            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
-            scenes.slice(0, 6).forEach((s, i) => {
-                const keywords = s.prompt.split(' ').slice(0, 5).join(' ');
-                html += `
-                    <div class="p-4 border-l-4 border-surface-variant bg-surface-container-lowest/40 hover:border-${dir} transition-all hover-scale group" style="border-left-color: ${config.color}">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="font-label-caps text-[9px] opacity-40 uppercase tracking-tighter">Segment 0${i + 1} // Sync_Ref</span>
-                            <span class="material-symbols-outlined text-[16px]" style="color: ${config.color}">${config.icon}</span>
-                        </div>
-                        <h4 class="font-display-lg text-xs mb-2 text-on-surface uppercase group-hover:text-surface-tint transition-colors">${s.title}</h4>
-                        <p class="text-[13px] leading-relaxed text-on-surface-variant mb-3 italic">"${s.prompt}"</p>
-                        <div class="flex gap-2 flex-wrap">
-                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10" style="color: ${config.color}">#${dir.toUpperCase()}</span>
-                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10 opacity-60">DYNAMIC_LIT</span>
-                        </div>
-                    </div>
-                `;
-            });
-            html += `</div>`;
-            view.innerHTML = html;
-        }
-
-        async function sendMessage() {
-            if (isBusy) return;
-            const input = $('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            input.value = ''; input.style.height = 'auto';
-            isBusy = true;
-            addUser(text);
-
-            try {
-                const system = SCREENWRITER[projectType || 'film'];
-                const res = await fetch(API_CHAT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, messages: history, max_tokens: 800 }) });
-                const data = await res.json();
-                const reply = data.text || '';
-
-                if (reply.includes('DREAM_CAPTURED')) {
-                    brief = reply.replace('DREAM_CAPTURED', '').trim() || history.map(m => m.content).join('\n');
-                    const captureMsg = lang === 'ar' ? "تمت مزامنة المهندس بنجاح. المفهوم الأساسي مقفل. اختر منافسيك وابدأ التوليد." : (lang === 'es' ? "Arquitecto sincronizado. Concepto bloqueado. Elige tus competidores y comienza." : "Architect synced successfully. Core concept locked. Choose your contenders in the sidebar and start generation.");
-                    addBot(captureMsg);
-                    log('Dream Captured & Locked', 'ok');
-                } else {
-                    addBot(reply);
-                }
-            } catch (e) {
-                log('Error: ' + e.message, 'err');
-            }
-            isBusy = false;
-        }
-
-        // Jury Room Toggle Logic
-        $('btn-jury-toggle').onclick = () => {
-            const overlay = $('jury-room-overlay');
-            const grid = $('jury-comparison-grid');
-            overlay.classList.toggle('hidden');
-
-            if (!overlay.classList.contains('hidden')) {
-                grid.innerHTML = '';
-                const dirs = Object.keys(multiDirectorResults);
-                dirs.forEach(dirKey => {
-                    const scenes = multiDirectorResults[dirKey];
-                    const config = DIR_CONFIG[dirKey];
-                    const col = document.createElement('div');
-                    col.className = 'min-w-[400px] flex-1 bg-surface-container/40 p-6 border-t-4 glass-panel';
-                    col.style.borderColor = config.color;
-                    
-                    let sceneListHtml = `<div class="mb-6 flex items-center justify-between">
-                        <h3 class="font-display-lg text-headline-lg" style="color:${config.color}">${dirKey.toUpperCase()}</h3>
-                        <span class="material-symbols-outlined text-4xl opacity-50" style="color:${config.color}">${config.icon}</span>
-                    </div><div class="space-y-4">`;
-                    
-                    scenes.slice(0, 4).forEach(s => {
-                        sceneListHtml += `
-                            <div class="p-4 bg-black/40 border border-outline-variant/30 rounded">
-                                <p class="font-label-caps text-[10px] text-surface-tint mb-2">SCENE ${s.sceneNumber}</p>
-                                <p class="font-technical-md mb-2 text-on-surface">${s.title}</p>
-                                <p class="text-xs text-on-surface-variant leading-relaxed opacity-80">${s.prompt}</p>
-                            </div>
-                        `;
-                    });
-                    sceneListHtml += `</div><button class="w-full mt-6 py-4 bg-surface-variant hover:bg-surface-tint hover:text-black transition-all uppercase font-display-lg text-xs" onclick="window.</script><script>
-    (function() {
-        const micBtn = document.getElementById('btn-mic');
-        const voiceOverlay = document.getElementById('voice-overlay');
-        const closeVoiceBtn = document.getElementById('btn-close-voice');
-        const voiceStatusText = document.getElementById('voice-status-text');
-        const geminiVoiceStatus = document.getElementById('gemini-voice-status');
-
-        const voiceTranslations = {
-            en: { listening: 'Listening...', speaking: 'Speaking...', cancel: 'Cancel', mic_title: 'Voice Chat' },
-            es: { listening: 'Escuchando...', speaking: 'Hablando...', cancel: 'Cancelar', mic_title: 'Chat de Voz' },
-            ar: { listening: 'جاري الاستماع...', speaking: 'جاري التحدث...', cancel: 'إلغاء', mic_title: 'دردشة صوتية' }
-        };
-
-        function updateVoiceUI() {
-            const currentLang = document.documentElement.lang || 'en';
-            const t = voiceTranslations[currentLang] || voiceTranslations.en;
-            voiceStatusText.textContent = t.listening;
-            geminiVoiceStatus.textContent = t.listening;
-            closeVoiceBtn.textContent = t.cancel;
-            micBtn.title = t.mic_title;
-        }
-
-        micBtn.onclick = () => {
-            micBtn.classList.toggle('mic-active');
-            const isActive = micBtn.classList.contains('mic-active');
-            voiceOverlay.classList.toggle('hidden', !isActive);
-            geminiVoiceStatus.classList.toggle('hidden', !isActive);
-            if (isActive) updateVoiceUI();
-        };
-
-        closeVoiceBtn.onclick = () => {
-            micBtn.classList.remove('mic-active');
-            voiceOverlay.classList.add('hidden');
-            geminiVoiceStatus.classList.add('hidden');
-        };
-
-        // Monitor lang changes from existing app logic
-        const observer = new MutationObserver(() => updateVoiceUI());
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
-    })();
-</script
 </head>
-<body class="flex flex-col bg-[#060606]">
-charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM | Multi-Director Competition Suite v19.0</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>    @keyframes pulse-red {
-        0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
-        70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
-    }
-    .mic-active { animation: pulse-red 1.5s infinite !important; color: #ff4444 !important; border-color: #ff4444 !important; }
-    .mic-active #voice-listening-tooltip { display: flex !important; }
-    .mic-active + #btn-send { opacity: 0.5; pointer-events: none; }
-    .waveform-bar {
-        width: 4px;
-        height: 20px;
-        background: #a8d700;
-        margin: 0 2px;
-        animation: wave 1s ease-in-out infinite;
-    }
-    @keyframes wave {
-        0%, 100% { height: 10px; }
-        50% { height: 40px; }
-    }
-    .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
-    .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
-    .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
-    .waveform-bar:nth-child(5) { animation-delay: 0.4s; }</style>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "surface-tint": "#a8d700",
-                        "surface-container-low": "#1c1b1b",
-                        "surface-variant": "#353534",
-                        "surface-container-lowest": "#0e0e0e",
-                        "secondary-container": "#c48800",
-                        "surface-container-high": "#2a2a2a",
-                        "error-container": "#93000a",
-                        "primary-container": "#c0f500",
-                        "on-surface": "#e5e2e1",
-                        "surface-bright": "#393939",
-                        "on-surface-variant": "#c4caac",
-                        "primary": "#ffffff",
-                        "surface-container": "#201f1f",
-                        "surface-container-highest": "#353534",
-                        "inverse-surface": "#e5e2e1",
-                        "on-background": "#e5e2e1",
-                        "outline": "#8e9479",
-                        "primary-fixed": "#c0f500",
-                        "on-tertiary": "#313030",
-                        "tertiary-container": "#e5e2e1",
-                        "surface": "#131313",
-                        "outline-variant": "#434933",
-                        "secondary-fixed-dim": "#ffba3f",
-                        "primary-fixed-dim": "#a8d700",
-                        "on-secondary": "#432c00",
-                        "secondary": "#ffba3f",
-                        "background": "#131313"
-                    },
-                    fontFamily: {
-                        "display-lg": ["Orbitron"],
-                        "label-caps": ["IBM Plex Mono"],
-                        "technical-md": ["IBM Plex Mono"],
-                        "technical-sm": ["IBM Plex Mono"],
-                        "headline-lg": ["Orbitron"],
-                        "body-md": ["Inter"],
-                        "body-sm": ["Inter"]
-                    }
-                }
-            }
-        }
-    </script>
-<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-b border-outline-variant glass-panel">
-<div class="flex items-center gap-8">
-<span class="font-display-lg text-headline-lg text-surface-tint uppercase tracking-tighter">MERCADREAM</span>
-<span class="px-2 py-0.5 bg-surface-variant/50 border border-outline-variant text-on-surface-variant font-technical-sm text-[10px] rounded tracking-wider">v20.1 PRO</span>
-<nav class="hidden md:flex items-center gap-4">
-<div class="flex items-center gap-2 px-3 py-1 bg-surface-variant text-surface-tint border-b-2 border-surface-tint pb-1 cursor-pointer" id="nav-discovery">
-<span class="w-2 h-2 rounded-full bg-surface-tint shadow-[0_0_8px_rgba(168,215,0,0.8)]"></span>
-<span class="font-technical-md text-technical-md uppercase" id="nav-txt-discovery">Discovery</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-screenplay">
-<span class="font-technical-md text-technical-md uppercase" id="nav-txt-screenplay">Screenplay</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1 text-on-surface-variant font-technical-md transition-colors cursor-pointer hover:text-surface-tint" id="nav-production">
-<span class="font-technical-md text-technical-md uppercase" id="nav-txt-production">Production</span>
-</div>
-</nav>
-</div>
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-high border border-outline-variant">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="hdr-credits-label">Credits:</span>
-<span class="font-technical-md text-technical-md text-surface-tint"><span id="header-credits">0</span> ●</span>
-</div>
-<div class="flex items-center gap-2 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-surface-tint cursor-pointer font-bold" id="lang-en">EN</span>
-<span class="opacity-30">|</span>
-<span class="hover:text-surface-tint cursor-pointer" id="lang-es">ES</span>
-<span class="opacity-30">|</span>
-<span class="hover:text-surface-tint cursor-pointer" id="lang-ar">AR</span>
-</div>
-<button class="bg-surface-container-high border border-outline-variant px-4 py-1 flex items-center gap-2 hover:bg-surface-tint hover:text-black transition-all group hover-scale" id="btn-new-session">
-<span class="material-symbols-outlined text-sm group-hover:text-black">refresh</span>
-<span class="font-technical-md text-technical-md uppercase" id="btn-txt-new">New Session</span>
-</button>
-<span class="material-symbols-outlined text-surface-tint cursor-pointer hover:scale-110 transition-transform" id="btn-wallet">account_balance_wallet</span>
-</div>
+<body class="font-body-md text-on-surface select-none h-screen min-h-screen overflow-hidden flex flex-col m-0 p-0">
+
+<!-- TopNavBar -->
+<header class="bg-background/90 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center px-gutter h-toolbar-width w-full z-50 flex-none">
+    <div class="flex items-center gap-gutter">
+        <h1 class="font-headline-md text-headline-md text-primary tracking-widest">MERCADREAM</h1>
+        <nav class="hidden md:flex gap-4 items-center ml-6">
+            <a class="font-label-tech-lg text-label-tech-lg text-primary border-b border-primary hover:text-primary transition-colors duration-200" href="#">STUDIO</a>
+        </nav>
+    </div>
+    <div class="flex items-center gap-4">
+        <span class="font-label-tech-sm text-label-tech-sm text-on-surface-variant px-2 py-0.5 bg-surface-container-high">v21.0 ASSEMBLY</span>
+        <div class="flex items-center gap-3 text-on-surface-variant">
+            <button class="material-symbols-outlined text-[20px] hover:text-primary transition-colors duration-200" data-icon="language">language</button>
+            <button class="material-symbols-outlined text-[20px] hover:text-primary transition-colors duration-200" data-icon="account_balance_wallet">account_balance_wallet</button>
+            <div class="h-4 w-[1px] bg-outline-variant"></div>
+            <div class="flex items-center gap-1.5">
+                <span class="font-label-tech-sm text-label-tech-sm">SESSION_ACTIVE</span>
+                <button class="material-symbols-outlined text-primary text-[20px]" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</button>
+            </div>
+        </div>
+    </div>
 </header>
-<main class="flex flex-1 pt-[60px] pb-[60px] overflow-hidden">
-<aside class="fixed left-0 top-[60px] w-[280px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-r border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-crew">
-<div class="p-6 border-b border-outline-variant flex-1 overflow-y-auto custom-scrollbar">
-<div class="flex items-center justify-between mb-4">
-<h2 class="font-display-lg text-on-surface uppercase" id="lbl-crew-panel" style="font-size:14px">Crew Panel</h2>
-<span class="font-label-caps text-label-caps text-surface-tint bg-surface-variant px-2 py-0.5">V19 Multi-Sync</span>
-</div>
-<div class="space-y-6">
-<div class="bg-surface-variant/40 border-l-2 border-surface-tint p-4 flex items-center gap-3">
-<div class="relative">
-<img alt="Gemini" class="w-10 h-10 border border-surface-tint object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMhBI25ulzvgyEUXhjj6Uq9xqK3e34UaGiQ0CQH8NupivhQvKOIk1PMgeQNeGA3QbtE5lhBYmN9au7lJ4xEzce2LJ3YEv1DB_wZ0mFw8Q8lIEXNlnn_vCYUL-2cOOgm3mPnB22ksE5071LDvEnwKONCDr2I8a1AcpnnRe4lWCoqCuTZbMEe3y5EHss5uNN2qa5WxNeCwt3wHjowVkwKDZpw3ncveCLroH6KlKWP52zpZcsx5NRxu7sZF16Ss9CteeRPETwxlJ-n_o"/>
-<div class="absolute -bottom-1 -right-1 w-3 h-3 bg-surface-tint rounded-full border-2 border-surface-variant animate-pulse shadow-[0_0_8px_rgba(168,215,0,0.8)]" id="gemini-status"></div>
-</div>
-<div>
-<p class="font-display-lg text-body-md text-surface-tint leading-none">GEMINI</p>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-wider mt-1" id="lbl-gemini-role">Lead Architect</p><p class="font-technical-sm text-[9px] text-secondary hidden uppercase mt-0.5 tracking-tighter" id="gemini-voice-cmd-mode">[ VOICE COMMAND MODE ]</p><p class="font-technical-sm text-[10px] text-surface-tint/60 hidden uppercase mt-1 italic tracking-widest" id="gemini-voice-status">Listening...</p>
-</div>
-</div>
-<div>
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-3 uppercase border-b border-outline-variant pb-1" id="lbl-competition-wings">Competition Wings</p><div class="mb-4 p-3 bg-surface-container-high/40 border border-surface-tint/30 rounded-sm glass-panel">
-<div class="flex items-center justify-between mb-2">
-<span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px]">record_voice_over</span> Command Library
-        </span>
-</div>
-<div class="space-y-1">
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
-<span>"START SESSION"</span>
-<span class="text-surface-tint">EXEC</span>
-</div>
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
-<span>"SYNC DRAMA"</span>
-<span class="text-surface-tint">MOD</span>
-</div>
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant border-b border-outline-variant/20 pb-0.5">
-<span>"GENERATE SUITE"</span>
-<span class="text-secondary">SYNC</span>
-</div>
-<div class="flex justify-between text-[9px] font-technical-sm text-on-surface-variant">
-<span>"OPEN ASSEMBLY"</span>
-<span class="text-surface-tint">NAV</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 gap-2" id="director-selection">
-<div class="flex items-center">
-<input checked="" class="hidden dir-radio" id="dir-drama" name="director-select" type="radio" value="drama"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-drama" style="color: #a8d700">
-<span class="w-2 h-2 rounded-full bg-[#a8d700]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-drama">Drama</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-action" name="director-select" type="radio" value="action"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-action" style="color: #ff4444">
-<span class="w-2 h-2 rounded-full bg-[#ff4444]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-action">Action</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-comedy" name="director-select" type="radio" value="comedy"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-comedy" style="color: #ffba3f">
-<span class="w-2 h-2 rounded-full bg-[#ffba3f]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-comedy">Comedy</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-doc" name="director-select" type="radio" value="doc"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-doc" style="color: #44aaff">
-<span class="w-2 h-2 rounded-full bg-[#44aaff]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-doc">Documentary</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-music" name="director-select" type="radio" value="music"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-music" style="color: #ff44aa">
-<span class="w-2 h-2 rounded-full bg-[#ff44aa]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-music">Music</span>
-</label>
-</div>
-<div class="flex items-center">
-<input class="hidden dir-radio" id="dir-ads" name="director-select" type="radio" value="ads"/>
-<label class="flex-1 flex items-center gap-3 p-2 border border-outline-variant cursor-pointer hover:bg-surface-variant/50 transition-all hover-scale" for="dir-ads" style="color: #44ffaa">
-<span class="w-2 h-2 rounded-full bg-[#44ffaa]"></span>
-<span class="font-technical-sm uppercase" id="dir-lbl-ads">Ads</span>
-</label>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="p-6 bg-surface-container-low/50 border-t border-outline-variant">
-<div class="mb-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-1" id="lbl-sync-cost">Sync Cost</p>
-<div class="flex justify-between items-end">
-<span class="font-display-lg text-headline-lg text-secondary" id="crew-cost">0 cr/dir</span>
-</div>
-</div>
-<button class="w-full bg-secondary py-3 text-on-secondary font-display-lg text-body-md uppercase tracking-widest hover:bg-secondary-fixed transition-all hover-scale" id="btn-recharge">+ RECHARGE</button>
-</div>
-</aside>
-<section class="ml-[280px] mr-[340px]" id="main-content" style="flex: 1; display: flex; flex-direction: column; background: #131313; position: relative;">
-<div class="p-6 border-b border-outline-variant flex items-center justify-between glass-panel z-10 relative">
-<div>
-<h1 class="font-display-lg text-headline-lg text-on-surface" id="phase-title">Phase 1: Discovery</h1>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="phase-subtitle">Active Mission: Generate Script Concept</p>
-</div>
-<div class="flex gap-4">
-<button class="hidden flex items-center gap-2 border border-[#ffba3f] text-[#ffba3f] px-6 py-2 font-technical-md uppercase hover:bg-[#ffba3f] hover:text-black transition-all hover-scale" id="btn-jury-toggle">
-<span class="material-symbols-outlined">gavel</span> JURY ROOM
-                    </button>
-<button class="flex items-center gap-2 border border-surface-tint text-surface-tint px-6 py-2 font-technical-md uppercase hover:bg-surface-tint hover:text-black transition-all glow-acid hover-scale" id="btn-action">
-<span class="material-symbols-outlined">bolt</span> SYNC ACTION
-                    </button>
-</div>
-</div>
-<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar relative" id="chat-messages"></div>
-<!-- JURY ROOM OVERLAY -->
-<div class="absolute inset-0 bg-black/90 z-20 hidden backdrop-blur-xl flex flex-col" id="jury-room-overlay">
-<div class="p-6 border-b border-outline-variant flex justify-between items-center">
-<h2 class="font-display-lg text-headline-lg text-secondary">JURY ROOM: SIDE-BY-SIDE ANALYSIS</h2>
-<button class="text-on-surface-variant hover:text-white" id="close-jury"><span class="material-symbols-outlined">close</span></button>
-</div>
-<div class="flex-1 overflow-x-auto p-6 flex gap-6 custom-scrollbar" id="jury-comparison-grid">
-<!-- Comparison columns go here -->
-</div>
-</div>
-<div class="p-6 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant glass-panel">
-<div class="relative group">
-<textarea class="w-full bg-surface-container/50 border-outline-variant border-0 border-b-2 border-outline focus:border-surface-tint focus:ring-0 text-on-surface font-technical-md p-4 pl-4 pr-32 resize-none h-20 transition-all" id="chat-input" placeholder="Type your creative directive here..."></textarea>
-<div class="absolute right-4 bottom-4 flex items-center gap-4 group">
-<div class="absolute -top-12 right-0 bg-black/80 border border-surface-tint/50 px-3 py-1.5 rounded-full backdrop-blur-md hidden group-[.mic-active]:flex items-center gap-2" id="voice-listening-tooltip">
-<span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-<span class="text-[10px] font-technical-sm text-on-surface uppercase tracking-widest" id="txt-listening-cmd">Listening for command...</span>
-</div><button class="flex items-center justify-center border border-outline-variant w-10 h-10 hover:bg-surface-variant transition-all hover-scale group" id="btn-mic" onclick="this.classList.toggle('mic-active'); document.getElementById('gemini-voice-cmd-mode').classList.toggle('hidden');" title="Voice Chat"><span class="material-symbols-outlined text-on-surface-variant group-hover:text-surface-tint">mic</span></button><button class="bg-surface-tint text-black px-6 py-2 font-display-lg text-body-sm uppercase font-bold glow-acid hover-scale" id="btn-send">SEND</button>
-</div>
-</div>
-</div>
-<div class="absolute inset-0 bg-black/60 backdrop-blur-md z-30 hidden flex flex-col items-center justify-center" id="voice-overlay">
-<div class="glass-panel p-10 flex flex-col items-center gap-6 border-surface-tint">
-<h2 class="font-display-lg text-2xl text-surface-tint tracking-widest uppercase" id="voice-status-text">Listening...</h2>
-<div class="flex items-end h-12">
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-<div class="waveform-bar"></div>
-</div>
-<button class="mt-4 border border-outline-variant px-6 py-2 font-technical-sm hover:bg-surface-variant uppercase" id="btn-close-voice">Cancel</button>
-</div>
-</div></section>
-<aside class="fixed right-0 top-[60px] w-[340px] h-[calc(100vh-120px)] bg-surface-container/80 backdrop-blur-md border-l border-outline-variant flex flex-col z-40 glass-panel" id="sidebar-pipeline">
-<div class="p-4">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase" id="lbl-competitor-status">Competitor Status</p>
-<div class="aspect-video bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center" id="cockpit-screen">
-<div class="scanline"></div>
-<div class="absolute top-2 left-2 w-4 h-4 border-t border-l border-surface-tint"></div>
-<div class="absolute top-2 right-2 w-4 h-4 border-t border-r border-surface-tint"></div>
-<div class="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-surface-tint"></div>
-<div class="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-surface-tint"></div>
-<div class="text-center relative z-10" id="cockpit-inner">
-<span class="font-technical-sm text-technical-sm text-surface-tint animate-pulse block" id="txt-awaiting">AWAITING SYNC</span>
-<span class="text-[8px] font-technical-sm text-on-surface-variant opacity-50">SYNC_STATUS: IDLE</span>
-</div>
-<div class="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]"></div>
-</div>
-</div>
-<div class="p-4 flex-1 overflow-y-auto">
-<p class="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase" id="lbl-pipeline-stages">Pipeline Stages</p>
-<div class="space-y-4" id="pipeline-stages">
-<div class="stage-item space-y-2" data-stage="1">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s1">01/Script_Sync</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-<div class="stage-item space-y-2 opacity-50" data-stage="2">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s2">02/Assign_Directors</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-<div class="stage-item space-y-2 opacity-50" data-stage="3">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s3">03/Parallel_Generation</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-<div class="stage-item space-y-2 opacity-50" data-stage="4">
-<div class="flex justify-between items-center">
-<span class="font-technical-sm text-technical-sm text-on-surface-variant" id="pipe-s4">04/Competition_Review</span>
-<span class="stage-status font-label-caps text-[10px] text-on-surface-variant">IDLE</span>
-</div>
-<div class="h-1 bg-surface-variant w-full"><div class="stage-bar h-full bg-surface-variant w-0 transition-all duration-500"></div></div>
-</div>
-</div>
-</div>
-<div class="bg-black/80 border-t border-outline-variant p-4 font-technical-sm text-[11px] flex flex-col relative" id="log-terminal" style="height:160px">
-<div class="scanline"></div>
-<div class="flex justify-between items-center mb-2 border-b border-outline-variant pb-1 relative z-10">
-<span class="text-on-surface-variant uppercase" id="lbl-sync-log">Live Sync Log</span>
-<span class="text-surface-tint uppercase">v19.0</span>
-</div>
-<div class="flex-1 overflow-y-auto terminal-scroll text-surface-tint/80 space-y-1 relative z-10 typing-cursor" id="log-lines"></div>
-</div>
-</aside>
-</main>
-<footer class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-between px-6 bg-surface-container-lowest/80 backdrop-blur-md h-[60px] border-t border-outline-variant glass-panel">
-<div class="flex items-center gap-10">
-<div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-credits-label">Credits:</span>
-<span class="font-technical-md text-technical-md text-surface-tint"><span id="footer-credits">0</span> ●</span>
-</div>
-<div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps text-on-surface-variant uppercase" id="ftr-active-suite">Active Suite:</span>
-<div class="flex -space-x-1" id="footer-active-dirs"></div>
-<span class="font-technical-sm text-technical-sm text-on-surface" id="footer-suite-names">1 Director Selected</span>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<button class="hidden bg-[#a8d700] h-[44px] px-6 items-center gap-2 text-black font-display-lg text-body-sm uppercase font-bold hover:opacity-90 transition-all glow-multi hover-scale" id="btn-assembly">
-<span class="material-symbols-outlined">compare_arrows</span> OPEN ASSEMBLY →
+
+<!-- Main Workspace -->
+<div class="flex-1 flex overflow-hidden h-full min-h-0">
+    <!-- Left SideNavBar -->
+    <aside class="bg-surface-container-lowest/90 backdrop-blur-xl border-r border-outline-variant flex flex-col py-3 space-y-1 w-sidebar-width z-40 flex-none overflow-hidden h-full">
+        <div class="px-3 mb-4 flex-none">
+            <div class="flex items-center gap-2.5 mb-3">
+                <div class="w-7 h-7 bg-primary/20 rounded flex items-center justify-center border border-primary/30">
+                    <span class="material-symbols-outlined text-primary text-[16px]" data-icon="token">token</span>
+                </div>
+                <div>
+                    <p class="font-label-tech-lg text-label-tech-lg text-primary leading-none">ASSEMBLY ROOM</p>
+                    <p class="font-label-tech-sm text-label-tech-sm text-on-surface-variant opacity-70">v21.0 MASTER</p>
+                </div>
+            </div>
+            <button class="w-full bg-primary text-deep-black font-label-tech-lg text-label-tech-lg py-1.5 rounded-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all">
+                <span class="material-symbols-outlined text-[16px]" data-icon="upload">upload</span>
+                UPLOAD ASSET
             </button>
-<div class="flex border border-outline-variant h-[44px] overflow-hidden font-technical-sm bg-surface-container/50">
-<button class="px-4 bg-surface-tint text-black font-bold uppercase transition-all hover:brightness-110" id="btn-auto">Auto Select</button>
-<button class="px-4 text-on-surface-variant hover:text-surface-tint uppercase transition-colors" id="btn-manual">Manual</button>
-</div>
-<button class="bg-secondary h-[44px] px-8 flex items-center gap-3 group hover:bg-secondary-fixed transition-all glow-acid hover-scale" id="btn-generate">
-<span class="font-display-lg text-body-md text-on-secondary uppercase font-black tracking-widest" id="btn-txt-generate">Generate Suite</span>
-<span class="material-symbols-outlined text-on-secondary font-bold group-hover:translate-x-1 transition-transform">rocket_launch</span>
-</button>
-</div>
-</footer>
-<script>
-        const API_CHAT = '/api/chat';
-        const API_DIRECTOR = '/api/director';
-        const BASE_COST = 0;
-
-        const DIR_CONFIG = {
-            drama: { color: '#a8d700', label: 'DRAMA', icon: 'theater_comedy' },
-            action: { color: '#ff4444', label: 'ACTION', icon: 'explosion' },
-            comedy: { color: '#ffba3f', label: 'COMEDY', icon: 'sentiment_very_satisfied' },
-            doc: { color: '#44aaff', label: 'DOC', icon: 'visibility' },
-            music: { color: '#ff44aa', label: 'MUSIC', icon: 'music_note' },
-            ads: { color: '#44ffaa', label: 'ADS', icon: 'campaign' }
-        };
-
-        const TX = {
-            en: {
-                ph1: 'Phase 1: Discovery', ph2: 'Phase 2: Director Duel', ph3: 'Phase 3: Multi-Sync Production',
-                sub1: 'Generate Script Concept', sub2: 'Select Contenders', sub3: 'Parallel Generation Processing',
-                placeholder: 'Type your creative directive here...',
-                send: 'SEND', action: 'SYNC ACTION', new_session: 'NEW SESSION', generate: 'GENERATE SUITE',
-                assembly: 'OPEN ASSEMBLY →', auto: 'AUTO SELECT', manual: 'MANUAL',
-                welcome: 'Welcome to Suite v19. Choose your project type:',
-                types: [{ id: 'film', icon: '🎬', label: 'Film / Story' }, { id: 'ad', icon: '📢', label: 'Commercial' }, { id: 'music', icon: '🎵', label: 'Music Video' }, { id: 'doc', icon: '📹', label: 'Documentary' }],
-                firstQ: { film: 'What is your story about?', ad: 'What is the product or service?', music: 'What is the song about?', doc: 'What subject are you documenting?' },
-                done: 'All director iterations complete. Compare and export in Assembly room.',
-                err: 'Sync Error. Check connection.',
-                confirm_yes: 'START SUITE', confirm_no: 'CANCEL',
-                credits: 'Credits', active_suite: 'Active Suite', sync_log: 'Live Sync Log', status: 'Competitor Status', awaiting: 'Awaiting Sync', pipeline: 'Pipeline Stages',
-                nav_disc: 'Discovery', nav_scr: 'Screenplay', nav_prod: 'Production',
-                panel_crew: 'Crew Panel', wings: 'Competition Wings', sync_cost: 'Sync Cost', role: 'Lead Architect',
-                transp_msg: (count, cost) => `Rarity Captured: ${count} scenes x 10s. Scene Cost: 15 cr. Total: ${cost} cr. Pay only what you generate!`
-            },
-            es: {
-                ph1: 'Fase 1: Descubrimiento', ph2: 'Fase 2: Duelo de Directores', ph3: 'Fase 3: Producción Multi-Sinc',
-                sub1: 'Generar Concepto de Guion', sub2: 'Seleccionar Contendientes', sub3: 'Procesamiento de Generación Paralela',
-                placeholder: 'Escribe tu directiva creativa aquí...',
-                send: 'ENVIAR', action: 'ACCIÓN DE SINC', new_session: 'NUEVA SESIÓN', generate: 'GENERAR SUITE',
-                assembly: 'ABRIR ENSAMBLAJE →', auto: 'AUTO SELECCIÓN', manual: 'MANUAL',
-                welcome: 'Bienvenido a Suite v19. Elige tu tipo de proyecto:',
-                types: [{ id: 'film', icon: '🎬', label: 'Película / Historia' }, { id: 'ad', icon: '📢', label: 'Comercial' }, { id: 'music', icon: '🎵', label: 'Video Musical' }, { id: 'doc', icon: '📹', label: 'Documental' }],
-                firstQ: { film: '¿De qué trata tu historia?', ad: '¿Cuál es el producto o servicio?', music: '¿De qué trata la canción?', doc: '¿Qué tema estás documentando?' },
-                done: 'Todas las iteraciones completadas. Compara y exporta en la sala de ensamblaje.',
-                err: 'Error de sincronización. Revisa la conexión.',
-                confirm_yes: 'INICIAR SUITE', confirm_no: 'CANCELAR',
-                credits: 'Créditos', active_suite: 'Suite Activa', sync_log: 'Registro de Sinc', status: 'Estado de Competidor', awaiting: 'Esperando Sinc', pipeline: 'Etapas de Pipeline',
-                nav_disc: 'Descubrimiento', nav_scr: 'Guion', nav_prod: 'Producción',
-                panel_crew: 'Panel de Tripulación', wings: 'Alas de Competencia', sync_cost: 'Costo de Sinc', role: 'Arquitecto Principal',
-                transp_msg: (count, cost) => `Rareza Capturada: ${count} escenas x 10s. Costo de escena: 15 cr. Total: ${cost} cr. ¡Solo pagas lo que generas!`
-            },
-            ar: {
-                ph1: 'المرحلة الأولى: الاستكشاف', ph2: 'المرحلة الثانية: مبارزة المخرجين', ph3: 'المرحلة الثالثة: إنتاج متعدد المزامنة',
-                sub1: 'توليد مفهوم السيناريو', sub2: 'اختيار المتنافسين', sub3: 'معالجة التوليد الموازي',
-                placeholder: 'اكتب توجيهك الإبداعي هنا...',
-                send: 'إرسال', action: 'إجراء المزامنة', new_session: 'جلسة جديدة', generate: 'توليد المجموعة',
-                assembly: 'OPEN ASSEMBLY →', auto: 'اختيار تلقائي', manual: 'يدوي',
-                welcome: 'مرحباً بك في جناح v19. اختر نوع مشروعك:',
-                types: [{ id: 'film', icon: '🎬', label: 'فيلم / قصة' }, { id: 'ad', icon: '📢', label: 'إعلان' }, { id: 'music', icon: '🎵', label: 'فيديو موسيقي' }, { id: 'doc', icon: 'وثائقي' }],
-                firstQ: { film: 'عن ماذا تدور قصتك؟', ad: 'ما هو المنتج أو الخدمة؟', music: 'عن ماذا تدور الأغنية؟', doc: 'ما هو الموضوع الذي توثقه؟' },
-                done: 'اكتملت جميع تكرارات المخرجين. قارن وصدر في غرفة التحكيم.',
-                err: 'خطأ في المزامنة. تحقق من الاتصال.',
-                confirm_yes: 'ابدأ المجموعة', confirm_no: 'إلغاء',
-                credits: 'الرصيد', active_suite: 'المجموعة النشطة', sync_log: 'سجل المزامنة المباشر', status: 'حالة المنافس', awaiting: 'في انتظار المزامنة', pipeline: 'مراحل خط الإنتاج',
-                nav_disc: 'استكشاف', nav_scr: 'السيناريو', nav_prod: 'الإنتاج',
-                panel_crew: 'لوحة الطاقم', wings: 'أجنحة المنافسة', sync_cost: 'تكلفة المزامنة', role: 'المهندس الرئيسي',
-                transp_msg: (count, cost) => `تم التقاط الرؤية: ${count} مشاهد × 10 ثوانٍ. تكلفة المشهد: 15 رصيداً. الإجمالي: ${cost} رصيداً. ادفع فقط مقابل ما تولده!`
-            }
-        };
-
-        const SCREENWRITER = {
-            film: `You are the Lead Architect in MercaDream. Only one question per message, max 2 sentences. Ask about: Energy/Mood, Character, Transformation, World. After 4-6 exchanges output exactly: DREAM_CAPTURED`,
-            ad: `You are a Commercial Lead Architect. Ask one question at a time: 1) Product, 2) Target Audience, 3) Core Message. After 3 answers output exactly: DREAM_CAPTURED`,
-            music: `You are a Music Video Lead Architect. Ask one question at a time: 1) Mood/Genre of song, 2) Artist visual style, 3) Key visual concept. After 3 answers output exactly: DREAM_CAPTURED`,
-            doc: `You are a Documentary Lead Architect. Ask one question at a time: 1) Subject, 2) Angle, 3) Central Truth. After 3 answers output exactly: DREAM_CAPTURED`
-        };
-
-        // STATE
-        let lang = 'en';
-        let phase = 'discovery';
-        let history = [];
-        let brief = null;
-        let projectType = null;
-        let isBusy = false;
-        let multiDirectorResults = {};
-
-        const $ = id => document.getElementById(id);
-
-        function setLanguage(l) {
-            lang = l;
-            document.documentElement.lang = l;
-            document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
-
-            ['en', 'es', 'ar'].forEach(id => {
-                const el = $(`lang-${id}`);
-                if (el) {
-                    el.classList.toggle('text-surface-tint', id === l);
-                    el.classList.toggle('font-bold', id === l);
-                }
-            });
-
-            $('nav-txt-discovery').textContent = TX[l].nav_disc;
-            $('nav-txt-screenplay').textContent = TX[l].nav_scr;
-            $('nav-txt-production').textContent = TX[l].nav_prod;
-            $('hdr-credits-label').textContent = TX[l].credits + ':';
-            $('btn-txt-new').textContent = TX[l].new_session;
-            $('lbl-crew-panel').textContent = TX[l].panel_crew;
-            $('lbl-gemini-role').textContent = TX[l].role;
-            $('lbl-competition-wings').textContent = TX[l].wings;
-            $('lbl-sync-cost').textContent = TX[l].sync_cost;
-            $('phase-title').textContent = phase === 'discovery' ? TX[l].ph1 : (phase === 'production' ? TX[l].ph3 : TX[l].ph2);
-            $('phase-subtitle').textContent = phase === 'discovery' ? TX[l].sub1 : (phase === 'production' ? TX[l].sub3 : TX[l].sub2);
-            $('chat-input').placeholder = TX[l].placeholder;
-            $('btn-send').textContent = TX[l].send;
-            $('btn-action').innerHTML = `<span class="material-symbols-outlined">bolt</span> ${TX[l].action}`;
-            $('lbl-competitor-status').textContent = TX[l].status;
-            $('txt-awaiting').textContent = TX[l].awaiting;
-            $('lbl-pipeline-stages').textContent = TX[l].pipeline;
-            $('lbl-sync-log').textContent = TX[l].sync_log;
-            $('ftr-credits-label').textContent = TX[l].credits + ':';
-            $('ftr-active-suite').textContent = TX[l].active_suite + ':';
-            $('btn-auto').textContent = TX[l].auto;
-            $('btn-manual').textContent = TX[l].manual;
-            $('btn-txt-generate').textContent = TX[l].generate;
-
-            const main = $('main-content');
-            const crew = $('sidebar-crew');
-            const pipe = $('sidebar-pipeline');
-            if (l === 'ar') {
-                crew.style.left = 'auto'; crew.style.right = '0'; crew.style.borderLeft = '1px solid #353534'; crew.style.borderRight = 'none';
-                pipe.style.right = 'auto'; pipe.style.left = '0'; pipe.style.borderRight = '1px solid #353534'; pipe.style.borderLeft = 'none';
-                main.style.marginLeft = '340px'; main.style.marginRight = '280px';
-                main.classList.add('text-right');
-            } else {
-                crew.style.right = 'auto'; crew.style.left = '0'; crew.style.borderRight = '1px solid #353534'; crew.style.borderLeft = 'none';
-                pipe.style.left = 'auto'; pipe.style.right = '0'; pipe.style.borderLeft = '1px solid #353534'; pipe.style.borderRight = 'none';
-                main.style.marginRight = '340px'; main.style.marginLeft = '280px';
-                main.classList.remove('text-right');
-            }
-
-            updateFooterSuite();
-            log(`Environment Synchronized: ${l.toUpperCase()}`, 'ok');
-        }
-
-        function getCredits() { return parseInt(localStorage.getItem('md_credits') || '100'); }
-        function setCredits(v) {
-            localStorage.setItem('md_credits', v);
-            $('header-credits').textContent = v.toLocaleString();
-            $('footer-credits').textContent = v.toLocaleString();
-        }
-
-        function log(msg, type = 'info') {
-            const lines = $('log-lines');
-            if (!lines) return;
-            const colors = { ok: '#a8d700', err: '#ff4444', warn: '#ffba3f', info: 'rgba(168,215,0,0.6)' };
-            const p = document.createElement('p');
-            p.className = `leading-tight ${lang === 'ar' ? 'text-right' : ''} border-l border-surface-variant/30 pl-2`;
-            const time = new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'en-US', { hour12: false });
-            p.innerHTML = `<span style="opacity:.4">[${time}]</span> <span style="color:${colors[type] || colors.info}">● ${msg}</span>`;
-            lines.insertBefore(p, lines.firstChild);
-        }
-
-        function setStage(num, status) {
-            document.querySelectorAll('.stage-item').forEach((el, i) => {
-                const n = i + 1;
-                const bar = el.querySelector('.stage-bar');
-                const lbl = el.querySelector('.stage-status');
-                const labels = { en: { idle: 'IDLE', active: 'ACTIVE', done: 'COMPLETE' }, ar: { idle: 'خامل', active: 'نشط', done: 'مكتمل' }, es: { idle: 'INACTIVO', active: 'ACTIVO', done: 'COMPLETO' } };
-
-                if (n < num) { el.classList.remove('opacity-50'); if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
-                else if (n === num) {
-                    el.classList.remove('opacity-50');
-                    if (status === 'active') { if (bar) { bar.style.width = '65%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].active; lbl.style.color = '#a8d700'; } }
-                    else if (status === 'done') { if (bar) { bar.style.width = '100%'; bar.style.background = '#a8d700'; } if (lbl) { lbl.textContent = labels[lang].done; lbl.style.color = '#a8d700'; } }
-                }
-                else { el.classList.add('opacity-50'); if (bar) { bar.style.width = '0'; } if (lbl) { lbl.textContent = labels[lang].idle; lbl.style.color = ''; } }
-            });
-        }
-
-        function setCockpit(html) { $('cockpit-inner').innerHTML = html; }
-
-        function getSelectedDirectors() {
-            const checked = document.querySelector('.dir-radio:checked');
-            return checked ? [checked.value] : [];
-        }
-
-        function updateFooterSuite() {
-            const selected = getSelectedDirectors();
-            const container = $('footer-active-dirs');
-            const label = $('footer-suite-names');
-            if (container) {
-                container.innerHTML = selected.map(id => `<div class="w-4 h-4 rounded-full border border-black shadow-lg" style="background:${DIR_CONFIG[id].color}"></div>`).join('');
-            }
-            if (label) {
-                if (lang === 'ar') label.textContent = selected.length > 0 ? `مخرج واحد مختار` : `لا يوجد مخرج مختار`;
-                else if (lang === 'es') label.textContent = selected.length > 0 ? `1 Director Seleccionado` : `Ningún Director`;
-                else label.textContent = selected.length > 0 ? `1 Director Selected` : `No Director Selected`;
-            }
-        }
-
-        function addBot(html) {
-            const area = $('chat-messages');
-            const div = document.createElement('div');
-            const ltr = lang !== 'ar';
-            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? '' : 'mr-auto'}`;
-            div.innerHTML = `
-                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
-                    <span class="font-label-caps text-[10px] text-surface-tint uppercase tracking-widest">${lang === 'ar' ? 'محرك Mercadream' : 'Mercadream Engine'}</span>
+        </div>
+        <!-- Sidebar Scrollable Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+            <div class="px-1.5 space-y-0.5">
+                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-primary bg-primary/10 border-r-2 border-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="video_library" style="font-variation-settings: 'FILL' 1;">video_library</span>
+                    Media
+                </button>
+                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="movie_filter">movie_filter</span>
+                    Clips
+                </button>
+                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="folder_open">folder_open</span>
+                    Assets
+                </button>
+                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="upload">upload</span>
+                    Upload
+                </button>
+            </div>
+            <div class="mt-6 px-3 pb-3">
+                <p class="font-label-tech-sm text-label-tech-sm text-on-surface-variant mb-2 uppercase tracking-wider">Generated Clips</p>
+                <div class="grid grid-cols-2 gap-1.5">
+                    <div class="aspect-square bg-surface-container-high border border-outline-variant relative group overflow-hidden cursor-pointer hover:border-primary transition-colors">
+                        <img alt="Clip 1" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJiGCQHR3Xpke4fTSDdvtbo4Um_7O7pLVF7y-x2VOswPcQO-Imn9SVvT5eFgl9qk1jic_N60JmeUlay-3ut2P1QMsXq0kjX8ZRQW1J06ZcksaXyqdMCGB0szQG5h7-7k_NypXr4gbROODUuuGXExdm2uZjW6EVIEEU6ISfn0Z6T6k-WA3HJNcAJFhy7U96re56NoGQK_Wx8nhdRSLNzcuYtrk1WJrfG-XdIpjWyYepxjGuxrnCEiRkp_cTY7_I0xhxQZ0G1XbX9z5f"/>
+                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:04</div>
+                    </div>
+                    <div class="aspect-square bg-surface-container-high border border-primary relative group overflow-hidden cursor-pointer shadow-[inset_0_0_8px_rgba(168,215,0,0.3)]">
+                        <img alt="Clip 2" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACEkjH_2GA7WyWAy2PfB3ELrlroPD73SbR0yhV0ngSzfn4qCfzlZky0mhcaF8JJAB46sOVgzbjWLWRuBjwGGi2ubNdfsIVR0vrrfGUoKHkFQfBDu7fLgSkNqh-5rI6XwyjLjrdrXIxnKDG8WjnSdYOwUJ1-3RoX_XYgwnZl9pnPdlosYGTPULDp2Cg7VT3xYmLr9vI_n4Mb_Pvjv8l3KcORrCsa1XtejVtuHlq8NfsqwKrtpBPsAxfI2K-wgoaSNFOTATkZK68SX9i"/>
+                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:12</div>
+                    </div>
+                    <div class="aspect-square bg-surface-container-high border border-outline-variant relative group overflow-hidden cursor-pointer hover:border-primary transition-colors">
+                        <img alt="Clip 3" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZHYFeL0IG8EN6YjCizZFwUSchGbKVBcQpyF40ezdtTXW-cw2RS1BilaA1Ht500TLTurKpgiT-v-Vm2xZc-IpO5yJxhZszgT4W9dy2MxEv8OogqgBHTJ5rxrSEp15EASuumgBJ6-sOByZtY3VGpgIiew1XP8fzV7Ig2QLs2ibOKnfrkf80EGiFOtEupV91hM4Pc2a0pb8EGV5VB-f8bOt1ngBhdaTXGkU7rnA7Fkm9hn9ZqNjc6L-QoKQLB61og5w7qxN1pLE8wIxU"/>
+                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:08</div>
+                    </div>
+                    <div class="aspect-square bg-surface-container-high border border-outline-variant flex items-center justify-center text-outline hover:text-primary cursor-pointer hover:border-primary transition-all">
+                        <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                    </div>
                 </div>
-                <div class="bg-surface-container/30 backdrop-blur-sm p-6 border-${ltr ? 'l' : 'r'}-4 border-surface-tint glass-panel">
-                    <div class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${html}</div>
-                </div>`;
-            area.appendChild(div);
-            area.scrollTop = area.scrollHeight;
-            history.push({ role: 'assistant', content: html });
-        }
+            </div>
+        </div>
+        <div class="px-1.5 pt-2 border-t border-outline-variant flex-none bg-surface-container-lowest">
+            <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
+                <span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+                Settings
+            </button>
+            <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
+                <span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
+                Help
+            </button>
+        </div>
+    </aside>
 
-        function addUser(text) {
-            const area = $('chat-messages');
-            const div = document.createElement('div');
-            const ltr = lang !== 'ar';
-            div.className = `flex flex-col gap-2 max-w-[85%] ${ltr ? 'ml-auto items-end' : 'mr-auto items-start'}`;
-            div.innerHTML = `
-                <div class="flex items-center gap-2 ${ltr ? '' : 'flex-row-reverse'}">
-                    <span class="font-label-caps text-[10px] text-secondary uppercase tracking-widest">${lang === 'ar' ? 'أنت' : 'You'}</span>
+    <!-- Center Content: Monitor and Timeline -->
+    <main class="flex-1 flex flex-col min-w-0 bg-deep-black overflow-hidden h-full">
+        <!-- Program Monitor Area - تم إصلاح المرونة هنا بالـ min-h-0 و flex-shrink -->
+        <div class="flex-1 flex flex-col p-3 relative min-h-0 flex-shrink overflow-hidden">
+            <div class="flex justify-between items-center mb-1.5 px-1 flex-none">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+                    <h2 class="font-label-tech-lg text-label-tech-lg text-primary uppercase tracking-[0.2em]">Program Monitor</h2>
                 </div>
-                <div class="p-6 bg-surface-tint/5 border border-surface-tint/20 glass-panel">
-                    <p class="text-[15px] leading-relaxed color-[#e5e2e1] ${ltr ? '' : 'text-right'}">${text}</p>
-                </div>`;
-            area.appendChild(div);
-            area.scrollTop = area.scrollHeight;
-            history.push({ role: 'user', content: text });
-        }
-
-        function showTypeSelector() {
-            const types = TX[lang].types;
-            const grid = types.map(t =>
-                `<button onclick="selectType('${t.id}')" class="p-4 bg-surface-container-high/40 border border-outline-variant hover:border-surface-tint hover:text-surface-tint transition-all hover-scale flex items-center gap-4 ${lang === 'ar' ? 'text-right flex-row-reverse' : 'text-left'} w-full font-technical-sm group">
-                    <span class="text-2xl group-hover:scale-125 transition-transform">${t.icon}</span>
-                    <span class="font-bold tracking-wider">${t.label}</span>
-                </button>`
-            ).join('');
-            addBot(`${TX[lang].welcome}<div class="grid grid-cols-2 gap-3 mt-5">${grid}</div>`);
-        }
-
-        function selectType(type) {
-            projectType = type;
-            const q = TX[lang].firstQ[type];
-            addBot(q);
-            log('Project Sync: ' + type.toUpperCase(), 'ok');
-        }
-
-        async function startProduction() {
-            const selected = getSelectedDirectors();
-            if (selected.length === 0) {
-                log('Error: No Director Selected', 'err');
-                alert(lang === 'ar' ? 'اختر مخرجاً واحداً للمنافسة.' : 'Select one director for competition.');
-                return;
-            }
-
-            const totalCost = selected.length * BASE_COST;
-            if (getCredits() < totalCost) {
-                log('Error: Insufficient Credits', 'err');
-                return;
-            }
-
-            phase = 'production'; isBusy = true;
-            $('phase-title').textContent = TX[lang].ph3;
-            $('phase-subtitle').textContent = lang === 'ar' ? 'مزامنة موازية: مخرج واحد' : 'Parallel Sync: 1 Director';
-            setCredits(getCredits() - totalCost);
-
-            log(`Sync Activated: ${selected[0].toUpperCase()}`, 'ok');
-            setCockpit(`<span class="font-technical-sm text-[10px] text-surface-tint animate-pulse">${lang === 'ar' ? 'جاري_المزامنة' : 'SYNCING_ENGINE'}</span>`);
-
-            setStage(1, 'active'); await new Promise(r => setTimeout(r, 800));
-            setStage(1, 'done');
-            setStage(2, 'active'); await new Promise(r => setTimeout(r, 600));
-            setStage(2, 'done');
-            setStage(3, 'active');
-
-            const conv = history.map(m => m.content).join('\n\n');
-            multiDirectorResults = {};
-
-            try {
-                const dirType = selected[0];
-                log(`Thread Start: ${dirType.toUpperCase()}`, 'info');
-                const res = await fetch(API_DIRECTOR, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: dirType, conversation: conv, brief: brief || conv })
-                });
-                if (!res.ok) throw new Error(`${dirType} failed`);
-                const data = await res.json();
-
-                const cleanedScenes = (data.scenes || []).map((s, i) => ({
-                    title: s.title || (lang === 'ar' ? `مشهد ${i + 1}` : `Scene ${i + 1}`),
-                    prompt: s.prompt || '',
-                    director: dirType,
-                    sceneNumber: i + 1,
-                    status: 'pending'
-                }));
-
-                multiDirectorResults[dirType] = cleanedScenes;
-                log(`Success: ${dirType.toUpperCase()} - ${cleanedScenes.length} scenes captured`, 'ok');
-
-                setStage(3, 'done');
-                setStage(4, 'done');
-
-                localStorage.setItem('md_multi_director_output', JSON.stringify(multiDirectorResults));
-                localStorage.setItem('md_6scenes', JSON.stringify(cleanedScenes));
-                localStorage.setItem('md_assembly_videos', JSON.stringify(cleanedScenes));
-                localStorage.setItem('md_project_type', dirType);
-
-                showDirectorTabs(selected);
-
-                const sceneCount = cleanedScenes.length;
-                const sceneTotalCost = sceneCount * 15;
-
-                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
-                log(TX[lang].transp_msg(sceneCount, sceneTotalCost), 'ok');
-                log('━━━━━━━━━━━━━━━━━━━━━', 'ok');
-
-                setCockpit('<div class="text-2xl mb-1">🔥</div><span class="font-label-caps text-[8px] text-surface-tint">COMPETITION_READY</span>');
-                addBot(TX[lang].done);
-                $('btn-assembly').classList.remove('hidden');
-                $('btn-assembly').style.display = 'flex';
-                $('btn-jury-toggle').classList.remove('hidden');
-
-            } catch (e) {
-                log('Critical Sync Fail: ' + e.message, 'err');
-                addBot('Sync interrupted: ' + e.message);
-            }
-            isBusy = false;
-        }
-
-        function showDirectorTabs(selected) {
-            const area = $('chat-messages');
-            const container = document.createElement('div');
-            container.className = 'w-full space-y-4 border border-outline-variant p-6 bg-surface-container-lowest/50 backdrop-blur-md glass-panel';
-
-            let tabsHtml = `<div class="flex gap-2 border-b border-outline-variant pb-2">`;
-            selected.forEach((dir, i) => {
-                const color = DIR_CONFIG[dir].color;
-                tabsHtml += `<button onclick="switchDirView('${dir}')" class="px-6 py-2 font-display-lg text-[11px] border border-outline-variant transition-all hover:brightness-125 uppercase tracking-widest" style="border-bottom: 2px solid ${color}; color: ${color};" id="tab-${dir}">${dir}</button>`;
-            });
-            tabsHtml += `</div><div id="dir-content-view" class="p-6 bg-surface-container/30 min-h-[250px] space-y-4"></div>`;
-
-            container.innerHTML = tabsHtml;
-            area.appendChild(container);
-            area.scrollTop = area.scrollHeight;
-
-            switchDirView(selected[0]);
-        }
-
-        window.switchDirView = function (dir) {
-            const scenes = multiDirectorResults[dir] || [];
-            const config = DIR_CONFIG[dir];
-            const view = $('dir-content-view');
-
-            document.querySelectorAll('[id^="tab-"]').forEach(t => {
-                t.classList.remove('bg-surface-variant/40');
-                t.style.opacity = '0.6';
-            });
-            const target = $(`tab-${dir}`);
-            if (target) {
-                target.classList.add('bg-surface-variant/40');
-                target.style.opacity = '1';
-            }
-
-            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
-            scenes.slice(0, 6).forEach((s, i) => {
-                const keywords = s.prompt.split(' ').slice(0, 5).join(' ');
-                html += `
-                    <div class="p-4 border-l-4 border-surface-variant bg-surface-container-lowest/40 hover:border-${dir} transition-all hover-scale group" style="border-left-color: ${config.color}">
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="font-label-caps text-[9px] opacity-40 uppercase tracking-tighter">Segment 0${i + 1} // Sync_Ref</span>
-                            <span class="material-symbols-outlined text-[16px]" style="color: ${config.color}">${config.icon}</span>
+                <div class="font-data-mono text-primary text-headline-md tracking-widest bg-primary/5 px-3 py-0.5 border border-primary/20" id="timecode-display">
+                    00:00:15:22
+                </div>
+            </div>
+            <div class="flex-1 bg-surface-container-lowest border border-outline-variant relative group overflow-hidden min-h-0">
+                <div class="absolute top-3 left-3 border-l border-t border-primary w-6 h-6 opacity-40"></div>
+                <div class="absolute top-3 right-3 border-r border-t border-primary w-6 h-6 opacity-40"></div>
+                <div class="absolute bottom-3 left-3 border-l border-b border-primary w-6 h-6 opacity-40"></div>
+                <div class="absolute bottom-3 right-3 border-r border-b border-primary w-6 h-6 opacity-40"></div>
+                <div class="scanline-overlay"></div>
+                <div class="scanline-pulse"></div>
+                <!-- تم تحديد max-h-full للصورة لضمان عدم خروجها عن الشاشة -->
+                <img alt="Video Feed" class="w-full h-full max-h-full object-contain opacity-90 group-hover:scale-[1.01] transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu0kSG6YMzzuAYuAqsO_Etk-SxelmqaoAWkDyRNb1seOmoahXzzYhPNx1d1HXvUMEwDFe22VNa0ZAh-G5L1XKYTskvEWciN-PNb-e1UBfqENs0-CMpeHincgqWkb8MhooyxynaAnPk5nBcwN2RnIxiDRC_y8UFAxPjZAMZaqM_HNMAMzekIjNvw1_EfY6LGhMNEzjukpaEbx-m66lpzEwcDuWsggJy0WEEodM6HwClljeuKIrZj9Uhr93qxbZ4XQxQCPEIZM68ybID"/>
+                
+                <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-deep-black/95 to-transparent flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="relative w-full h-1 bg-surface-bright rounded-full cursor-pointer">
+                        <div class="absolute left-0 top-0 h-full w-[45%] bg-primary"></div>
+                        <div class="absolute left-[45%] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rotate-45 shadow-[0_0_8px_rgba(168,215,0,0.8)]"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-[20px]" data-icon="replay_10">replay_10</button>
+                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-3xl" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</button>
+                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-[20px]" data-icon="forward_10">forward_10</button>
                         </div>
-                        <h4 class="font-display-lg text-xs mb-2 text-on-surface uppercase group-hover:text-surface-tint transition-colors">${s.title}</h4>
-                        <p class="text-[13px] leading-relaxed text-on-surface-variant mb-3 italic">"${s.prompt}"</p>
-                        <div class="flex gap-2 flex-wrap">
-                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10" style="color: ${config.color}">#${dir.toUpperCase()}</span>
-                            <span class="text-[10px] font-technical-sm px-2 py-0.5 bg-white/5 border border-white/10 opacity-60">DYNAMIC_LIT</span>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-1.5">
+                                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-[18px]" data-icon="volume_up">volume_up</button>
+                                <div class="w-12 h-0.5 bg-outline-variant rounded-full relative overflow-hidden">
+                                    <div class="w-2/3 h-full bg-primary"></div>
+                                </div>
+                            </div>
+                            <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-[18px]" data-icon="fullscreen">fullscreen</button>
                         </div>
                     </div>
-                `;
-            });
-            html += `</div>`;
-            view.innerHTML = html;
-        }
-
-        async function sendMessage() {
-            if (isBusy) return;
-            const input = $('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            input.value = ''; input.style.height = 'auto';
-            isBusy = true;
-            addUser(text);
-
-            try {
-                const system = SCREENWRITER[projectType || 'film'];
-                const res = await fetch(API_CHAT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system, messages: history, max_tokens: 800 }) });
-                const data = await res.json();
-                const reply = data.text || '';
-
-                if (reply.includes('DREAM_CAPTURED')) {
-                    brief = reply.replace('DREAM_CAPTURED', '').trim() || history.map(m => m.content).join('\n');
-                    const captureMsg = lang === 'ar' ? "تمت مزامنة المهندس بنجاح. المفهوم الأساسي مقفل. اختر منافسيك وابدأ التوليد." : (lang === 'es' ? "Arquitecto sincronizado. Concepto bloqueado. Elige tus competidores y comienza." : "Architect synced successfully. Core concept locked. Choose your contenders in the sidebar and start generation.");
-                    addBot(captureMsg);
-                    log('Dream Captured & Locked', 'ok');
-                } else {
-                    addBot(reply);
-                }
-            } catch (e) {
-                log('Error: ' + e.message, 'err');
-            }
-            isBusy = false;
-        }
-
-        // Jury Room Toggle Logic
-        $('btn-jury-toggle').onclick = () => {
-            const overlay = $('jury-room-overlay');
-            const grid = $('jury-comparison-grid');
-            overlay.classList.toggle('hidden');
-
-            if (!overlay.classList.contains('hidden')) {
-                grid.innerHTML = '';
-                const dirs = Object.keys(multiDirectorResults);
-                dirs.forEach(dirKey => {
-                    const scenes = multiDirectorResults[dirKey];
-                    const config = DIR_CONFIG[dirKey];
-                    const col = document.createElement('div');
-                    col.className = 'min-w-[400px] flex-1 bg-surface-container/40 p-6 border-t-4 glass-panel';
-                    col.style.borderColor = config.color;
-                    
-                    let sceneListHtml = `<div class="mb-6 flex items-center justify-between">
-                        <h3 class="font-display-lg text-headline-lg" style="color:${config.color}">${dirKey.toUpperCase()}</h3>
-                        <span class="material-symbols-outlined text-4xl opacity-50" style="color:${config.color}">${config.icon}</span>
-                    </div><div class="space-y-4">`;
-                    
-                    scenes.slice(0, 4).forEach(s => {
-                        sceneListHtml += `
-                            <div class="p-4 bg-black/40 border border-outline-variant/30 rounded">
-                                <p class="font-label-caps text-[10px] text-surface-tint mb-2">SCENE ${s.sceneNumber}</p>
-                                <p class="font-technical-md mb-2 text-on-surface">${s.title}</p>
-                                <p class="text-xs text-on-surface-variant leading-relaxed opacity-80">${s.prompt}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline Section -->
+        <section class="h-timeline-height bg-surface-container-lowest border-t border-outline-variant flex flex-col flex-none">
+            <div class="flex items-center justify-between px-gutter py-1.5 border-b border-outline-variant bg-surface-container-low/50">
+                <div class="flex items-center gap-3">
+                    <span class="font-label-tech-lg text-label-tech-lg text-primary">TIMELINE</span>
+                    <div class="flex items-center bg-deep-black p-0.5 rounded border border-outline-variant/20">
+                        <button class="p-1 hover:text-primary text-on-surface-variant transition-colors" title="Snap">
+                            <span class="material-symbols-outlined text-[16px]" data-icon="bolt">bolt</span>
+                        </button>
+                        <button class="p-1 hover:text-primary text-on-surface-variant transition-colors" title="Razor">
+                            <span class="material-symbols-outlined text-[16px]" data-icon="content_cut">content_cut</span>
+                        </button>
+                        <button class="p-1 hover:text-error-red text-on-surface-variant transition-colors" title="Delete">
+                            <span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 font-data-mono text-label-tech-sm text-on-surface-variant">
+                    <span>24.00 FPS</span>
+                    <span>3840x2160</span>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[14px]" data-icon="zoom_in">zoom_in</span>
+                        <div class="w-20 h-0.5 bg-outline-variant rounded-full"><div class="w-1/2 h-full bg-primary"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 overflow-hidden relative">
+                <div class="absolute left-[45%] top-0 bottom-0 w-px bg-primary z-20 pointer-events-none">
+                    <div class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] border-t-primary filter drop-shadow-[0_0_6px_rgba(168,215,0,1)]"></div>
+                </div>
+                <div class="h-full overflow-auto custom-scrollbar">
+                    <div class="flex h-12 border-b border-outline-variant/20 items-center min-w-max">
+                        <div class="w-16 bg-surface-container-high h-full flex items-center justify-center border-r border-outline-variant text-label-tech-sm font-label-tech-sm text-primary flex-none">V1</div>
+                        <div class="flex-1 relative h-full flex items-center gap-1 px-3">
+                            <div class="h-8 w-40 bg-primary/20 border border-primary text-primary px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move">
+                                <span>CLIP_SEQ_001.MOV</span>
+                                <span class="opacity-50">00:08</span>
                             </div>
-                        `;
-                    });
-                    sceneListHtml += `</div><button class="w-full mt-6 py-4 bg-surface-variant hover:bg-surface-tint hover:text-black transition-all uppercase font-display-lg text-xs" onclick="window.</script><script>
-    (function() {
-        const micBtn = document.getElementById('btn-mic');
-        const voiceOverlay = document.getElementById('voice-overlay');
-        const closeVoiceBtn = document.getElementById('btn-close-voice');
-        const voiceStatusText = document.getElementById('voice-status-text');
-        const geminiVoiceStatus = document.getElementById('gemini-voice-status');
+                            <div class="h-8 w-56 bg-primary text-deep-black px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move shadow-[0_0_10px_rgba(168,215,0,0.2)]">
+                                <span>CLIP_SEQ_002_MASTER.MOV</span>
+                                <span class="font-bold">00:15</span>
+                            </div>
+                            <div class="h-8 w-24 bg-primary/20 border border-primary/40 text-primary/70 px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move">
+                                <span>CLIP_003.MP4</span>
+                                <span class="opacity-30">00:04</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex h-12 items-center min-w-max">
+                        <div class="w-16 bg-surface-container-high h-full flex items-center justify-center border-r border-outline-variant text-label-tech-sm font-label-tech-sm text-secondary flex-none">A1</div>
+                        <div class="flex-1 relative h-full flex items-center gap-1 px-3">
+                            <div class="h-8 w-[600px] bg-secondary/10 border border-secondary/30 relative overflow-hidden group cursor-move">
+                                <div class="absolute inset-0 flex items-center opacity-30">
+                                    <div class="flex items-end gap-[1px] h-full w-full py-1">
+                                        <div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[60%]"></div><div class="w-0.5 bg-secondary h-[30%]"></div>
+                                        <div class="w-0.5 bg-secondary h-[70%]"></div><div class="w-0.5 bg-secondary h-[90%]"></div><div class="w-0.5 bg-secondary h-[50%]"></div>
+                                        <div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[80%]"></div><div class="w-0.5 bg-secondary h-[20%]"></div>
+                                        <div class="w-0.5 bg-secondary h-[60%]"></div><div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[70%]"></div>
+                                        <div class="w-0.5 bg-secondary h-[30%]"></div><div class="w-0.5 bg-secondary h-[50%]"></div><div class="w-0.5 bg-secondary h-[80%]"></div>
+                                    </div>
+                                </div>
+                                <span class="absolute left-2 top-0.5 text-[9px] font-label-tech-sm text-secondary">AUDIO_MIX_STEM.WAV</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        const voiceTranslations = {
-            en: { listening: 'Listening...', speaking: 'Speaking...', cancel: 'Cancel', mic_title: 'Voice Chat' },
-            es: { listening: 'Escuchando...', speaking: 'Hablando...', cancel: 'Cancelar', mic_title: 'Chat de Voz' },
-            ar: { listening: 'جاري الاستماع...', speaking: 'جاري التحدث...', cancel: 'إلغاء', mic_title: 'دردشة صوتية' }
-        };
+    <!-- Right SideNavBar -->
+    <aside class="w-sidebar-width bg-surface-container-lowest/90 backdrop-blur-xl border-l border-outline-variant flex flex-col p-3 z-40 flex-none overflow-hidden h-full">
+        <h3 class="font-label-tech-lg text-label-tech-lg text-primary mb-3 uppercase tracking-widest border-b border-outline-variant pb-1 flex-none">Controls</h3>
+        <div class="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1">
+            <div class="space-y-2.5">
+                <div class="flex justify-between items-center">
+                    <label class="font-label-tech-sm text-label-tech-sm text-on-surface-variant">VOLUME SYNC</label>
+                    <span class="font-data-mono text-primary text-[10px]">-3.2 dB</span>
+                </div>
+                <div class="relative h-1 bg-surface-bright rounded-full group cursor-pointer">
+                    <div class="absolute inset-y-0 left-0 w-[65%] bg-primary"></div>
+                    <div class="absolute left-[65%] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary border border-deep-black rounded-full shadow-[0_0_6px_rgba(168,215,0,0.5)]"></div>
+                </div>
+            </div>
+            <div class="space-y-2.5">
+                <label class="font-label-tech-sm text-label-tech-sm text-on-surface-variant block uppercase">Color Preset</label>
+                <div class="grid grid-cols-1 gap-1.5">
+                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-primary text-primary text-[10px] font-label-tech-sm">
+                        TECH_NOIR_01
+                        <span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+                    </button>
+                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:border-primary/50 text-[10px] font-label-tech-sm transition-colors">
+                        ACID_GLITCH_V2
+                    </button>
+                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:border-primary/50 text-[10px] font-label-tech-sm transition-colors">
+                        MINIMAL_INDUSTRIAL
+                    </button>
+                </div>
+            </div>
+            <div class="bg-surface-container-high/40 p-3 border border-outline-variant space-y-2">
+                <div class="flex justify-between text-[10px] font-data-mono">
+                    <span class="text-on-surface-variant">BITRATE</span>
+                    <span class="text-primary">45.5 Mbps</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-data-mono">
+                    <span class="text-on-surface-variant">CODEC</span>
+                    <span class="text-primary">H.265 / HEVC</span>
+                </div>
+                <div class="flex justify-between text-[10px] font-data-mono">
+                    <span class="text-on-surface-variant">COLOR</span>
+                    <span class="text-primary">Rec.2020</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-auto pt-3 space-y-2 flex-none bg-surface-container-lowest">
+            <button class="w-full bg-transparent border border-primary text-primary font-label-tech-lg text-label-tech-lg py-2 flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all">
+                <span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
+                EXPORT
+            </button>
+            <button class="w-full bg-primary text-deep-black font-label-tech-lg text-label-tech-lg py-2 flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all">
+                <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                DOWNLOAD
+            </button>
+        </div>
+    </aside>
+</div>
 
-        function updateVoiceUI() {
-            const currentLang = document.documentElement.lang || 'en';
-            const t = voiceTranslations[currentLang] || voiceTranslations.en;
-            voiceStatusText.textContent = t.listening;
-            geminiVoiceStatus.textContent = t.listening;
-            closeVoiceBtn.textContent = t.cancel;
-            micBtn.title = t.mic_title;
+<script>
+    // Micro-interaction Scripts
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', () => {
+            btn.style.transform = 'scale(0.97)';
+        });
+        btn.addEventListener('mouseup', () => {
+            btn.style.transform = '';
+        });
+    });
+
+    // Timecode update simulation
+    let frame = 22;
+    let seconds = 15;
+    const timeDisplay = document.getElementById('timecode-display');
+    
+    setInterval(() => {
+        frame++;
+        if (frame >= 24) {
+            frame = 0;
+            seconds++;
         }
-
-        micBtn.onclick = () => {
-            micBtn.classList.toggle('mic-active');
-            const isActive = micBtn.classList.contains('mic-active');
-            voiceOverlay.classList.toggle('hidden', !isActive);
-            geminiVoiceStatus.classList.toggle('hidden', !isActive);
-            if (isActive) updateVoiceUI();
-        };
-
-        closeVoiceBtn.onclick = () => {
-            micBtn.classList.remove('mic-active');
-            voiceOverlay.classList.add('hidden');
-            geminiVoiceStatus.classList.add('hidden');
-        };
-
-        // Monitor lang changes from existing app logic
-        const observer = new MutationObserver(() => updateVoiceUI());
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
-    })();
+        if (seconds >= 60) seconds = 0;
+        const s = seconds.toString().padStart(2, '0');
+        const f = frame.toString().padStart(2, '0');
+        if (timeDisplay) timeDisplay.textContent = `00:00:${s}:${f}`;
+    }, 41);
 </script>
 </body>
 </html>
