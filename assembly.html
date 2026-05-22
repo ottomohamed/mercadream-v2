@@ -1,651 +1,583 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>MERCADREAM STUDIO - ASSEMBLY ROOM</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;family=Orbitron:wght@600;700&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <style>
-        @keyframes scanline {
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM Assembly - Master Assembly</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --timeline-height: clamp(160px, 22vh, 240px);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #121509;
+            color: #e2e4d1;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(168, 215, 0, 0.03) 1px,
+                transparent 1px
+            );
+            background-size: 100% 3px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .monitor-bracket {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: #c3f432;
+        }
+
+        .crt-glow {
+            text-shadow: 0 0 8px rgba(168, 215, 0, 0.5);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c3f432;
+        }
+
+        @keyframes scanning {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100%); }
         }
-        .scanline-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 50%, rgba(168, 215, 0, 0.02) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .scanline-pulse {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(168, 215, 0, 0.08);
-            animation: scanline 4s linear infinite;
-            z-index: 11;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0e0e0e;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #444934;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #c3f432;
-        }
-        body {
-            background-color: #060606;
-            color: #e5e2e1;
-            overflow: hidden;
-            height: 100vh;
+        .scan-line-anim {
+            animation: scanning 2s linear infinite;
         }
     </style>
-    <script id="tailwind-config">
+<!-- THEME CONFIG -->
+<script id="tailwind-config">
         tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "background": "#131313",
-                      "on-tertiary-fixed-variant": "#543a75",
-                      "on-secondary-container": "#3e2800",
-                      "inverse-primary": "#4f6700",
-                      "on-tertiary": "#3d235d",
-                      "inverse-on-surface": "#313030",
-                      "surface-container-low": "#1c1b1b",
-                      "secondary-container": "#c48800",
-                      "surface": "#131313",
-                      "tertiary-fixed-dim": "#d8b9fe",
-                      "on-surface": "#e5e2e1",
-                      "tertiary-fixed": "#eedcff",
-                      "secondary-fixed": "#ffdeae",
-                      "inverse-surface": "#e5e2e1",
-                      "text-dim": "#a1a1a1",
-                      "on-secondary-fixed-variant": "#604100",
-                      "on-primary-container": "#455a00",
-                      "primary-container": "#a8d700",
-                      "on-secondary-fixed": "#281900",
-                      "on-error": "#690005",
-                      "on-error-container": "#ffdad6",
-                      "error-red": "#ff4444",
-                      "deep-black": "#060606",
-                      "surface-bright": "#393939",
-                      "surface-container-lowest": "#0e0e0e",
-                      "primary-fixed-dim": "#a8d700",
-                      "on-primary": "#273500",
-                      "on-tertiary-fixed": "#270b47",
-                      "on-background": "#e5e2e1",
-                      "surface-container-highest": "#353534",
-                      "error": "#ffb4ab",
-                      "surface-tint": "#a8d700",
-                      "tertiary-container": "#d9baff",
-                      "on-secondary": "#432c00",
-                      "surface-raised": "#1e1e1e",
-                      "on-surface-variant": "#c4c9ae",
-                      "on-primary-fixed-variant": "#3b4d00",
-                      "secondary": "#ffba3f",
-                      "surface-container-high": "#2a2a2a",
-                      "error-container": "#93000a",
-                      "secondary-fixed-dim": "#ffba3f",
-                      "text-bright": "#e5e2e1",
-                      "tertiary": "#eedcff",
-                      "outline-variant": "#444934",
-                      "primary-fixed": "#c3f431",
-                      "on-primary-fixed": "#161f00",
-                      "surface-container": "#201f1f",
-                      "on-tertiary-container": "#614783",
-                      "surface-dim": "#131313",
-                      "outline": "#8e937b",
-                      "surface-variant": "#353534",
-                      "primary": "#c3f432"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "unit": "4px",
-                      "gutter": "12px",
-                      "sidebar-width": "260px",
-                      "timeline-height": "180px", /* تم تقليله قليلاً ليناسب الشاشات الصغيرة */
-                      "toolbar-width": "48px"
-              },
-              "fontFamily": {
-                      "label-tech-lg": ["IBM Plex Mono"],
-                      "body-lg": ["Inter"],
-                      "data-mono": ["IBM Plex Mono"],
-                      "body-md": ["Inter"],
-                      "label-tech-sm": ["IBM Plex Mono"],
-                      "headline-md": ["Orbitron"],
-                      "headline-lg": ["Orbitron"]
-              },
-              "fontSize": {
-                      "label-tech-lg": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
-                      "body-lg": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
-                      "data-mono": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
-                      "body-md": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
-                      "label-tech-sm": ["10px", {"lineHeight": "12px", "fontWeight": "400"}],
-                      "headline-md": ["18px", {"lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                      "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "0.1em", "fontWeight": "700"}]
-              }
-            },
-          },
-        }
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#a8d700",
+                        "tertiary-fixed": "#cae6ff",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#aecae2",
+                        "inverse-on-surface": "#2f3225",
+                        "outline-variant": "#444934",
+                        "surface-bright": "#373b2d",
+                        "on-tertiary-container": "#4d677d",
+                        "on-primary-fixed": "#161f00",
+                        "primary-fixed": "#c3f432",
+                        "tertiary": "#ffffff",
+                        "surface-container-lowest": "#0c0f05",
+                        "primary-fixed-dim": "#a8d700",
+                        "on-tertiary": "#173346",
+                        "on-surface-variant": "#c4c9ae",
+                        "on-secondary": "#432c00",
+                        "tertiary-container": "#cae6ff",
+                        "surface-container": "#1e2115",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#001e2f",
+                        "surface-dim": "#121509",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "on-secondary-container": "#3e2800",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#604100",
+                        "inverse-surface": "#e2e4d1",
+                        "surface-container-high": "#282b1f",
+                        "on-background": "#e2e4d1",
+                        "outline": "#8e937b",
+                        "secondary": "#ffba3f",
+                        "primary": "#ffffff",
+                        "surface-container-highest": "#333629",
+                        "surface": "#121509",
+                        "secondary-fixed-dim": "#ffba3f",
+                        "primary-container": "#c3f432",
+                        "on-error-container": "#ffdad6",
+                        "background": "#121509",
+                        "on-tertiary-fixed-variant": "#2f4a5e",
+                        "secondary-fixed": "#ffdeae",
+                        "secondary-container": "#c48800",
+                        "on-secondary-fixed": "#281900",
+                        "on-primary": "#273500",
+                        "on-surface": "#e2e4d1",
+                        "on-primary-container": "#546d00",
+                        "inverse-primary": "#4f6600",
+                        "surface-variant": "#333629",
+                        "surface-container-low": "#1a1d11"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "panel-gap": "2px",
+                        "unit": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Orbitron"],
+                        "label-technical": ["IBM Plex Mono"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Orbitron"],
+                        "headline-md": ["Orbitron"],
+                        "body-lg": ["Inter"],
+                        "label-code": ["IBM Plex Mono"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "label-technical": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-code": ["11px", {"lineHeight": "1.4", "fontWeight": "400"}]
+                    }
+                }
+            }
+        };
     </script>
 </head>
-<body class="font-body-md text-on-surface select-none h-screen min-h-screen overflow-hidden flex flex-col m-0 p-0">
-
-<!-- TopNavBar -->
-<header class="bg-background/90 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center px-gutter h-toolbar-width w-full z-50 flex-none">
-    <div class="flex items-center gap-gutter">
-        <h1 class="font-headline-md text-headline-md text-primary tracking-widest">MERCADREAM</h1>
-        <nav class="hidden md:flex gap-4 items-center ml-6">
-            <a class="font-label-tech-lg text-label-tech-lg text-primary border-b border-primary hover:text-primary transition-colors duration-200" href="studio.html" onclick="window.location.href='studio.html'">← STUDIO</a>
-        </nav>
-    </div>
-    <div class="flex items-center gap-4">
-        <span class="font-label-tech-sm text-label-tech-sm text-on-surface-variant px-2 py-0.5 bg-surface-container-high">v21.0 ASSEMBLY</span>
-        <span id="hdr-credits" class="font-label-tech-sm text-label-tech-sm text-primary px-2 py-0.5 bg-surface-container-high">— CR</span>
-        <div class="flex items-center gap-3 text-on-surface-variant">
-            <button class="material-symbols-outlined text-[20px] hover:text-primary transition-colors duration-200" data-icon="language">language</button>
-            <button class="material-symbols-outlined text-[20px] hover:text-primary transition-colors duration-200" data-icon="account_balance_wallet">account_balance_wallet</button>
-            <div class="h-4 w-[1px] bg-outline-variant"></div>
-            <div class="flex items-center gap-1.5">
-                <span class="font-label-tech-sm text-label-tech-sm">SESSION_ACTIVE</span>
-                <button class="material-symbols-outlined text-primary text-[20px]" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</button>
-            </div>
+<body class="flex flex-col h-screen overflow-hidden bg-background text-on-surface">
+<div class="scanlines"></div>
+<!-- Header / TopNavBar -->
+<header class="flex justify-between items-center w-full px-md h-16 z-50 bg-surface border-b border-outline-variant shadow-[0_0_12px_rgba(168,215,0,0.3)] flex-shrink-0">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">MERCADREAM</span>
+<a class="font-label-technical text-on-surface-variant hover:text-primary-container transition-colors flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            STUDIO
+        </a>
+<div class="px-sm py-xs bg-surface-container-highest border border-primary-container/30 text-primary-container font-label-technical rounded-xs text-[10px] tracking-widest">
+            V.21.0 ASSEMBLY
         </div>
-    </div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<div class="flex flex-col items-end">
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">Credits</span>
+<span class="font-label-technical text-primary-container" id="credit-counter">2,450</span>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<button class="flex items-center gap-xs font-label-technical text-on-surface hover:bg-surface-variant p-2 rounded transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</button>
+<button class="flex items-center gap-xs font-label-technical text-on-surface hover:bg-surface-variant p-2 rounded transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined">language</span>
+</button>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJcXBoRN8n8dI1l31JZpfZhpoXH5ZF-4Ai7-zR5nf3NVnnJ6D7JCxUB1wvIPnHoL8NmZDfwbw3DyFVIkIQNYPKrxHa4KgJa-3Ng6Ad_nWxbzAlgdBKDPgbWOPkMiJfusbagyLmmGwNY_SUi5YFEWuJLbF817h1UC4qNbnIrI3BJKVKyfIzEvZL7XHRs2ZzKZEQrg5Hy19DJB9fGdPNVe4e66SG_vV8D_AMSRmKeZuR9g_08CtN-u6bADWxBcOgw-uaNbYnNuZa5eY"/>
+</div>
+</div>
 </header>
-
-<!-- Main Workspace -->
-<div class="flex-1 flex overflow-hidden h-full min-h-0">
-    <!-- Left SideNavBar -->
-    <aside class="bg-surface-container-lowest/90 backdrop-blur-xl border-r border-outline-variant flex flex-col py-3 space-y-1 w-sidebar-width z-40 flex-none overflow-hidden h-full">
-        <div class="px-3 mb-4 flex-none">
-            <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-7 h-7 bg-primary/20 rounded flex items-center justify-center border border-primary/30">
-                    <span class="material-symbols-outlined text-primary text-[16px]" data-icon="token">token</span>
-                </div>
-                <div>
-                    <p class="font-label-tech-lg text-label-tech-lg text-primary leading-none">ASSEMBLY ROOM</p>
-                    <p class="font-label-tech-sm text-label-tech-sm text-on-surface-variant opacity-70">v21.0 MASTER</p>
-                </div>
-            </div>
-            <button id="btn-upload"<button id="btn-build" class="w-full bg-primary text-deep-black font-label-tech-lg text-label-tech-lg py-1.5 rounded-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all">><span class="material-symbols-outlined">upload</span>
+<!-- Main Content Area -->
+<main class="flex flex-1 min-h-0 gap-panel-gap p-[2px]">
+<!-- Left Sidebar: Assets -->
+<aside class="w-[clamp(280px,20vw,340px)] flex flex-col bg-surface-container border-r border-outline-variant min-h-0">
+<div class="p-md border-b border-outline-variant">
+<button class="w-full py-md bg-primary-container text-on-primary-container font-headline-sm flex items-center justify-center gap-sm active:scale-[0.97] transition-all hover:shadow-[0_0_15px_rgba(168,215,0,0.4)]" type="button">
+<span class="material-symbols-outlined">upload</span>
                 UPLOAD ASSET
             </button>
-        </div>
-        <!-- Sidebar Scrollable Content -->
-        <div class="flex-1 overflow-y-auto custom-scrollbar">
-            <div class="px-1.5 space-y-0.5">
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-primary bg-primary/10 border-r-2 border-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="video_library" style="font-variation-settings: 'FILL' 1;">video_library</span>
-                    Media
-                </button>
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="movie_filter">movie_filter</span>
-                    Clips
-                </button>
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="folder_open">folder_open</span>
-                    Assets
-                </button>
-                <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]" data-icon="upload">upload</span>
-                    Upload
-                </button>
-            </div>
-            <div class="mt-6 px-3 pb-3">
-                <p class="font-label-tech-sm text-label-tech-sm text-on-surface-variant mb-2 uppercase tracking-wider">Generated Clips</p>
-                <div id="scenes-grid" class="grid grid-cols-2 gap-1.5">
-                    <div class="aspect-square bg-surface-container-high border border-outline-variant relative group overflow-hidden cursor-pointer hover:border-primary transition-colors">
-                        <img alt="Clip 1" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJiGCQHR3Xpke4fTSDdvtbo4Um_7O7pLVF7y-x2VOswPcQO-Imn9SVvT5eFgl9qk1jic_N60JmeUlay-3ut2P1QMsXq0kjX8ZRQW1J06ZcksaXyqdMCGB0szQG5h7-7k_NypXr4gbROODUuuGXExdm2uZjW6EVIEEU6ISfn0Z6T6k-WA3HJNcAJFhy7U96re56NoGQK_Wx8nhdRSLNzcuYtrk1WJrfG-XdIpjWyYepxjGuxrnCEiRkp_cTY7_I0xhxQZ0G1XbX9z5f"/>
-                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:04</div>
-                    </div>
-                    <div class="aspect-square bg-surface-container-high border border-primary relative group overflow-hidden cursor-pointer shadow-[inset_0_0_8px_rgba(168,215,0,0.3)]">
-                        <img alt="Clip 2" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACEkjH_2GA7WyWAy2PfB3ELrlroPD73SbR0yhV0ngSzfn4qCfzlZky0mhcaF8JJAB46sOVgzbjWLWRuBjwGGi2ubNdfsIVR0vrrfGUoKHkFQfBDu7fLgSkNqh-5rI6XwyjLjrdrXIxnKDG8WjnSdYOwUJ1-3RoX_XYgwnZl9pnPdlosYGTPULDp2Cg7VT3xYmLr9vI_n4Mb_Pvjv8l3KcORrCsa1XtejVtuHlq8NfsqwKrtpBPsAxfI2K-wgoaSNFOTATkZK68SX9i"/>
-                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:12</div>
-                    </div>
-                    <div class="aspect-square bg-surface-container-high border border-outline-variant relative group overflow-hidden cursor-pointer hover:border-primary transition-colors">
-                        <img alt="Clip 3" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZHYFeL0IG8EN6YjCizZFwUSchGbKVBcQpyF40ezdtTXW-cw2RS1BilaA1Ht500TLTurKpgiT-v-Vm2xZc-IpO5yJxhZszgT4W9dy2MxEv8OogqgBHTJ5rxrSEp15EASuumgBJ6-sOByZtY3VGpgIiew1XP8fzV7Ig2QLs2ibOKnfrkf80EGiFOtEupV91hM4Pc2a0pb8EGV5VB-f8bOt1ngBhdaTXGkU7rnA7Fkm9hn9ZqNjc6L-QoKQLB61og5w7qxN1pLE8wIxU"/>
-                        <div class="absolute bottom-0.5 right-0.5 px-0.5 bg-deep-black/80 font-data-mono text-[8px] text-primary">00:08</div>
-                    </div>
-                    <div class="aspect-square bg-surface-container-high border border-outline-variant flex items-center justify-center text-outline hover:text-primary cursor-pointer hover:border-primary transition-all">
-                        <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="px-1.5 pt-2 border-t border-outline-variant flex-none bg-surface-container-lowest">
-            <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                <span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
-                Settings
-            </button>
-            <button class="w-full flex items-center gap-2.5 px-3 py-1.5 text-on-surface-variant hover:bg-surface-bright/50 hover:text-primary font-label-tech-sm text-label-tech-sm transition-all duration-200">
-                <span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
-                Help
-            </button>
-        </div>
-    </aside>
-
-    <!-- Center Content: Monitor and Timeline -->
-    <main class="flex-1 flex flex-col min-w-0 bg-deep-black overflow-hidden h-full">
-        <!-- Program Monitor Area - تم إصلاح المرونة هنا بالـ min-h-0 و flex-shrink -->
-        <div class="flex-1 flex flex-col p-3 relative min-h-0 flex-shrink overflow-hidden">
-            <div class="flex justify-between items-center mb-1.5 px-1 flex-none">
-                <div class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-                    <h2 class="font-label-tech-lg text-label-tech-lg text-primary uppercase tracking-[0.2em]">Program Monitor</h2>
-                </div>
-                <div class="font-data-mono text-primary text-headline-md tracking-widest bg-primary/5 px-3 py-0.5 border border-primary/20" id="timecode-display">
-                    00:00:15:22
-                </div>
-            </div>
-            <div class="flex-1 bg-surface-container-lowest border border-outline-variant relative group overflow-hidden min-h-0">
-                <div class="absolute top-3 left-3 border-l border-t border-primary w-6 h-6 opacity-40"></div>
-                <div class="absolute top-3 right-3 border-r border-t border-primary w-6 h-6 opacity-40"></div>
-                <div class="absolute bottom-3 left-3 border-l border-b border-primary w-6 h-6 opacity-40"></div>
-                <div class="absolute bottom-3 right-3 border-r border-b border-primary w-6 h-6 opacity-40"></div>
-                <div class="scanline-overlay"></div>
-                <div class="scanline-pulse"></div>
-                <!-- تم تحديد max-h-full للصورة لضمان عدم خروجها عن الشاشة -->
-                <img alt="Video Feed" class="w-full h-full max-h-full object-contain opacity-90 group-hover:scale-[1.01] transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu0kSG6YMzzuAYuAqsO_Etk-SxelmqaoAWkDyRNb1seOmoahXzzYhPNx1d1HXvUMEwDFe22VNa0ZAh-G5L1XKYTskvEWciN-PNb-e1UBfqENs0-CMpeHincgqWkb8MhooyxynaAnPk5nBcwN2RnIxiDRC_y8UFAxPjZAMZaqM_HNMAMzekIjNvw1_EfY6LGhMNEzjukpaEbx-m66lpzEwcDuWsggJy0WEEodM6HwClljeuKIrZj9Uhr93qxbZ4XQxQCPEIZM68ybID"/>
-                
-                <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-deep-black/95 to-transparent flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div class="relative w-full h-1 bg-surface-bright rounded-full cursor-pointer">
-                        <div class="absolute left-0 top-0 h-full w-[45%] bg-primary"></div>
-                        <div class="absolute left-[45%] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary rotate-45 shadow-[0_0_8px_rgba(168,215,0,0.8)]"></div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-4">
-                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-[20px]" data-icon="replay_10">replay_10</button>
-                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-3xl" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</button>
-                            <button class="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-[20px]" data-icon="forward_10">forward_10</button>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="flex items-center gap-1.5">
-                                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-[18px]" data-icon="volume_up">volume_up</button>
-                                <div class="w-12 h-0.5 bg-outline-variant rounded-full relative overflow-hidden">
-                                    <div class="w-2/3 h-full bg-primary"></div>
-                                </div>
-                            </div>
-                            <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-[18px]" data-icon="fullscreen">fullscreen</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Timeline Section -->
-        <section class="h-timeline-height bg-surface-container-lowest border-t border-outline-variant flex flex-col flex-none">
-            <div class="flex items-center justify-between px-gutter py-1.5 border-b border-outline-variant bg-surface-container-low/50">
-                <div class="flex items-center gap-3">
-                    <span class="font-label-tech-lg text-label-tech-lg text-primary">TIMELINE</span>
-                    <div class="flex items-center bg-deep-black p-0.5 rounded border border-outline-variant/20">
-                        <button class="p-1 hover:text-primary text-on-surface-variant transition-colors" title="Snap">
-                            <span class="material-symbols-outlined text-[16px]" data-icon="bolt">bolt</span>
-                        </button>
-                        <button class="p-1 hover:text-primary text-on-surface-variant transition-colors" title="Razor">
-                            <span class="material-symbols-outlined text-[16px]" data-icon="content_cut">content_cut</span>
-                        </button>
-                        <button class="p-1 hover:text-error-red text-on-surface-variant transition-colors" title="Delete">
-                            <span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 font-data-mono text-label-tech-sm text-on-surface-variant">
-                    <span>24.00 FPS</span>
-                    <span>3840x2160</span>
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[14px]" data-icon="zoom_in">zoom_in</span>
-                        <div class="w-20 h-0.5 bg-outline-variant rounded-full"><div class="w-1/2 h-full bg-primary"></div></div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex-1 overflow-hidden relative">
-                <div class="absolute left-[45%] top-0 bottom-0 w-px bg-primary z-20 pointer-events-none">
-                    <div class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] border-t-primary filter drop-shadow-[0_0_6px_rgba(168,215,0,1)]"></div>
-                </div>
-                <div class="h-full overflow-auto custom-scrollbar">
-                    <div class="flex h-12 border-b border-outline-variant/20 items-center min-w-max">
-                        <div class="w-16 bg-surface-container-high h-full flex items-center justify-center border-r border-outline-variant text-label-tech-sm font-label-tech-sm text-primary flex-none">V1</div>
-                        <div class="flex-1 relative h-full flex items-center gap-1 px-3">
-                            <div class="h-8 w-40 bg-primary/20 border border-primary text-primary px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move">
-                                <span>CLIP_SEQ_001.MOV</span>
-                                <span class="opacity-50">00:08</span>
-                            </div>
-                            <div class="h-8 w-56 bg-primary text-deep-black px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move shadow-[0_0_10px_rgba(168,215,0,0.2)]">
-                                <span>CLIP_SEQ_002_MASTER.MOV</span>
-                                <span class="font-bold">00:15</span>
-                            </div>
-                            <div class="h-8 w-24 bg-primary/20 border border-primary/40 text-primary/70 px-2 flex items-center justify-between font-label-tech-sm text-[9px] cursor-move">
-                                <span>CLIP_003.MP4</span>
-                                <span class="opacity-30">00:04</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex h-12 items-center min-w-max">
-                        <div class="w-16 bg-surface-container-high h-full flex items-center justify-center border-r border-outline-variant text-label-tech-sm font-label-tech-sm text-secondary flex-none">A1</div>
-                        <div class="flex-1 relative h-full flex items-center gap-1 px-3">
-                            <div class="h-8 w-[600px] bg-secondary/10 border border-secondary/30 relative overflow-hidden group cursor-move">
-                                <div class="absolute inset-0 flex items-center opacity-30">
-                                    <div class="flex items-end gap-[1px] h-full w-full py-1">
-                                        <div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[60%]"></div><div class="w-0.5 bg-secondary h-[30%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[70%]"></div><div class="w-0.5 bg-secondary h-[90%]"></div><div class="w-0.5 bg-secondary h-[50%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[80%]"></div><div class="w-0.5 bg-secondary h-[20%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[60%]"></div><div class="w-0.5 bg-secondary h-[40%]"></div><div class="w-0.5 bg-secondary h-[70%]"></div>
-                                        <div class="w-0.5 bg-secondary h-[30%]"></div><div class="w-0.5 bg-secondary h-[50%]"></div><div class="w-0.5 bg-secondary h-[80%]"></div>
-                                    </div>
-                                </div>
-                                <span class="absolute left-2 top-0.5 text-[9px] font-label-tech-sm text-secondary">AUDIO_MIX_STEM.WAV</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Right SideNavBar -->
-    <aside class="w-sidebar-width bg-surface-container-lowest/90 backdrop-blur-xl border-l border-outline-variant flex flex-col p-3 z-40 flex-none overflow-hidden h-full">
-        <h3 class="font-label-tech-lg text-label-tech-lg text-primary mb-3 uppercase tracking-widest border-b border-outline-variant pb-1 flex-none">Controls</h3>
-        <div class="space-y-4 flex-1 overflow-y-auto custom-scrollbar pr-1">
-            <div class="space-y-2.5">
-                <div class="flex justify-between items-center">
-                    <label class="font-label-tech-sm text-label-tech-sm text-on-surface-variant">VOLUME SYNC</label>
-                    <span class="font-data-mono text-primary text-[10px]">-3.2 dB</span>
-                </div>
-                <div class="relative h-1 bg-surface-bright rounded-full group cursor-pointer">
-                    <div class="absolute inset-y-0 left-0 w-[65%] bg-primary"></div>
-                    <div class="absolute left-[65%] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-primary border border-deep-black rounded-full shadow-[0_0_6px_rgba(168,215,0,0.5)]"></div>
-                </div>
-            </div>
-            <div class="space-y-2.5">
-                <label class="font-label-tech-sm text-label-tech-sm text-on-surface-variant block uppercase">Color Preset</label>
-                <div class="grid grid-cols-1 gap-1.5">
-                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-primary text-primary text-[10px] font-label-tech-sm">
-                        TECH_NOIR_01
-                        <span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
-                    </button>
-                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:border-primary/50 text-[10px] font-label-tech-sm transition-colors">
-                        ACID_GLITCH_V2
-                    </button>
-                    <button class="flex items-center justify-between px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:border-primary/50 text-[10px] font-label-tech-sm transition-colors">
-                        MINIMAL_INDUSTRIAL
-                    </button>
-                </div>
-            </div>
-            <div class="bg-surface-container-high/40 p-3 border border-outline-variant space-y-2">
-                <div class="flex justify-between text-[10px] font-data-mono">
-                    <span class="text-on-surface-variant">BITRATE</span>
-                    <span class="text-primary">45.5 Mbps</span>
-                </div>
-                <div class="flex justify-between text-[10px] font-data-mono">
-                    <span class="text-on-surface-variant">CODEC</span>
-                    <span class="text-primary">H.265 / HEVC</span>
-                </div>
-                <div class="flex justify-between text-[10px] font-data-mono">
-                    <span class="text-on-surface-variant">COLOR</span>
-                    <span class="text-primary">Rec.2020</span>
-                </div>
-            </div>
-        </div>
-        <div class="mt-auto pt-3 space-y-2 flex-none bg-surface-container-lowest">
-            <button id="btn-export"<button class="w-full bg-transparent border border-primary text-primary font-label-tech-lg text-label-tech-lg py-2 flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all">><span class="material-symbols-outlined">send</span>
-                EXPORT
-            </button>
-            <button class="w-full bg-primary text-deep-black font-label-tech-lg text-label-tech-lg py-2 flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all">
-                <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
-                DOWNLOAD
-            </button>
-        </div>
-    </aside>
 </div>
-
+<div class="flex border-b border-outline-variant">
+<button class="flex-1 py-sm font-label-technical text-primary-container border-b-2 border-primary-container bg-surface-variant/30" type="button">MEDIA</button>
+<button class="flex-1 py-sm font-label-technical text-on-surface-variant hover:text-on-surface" type="button">CLIPS</button>
+<button class="flex-1 py-sm font-label-technical text-on-surface-variant hover:text-on-surface" type="button">ASSETS</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-md grid grid-cols-2 gap-sm" id="assets-grid">
+<!-- Asset Cards -->
+<div class="group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all" data-asset-id="1">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA928t19XmxOhc_dQrIXDOQ9-MLMS0WG-373VPVcayb0dWxGoEhIQZoeGMvaMZuR021N72ZJLR7elXEIjLWu6Cdpdukd6he5frzFf-EQvvELn4vqWnfW5Z_CpNyOhUC_tnrKVC3FHZc6MWWM5stCCepHy8PK8sjnbyGX8MHFMrmUgdiKSGXP09DFhM5wbK-bbi3M2pdOHC44VnTRfqnICLnMdv4HR8uksKdIgNgQmsXXPSFMLOVttxIe1AsLAqNKXr2hzssx93EfPM"/>
+<span class="absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical">00:12</span>
+<div class="gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+<span class="font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter">⚡ GENERATE</span>
+</div>
+</div>
+<div class="group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all" data-asset-id="2">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBD2t6Vd1zfRK12ulIdNb_DsfJUf9fTi6bqO7Ui2Nok4iBSg6GE1ykifLe68rSsbyHLMcimg4UZhMjd9KdhpFJkblYgXOJlhtA5kvGmfGRSyZas25L7R-Pt6daOuZPFjrwpIifdOz2sU7bj5M1LWPBeEXP__gFJ9lpL3U8o1V_jT1jnxvKtwnFREnsuTEPJh8o2a7tvVLcs51cn2dv8NSbQJ6t1oOqZz5PJ6IingVHtqfyGJvC49-RCC1yoIgK3_pXuQ4LBa8RQLfk"/>
+<span class="absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical">00:08</span>
+<div class="gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+<span class="font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter">⚡ GENERATE</span>
+</div>
+</div>
+<div class="group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all" data-asset-id="3">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg9qHU8QsA887OgACF539WUural53sYOvJS8Je4QlDmOz5ZYc5NBST0kznaT9D7r60a7VfN5wyRAT8iQRclTsMeAql5hfmVaTpbym3alv2u-opkkOhIey_s4_Q1oJnwyJMpe5qooM_1Z8cCjU11a6TPJJNqAJfPkeH5W8vClQNYmCLxurbCIW9tB2nI4PscAnUCvAkFmKv9VcDt5jWISr_Rk1jSevKnuwukwgwCm5HfBFsX-Afc9CJf4iAghHvzJPhN-Rb9EW2q9g"/>
+<span class="absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical">01:45</span>
+<div class="gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+<span class="font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter">⚡ GENERATE</span>
+</div>
+</div>
+<div class="group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all" data-asset-id="4">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiLogRyTP7Jxx-XmSuPk9CBYPX_xdYo1_OHHJiDXT7UJ9H6pESeEIGZV3-Ltk1WcO1IO-MbqNVYu2ab3QwpLliRpS49egVsIBupvSYMOkhXd6oh4IRvR81-2jFxbZH48_dvzq1c6Zgn4zhWcaWxuUAD_Ij-NG21nuNtovGG_U2jGQ1xJxsuemhGemYI47aMHuG5wAtPJ1CM8zsa22yarUbjJZ5qfnAJxpXD9LLSm0Wg2dvfyu25HxUTR2nSO82yVzm772qYXiIIhk"/>
+<span class="absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical">00:24</span>
+<div class="gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+<span class="font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter">⚡ GENERATE</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Center: Monitor & Timeline -->
+<section class="flex-1 flex flex-col min-w-0 bg-surface">
+<!-- Monitor Area -->
+<div class="flex-1 relative flex flex-col items-center justify-center p-lg overflow-hidden group">
+<!-- Monitor Canvas -->
+<div class="w-full h-full max-w-4xl bg-black relative border border-surface-variant flex items-center justify-center shadow-2xl overflow-hidden">
+<!-- Corner Brackets -->
+<div class="monitor-bracket top-0 left-0 border-t-2 border-l-2"></div>
+<div class="monitor-bracket top-0 right-0 border-t-2 border-r-2"></div>
+<div class="monitor-bracket bottom-0 left-0 border-b-2 border-l-2"></div>
+<div class="monitor-bracket bottom-0 right-0 border-b-2 border-r-2"></div>
+<!-- Scanline Pulse Overlay -->
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-primary-container/10 via-transparent to-primary-container/10 opacity-20 scan-line-anim"></div>
+<img alt="Main Program Monitor" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCur5yuAC5KtwuA2RfxOUprWe_1o1zyaozNHs_rpT4Kl5yqhcEUz6P4Y1arAvIX1L23xuvH8WDwp7AVpi8GosQVybHqC29e4Bsj8J2VwMlTAWNC7d3ha_a35R5oF7Kpr46kxOnWp9H9XIl7QePXVq-UCChN6S0ML0JmvxpuyGHhqNy3fzzxWGj_5Ywlv0uyE07fnv5LaKPnzaQfWx3UhE__GFVAoHs2P55yNKuurzkrB3EXTfgJbjr2E-VA1wWNaWeVjMwQCI125BI"/>
+<!-- Overlay UI -->
+<div class="absolute top-4 left-4 flex flex-col">
+<span class="font-label-technical text-primary-container crt-glow text-[14px]" id="real-timecode">00:00:14:23</span>
+<span class="font-label-technical text-[9px] text-on-surface-variant">4K // 60FPS // RAW</span>
+</div>
+<!-- Playback Controls (Hover) -->
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-md bg-background/80 backdrop-blur-md px-lg py-sm border border-outline-variant rounded-full opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-y-0 translate-y-4">
+<button class="material-symbols-outlined text-on-surface hover:text-primary-container active:scale-95" type="button">skip_previous</button>
+<button class="material-symbols-outlined text-[32px] text-primary-container hover:scale-110 active:scale-90 transition-all" style="font-variation-settings: 'FILL' 1;" type="button">play_arrow</button>
+<button class="material-symbols-outlined text-on-surface hover:text-primary-container active:scale-95" type="button">skip_next</button>
+<div class="w-px h-4 bg-outline-variant"></div>
+<button class="material-symbols-outlined text-on-surface hover:text-primary-container active:scale-95" type="button">repeat</button>
+</div>
+</div>
+</div>
+<!-- Timeline Panel -->
+<div class="flex-none bg-surface-container border-t-2 border-outline-variant flex flex-col min-h-0" style="height: var(--timeline-height);">
+<!-- Toolbar -->
+<div class="h-10 px-md flex items-center justify-between border-b border-outline-variant bg-surface-container-high">
+<div class="flex items-center gap-sm">
+<button class="p-1 hover:bg-surface-variant text-primary-container transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">near_me</span>
+</button>
+<button class="p-1 hover:bg-surface-variant text-on-surface-variant hover:text-on-surface transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">content_cut</span>
+</button>
+<button class="p-1 hover:bg-surface-variant text-on-surface-variant hover:text-on-surface transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">layers</span>
+</button>
+<div class="w-px h-4 bg-outline-variant mx-2"></div>
+<button class="p-1 hover:bg-surface-variant text-on-surface-variant hover:text-on-surface transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">straighten</span>
+</button>
+</div>
+<div class="font-label-technical text-on-surface-variant text-[10px]">SCENE_01_ASSEMBLY_FINAL</div>
+</div>
+<!-- Tracks -->
+<div class="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar relative bg-[#060606]">
+<!-- Playhead -->
+<div class="absolute top-0 bottom-0 w-px bg-primary-container z-20 left-1/4">
+<div class="absolute -top-1 -left-[5px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[8px] border-t-primary-container"></div>
+</div>
+<!-- Track Rows -->
+<div class="flex flex-col h-full">
+<!-- V1 Track -->
+<div class="h-1/2 border-b border-outline-variant/30 relative flex items-center px-lg">
+<div class="absolute left-0 w-12 h-full bg-surface-container-high border-r border-outline-variant flex items-center justify-center font-label-technical text-[10px] z-10">V1</div>
+<div class="ml-12 flex gap-[2px] h-3/4">
+<div class="w-48 bg-primary-container/80 border border-primary-container flex items-center px-2 font-label-technical text-on-primary-container text-[10px]">CLIP_A_01.MP4</div>
+<div class="w-32 bg-primary-container border border-primary-container flex items-center px-2 font-label-technical text-on-primary-container text-[10px]">CLIP_A_02.MP4</div>
+<div class="w-64 bg-primary-container/60 border border-primary-container flex items-center px-2 font-label-technical text-on-primary-container text-[10px]">SCENE_B_WIDE.MP4</div>
+</div>
+</div>
+<!-- A1 Track -->
+<div class="h-1/2 relative flex items-center px-lg">
+<div class="absolute left-0 w-12 h-full bg-surface-container-high border-r border-outline-variant flex items-center justify-center font-label-technical text-[10px] z-10">A1</div>
+<div class="ml-12 flex items-center gap-[2px] h-full w-full opacity-40">
+<!-- Mock Audio Waveform -->
+<div class="flex items-end gap-[1px] h-10 w-full">
+<div class="w-1 bg-secondary h-2"></div><div class="w-1 bg-secondary h-4"></div><div class="w-1 bg-secondary h-8"></div><div class="w-1 bg-secondary h-3"></div><div class="w-1 bg-secondary h-12"></div><div class="w-1 bg-secondary h-6"></div><div class="w-1 bg-secondary h-4"></div><div class="w-1 bg-secondary h-9"></div><div class="w-1 bg-secondary h-1"></div><div class="w-1 bg-secondary h-5"></div><div class="w-1 bg-secondary h-10"></div><div class="w-1 bg-secondary h-2"></div><div class="w-1 bg-secondary h-7"></div><div class="w-1 bg-secondary h-4"></div><div class="w-1 bg-secondary h-12"></div><div class="w-1 bg-secondary h-6"></div><div class="w-1 bg-secondary h-3"></div><div class="w-1 bg-secondary h-10"></div><div class="w-1 bg-secondary h-5"></div><div class="w-1 bg-secondary h-2"></div><div class="w-1 bg-secondary h-8"></div><div class="w-1 bg-secondary h-4"></div><div class="w-1 bg-secondary h-12"></div><div class="w-1 bg-secondary h-6"></div><div class="w-1 bg-secondary h-3"></div><div class="w-1 bg-secondary h-10"></div><div class="w-1 bg-secondary h-5"></div><div class="w-1 bg-secondary h-2"></div><div class="w-1 bg-secondary h-8"></div><div class="w-1 bg-secondary h-4"></div><div class="w-1 bg-secondary h-12"></div><div class="w-1 bg-secondary h-6"></div><div class="w-1 bg-secondary h-3"></div><div class="w-1 bg-secondary h-10"></div><div class="w-1 bg-secondary h-5"></div><div class="w-1 bg-secondary h-2"></div><div class="w-1 bg-secondary h-8"></div><div class="w-1 bg-secondary h-4"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Sidebar: Controls -->
+<aside class="w-[280px] flex flex-col bg-surface-container border-l border-outline-variant min-h-0">
+<div class="p-md font-headline-sm border-b border-outline-variant flex items-center justify-between">
+            ASSEMBLY
+            <span class="material-symbols-outlined text-primary-container">tune</span>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-md space-y-lg">
+<!-- Volume Sync -->
+<div class="space-y-sm">
+<label class="font-label-technical text-on-surface-variant text-[10px] uppercase">Volume Sync</label>
+<div class="relative h-1 bg-surface-container-highest rounded-full group cursor-pointer">
+<div class="absolute left-0 top-0 h-full w-[70%] bg-secondary shadow-[0_0_8px_rgba(255,186,63,0.6)]"></div>
+<div class="absolute left-[70%] top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] border border-secondary transition-transform hover:scale-125"></div>
+</div>
+<div class="flex justify-between font-label-technical text-[9px] text-on-surface-variant">
+<span>-INF</span>
+<span class="text-secondary">+2.4dB</span>
+</div>
+</div>
+<!-- Grading Presets -->
+<div class="space-y-sm">
+<label class="font-label-technical text-on-surface-variant text-[10px] uppercase">Color Grading</label>
+<div class="grid grid-cols-2 gap-xs">
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button">NEON_PULSE</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-primary-container text-primary-container" type="button">DARK_MATTER</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button">CHROME</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button">VOID</button>
+</div>
+</div>
+<!-- Tech Specs -->
+<div class="bg-surface-container-lowest p-sm border border-outline-variant rounded-xs space-y-xs">
+<div class="flex justify-between font-label-technical text-[10px]">
+<span class="text-on-surface-variant">CODEC</span>
+<span class="text-primary-container">PRORES 422</span>
+</div>
+<div class="flex justify-between font-label-technical text-[10px]">
+<span class="text-on-surface-variant">RESOLUTION</span>
+<span class="text-primary-container">3840 x 2160</span>
+</div>
+<div class="flex justify-between font-label-technical text-[10px]">
+<span class="text-on-surface-variant">BITRATE</span>
+<span class="text-primary-container">400 MBPS</span>
+</div>
+<div class="flex justify-between font-label-technical text-[10px]">
+<span class="text-on-surface-variant">BIT DEPTH</span>
+<span class="text-primary-container">12-BIT</span>
+</div>
+</div>
+<!-- System Log -->
+<div class="flex-1 font-label-code text-[10px] text-on-surface-variant/60 overflow-hidden">
+<div class="border-t border-outline-variant/30 pt-sm">
+                    [09:22:11] INITIALIZING RENDER ENGINE...<br/>
+                    [09:22:14] BUFFERING ASSETS SCENE_01...<br/>
+                    [09:22:15] WAVESPEED HANDSHAKE OK.<br/>
+<span class="text-primary-container">[09:22:18] SYSTEM STABLE. READY.</span>
+</div>
+</div>
+</div>
+<!-- Footer Sidebar Actions -->
+<div class="p-md border-t border-outline-variant bg-surface-container-high space-y-sm">
+<button class="w-full py-sm border border-primary-container text-primary-container font-label-technical text-[11px] hover:bg-primary-container/10 active:scale-[0.97] transition-all" type="button">
+                EXPORT TO STUDIO
+            </button>
+<button class="w-full py-sm bg-primary-container text-on-primary-container font-label-technical text-[11px] font-bold hover:shadow-[0_0_12px_rgba(168,215,0,0.4)] active:scale-[0.97] transition-all" onclick="downloadFinal()" type="button">
+                DOWNLOAD FINAL
+            </button>
+</div>
+</aside>
+</main>
+<!-- Footer Status Bar -->
+<footer class="h-8 bg-surface-container-lowest border-t border-outline-variant px-md flex items-center justify-between z-50">
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-xs font-label-technical text-[9px] text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+            CORE_SYSTEM_ACTIVE
+        </div>
+<div class="flex items-center gap-xs font-label-technical text-[9px] text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">memory</span>
+            MEM: 12.4GB / 32GB
+        </div>
+</div>
+<div class="font-label-technical text-[9px] text-on-surface-variant tracking-[2px]">
+        MERCADREAM // MASTER_ASSEMBLY // 2024
+    </div>
+</footer>
 <script>
-    // Micro-interaction Scripts
-    document.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('mousedown', () => {
-            btn.style.transform = 'scale(0.97)';
-        });
-        btn.addEventListener('mouseup', () => {
-            btn.style.transform = '';
-        });
-    });
+    // Constants
+    const STORAGE_KEY = 'md_credits';
+    const SCENES_STORAGE_KEY = 'md_6scenes';
 
-    // Timecode update simulation
-    let frame = 22;
-    let seconds = 15;
-    const timeDisplay = document.getElementById('timecode-display');
-    
-    setInterval(() => {
-        frame++;
-        if (frame >= 24) {
-            frame = 0;
+    // Real-time timecode ticker
+    let frames = 23;
+    let seconds = 14;
+    let minutes = 0;
+    let hours = 0;
+
+    function updateTimecode() {
+        frames++;
+        if (frames >= 60) {
+            frames = 0;
             seconds++;
         }
-        if (seconds >= 60) seconds = 0;
-        const s = seconds.toString().padStart(2, '0');
-        const f = frame.toString().padStart(2, '0');
-        if (timeDisplay) timeDisplay.textContent = `00:00:${s}:${f}`;
-    }, 41);
-</script>
-<script>
-// ══════════════════════════════════════════════
-// MERCADREAM ASSEMBLY v21 — Scene & Generate
-// ══════════════════════════════════════════════
-
-var _scenes = [];
-var _selected = {};
-var COST_PER_VIDEO = 15;
-
-window.addEventListener('load', function(){
-  loadCredits();
-  loadScenes();
-  wireButtons();
-});
-
-function loadCredits(){
-  var c = parseInt(localStorage.getItem('md_credits')||'1000');
-  if(!localStorage.getItem('md_credits')) localStorage.setItem('md_credits','1000');
-  var el = document.getElementById('hdr-credits');
-  if(el) el.textContent = c.toLocaleString() + ' CR';
-}
-
-function loadScenes(){
-  var av = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
-  var ss = JSON.parse(localStorage.getItem('md_6scenes')||'[]');
-  _scenes = av.length ? av : ss;
-  renderScenes();
-}
-
-function renderScenes(){
-  var grid = document.getElementById('scenes-grid');
-  if(!grid) return;
-  grid.innerHTML = '';
-
-  if(!_scenes.length){
-    grid.innerHTML = '<div style="grid-column:span 2;padding:20px;text-align:center;color:#434933;font-family:IBM Plex Mono,monospace;font-size:9px">NO SCENES<br><br><button onclick="window.location.href='studio.html'" style="background:#c8ff00;color:#000;border:none;padding:6px 14px;font-family:inherit;font-size:9px;font-weight:700;cursor:pointer">→ STUDIO</button></div>';
-    return;
-  }
-
-  _scenes.forEach(function(scene, i){
-    var title = (scene.title||'Scene '+(i+1)).replace(/Scene \d+\/\d+: /,'').substring(0,16);
-    var genVid = _selected[i] && _selected[i].generated;
-    var thumb = _selected[i] && _selected[i].thumb;
-
-    var card = document.createElement('div');
-    card.id = 'scene-card-'+i;
-    card.style.cssText = 'aspect-ratio:1;background:#0e0e0e;border:1px solid '+(genVid?'#c8ff00':'#353534')+';position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s';
-    card.onclick = function(){ playScene(i); };
-
-    var inner = '';
-    if(genVid && _selected[i].url){
-      inner = '<video src="'+_selected[i].url+'" style="width:100%;height:100%;object-fit:cover;opacity:.7" muted loop autoplay></video>';
-    } else if(thumb){
-      inner = '<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover;opacity:.5">';
-    }
-
-    inner += '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.85);padding:2px 4px;font-family:IBM Plex Mono,monospace;font-size:7px;color:'+(genVid?'#c8ff00':'#888')+'">S'+(i+1)+' — '+title+(genVid?' ✓':'')+' <span style="float:right;color:#c8ff00">15CR</span></div>';
-    
-    // Generate button overlay
-    if(!genVid){
-      inner += '<div onclick="event.stopPropagation();generateScene('+i+')" id="gen-overlay-'+i+'" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.6);opacity:0;transition:opacity .2s">' +
-        '<div style="font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;color:#c8ff00;letter-spacing:1px">⚡ GENERATE</div>' +
-        '<div style="font-family:IBM Plex Mono,monospace;font-size:7px;color:#888;margin-top:2px">15 CREDITS</div>' +
-      '</div>';
-      card.onmouseover = function(){ var ov=document.getElementById('gen-overlay-'+i); if(ov) ov.style.opacity='1'; };
-      card.onmouseout  = function(){ var ov=document.getElementById('gen-overlay-'+i); if(ov) ov.style.opacity='0'; };
-    }
-
-    card.innerHTML = inner;
-    grid.appendChild(card);
-  });
-}
-
-function playScene(i){
-  var sel = _selected[i];
-  if(!sel || !sel.url) return;
-  // Find preview video in page
-  var vid = document.querySelector('#preview-video, video.preview, .preview-video');
-  if(!vid){
-    // Create one if not exists
-    var monitor = document.querySelector('.bg-deep-black');
-    if(monitor){
-      vid = document.createElement('video');
-      vid.id = 'preview-video';
-      vid.style.cssText = 'width:100%;height:100%;object-fit:contain;position:absolute;inset:0';
-      vid.controls = true;
-      vid.muted = false;
-      monitor.appendChild(vid);
-    }
-  }
-  if(vid){ vid.src=sel.url; vid.play().catch(function(){}); }
-}
-
-async function generateScene(si){
-  var scene = _scenes[si];
-  if(!scene) return;
-
-  var credits = parseInt(localStorage.getItem('md_credits')||'0');
-  if(credits < COST_PER_VIDEO){
-    alert('Insufficient credits. Recharging...');
-    setTimeout(function(){ window.location.href='pricing.html'; }, 800);
-    return;
-  }
-
-  var card = document.getElementById('scene-card-'+si);
-  var overlay = document.getElementById('gen-overlay-'+si);
-  if(overlay) overlay.innerHTML = '<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:#c8ff00;animation:pulse 1s infinite">GENERATING...</div>';
-
-  var prompt = (scene.prompt || scene.title || 'cinematic scene').substring(0, 300);
-  prompt += ', cinematic quality, 16:9, professional film';
-
-  try {
-    // Submit
-    var r = await fetch('/api/wavespeed', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt:prompt, duration:5})
-    });
-    var d = await r.json();
-    if(d.error || !d.id){
-      if(overlay) overlay.innerHTML = '<div style="font-family:IBM Plex Mono,monospace;font-size:8px;color:#ff4444">ERROR</div>';
-      return;
-    }
-
-    // Poll
-    var tries=0;
-    var timer = setInterval(async function(){
-      tries++;
-      if(overlay) overlay.innerHTML = '<div style="font-family:IBM Plex Mono,monospace;font-size:8px;color:#c8ff00">'+tries*3+'s...</div>';
-      try{
-        var pr = await fetch('/api/wavespeed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'poll',id:d.id})});
-        var pd = await pr.json();
-        if(pd.status==='completed' && pd.url){
-          clearInterval(timer);
-          // Deduct credits
-          var nc = credits - COST_PER_VIDEO;
-          localStorage.setItem('md_credits', nc);
-          var el = document.getElementById('hdr-credits');
-          if(el) el.textContent = nc.toLocaleString()+' CR';
-          // Save
-          _selected[si] = {id:'gen-'+si, url:pd.url, thumb:'', duration:5, generated:true};
-          var av = JSON.parse(localStorage.getItem('md_assembly_videos')||'[]');
-          if(av[si]){av[si].url=pd.url;av[si].generatedUrl=pd.url;localStorage.setItem('md_assembly_videos',JSON.stringify(av));}
-          renderScenes();
-          playScene(si);
-        } else if(pd.status==='failed' || tries>40){
-          clearInterval(timer);
-          if(overlay) overlay.innerHTML = '<div style="font-family:IBM Plex Mono,monospace;font-size:8px;color:#ff4444">FAILED</div>';
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
         }
-      }catch(e){ clearInterval(timer); }
-    }, 3000);
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
 
-  } catch(e){
-    if(overlay) overlay.innerHTML = '<div style="font-family:IBM Plex Mono,monospace;font-size:8px;color:#ff4444">ERR</div>';
-  }
-}
+        const tc = [hours, minutes, seconds, frames]
+            .map(v => v.toString().padStart(2, '0'))
+            .join(':');
+        
+        const element = document.getElementById('real-timecode');
+        if (element) element.innerText = tc;
+    }
 
-function wireButtons(){
-  // Upload asset
-  var upBtn = document.getElementById('btn-upload');
-  if(!upBtn) upBtn = document.querySelector('button');
-  
-  // File input for upload
-  var inp = document.createElement('input');
-  inp.type='file'; inp.accept='video/*,image/*'; inp.multiple=true; inp.style.display='none';
-  inp.id='file-upload-input';
-  document.body.appendChild(inp);
-  
-  inp.onchange = function(e){
-    Array.from(e.target.files).forEach(function(f){
-      var url = URL.createObjectURL(f);
-      var si = _scenes.length;
-      _scenes.push({id:Date.now()+si, title:'Upload '+(si+1), prompt:f.name, sceneNumber:si+1, status:'ready'});
-      _selected[si] = {id:'upload-'+si, url:url, thumb:'', duration:10, generated:true, uploaded:true};
-      renderScenes();
+    setInterval(updateTimecode, 16.67); // Approx 60fps
+
+    // Load Credits and Scenes Logic
+    function loadCredits() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            const counter = document.getElementById('credit-counter');
+            if (counter) counter.innerText = parseInt(stored).toLocaleString();
+        } else {
+            // Default initial credits
+            localStorage.setItem(STORAGE_KEY, "2450");
+        }
+    }
+
+    // Generate Scene Logic (Polling Version)
+    async function generateScene(card, prompt) {
+        const current = parseInt(localStorage.getItem('md_credits') || '1000');
+        if (current < 15) { alert('Insufficient credits'); return; }
+
+        // Show loading state
+        card.style.borderColor = '#c3f432';
+        const overlay = card.querySelector('.gen-overlay');
+        if (overlay) {
+            overlay.innerHTML = '<span style="font-size:9px;color:#c3f432">GENERATING...</span>';
+        }
+
+        try {
+            // Submit
+            const r = await fetch('/api/wavespeed', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ prompt, duration: 5 })
+            });
+            const d = await r.json();
+            if (!d.id) throw new Error('No job ID');
+
+            // Poll every 3s
+            const poll = setInterval(async () => {
+                try {
+                    const pr = await fetch('/api/wavespeed', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ action: 'poll', id: d.id })
+                    });
+                    const pd = await pr.json();
+
+                    if (pd.status === 'completed' && pd.url) {
+                        clearInterval(poll);
+                        // Deduct credits
+                        const newBal = current - 15;
+                        localStorage.setItem('md_credits', newBal);
+                        const counter = document.getElementById('credit-counter');
+                        if (counter) counter.innerText = newBal.toLocaleString() + ' CR';
+                        
+                        // Update card
+                        const img = card.querySelector('img');
+                        if (img) {
+                            img.src = pd.url;
+                            img.style.opacity = '1';
+                        }
+                        if (overlay) overlay.innerHTML = '✓';
+                    } else if (pd.status === 'failed') {
+                        clearInterval(poll);
+                        if (overlay) overlay.innerHTML = '<span style="color:#ff4444">FAILED</span>';
+                    }
+                } catch (pollError) {
+                    console.error("Polling error:", pollError);
+                }
+            }, 3000);
+
+        } catch(e) {
+            if (overlay) overlay.innerHTML = '<span style="color:#ff4444">ERROR</span>';
+            console.error("Generation error:", e);
+        }
+    }
+
+    function downloadFinal() {
+        const btn = event.currentTarget;
+        const originalText = btn.innerText;
+        btn.innerText = "PROCESSING...";
+        btn.classList.add('opacity-50');
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.classList.remove('opacity-50');
+            btn.disabled = false;
+            alert("Assembly packaged and ready for download.");
+        }, 2000);
+    }
+
+    function populateAssetsFromStorage() {
+        const storedScenesRaw = localStorage.getItem(SCENES_STORAGE_KEY);
+        if (!storedScenesRaw) return;
+
+        try {
+            const scenes = JSON.parse(storedScenesRaw);
+            if (!Array.isArray(scenes) || scenes.length === 0) return;
+
+            const grid = document.getElementById('assets-grid');
+            if (!grid) return;
+
+            grid.innerHTML = ''; 
+
+            scenes.forEach((scene, index) => {
+                const card = document.createElement('div');
+                card.className = "group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all";
+                card.setAttribute('data-asset-id', `stored-${index}`);
+                
+                card.innerHTML = `
+                    <img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="${scene.thumbnail || scene.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400'}"/>
+                    <span class="absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical">${scene.duration || '00:05'}</span>
+                    <div class="gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                        <span class="font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter">⚡ GENERATE</span>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => generateScene(card, scene.prompt || "Cyberpunk cinematic scene"));
+                grid.appendChild(card);
+            });
+        } catch (e) {
+            console.error("Failed to parse stored scenes", e);
+        }
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+        loadCredits();
+        populateAssetsFromStorage();
+
+        // Click interaction for static assets (if any remain)
+        document.querySelectorAll('#assets-grid > div').forEach(card => {
+            card.addEventListener('click', () => {
+                generateScene(card, "Industrial cinematic sequence");
+            });
+        });
     });
-  };
-
-  document.querySelectorAll('button').forEach(function(btn){
-    var t = btn.textContent.trim();
-    if(t.includes('UPLOAD ASSET') || t.includes('Upload')){
-      btn.onclick = function(){ document.getElementById('file-upload-input').click(); };
-    }
-    if(t.includes('EXPORT')){
-      btn.onclick = buildFilm;
-    }
-  });
-}
-
-function buildFilm(){
-  var keys = Object.keys(_selected).filter(function(k){ return _selected[k].url; });
-  if(!keys.length){ alert('Generate or upload clips first.'); return; }
-  var film = {
-    scenes: keys.sort(function(a,b){return a-b;}).map(function(i){
-      var v=_selected[i];
-      return {scene:parseInt(i)+1, url:v.url, duration:v.duration||5};
-    }),
-    created: new Date().toISOString()
-  };
-  localStorage.setItem('md_final_film', JSON.stringify(film));
-  var blob = new Blob([JSON.stringify(film,null,2)],{type:'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href=url; a.download='mercadream-film.json'; a.click();
-  alert('Film manifest exported! '+ film.scenes.length + ' scenes.');
-}
 </script>
-</body>
-</html>
+</body></html>
