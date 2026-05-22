@@ -1,10 +1,10 @@
-﻿module.exports = async function(req, res) {
+module.exports = async function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if(req.method === "OPTIONS") return res.status(200).end();
 
-  var KEY = process.env.WAVESPEED_KEY;
+  var KEY = process.env.WAVESPEED_KEY || process.env.WAVESPEED_API_KEY;
   var body = req.body || {};
   var action = body.action || req.query.action || "generate";
 
