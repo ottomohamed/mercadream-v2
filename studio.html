@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-        @id tailwind-config;
         /* Custom styles for scanline and CRT effects */
         .scanline-overlay {
             position: fixed;
@@ -162,9 +161,9 @@
 <span class="font-label-technical text-label-technical text-on-surface-variant border-l border-outline-variant pl-md uppercase tracking-widest">Production Suite V.2.4.0</span>
 </div>
 <nav class="hidden md:flex items-center gap-lg h-full">
-<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs">DISCOVERY</button>
-<button class="font-label-technical text-label-technical text-primary border-b-2 border-primary-fixed-dim h-full px-xs">SCREENPLAY</button>
-<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs">PRODUCTION</button>
+<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs" onclick="switchPhase('DISCOVERY',this)">DISCOVERY</button>
+<button class="font-label-technical text-label-technical text-primary border-b-2 border-primary-fixed-dim h-full px-xs active-phase" onclick="switchPhase('SCREENPLAY',this)">SCREENPLAY</button>
+<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs" onclick="switchPhase('PRODUCTION',this)">PRODUCTION</button>
 </nav>
 <div class="flex items-center gap-md">
 <div class="flex items-center gap-xs px-sm py-unit bg-surface-variant rounded-full border border-outline-variant">
@@ -257,7 +256,7 @@
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
 <span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 CR</span>
 </div>
-<button class="bg-surface-variant border border-outline text-[10px] px-sm py-1 font-label-technical hover:bg-primary-fixed-dim hover:text-on-primary transition-all">RECHARGE</button>
+<button class="bg-surface-variant border border-outline text-[10px] px-sm py-1 font-label-technical hover:bg-primary-fixed-dim hover:text-on-primary transition-all" onclick="rechargeCredits()">RECHARGE</button>
 </div>
 </section>
 </aside>
@@ -273,7 +272,7 @@
                 </button>
 </header>
 <!-- Chat Area -->
-<section class="flex-grow bg-surface-container-lowest border border-outline-variant overflow-y-auto p-lg flex flex-col gap-lg terminal-scroll relative">
+<section id="chat-messages" class="flex-grow bg-surface-container-lowest border border-outline-variant overflow-y-auto p-lg flex flex-col gap-lg terminal-scroll relative">
 <!-- User Message -->
 <div class="flex gap-md self-end max-w-[80%]">
 <div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
@@ -307,7 +306,7 @@
 </div>
 </div>
 <!-- Voice Overlay (Hidden by default) -->
-<div class="hidden absolute inset-0 bg-background/90 z-20 flex flex-col items-center justify-center gap-lg" id="voice-overlay">
+<div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
 <div class="flex items-end gap-xs h-20">
 <div class="waveform-bar" style="animation-duration: 0.8s"></div>
 <div class="waveform-bar" style="animation-duration: 1.2s"></div>
@@ -317,7 +316,7 @@
 <div class="waveform-bar" style="animation-duration: 1.1s"></div>
 <div class="waveform-bar" style="animation-duration: 0.7s"></div>
 </div>
-<p class="font-headline-sm text-primary-fixed-dim tracking-widest animate-pulse">LISTENING...</p>
+<p class="font-headline-sm text-primary-fixed-dim tracking-widest animate-pulse" id="listening-text">LISTENING...</p>
 <button class="border border-outline px-lg py-sm font-label-technical hover:bg-error/20 hover:border-error transition-all" onclick="toggleVoice()">TERMINATE VOICE SYNC</button>
 </div>
 </section>
@@ -325,7 +324,7 @@
 <footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
 <div class="flex gap-md items-end">
 <div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
-<textarea class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="ENTER COMMAND OR NARRATIVE SEED..."></textarea>
+<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="ENTER COMMAND OR NARRATIVE SEED..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
 <div class="absolute bottom-2 right-2 flex gap-sm">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
 <button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#a8d700] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
@@ -359,10 +358,10 @@
 <div class="pipeline-stage">
 <div class="flex justify-between items-center mb-unit">
 <span class="font-label-technical text-[10px]">01 // SCRIPT GEN</span>
-<span class="font-label-technical text-[10px] text-primary-fixed-dim" id="p1-val">100%</span>
+<span class="font-label-technical text-[10px] text-primary-fixed-dim" id="p1-val">0%</span>
 </div>
 <div class="w-full h-1 bg-surface-variant">
-<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700]" id="p1-bar" style="width: 100%"></div>
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700]" id="p1-bar" style="width: 0%"></div>
 </div>
 </div>
 <div class="pipeline-stage">
@@ -413,13 +412,17 @@
 </div>
 <div class="flex items-center gap-md">
 <div class="flex bg-surface-container-high border border-outline-variant p-1 rounded">
-<button class="px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical">AUTO</button>
-<button class="px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors">MANUAL</button>
+<button id="btn-auto" class="px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical" onclick="setMode('AUTO')">AUTO</button>
+<button id="btn-manual" class="px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors" onclick="setMode('MANUAL')">MANUAL</button>
 </div>
 <button class="bg-secondary text-on-secondary px-xl py-2 font-headline-sm flex items-center gap-md hover:shadow-[0_0_20px_rgba(255,186,63,0.5)] transition-all active:scale-[0.95]" onclick="startGeneration()">
 <span class="material-symbols-outlined" data-weight="fill">rocket_launch</span>
-                GENERATE
+<span id="btn-generate-text">GENERATE</span>
             </button>
+<a href="assembly.html" class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97]">
+<span class="material-symbols-outlined text-[18px]">movie_edit</span>
+OPEN ASSEMBLY →
+</a>
 </div>
 </footer>
 <script>
@@ -476,10 +479,9 @@
 
         function toggleVoice() {
             const overlay = document.getElementById('voice-overlay');
-            overlay.classList.toggle('hidden');
-            if(!overlay.classList.contains('hidden')) {
-                addLogLine("VOICE SYNC SESSION STARTED...");
-            }
+            const isHidden = overlay.style.display === 'none' || overlay.style.display === '';
+            overlay.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) addLogLine('VOICE SYNC SESSION STARTED...');
         }
 
         function addLogLine(text) {
@@ -501,6 +503,22 @@
                 updateCredits();
                 animatePipeline();
                 addLogLine(`GENERATION SEQUENCE INITIATED: ${currentDirector}`);
+
+                // حفظ المشهد في md_6scenes للربط مع assembly
+                const scene = {
+                    id: 'scene-' + Date.now(),
+                    title: 'Scene — ' + currentDirector,
+                    prompt: document.getElementById('chat-input') ? document.getElementById('chat-input').value || 'Cinematic scene, ' + currentDirector : 'Cinematic scene',
+                    thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
+                    duration: '00:05',
+                    status: 'ready',
+                    director: currentDirector,
+                    cost: cost
+                };
+                const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+                existing.push(scene);
+                localStorage.setItem('md_6scenes', JSON.stringify(existing));
+                addLogLine('SCENE EXPORTED TO ASSEMBLY: md_6scenes [' + existing.length + ']');
             } else {
                 addLogLine("ERROR: INSUFFICIENT CREDITS FOR SYNC.");
             }
@@ -544,11 +562,47 @@
 
         // Send Message
         function sendMessage() {
-            const textarea = document.querySelector('textarea');
+            const textarea = document.getElementById('chat-input');
             const text = textarea ? textarea.value.trim() : '';
             if (!text) return;
-            addLogLine(`USER INPUT: ${text.substring(0, 60)}`);
+
+            const chat = document.getElementById('chat-messages');
+            const now = new Date().toLocaleTimeString('en-GB', {hour12: false});
+
+            // User bubble
+            const userDiv = document.createElement('div');
+            userDiv.className = 'flex gap-md self-end max-w-[80%]';
+            const msgP = document.createElement('p'); msgP.className = 'text-body-md text-on-surface'; msgP.textContent = text;
+            const msgWrap = document.createElement('div'); msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
+            const tsSpan = document.createElement('span'); tsSpan.className = 'absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant'; tsSpan.textContent = now + ' — USER_MAIN';
+            msgWrap.appendChild(msgP); msgWrap.appendChild(tsSpan);
+            const personDiv = document.createElement('div'); personDiv.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0'; personDiv.innerHTML = '<span class="material-symbols-outlined">person</span>';
+            userDiv.appendChild(msgWrap); userDiv.appendChild(personDiv);
+            // إدراج قبل voice-overlay لضمان الترتيب الصحيح
+            const voiceOverlay = document.getElementById('voice-overlay');
+            chat.insertBefore(userDiv, voiceOverlay);
+
+            // Bot typing indicator
+            const botDiv = document.createElement('div');
+            botDiv.className = 'flex gap-md max-w-[80%]';
+            const botId = 'bot-' + Date.now();
+            botDiv.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md relative" id="' + botId + '"><div class="flex gap-[3px] items-center h-5"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div></div>';
+            chat.insertBefore(botDiv, voiceOverlay);
+            chat.scrollTop = chat.scrollHeight;
+
             textarea.value = '';
+            addLogLine('USER INPUT: ' + text.substring(0, 60));
+
+            // Bot response after 1.2s
+            setTimeout(function() {
+                const typing = document.getElementById(botId);
+                if (typing) {
+                    typing.innerHTML = '<div class="flex items-center gap-sm mb-xs"><span class="bg-primary-fixed-dim text-on-primary text-[9px] px-1 font-bold">READY</span></div><p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed"><span class="text-primary-fixed-dim">&gt;&gt;</span> Input received. Processing narrative seed...<br/><span class="text-primary-fixed-dim">&gt;&gt;</span> Director protocol engaged.</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — GEMINI-9</span>';
+                    typing.removeAttribute('id');
+                }
+                chat.scrollTop = chat.scrollHeight;
+                addLogLine('AGENT RESPONSE DELIVERED');
+            }, 1200);
         }
 
         // i18n
@@ -564,29 +618,57 @@
             langIdx = (langIdx + 1) % langs.length;
             const lang = langs[langIdx];
             const t = i18n[lang];
-            const ta = document.querySelector('textarea');
+            const ta = document.getElementById('chat-input');
             if (ta) ta.placeholder = t.placeholder;
-            const listenEl = document.querySelector('.animate-pulse');
+            const listenEl = document.getElementById('listening-text');
             if (listenEl) listenEl.textContent = t.listening;
             const termBtn = document.querySelector('[onclick="toggleVoice()"].border');
             if (termBtn) termBtn.textContent = t.terminate;
-            const genBtn = document.querySelector('[onclick="startGeneration()"]');
-            if (genBtn) { const span = genBtn.querySelectorAll('span'); if (span[1]) span[1].textContent = t.generate; }
+            const genTextBtn = document.getElementById('btn-generate-text');
+            if (genTextBtn) genTextBtn.textContent = t.generate;
             document.documentElement.dir = lang === 'AR' ? 'rtl' : 'ltr';
             addLogLine(`LANGUAGE SWITCHED TO: ${lang}`);
         }
 
-        // Tactile Feedback
-        document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('mousedown', () => {
-                btn.style.transform = 'scale(0.97)';
+
+        function rechargeCredits() {
+            credits = Math.min(credits + 500, 9999);
+            localStorage.setItem('md_credits', credits);
+            updateCredits();
+            addLogLine('CREDITS RECHARGED: +500 CR');
+        }
+
+        function switchPhase(phase, btn) {
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('text-primary', 'border-primary-fixed-dim');
+                b.classList.add('text-on-surface-variant', 'border-transparent');
             });
-            btn.addEventListener('mouseup', () => {
-                btn.style.transform = 'scale(1)';
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'scale(1)';
-            });
-        });
+            btn.classList.remove('text-on-surface-variant', 'border-transparent');
+            btn.classList.add('text-primary', 'border-primary-fixed-dim');
+            const phaseLabel = document.querySelector('.font-headline-sm.uppercase');
+            if (phaseLabel) phaseLabel.innerHTML = 'Phase: <span class="text-primary-fixed-dim">' + phase + '</span>';
+            addLogLine('PHASE SWITCHED TO: ' + phase);
+        }
+
+        let currentMode = 'AUTO';
+        function setMode(mode) {
+            currentMode = mode;
+            const auto = document.getElementById('btn-auto');
+            const manual = document.getElementById('btn-manual');
+            if (mode === 'AUTO') {
+                auto.classList.add('bg-primary-fixed-dim','text-on-primary');
+                auto.classList.remove('text-on-surface-variant');
+                manual.classList.remove('bg-primary-fixed-dim','text-on-primary');
+                manual.classList.add('text-on-surface-variant');
+            } else {
+                manual.classList.add('bg-primary-fixed-dim','text-on-primary');
+                manual.classList.remove('text-on-surface-variant');
+                auto.classList.remove('bg-primary-fixed-dim','text-on-primary');
+                auto.classList.add('text-on-surface-variant');
+            }
+            addLogLine('MODE SET TO: ' + mode);
+        }
+
+        // Tactile Feedback handled via Tailwind active:scale classes
     </script>
 </body></html>
