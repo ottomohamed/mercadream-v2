@@ -198,15 +198,15 @@
 <!-- Left Sidebar: Assets -->
 <aside class="w-[clamp(280px,20vw,340px)] flex flex-col bg-surface-container border-r border-outline-variant min-h-0">
 <div class="p-md border-b border-outline-variant">
-<button class="w-full py-md bg-primary-container text-on-primary-container font-headline-sm flex items-center justify-center gap-sm active:scale-[0.97] transition-all hover:shadow-[0_0_15px_rgba(168,215,0,0.4)]" type="button">
+<button class="w-full py-md bg-primary-container text-on-primary-container font-headline-sm flex items-center justify-center gap-sm active:scale-[0.97] transition-all hover:shadow-[0_0_15px_rgba(168,215,0,0.4)]" type="button" onclick="document.createElement('input').click()">
 <span class="material-symbols-outlined">upload</span>
-                UPLOAD ASSET
-            </button>
+UPLOAD ASSET
+</button>
 </div>
 <div class="flex border-b border-outline-variant">
-<button class="flex-1 py-sm font-label-technical text-primary-container border-b-2 border-primary-container bg-surface-variant/30" type="button">MEDIA</button>
-<button class="flex-1 py-sm font-label-technical text-on-surface-variant hover:text-on-surface" type="button">CLIPS</button>
-<button class="flex-1 py-sm font-label-technical text-on-surface-variant hover:text-on-surface" type="button">ASSETS</button>
+<button class="flex-1 py-sm font-label-technical text-primary-container border-b-2 border-primary-container bg-surface-variant/30" type="button" onclick="switchTab('MEDIA',this)">MEDIA</button>
+<button class="flex-1 py-sm font-label-technical text-on-surface-variant hover:text-on-surface" type="button" onclick="switchTab('CLIPS',this)">CLIPS</button>
+<button class="flex-1 py-sm font-label-technical text-on-surface-variant hover:text-on-surface" type="button" onclick="switchTab('ASSETS',this)">ASSETS</button>
 </div>
 <div class="flex-1 overflow-y-auto custom-scrollbar p-md grid grid-cols-2 gap-sm" id="assets-grid">
 <!-- Asset Cards -->
@@ -288,7 +288,7 @@
 <span class="material-symbols-outlined text-[18px]">straighten</span>
 </button>
 </div>
-<div class="font-label-technical text-on-surface-variant text-[10px]">SCENE_01_ASSEMBLY_FINAL</div>
+<div class="font-label-technical text-on-surface-variant text-[10px] timeline-label">SCENE_01_ASSEMBLY_FINAL</div>
 </div>
 <!-- Tracks -->
 <div class="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar relative bg-[#060606]">
@@ -344,10 +344,10 @@
 <div class="space-y-sm">
 <label class="font-label-technical text-on-surface-variant text-[10px] uppercase">Color Grading</label>
 <div class="grid grid-cols-2 gap-xs">
-<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button">NEON_PULSE</button>
-<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-primary-container text-primary-container" type="button">DARK_MATTER</button>
-<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button">CHROME</button>
-<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button">VOID</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button" onclick="setGradingPreset('NEON_PULSE',this)">NEON_PULSE</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-primary-container text-primary-container" type="button" onclick="setGradingPreset('DARK_MATTER',this)">DARK_MATTER</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button" onclick="setGradingPreset('CHROME',this)">CHROME</button>
+<button class="bg-surface-variant py-sm font-label-technical text-[10px] border border-outline-variant hover:border-primary-container transition-all" type="button" onclick="setGradingPreset('VOID',this)">VOID</button>
 </div>
 </div>
 <!-- Tech Specs -->
@@ -381,12 +381,8 @@
 </div>
 <!-- Footer Sidebar Actions -->
 <div class="p-md border-t border-outline-variant bg-surface-container-high space-y-sm">
-<button class="w-full py-sm border border-primary-container text-primary-container font-label-technical text-[11px] hover:bg-primary-container/10 active:scale-[0.97] transition-all" type="button">
-                EXPORT TO STUDIO
-            </button>
-<button class="w-full py-sm bg-primary-container text-on-primary-container font-label-technical text-[11px] font-bold hover:shadow-[0_0_12px_rgba(168,215,0,0.4)] active:scale-[0.97] transition-all" onclick="downloadFinal()" type="button">
-                DOWNLOAD FINAL
-            </button>
+<button class="w-full py-sm border border-primary-container text-primary-container font-label-technical text-[11px] hover:bg-primary-container/10 active:scale-[0.97] transition-all" type="button" onclick="exportToStudio()">EXPORT TO STUDIO</button>
+<button class="w-full py-sm bg-primary-container text-on-primary-container font-label-technical text-[11px] font-bold hover:shadow-[0_0_12px_rgba(168,215,0,0.4)] active:scale-[0.97] transition-all" onclick="downloadFinal(this)" type="button"><span id="btn-download-text">DOWNLOAD FINAL</span></button>
 </div>
 </aside>
 </main>
@@ -419,55 +415,34 @@
 
     function updateTimecode() {
         frames++;
-        if (frames >= 60) {
-            frames = 0;
-            seconds++;
-        }
-        if (seconds >= 60) {
-            seconds = 0;
-            minutes++;
-        }
-        if (minutes >= 60) {
-            minutes = 0;
-            hours++;
-        }
-
+        if (frames >= 24) { frames = 0; seconds++; }
+        if (seconds >= 60) { seconds = 0; minutes++; }
+        if (minutes >= 60) { minutes = 0; hours++; }
         const tc = [hours, minutes, seconds, frames]
-            .map(v => v.toString().padStart(2, '0'))
-            .join(':');
-        
+            .map(v => v.toString().padStart(2, '0')).join(':');
         const element = document.getElementById('real-timecode');
         if (element) element.innerText = tc;
     }
+    setInterval(updateTimecode, 41.67); // 24fps cinematic
 
-    setInterval(updateTimecode, 16.67); // Approx 60fps
-
-    // Load Credits and Scenes Logic
     function loadCredits() {
         const stored = localStorage.getItem(STORAGE_KEY);
+        const counter = document.getElementById('credit-counter');
         if (stored) {
-            const counter = document.getElementById('credit-counter');
-            if (counter) counter.innerText = parseInt(stored).toLocaleString();
+            if (counter) counter.innerText = parseInt(stored).toLocaleString() + ' CR';
         } else {
-            // Default initial credits
-            localStorage.setItem(STORAGE_KEY, "2450");
+            localStorage.setItem(STORAGE_KEY, '2450');
+            if (counter) counter.innerText = '2,450 CR';
         }
     }
 
-    // Generate Scene Logic (Polling Version)
     async function generateScene(card, prompt) {
         const current = parseInt(localStorage.getItem('md_credits') || '1000');
         if (current < 15) { alert('Insufficient credits'); return; }
-
-        // Show loading state
         card.style.borderColor = '#c3f432';
         const overlay = card.querySelector('.gen-overlay');
-        if (overlay) {
-            overlay.innerHTML = '<span style="font-size:9px;color:#c3f432">GENERATING...</span>';
-        }
-
+        if (overlay) overlay.innerHTML = '<span style="font-size:9px;color:#c3f432">GENERATING...</span>';
         try {
-            // Submit
             const r = await fetch('/api/wavespeed', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -475,8 +450,6 @@
             });
             const d = await r.json();
             if (!d.id) throw new Error('No job ID');
-
-            // Poll every 3s
             const poll = setInterval(async () => {
                 try {
                     const pr = await fetch('/api/wavespeed', {
@@ -485,88 +458,88 @@
                         body: JSON.stringify({ action: 'poll', id: d.id })
                     });
                     const pd = await pr.json();
-
                     if (pd.status === 'completed' && pd.url) {
                         clearInterval(poll);
-                        // Deduct credits
                         const newBal = current - 15;
                         localStorage.setItem('md_credits', newBal);
                         const counter = document.getElementById('credit-counter');
                         if (counter) counter.innerText = newBal.toLocaleString() + ' CR';
-                        
-                        // Update card
                         const img = card.querySelector('img');
-                        if (img) {
-                            img.src = pd.url;
-                            img.style.opacity = '1';
-                        }
+                        if (img) { img.src = pd.url; img.style.opacity = '1'; }
                         if (overlay) overlay.innerHTML = '✓';
                     } else if (pd.status === 'failed') {
                         clearInterval(poll);
                         if (overlay) overlay.innerHTML = '<span style="color:#ff4444">FAILED</span>';
                     }
-                } catch (pollError) {
-                    console.error("Polling error:", pollError);
-                }
+                } catch (pollError) { console.error('Polling error:', pollError); }
             }, 3000);
-
         } catch(e) {
             if (overlay) overlay.innerHTML = '<span style="color:#ff4444">ERROR</span>';
-            console.error("Generation error:", e);
+            console.error('Generation error:', e);
         }
     }
 
-    function downloadFinal() {
-        const btn = event.currentTarget;
-        const originalText = btn.innerText;
-        btn.innerText = "PROCESSING...";
+    // BUG-01 FIX: لا نمسح الـ span بل نعدّل textContent فقط
+    function downloadFinal(btn) {
+        const textSpan = btn.querySelector('#btn-download-text');
+        const originalText = textSpan ? textSpan.textContent : btn.innerText;
+        if (textSpan) { textSpan.textContent = 'PROCESSING...'; }
+        else { btn.innerText = 'PROCESSING...'; }
         btn.classList.add('opacity-50');
         btn.disabled = true;
-        
         setTimeout(() => {
-            btn.innerText = originalText;
+            if (textSpan) { textSpan.textContent = originalText; }
+            else { btn.innerText = originalText; }
             btn.classList.remove('opacity-50');
             btn.disabled = false;
-            alert("Assembly packaged and ready for download.");
+            alert('Assembly packaged and ready for download.');
         }, 2000);
+    }
+
+    // BUG-03 FIX: bindStaticAssets مع data-bound لمنع التكرار
+    function bindStaticAssets() {
+        document.querySelectorAll('#assets-grid > div').forEach(card => {
+            if (!card.dataset.bound) {
+                card.addEventListener('click', () => generateScene(card, 'Industrial cinematic sequence'));
+                card.dataset.bound = 'true';
+            }
+        });
     }
 
     function populateAssetsFromStorage() {
         const storedScenesRaw = localStorage.getItem(SCENES_STORAGE_KEY);
-        if (!storedScenesRaw) return;
-
+        const grid = document.getElementById('assets-grid');
+        if (!grid) return;
+        if (!storedScenesRaw) { bindStaticAssets(); return; }
         try {
             const scenes = JSON.parse(storedScenesRaw);
-            if (!Array.isArray(scenes) || scenes.length === 0) return;
-
-            const grid = document.getElementById('assets-grid');
-            if (!grid) return;
-
-            grid.innerHTML = ''; 
-
+            if (!Array.isArray(scenes) || scenes.length === 0) { bindStaticAssets(); return; }
+            grid.innerHTML = '';
             scenes.forEach((scene, index) => {
                 const card = document.createElement('div');
-                card.className = "group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all";
+                card.className = 'group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-pointer transition-all';
                 card.setAttribute('data-asset-id', `stored-${index}`);
-                
-                card.innerHTML = `
-                    <img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" src="${scene.thumbnail || scene.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400'}"/>
-                    <span class="absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical">${scene.duration || '00:05'}</span>
-                    <div class="gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                        <span class="font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter">⚡ GENERATE</span>
-                    </div>
-                `;
-                
-                card.addEventListener('click', () => generateScene(card, scene.prompt || "Cyberpunk cinematic scene"));
+                card.dataset.bound = 'true';
+                const img = document.createElement('img');
+                img.className = 'w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity';
+                img.src = scene.thumbnail || scene.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400';
+                img.alt = scene.title || 'Scene';
+                const dur = document.createElement('span');
+                dur.className = 'absolute bottom-1 right-1 px-1 bg-background/80 text-[9px] font-label-technical';
+                dur.textContent = scene.duration || '00:05';
+                const overlay = document.createElement('div');
+                overlay.className = 'gen-overlay absolute inset-0 bg-primary-container/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all';
+                const ovSpan = document.createElement('span');
+                ovSpan.className = 'font-label-technical text-on-primary-container font-bold text-[10px] tracking-tighter';
+                ovSpan.textContent = '⚡ GENERATE';
+                overlay.appendChild(ovSpan);
+                card.appendChild(img); card.appendChild(dur); card.appendChild(overlay);
+                card.addEventListener('click', () => generateScene(card, scene.prompt || 'Cyberpunk cinematic scene'));
                 grid.appendChild(card);
             });
-        } catch (e) {
-            console.error("Failed to parse stored scenes", e);
-        }
+        } catch (e) { console.error('Failed to parse stored scenes', e); bindStaticAssets(); }
     }
 
-
-    // i18n
     const i18nA = {
         EN: { download: 'DOWNLOAD FINAL', export: 'EXPORT TO STUDIO', timeline: 'TIMELINE', controls: 'Assembly Controls', volume: 'VOLUME SYNC', color: 'COLOR GRADING PRESET' },
         ES: { download: 'DESCARGAR FINAL', export: 'EXPORTAR AL ESTUDIO', timeline: 'LÍNEA DE TIEMPO', controls: 'Controles', volume: 'SYNC DE VOLUMEN', color: 'PRESET DE COLOR' },
@@ -581,24 +554,46 @@
         const t = i18nA[lang];
         const label = document.getElementById('lang-label');
         if (label) label.textContent = lang;
-        const dlBtn = document.querySelector('[onclick="downloadFinal()"]');
-        if (dlBtn) { const span = dlBtn.querySelector('span:last-child'); if(span) span.textContent = t.download; }
+        const dlTextBtn = document.getElementById('btn-download-text');
+        if (dlTextBtn) dlTextBtn.textContent = t.download;
+        // BUG-02 FIX: استهداف timeline-label بـ class
         const tlLabel = document.querySelector('.timeline-label');
         if (tlLabel) tlLabel.textContent = t.timeline;
         document.documentElement.dir = lang === 'AR' ? 'rtl' : 'ltr';
     }
 
-    // Initialize
+    function exportToStudio() {
+        const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+        const manifest = { project: 'MERCADREAM', version: 'v21.0', exportedAt: new Date().toISOString(), scenes };
+        const blob = new Blob([JSON.stringify(manifest, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'mercadream-film.json'; a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function setGradingPreset(preset, btn) {
+        document.querySelectorAll('.grid.grid-cols-2 button').forEach(b => {
+            b.classList.remove('border-primary-container', 'text-primary-container');
+            b.classList.add('border-outline-variant');
+        });
+        btn.classList.remove('border-outline-variant');
+        btn.classList.add('border-primary-container', 'text-primary-container');
+    }
+
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.flex.border-b button').forEach(b => {
+            b.classList.remove('text-primary-container', 'border-b-2', 'border-primary-container', 'bg-surface-variant/30');
+            b.classList.add('text-on-surface-variant');
+        });
+        btn.classList.remove('text-on-surface-variant');
+        btn.classList.add('text-primary-container', 'border-b-2', 'border-primary-container', 'bg-surface-variant/30');
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         loadCredits();
         populateAssetsFromStorage();
-
-        // Click interaction for static assets (if any remain)
-        document.querySelectorAll('#assets-grid > div').forEach(card => {
-            card.addEventListener('click', () => {
-                generateScene(card, "Industrial cinematic sequence");
-            });
-        });
+        // لا نضيف event listeners هنا — populateAssetsFromStorage تتكفل بها
     });
 </script>
 </body></html>
