@@ -171,7 +171,7 @@
 <span class="material-symbols-outlined text-primary-fixed-dim text-[16px]">database</span>
 <span class="font-label-technical text-label-technical" id="top-credits">1,000 CR</span>
 </div>
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">language</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" onclick="cycleLang()" title="Switch Language">language</button>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_balance_wallet</button>
 </div>
 </header>
@@ -416,7 +416,7 @@
 <button class="px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical">AUTO</button>
 <button class="px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors">MANUAL</button>
 </div>
-<button class="bg-secondary text-on-secondary px-xl py-2 font-headline-sm flex items-center gap-md hover:shadow-[0_0_20px_rgba(255,186,63,0.5)] transition-all active:scale-[0.95]" onclick="startProduction()">
+<button class="bg-secondary text-on-secondary px-xl py-2 font-headline-sm flex items-center gap-md hover:shadow-[0_0_20px_rgba(255,186,63,0.5)] transition-all active:scale-[0.95]" onclick="startGeneration()">
 <span class="material-symbols-outlined" data-weight="fill">rocket_launch</span>
                 GENERATE
             </button>
@@ -540,6 +540,40 @@
             }
             
             process();
+        }
+
+        // Send Message
+        function sendMessage() {
+            const textarea = document.querySelector('textarea');
+            const text = textarea ? textarea.value.trim() : '';
+            if (!text) return;
+            addLogLine(`USER INPUT: ${text.substring(0, 60)}`);
+            textarea.value = '';
+        }
+
+        // i18n
+        const i18n = {
+            EN: { generate: 'GENERATE', placeholder: 'ENTER COMMAND OR NARRATIVE SEED...', listening: 'LISTENING...', terminate: 'TERMINATE VOICE SYNC', recharge: 'RECHARGE' },
+            ES: { generate: 'GENERAR', placeholder: 'INGRESA COMANDO O SEMILLA NARRATIVA...', listening: 'ESCUCHANDO...', terminate: 'TERMINAR VOZ', recharge: 'RECARGAR' },
+            AR: { generate: 'توليد', placeholder: 'أدخل الأمر أو البذرة السردية...', listening: 'جارٍ الاستماع...', terminate: 'إنهاء الصوت', recharge: 'إعادة شحن' }
+        };
+        const langs = ['EN', 'ES', 'AR'];
+        let langIdx = 0;
+
+        function cycleLang() {
+            langIdx = (langIdx + 1) % langs.length;
+            const lang = langs[langIdx];
+            const t = i18n[lang];
+            const ta = document.querySelector('textarea');
+            if (ta) ta.placeholder = t.placeholder;
+            const listenEl = document.querySelector('.animate-pulse');
+            if (listenEl) listenEl.textContent = t.listening;
+            const termBtn = document.querySelector('[onclick="toggleVoice()"].border');
+            if (termBtn) termBtn.textContent = t.terminate;
+            const genBtn = document.querySelector('[onclick="startGeneration()"]');
+            if (genBtn) { const span = genBtn.querySelectorAll('span'); if (span[1]) span[1].textContent = t.generate; }
+            document.documentElement.dir = lang === 'AR' ? 'rtl' : 'ltr';
+            addLogLine(`LANGUAGE SWITCHED TO: ${lang}`);
         }
 
         // Tactile Feedback

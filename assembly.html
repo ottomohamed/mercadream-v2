@@ -186,9 +186,7 @@
 <button class="flex items-center gap-xs font-label-technical text-on-surface hover:bg-surface-variant p-2 rounded transition-all active:scale-95" type="button">
 <span class="material-symbols-outlined">account_balance_wallet</span>
 </button>
-<button class="flex items-center gap-xs font-label-technical text-on-surface hover:bg-surface-variant p-2 rounded transition-all active:scale-95" type="button">
-<span class="material-symbols-outlined">language</span>
-</button>
+<button class="flex items-center gap-xs font-label-technical text-on-surface hover:bg-surface-variant p-2 rounded transition-all active:scale-95" type="button" onclick="cycleLang()" id="lang-btn" title="Switch Language"><span class="material-symbols-outlined">language</span><span id="lang-label" style="font-size:10px;font-family:IBM Plex Mono">EN</span></button>
 </div>
 <div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
 <img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJcXBoRN8n8dI1l31JZpfZhpoXH5ZF-4Ai7-zR5nf3NVnnJ6D7JCxUB1wvIPnHoL8NmZDfwbw3DyFVIkIQNYPKrxHa4KgJa-3Ng6Ad_nWxbzAlgdBKDPgbWOPkMiJfusbagyLmmGwNY_SUi5YFEWuJLbF817h1UC4qNbnIrI3BJKVKyfIzEvZL7XHRs2ZzKZEQrg5Hy19DJB9fGdPNVe4e66SG_vV8D_AMSRmKeZuR9g_08CtN-u6bADWxBcOgw-uaNbYnNuZa5eY"/>
@@ -565,6 +563,29 @@
         } catch (e) {
             console.error("Failed to parse stored scenes", e);
         }
+    }
+
+
+    // i18n
+    const i18nA = {
+        EN: { download: 'DOWNLOAD FINAL', export: 'EXPORT TO STUDIO', timeline: 'TIMELINE', controls: 'Assembly Controls', volume: 'VOLUME SYNC', color: 'COLOR GRADING PRESET' },
+        ES: { download: 'DESCARGAR FINAL', export: 'EXPORTAR AL ESTUDIO', timeline: 'LÍNEA DE TIEMPO', controls: 'Controles', volume: 'SYNC DE VOLUMEN', color: 'PRESET DE COLOR' },
+        AR: { download: 'تحميل النهائي', export: 'تصدير للاستوديو', timeline: 'الخط الزمني', controls: 'أدوات التجميع', volume: 'مزامنة الصوت', color: 'إعدادات الألوان' }
+    };
+    const langsA = ['EN', 'ES', 'AR'];
+    let langIdxA = 0;
+
+    function cycleLang() {
+        langIdxA = (langIdxA + 1) % langsA.length;
+        const lang = langsA[langIdxA];
+        const t = i18nA[lang];
+        const label = document.getElementById('lang-label');
+        if (label) label.textContent = lang;
+        const dlBtn = document.querySelector('[onclick="downloadFinal()"]');
+        if (dlBtn) { const span = dlBtn.querySelector('span:last-child'); if(span) span.textContent = t.download; }
+        const tlLabel = document.querySelector('.timeline-label');
+        if (tlLabel) tlLabel.textContent = t.timeline;
+        document.documentElement.dir = lang === 'AR' ? 'rtl' : 'ltr';
     }
 
     // Initialize
