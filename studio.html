@@ -493,34 +493,59 @@ OPEN ASSEMBLY →
             log.scrollTop = log.scrollHeight;
         }
 
-        function startGeneration() {
-            const currentDirector = document.querySelector('input[name="director"]:checked').value;
-            const cost = costTable[currentDirector];
-            
-            if (credits >= cost) {
-                credits -= cost;
-                localStorage.setItem('md_credits', credits);
-                updateCredits();
-                animatePipeline();
-                addLogLine(`GENERATION SEQUENCE INITIATED: ${currentDirector}`);
+        async function startGeneration() {
+            const directorEl = document.querySelector('input[name="director"]:checked');
+            const director = directorEl ? directorEl.value : 'Drama';
+            const cost = costTable[director] || 12;
 
-                // حفظ المشهد في md_6scenes للربط مع assembly
-                const scene = {
-                    id: 'scene-' + Date.now(),
-                    title: 'Scene — ' + currentDirector,
-                    prompt: document.getElementById('chat-input') ? document.getElementById('chat-input').value || 'Cinematic scene, ' + currentDirector : 'Cinematic scene',
-                    thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
-                    duration: '00:05',
-                    status: 'ready',
-                    director: currentDirector,
-                    cost: cost
-                };
-                const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-                existing.push(scene);
-                localStorage.setItem('md_6scenes', JSON.stringify(existing));
-                addLogLine('SCENE EXPORTED TO ASSEMBLY: md_6scenes [' + existing.length + ']');
-            } else {
-                addLogLine("ERROR: INSUFFICIENT CREDITS FOR SYNC.");
+            if (credits < cost) {
+                addLogLine('ERROR: INSUFFICIENT CREDITS FOR SYNC.');
+                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+                return;
+            }
+
+            if (currentPhaseState !== 'director') {
+                appendBubble('>> Complete the vision brief first. Answer the screenwriter questions.', 'bot', 'SYSTEM');
+                return;
+            }
+
+            addLogLine('GENERATE pressed — requesting scene from ' + director);
+            animatePipeline();
+            const typingId = showTyping();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'Generate the next scene now.',
+                        director: director,
+                        contentType: contentTypeMap[director] || 'Film',
+                        phase: 'director',
+                        history: chatHistory,
+                        dreamBrief: dreamBrief
+                    })
+                });
+
+                const data = await response.json();
+                removeTyping(typingId);
+
+                if (data.error) {
+                    appendBubble('>> DIRECTOR ERROR: ' + data.error, 'bot', 'SYSTEM');
+                    return;
+                }
+
+                if (data.scene) {
+                    handleSceneGenerated(data.scene, director);
+                    chatHistory.push({ role: 'user', content: 'Generate scene.' });
+                    chatHistory.push({ role: 'assistant', content: JSON.stringify(data.scene) });
+                } else {
+                    appendBubble(data.reply || '>> Scene generation in progress...', 'bot', director.toUpperCase() + '-DIRECTOR');
+                }
+
+            } catch (err) {
+                removeTyping(typingId);
+                addLogLine('GENERATE ERROR: ' + err.message);
             }
         }
 
@@ -560,49 +585,207 @@ OPEN ASSEMBLY →
             process();
         }
 
-        // Send Message
-        function sendMessage() {
+        // ── STATE ─────────────────────────────────────────
+        let chatHistory = [];          // تاريخ المحادثة الكاملة
+        let currentPhaseState = 'screenwriter'; // screenwriter | director
+        let dreamBrief = null;         // الملخص بعد DREAM_CAPTURED
+        let sceneCount = 0;            // عداد المقاطع في هذه الجلسة
+
+        // contentType من Director Selector
+        const contentTypeMap = {
+            Drama: 'Film', Action: 'Film', Comedy: 'Film',
+            Documentary: 'Documentary', Ads: 'Ads', Music: 'Music'
+        };
+
+        // دالة مساعدة لإضافة فقاعة في الشات
+        function appendBubble(text, role, label) {
+            const chat = document.getElementById('chat-messages');
+            const voiceOverlay = document.getElementById('voice-overlay');
+            const now = new Date().toLocaleTimeString('en-GB', {hour12: false});
+            const div = document.createElement('div');
+            div.className = role === 'user'
+                ? 'flex gap-md self-end max-w-[80%]'
+                : 'flex gap-md max-w-[80%]';
+            if (role === 'user') {
+                const msgWrap = document.createElement('div');
+                msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
+                const msgP = document.createElement('p');
+                msgP.className = 'text-body-md text-on-surface';
+                msgP.textContent = text;
+                const ts = document.createElement('span');
+                ts.className = 'absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant';
+                ts.textContent = now + ' — USER_MAIN';
+                msgWrap.appendChild(msgP); msgWrap.appendChild(ts);
+                const icon = document.createElement('div');
+                icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
+                icon.innerHTML = '<span class="material-symbols-outlined">person</span>';
+                div.appendChild(msgWrap); div.appendChild(icon);
+            } else {
+                div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
+                const bubble = document.createElement('div');
+                bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
+                bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
+                div.appendChild(bubble);
+            }
+            chat.insertBefore(div, voiceOverlay);
+            chat.scrollTop = chat.scrollHeight;
+            return div;
+        }
+
+        // typing indicator
+        function showTyping() {
+            const chat = document.getElementById('chat-messages');
+            const voiceOverlay = document.getElementById('voice-overlay');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.className = 'flex gap-md max-w-[80%]';
+            div.id = id;
+            div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md flex gap-[3px] items-center h-10"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div>';
+            chat.insertBefore(div, voiceOverlay);
+            chat.scrollTop = chat.scrollHeight;
+            return id;
+        }
+
+        function removeTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // ── SEND MESSAGE ───────────────────────────────────
+        async function sendMessage() {
             const textarea = document.getElementById('chat-input');
             const text = textarea ? textarea.value.trim() : '';
             if (!text) return;
 
-            const chat = document.getElementById('chat-messages');
-            const now = new Date().toLocaleTimeString('en-GB', {hour12: false});
-
-            // User bubble
-            const userDiv = document.createElement('div');
-            userDiv.className = 'flex gap-md self-end max-w-[80%]';
-            const msgP = document.createElement('p'); msgP.className = 'text-body-md text-on-surface'; msgP.textContent = text;
-            const msgWrap = document.createElement('div'); msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
-            const tsSpan = document.createElement('span'); tsSpan.className = 'absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant'; tsSpan.textContent = now + ' — USER_MAIN';
-            msgWrap.appendChild(msgP); msgWrap.appendChild(tsSpan);
-            const personDiv = document.createElement('div'); personDiv.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0'; personDiv.innerHTML = '<span class="material-symbols-outlined">person</span>';
-            userDiv.appendChild(msgWrap); userDiv.appendChild(personDiv);
-            // إدراج قبل voice-overlay لضمان الترتيب الصحيح
-            const voiceOverlay = document.getElementById('voice-overlay');
-            chat.insertBefore(userDiv, voiceOverlay);
-
-            // Bot typing indicator
-            const botDiv = document.createElement('div');
-            botDiv.className = 'flex gap-md max-w-[80%]';
-            const botId = 'bot-' + Date.now();
-            botDiv.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md relative" id="' + botId + '"><div class="flex gap-[3px] items-center h-5"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div></div>';
-            chat.insertBefore(botDiv, voiceOverlay);
-            chat.scrollTop = chat.scrollHeight;
-
+            appendBubble(text, 'user');
             textarea.value = '';
             addLogLine('USER INPUT: ' + text.substring(0, 60));
 
-            // Bot response after 1.2s
-            setTimeout(function() {
-                const typing = document.getElementById(botId);
-                if (typing) {
-                    typing.innerHTML = '<div class="flex items-center gap-sm mb-xs"><span class="bg-primary-fixed-dim text-on-primary text-[9px] px-1 font-bold">READY</span></div><p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed"><span class="text-primary-fixed-dim">&gt;&gt;</span> Input received. Processing narrative seed...<br/><span class="text-primary-fixed-dim">&gt;&gt;</span> Director protocol engaged.</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — GEMINI-9</span>';
-                    typing.removeAttribute('id');
+            const directorEl = document.querySelector('input[name="director"]:checked');
+            const director = directorEl ? directorEl.value : 'Drama';
+            const contentType = contentTypeMap[director] || 'Film';
+            const typingId = showTyping();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        director: director,
+                        contentType: contentType,
+                        phase: currentPhaseState,
+                        history: chatHistory,
+                        dreamBrief: dreamBrief
+                    })
+                });
+
+                const data = await response.json();
+                removeTyping(typingId);
+
+                if (data.error) {
+                    appendBubble('>> ERROR: ' + data.error, 'bot', 'SYSTEM');
+                    addLogLine('API ERROR: ' + data.error);
+                    return;
                 }
-                chat.scrollTop = chat.scrollHeight;
-                addLogLine('AGENT RESPONSE DELIVERED');
-            }, 1200);
+
+                // مشهد جاهز من المخرج
+                if (data.scene) {
+                    handleSceneGenerated(data.scene, director);
+                    chatHistory.push({ role: 'user', content: text });
+                    chatHistory.push({ role: 'assistant', content: JSON.stringify(data.scene) });
+                    return;
+                }
+
+                const reply = data.reply || '>> Processing...';
+
+                // DREAM_CAPTURED — انتهت مرحلة الكاتب
+                if (data.dreamCaptured) {
+                    dreamBrief = chatHistory
+                        .filter(h => h.role === 'user')
+                        .map(h => h.content).join(' | ');
+                    currentPhaseState = 'director';
+                    chatHistory = []; // نبدأ تاريخاً جديداً مع المخرج
+
+                    const directorNames = {
+                        Drama:'Marco Visconti', Action:'Rex Storm', Comedy:'Elena Bright',
+                        Documentary:'Sara Truth', Ads:'Nova Brand', Music:'Kai Neon'
+                    };
+                    const dirName = directorNames[director] || director;
+                    appendBubble(
+                        '>> VISION LOCKED. DREAM CAPTURED.<br>'
+                        + '>> Passing brief to <strong>' + dirName + '</strong>...<br>'
+                        + '>> Press <strong>GENERATE</strong> to create your first scene.',
+                        'bot', 'SYSTEM'
+                    );
+                    addLogLine('DREAM_CAPTURED — switching to director: ' + director);
+                    return;
+                }
+
+                // رد عادي
+                const label = currentPhaseState === 'screenwriter'
+                    ? 'SCREENWRITER' : director.toUpperCase() + '-DIRECTOR';
+                appendBubble(reply.replace(/
+/g, '<br>'), 'bot', label);
+                addLogLine(label + ' RESPONSE');
+
+                chatHistory.push({ role: 'user', content: text });
+                chatHistory.push({ role: 'assistant', content: reply });
+                if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+
+            } catch (err) {
+                removeTyping(typingId);
+                appendBubble('>> CONNECTION ERROR. CHECK NETWORK.', 'bot', 'SYSTEM');
+                addLogLine('FETCH ERROR: ' + err.message);
+            }
+        }
+
+        // معالجة المشهد المُولَّد
+        function handleSceneGenerated(scene, director) {
+            const cost = costTable[director] || 12;
+
+            if (credits < cost) {
+                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+                addLogLine('ERROR: INSUFFICIENT CREDITS');
+                return;
+            }
+
+            // خصم الرصيد
+            credits -= cost;
+            localStorage.setItem('md_credits', credits);
+            updateCredits();
+
+            // حفظ في md_6scenes
+            const sceneObj = {
+                id: 'scene-' + Date.now(),
+                sceneNumber: JSON.parse(localStorage.getItem('md_6scenes') || '[]').length + 1,
+                title: scene.title || 'Untitled Scene',
+                prompt: scene.prompt || '',
+                director: director,
+                visual: scene.visual || '',
+                camera: scene.camera || '',
+                lighting: scene.lighting || '',
+                sound: scene.sound || '',
+                emotional_beat: scene.emotional_beat || '',
+                thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
+                duration: '00:10',
+                status: 'ready',
+                cost: cost
+            };
+
+            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+            existing.push(sceneObj);
+            localStorage.setItem('md_6scenes', JSON.stringify(existing));
+
+            // عرض تأكيد في الشات
+            const confirmMsg = '>> SCENE GENERATED: <strong>' + sceneObj.title + '</strong><br>'
+                + '>> DIRECTOR: ' + director + '<br>'
+                + '>> PROMPT: ' + scene.prompt.substring(0, 100) + '...<br>'
+                + '>> COST: -' + cost + ' CR | SCENES IN ASSEMBLY: ' + existing.length;
+            appendBubble(confirmMsg, 'bot', director.toUpperCase() + '-DIRECTOR');
+
+            addLogLine('SCENE EXPORTED: ' + sceneObj.title + ' [' + existing.length + ' total]');
+            animatePipeline();
         }
 
         // i18n

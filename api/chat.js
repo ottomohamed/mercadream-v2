@@ -1,147 +1,176 @@
-﻿// ═══════════════════════════════════════════════════════
-// MERCADREAM — /api/chat.js
-// 3-Stage AI Pipeline:
-//   Stage 1: Discovery    → Gemini Flash 2.0 (FREE)
-//   Stage 2: Screenplay   → Claude Haiku (classify + write)
-//   Stage 3: Direction    → Claude Sonnet (specialist director)
+// ═══════════════════════════════════════════════════════
+// MERCADREAM — api/chat.js
+// Phase 1: Screenwriter extracts vision → DREAM_CAPTURED
+// Phase 2: Director generates scenes on demand
 // ═══════════════════════════════════════════════════════
 
-export default async function handler(req, res) {
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
+// ── SCREENWRITERS (phase 1) ─────────────────────────────
+const SCREENWRITERS = {
+  Film: `You are the screenplay writer at MercaDream.
+YOUR ROLE: Extract the true vision for a 60-second film (6 scenes × 10 seconds).
+STRICT RULES:
+- ONE question per message. Maximum 2 sentences.
+- Never explain your questions.
+- Listen twice as much as you speak.
+ASK IN THIS ORDER (one at a time):
+1. THE PULSE: "What is the core energy of this film? Electric/Confident, Pure/Natural, Deeply Human, or Playful? Describe the vibe in 3 words."
+2. CHARACTER: "Who is the most important person in this story?"
+3. TRANSFORMATION: "What changes for them by the end?"
+4. WORLD: "Where does the story take place?"
+After 4-6 exchanges, when you understand the emotional truth, output EXACTLY: DREAM_CAPTURED
+TONE: A quiet, perceptive creative collaborator. You hear what the client means, not just what they say.
+Respond in the same language as the user.`,
+
+  Ads: `You are a commercial scriptwriter at MercaDream.
+YOUR ROLE: Extract the minimum information needed to create a 60-second commercial.
+STRICT RULES:
+- ONE question per message. Maximum 2 sentences.
+- Never ask philosophical or emotional questions.
+- Be practical, fast, professional.
+ASK IN THIS ORDER (one at a time):
+1. "What product or service?"
+2. "Who is the target audience?"
+3. "What is the key message or call to action?"
+After receiving all 3 answers, output EXACTLY: DREAM_CAPTURED
+TONE: A fast, efficient creative producer. Respect the client's time.
+Respond in the same language as the user.`,
+
+  Documentary: `You are a documentary scriptwriter at MercaDream.
+RULES: ONE question per message. Maximum 2 sentences. Focus on truth not drama.
+ASK IN ORDER:
+1) What subject are you documenting?
+2) What angle or perspective?
+3) What central truth should the audience leave with?
+After 3 answers output EXACTLY: DREAM_CAPTURED
+Respond in the same language as the user.`,
+
+  Music: `You are a music video scriptwriter at MercaDream.
+RULES: ONE question per message. Maximum 2 sentences. Focus on visual rhythm and aesthetic.
+ASK IN ORDER:
+1) Song genre and mood.
+2) Artist visual style or reference.
+3) Key visual concept or central image.
+After 3 answers output EXACTLY: DREAM_CAPTURED
+Respond in the same language as the user.`
+};
+
+// ── DIRECTORS (phase 2) ────────────────────────────────
+const DIRECTORS = {
+  Drama: `You are Marco Visconti — Drama Director at MercaDream.
+PHILOSOPHY: Tarkovsky slowness. Wong Kar-Wai space. Bergman faces. Side light = moral complexity.
+SCENE: Wide→establish emotional world. Close→pressure. ECU→the heart.
+EXCEED PRINCIPLE: Every scene has ONE unexpected element that becomes its emotional heart.
+The user will give you a vision brief. Generate ONE scene as valid JSON only:
+{"scene":1,"title":"","prompt":"min 80 words: SHOT SIZE + subject + precise environment + camera movement + lighting (source, direction, shadows) + color palette + action + atmosphere","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":"","exceed":""}
+Respond in the same language as the user. Outside of generation, speak as Marco Visconti.`,
+
+  Action: `You are Rex Storm — Action Director at MercaDream.
+PHILOSOPHY: Geography, stakes, escalation. Fast cuts 2-3s. High contrast. Wide+ECU tension.
+Generate ONE scene as valid JSON only:
+{"scene":1,"title":"","prompt":"min 70 words: SHOT SIZE + hero + environment + dynamic camera + high contrast lighting + physical action","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":""}
+Respond in the same language as the user. Outside of generation, speak as Rex Storm.`,
+
+  Comedy: `You are Elena Bright — Comedy Director at MercaDream.
+PHILOSOPHY: Timing is everything. Wide=absurdity. Close=reaction. Never explain the joke.
+Generate ONE scene as valid JSON only:
+{"scene":1,"title":"","prompt":"min 60 words: SHOT SIZE + subject + environment + natural lighting + comedic action","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":""}
+Respond in the same language as the user. Outside of generation, speak as Elena Bright.`,
+
+  Documentary: `You are Sara Truth — Documentary Director at MercaDream.
+PHILOSOPHY: Handheld=trust. Available light only. Long takes. Authenticity above all.
+Generate ONE scene as valid JSON only:
+{"scene":1,"title":"","prompt":"min 70 words: SHOT SIZE + subject + real environment + handheld camera + available light + authentic action","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":""}
+Respond in the same language as the user. Outside of generation, speak as Sara Truth.`,
+
+  Ads: `You are Nova Brand — Commercial Director at MercaDream.
+PHILOSOPHY: Hook in 3 seconds. One idea perfectly executed. Product is the hero.
+Generate ONE scene as valid JSON only:
+{"scene":1,"title":"","prompt":"min 60 words: SHOT SIZE + product + environment + camera movement + bright commercial lighting + color palette + action","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":""}
+Respond in the same language as the user. Outside of generation, speak as Nova Brand.`,
+
+  Music: `You are Kai Neon — Music Video Director at MercaDream.
+PHILOSOPHY: Every cut on the beat. Color=emotion. ECU on artist at emotional peaks.
+Generate ONE scene as valid JSON only:
+{"scene":1,"title":"","prompt":"min 70 words: SHOT SIZE + artist + environment + camera movement + color gels + choreography","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":""}
+Respond in the same language as the user. Outside of generation, speak as Kai Neon.`
+};
+
+// ── HANDLER ────────────────────────────────────────────
+module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Use POST.' });
-
-  const {
-    messages,
-    system = '',
-    max_tokens = 800,
-    mode = 'auto'
-  } = req.body || {};
-
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return res.status(400).json({ error: 'messages array required.' });
-  }
-
-  const safeTokens = Math.min(Math.max(parseInt(max_tokens) || 800, 50), 3000);
-
-  // ── ROUTING ──
-  // Stage 3: Scene generation by specialist director → Claude Sonnet
-  const isGeneration = mode === 'generate'
-    || system.includes('Scene Architect')
-    || system.includes('JSON array')
-    || system.includes('OUTPUT FORMAT');
-
-  // Stage 2: Screenplay writing + classification → Claude Haiku
-  const isScreenplay = mode === 'screenplay'
-    || system.includes('SCREENPLAY_WRITER')
-    || system.includes('classify');
-
-  if (isGeneration) {
-    return await callClaude(req, res, messages, system, safeTokens, 'claude-sonnet-4-20250514');
-  } else if (isScreenplay) {
-    return await callClaude(req, res, messages, system, safeTokens, 'claude-haiku-4-5-20251001');
-  } else {
-    return await callGemini(req, res, messages, system, safeTokens);
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// STAGE 1 — GEMINI FLASH 2.0 (Discovery / FREE)
-// ═══════════════════════════════════════════════════════
-async function callGemini(req, res, messages, system, maxTokens) {
-  const apiKey = process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const geminiMessages = messages.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
+    const {
+      message,
+      director = 'Drama',
+      contentType = 'Film',   // Film | Ads | Documentary | Music
+      phase = 'screenwriter', // screenwriter | director
+      history = [],
+      dreamBrief = null       // الملخص بعد DREAM_CAPTURED
+    } = req.body;
 
-    const contents = system
-      ? [
-          { role: 'user', parts: [{ text: system }] },
-          { role: 'model', parts: [{ text: 'Understood. Ready.' }] },
-          ...geminiMessages
-        ]
-      : geminiMessages;
+    if (!message) return res.status(400).json({ error: 'No message provided' });
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents,
-          generationConfig: { maxOutputTokens: maxTokens, temperature: 0.85, topP: 0.95 }
-        })
-      }
-    );
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      console.error("Gemini HTTP error:", response.status, JSON.stringify(errData));
-      return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
+    // اختيار الـ system prompt حسب المرحلة
+    let systemPrompt;
+    if (phase === 'screenwriter') {
+      systemPrompt = SCREENWRITERS[contentType] || SCREENWRITERS.Film;
+    } else {
+      // في مرحلة المخرج — نضيف الـ brief كسياق
+      const directorBase = DIRECTORS[director] || DIRECTORS.Drama;
+      systemPrompt = dreamBrief
+        ? directorBase + `\n\nVISION BRIEF FROM SCREENWRITER:\n${dreamBrief}`
+        : directorBase;
     }
 
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-    if (!text) {
-      return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
-    }
-
-    return res.status(200).json({ text, model: 'gemini-1.5-flash', usage: null });
-
-  } catch (err) {
-    return await callClaude(req, res, messages, system, maxTokens, 'claude-haiku-4-5-20251001');
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// STAGE 2 & 3 — CLAUDE (Haiku or Sonnet)
-// ═══════════════════════════════════════════════════════
-async function callClaude(req, res, messages, system, maxTokens, model = 'claude-sonnet-4-20250514') {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-
-  if (!apiKey || !apiKey.startsWith('sk-')) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured.' });
-  }
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({ model, max_tokens: maxTokens, system, messages })
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: systemPrompt
     });
 
-    if (!response.ok) {
-      const e = await response.json().catch(() => ({}));
-      const msg = e?.error?.message || `HTTP ${response.status}`;
-      if (response.status === 401) return res.status(500).json({ error: 'Invalid API key.' });
-      if (response.status === 429) return res.status(429).json({ error: 'Rate limit — retry.' });
-      return res.status(response.status).json({ error: msg });
+    const chatHistory = history.map(h => ({
+      role: h.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: h.content }]
+    }));
+
+    const chat = model.startChat({
+      history: chatHistory,
+      generationConfig: { maxOutputTokens: 800, temperature: 0.85 }
+    });
+
+    const result = await chat.sendMessage(message);
+    const replyText = result.response.text().trim();
+
+    // فحص DREAM_CAPTURED
+    const dreamCaptured = replyText.includes('DREAM_CAPTURED');
+
+    // فحص JSON مشهد
+    let sceneData = null;
+    if (phase === 'director') {
+      const jsonMatch = replyText.match(/\{[\s\S]*?\}/);
+      if (jsonMatch) {
+        try { sceneData = JSON.parse(jsonMatch[0]); } catch (e) {}
+      }
     }
 
-    const data = await response.json();
-    const text = data?.content?.[0]?.text || '';
-    if (!text) return res.status(500).json({ error: 'Empty response.' });
+    return res.status(200).json({
+      reply: sceneData ? null : replyText.replace('DREAM_CAPTURED', '').trim(),
+      scene: sceneData || null,
+      dreamCaptured,
+      phase,
+      director
+    });
 
-    return res.status(200).json({ text, model, usage: data.usage || null });
-
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Chat API error:', error.message);
+    return res.status(500).json({ error: 'API_ERROR: ' + error.message });
   }
-}
-
-
+};
