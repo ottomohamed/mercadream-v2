@@ -725,8 +725,860 @@ OPEN ASSEMBLY →
                 // رد عادي
                 const label = currentPhaseState === 'screenwriter'
                     ? 'SCREENWRITER' : director.toUpperCase() + '-DIRECTOR';
-                appendBubble(reply.replace(/
-/g, '<br>'), 'bot', label);
+                appendBubble(reply.split('\n').join('<br>'), 'bot', label);
+                addLogLine(label + ' RESPONSE');
+
+                chatHistory.push({ role: 'user', content: text });
+                chatHistory.push({ role: 'assistant', content: reply });
+                if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+
+            } catch (err) {
+                removeTyping(typingId);
+                appendBubble('>> CONNECTION ERROR. CHECK NETWORK.', 'bot', 'SYSTEM');
+                addLogLine('FETCH ERROR: ' + err.message);
+            }
+        }
+
+        // معالجة المشهد المُولَّد
+        function handleSceneGenerated(scene, director) {
+            const cost = costTable[director] || 12;
+
+            if (credits < cost) {
+                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+                addLogLine('ERROR: INSUFFICIENT CREDITS');
+                return;
+            }
+
+            // خصم الرصيد
+            credits -= cost;
+            localStorage.setItem('md_credits', credits);
+            updateCredits();
+
+            // حفظ في md_6scenes
+            const sceneObj = {
+                id: 'scene-' + Date.now(),
+                sceneNumber: JSON.parse(localStorage.getItem('md_6scenes') || '[]').length + 1,
+                title: scene.title || 'Untitled Scene',
+                prompt: scene.prompt || '',
+                director: director,
+                visual: scene.visual || '',
+                camera: scene.camera || '',
+                lighting: scene.lighting || '',
+                sound: scene.sound || '',
+                emotional_beat: scene.emotional_beat || '',
+                thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
+                duration: '00:10',
+                status: 'ready',
+                cost: cost
+            };
+
+            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+            existing.push(sceneObj);
+            localStorage.setItem('md_6scenes', JSON.stringify(existing));
+
+            // عرض تأكيد في الشات
+            const confirmMsg = '>> SCENE GENERATED: <strong>' + sceneObj.title + '</strong><br>'
+                + '>> DIRECTOR: ' + director + '<br>'
+                + '>> PROMPT: ' + scene.prompt.substring(0, 100) + '...<br>'
+                + '>> COST: -' + cost + ' CR | SCENES IN ASSEMBLY: ' + existing.length;
+            appendBubble(confirmMsg, 'bot', director.toUpperCase() + '-DIRECTOR');
+
+            addLogLine('SCENE EXPORTED: ' + sceneObj.title + ' [' + existing.length + ' total]');
+            animatePipeline();
+        }
+
+        // i18n
+        const i18n = {
+            EN: { generate: 'GENERATE', placeholder: 'ENTER COMMAND OR NARRATIVE SEED...', listening: 'LISTENING...', terminate: 'TERMINATE VOICE SYNC', recharge: 'RECHARGE' },
+            ES: { generate: 'GENERAR', placeholder: 'INGRESA COMANDO O SEMILLA NARRATIVA...', listening: 'ESCUCHANDO...', terminate: 'TERMINAR VOZ', recharge: 'RECARGAR' },
+            AR: { generate: 'توليد', placeholder: 'أدخل الأمر أو البذرة السردية...', listening: 'جارٍ الاستماع...', terminate: 'إنهاء الصوت', recharge: 'إعادة شحن' }
+        };
+        const langs = ['EN', 'ES', 'AR'];
+        let langIdx = 0;
+
+        function cycleLang() {
+            langIdx = (langIdx + 1) % langs.length;
+            const lang = langs[langIdx];
+            const t = i18n[lang];
+            const ta = document.getElementById('chat-input');
+            if (ta) ta.placeholder = t.placeholder;
+            const listenEl = document.getElementById('listening-text');
+            if (listenEl) listenEl.textContent = t.listening;
+            const termBtn = document.querySelector('[onclick="toggleVoice()"].border');
+            if (termBtn) termBtn.textContent = t.terminate;
+            const genTextBtn = document.getElementById('btn-generate-text');
+            if (genTextBtn) genTextBtn.textContent = t.generate;
+            document.documentElement.dir = lang === 'AR' ? 'rtl' : 'ltr';
+            addLogLine(`LANGUAGE SWITCHED TO: ${lang}`);
+        }
+
+
+        function rechargeCredits() {
+            credits = Math.min(credits + 500, 9999);
+            localStorage.setItem('md_credits', credits);
+            updateCredits();
+            addLogLine('CREDITS RECHARGED: +500 CR');
+        }
+
+        function switchPhase(phase, btn) {
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('text-primary', 'border-primary-fixed-dim');
+                b.classList.add('text-on-surface-variant', 'border-transparent');
+            });
+            btn.classList.remove('text-on-surface-variant', 'border-transparent');
+            btn.classList.add('text-primary', 'border-primary-fixed-dim');
+            const phaseLabel = document.querySelector('.font-headline-sm.uppercase');
+            if (phaseLabel) phaseLabel.innerHTML = 'Phase: <span class="text-primary-fixed-dim">' + phase + '</span>';
+            addLogLine('PHASE SWITCHED TO: ' + phase);
+        }
+
+        let currentMode = 'AUTO';
+        function setMode(mode) {
+            currentMode = mode;
+            const auto = document.getElementById('btn-auto');
+            const manual = document.getElementById('btn-manual');
+            if (mode === 'AUTO') {
+                auto.classList.add('bg-primary-fixed-dim','text-on-primary');
+                auto.classList.remove('text-on-surface-variant');
+                manual.classList.remove('bg-primary-fixed-dim','text-on-primary');
+                manual.classList.add('text-on-surface-variant');
+            } else {
+                manual.classList.add('bg-primary-fixed-dim','text-on-primary');
+                manual.classList.remove('text-on-surface-variant');
+                auto.classList.remove('bg-primary-fixed-dim','text-on-primary');
+                auto.classList.add('text-on-surface-variant');
+            }
+            addLogLine('MODE SET TO: ' + mode);
+        }
+
+        // Tactile Feedback handled via Tailwind active:scale classes
+    </script>
+</body></htmlappendBubble(reply.split('\n').join('<br>'), 'bot', label);
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM Studio | Production Suite</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Custom styles for scanline and CRT effects */
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #a8d700;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .animate-blink {
+            animation: blink 1s infinite;
+        }
+        .waveform-bar {
+            width: 4px;
+            background: #a8d700;
+            border-radius: 2px;
+            animation: waveform 1s ease-in-out infinite;
+        }
+        @keyframes waveform {
+            0%, 100% { height: 10px; }
+            50% { height: 40px; }
+        }
+        .corner-bracket::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 10px; height: 10px;
+            border-top: 1px solid #a8d700; border-left: 1px solid #a8d700;
+        }
+        .corner-bracket::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0; width: 10px; height: 10px;
+            border-bottom: 1px solid #a8d700; border-right: 1px solid #a8d700;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#ffdeae",
+                      "on-secondary": "#432c00",
+                      "on-secondary-fixed-variant": "#604100",
+                      "secondary": "#ffba3f",
+                      "on-tertiary-fixed-variant": "#2f4a5e",
+                      "tertiary": "#ffffff",
+                      "primary": "#ffffff",
+                      "background": "#121509",
+                      "tertiary-fixed": "#cae6ff",
+                      "inverse-on-surface": "#2f3225",
+                      "tertiary-container": "#cae6ff",
+                      "surface-container-lowest": "#0c0f05",
+                      "primary-fixed-dim": "#a8d700",
+                      "on-tertiary-fixed": "#001e2f",
+                      "outline-variant": "#444934",
+                      "primary-container": "#c3f432",
+                      "surface-dim": "#121509",
+                      "surface-container-low": "#1a1d11",
+                      "on-primary-container": "#546d00",
+                      "tertiary-fixed-dim": "#aecae2",
+                      "on-primary-fixed": "#161f00",
+                      "surface-container-high": "#282b1f",
+                      "on-error": "#690005",
+                      "outline": "#8e937b",
+                      "error": "#ffb4ab",
+                      "surface-container": "#1e2115",
+                      "inverse-primary": "#4f6600",
+                      "surface-variant": "#333629",
+                      "surface-tint": "#a8d700",
+                      "surface-bright": "#373b2d",
+                      "on-primary": "#273500",
+                      "primary-fixed": "#c3f432",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "on-secondary-container": "#3e2800",
+                      "surface-container-highest": "#333629",
+                      "secondary-fixed-dim": "#ffba3f",
+                      "on-surface": "#e2e4d1",
+                      "on-surface-variant": "#c4c9ae",
+                      "on-background": "#e2e4d1",
+                      "on-secondary-fixed": "#281900",
+                      "on-tertiary": "#173346",
+                      "on-error-container": "#ffdad6",
+                      "inverse-surface": "#e2e4d1",
+                      "on-tertiary-container": "#4d677d",
+                      "error-container": "#93000a",
+                      "secondary-container": "#c48800",
+                      "surface": "#121509"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "panel-gap": "2px",
+                      "lg": "24px",
+                      "unit": "4px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Orbitron"],
+                      "label-technical": ["IBM Plex Mono"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Orbitron"],
+                      "headline-md": ["Orbitron"],
+                      "label-code": ["IBM Plex Mono"]
+              },
+              "fontSize": {
+                      "headline-sm": ["18px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "label-technical": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "label-code": ["11px", {"lineHeight": "1.4", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container h-screen w-screen overflow-hidden flex flex-col">
+<div class="scanline-overlay"></div>
+<!-- Header Section -->
+<header class="h-16 flex items-center justify-between px-md border-b border-outline-variant bg-surface-container-lowest z-50 shadow-[0_0_12px_rgba(168,215,0,0.2)]">
+<div class="flex items-center gap-md">
+<h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-fixed-dim">MERCADREAM</h1>
+<span class="font-label-technical text-label-technical text-on-surface-variant border-l border-outline-variant pl-md uppercase tracking-widest">Production Suite V.2.4.0</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg h-full">
+<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs" onclick="switchPhase('DISCOVERY',this)">DISCOVERY</button>
+<button class="font-label-technical text-label-technical text-primary border-b-2 border-primary-fixed-dim h-full px-xs active-phase" onclick="switchPhase('SCREENPLAY',this)">SCREENPLAY</button>
+<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs" onclick="switchPhase('PRODUCTION',this)">PRODUCTION</button>
+</nav>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs px-sm py-unit bg-surface-variant rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[16px]">database</span>
+<span class="font-label-technical text-label-technical" id="top-credits">1,000 CR</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" onclick="cycleLang()" title="Switch Language">language</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_balance_wallet</button>
+</div>
+</header>
+<!-- Main Content Grid -->
+<main class="flex-1 flex overflow-hidden gap-panel-gap p-unit min-h-0">
+<!-- Left Sidebar: Crew Panel -->
+<aside class="w-[clamp(260px,20vw,320px)] flex flex-col gap-panel-gap min-h-0">
+<!-- Crew Section -->
+<section class="flex-1 bg-surface-container-low border border-outline-variant flex flex-col min-h-0 relative">
+<div class="p-sm border-b border-outline-variant bg-surface-container flex justify-between items-center">
+<h2 class="font-headline-sm text-headline-sm text-primary-fixed-dim">CREW</h2>
+<span class="material-symbols-outlined text-[18px]">group</span>
+</div>
+<div class="p-md flex flex-col gap-sm overflow-y-auto terminal-scroll">
+<!-- Agent Card -->
+<div class="p-sm bg-surface-container-high border border-outline-variant flex items-center gap-md relative overflow-hidden group hover:border-primary-fixed-dim transition-all active:scale-[0.97]">
+<div class="w-10 h-10 bg-primary-fixed-dim flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<p class="font-label-technical text-primary-fixed-dim text-sm">GEMINI-9</p>
+<p class="text-[10px] text-on-surface-variant font-label-technical">LEAD NARRATIVE</p>
+</div>
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700]"></div>
+</div>
+<div class="p-sm bg-surface-container-high border border-outline-variant flex items-center gap-md relative opacity-60">
+<div class="w-10 h-10 bg-surface-variant flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<p class="font-label-technical text-sm">CLAUDE-3</p>
+<p class="text-[10px] text-on-surface-variant font-label-technical">DIALOGUE SYNC</p>
+</div>
+<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-outline"></div>
+</div>
+</div>
+<!-- Command Library -->
+<div class="mt-auto p-md bg-surface-container border-t border-outline-variant">
+<h3 class="font-label-technical text-[10px] text-on-surface-variant mb-sm">COMMAND LIBRARY</h3>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30 rounded">
+<span class="font-label-technical text-[11px]">/EXECUTE_GENESIS</span>
+<span class="bg-primary-fixed-dim text-on-primary text-[8px] px-1 font-bold">EXEC</span>
+</div>
+<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30 rounded">
+<span class="font-label-technical text-[11px]">/MOD_TONALITY</span>
+<span class="bg-secondary text-on-secondary text-[8px] px-1 font-bold">MOD</span>
+</div>
+<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30 rounded">
+<span class="font-label-technical text-[11px]">/SYNC_SEQUENCE</span>
+<span class="bg-tertiary-fixed-dim text-on-tertiary text-[8px] px-1 font-bold">SYNC</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Director Selector -->
+<section class="h-1/3 bg-surface-container-low border border-outline-variant flex flex-col p-md min-h-0">
+<h3 class="font-label-technical text-[11px] text-on-surface-variant mb-md tracking-tighter">DIRECTOR PROTOCOL</h3>
+<div class="grid grid-cols-2 gap-sm" id="director-selector">
+<label class="flex items-center gap-xs p-xs border border-primary-fixed-dim bg-primary-fixed-dim/10 cursor-pointer transition-all hover:bg-primary-fixed-dim/20">
+<input checked="" class="hidden" name="director" type="radio" value="Drama"/>
+<span class="w-2 h-2 rounded-full bg-primary-fixed-dim"></span>
+<span class="font-label-technical text-[10px]">DRAMA</span>
+</label>
+<label class="flex items-center gap-xs p-xs border border-outline cursor-pointer transition-all hover:border-error hover:bg-error/10">
+<input class="hidden" name="director" type="radio" value="Action"/>
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-technical text-[10px]">ACTION</span>
+</label>
+<label class="flex items-center gap-xs p-xs border border-outline cursor-pointer transition-all hover:border-secondary hover:bg-secondary/10">
+<input class="hidden" name="director" type="radio" value="Comedy"/>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-technical text-[10px]">COMEDY</span>
+</label>
+<label class="flex items-center gap-xs p-xs border border-outline cursor-pointer transition-all hover:border-tertiary-fixed-dim hover:bg-tertiary-fixed-dim/10">
+<input class="hidden" name="director" type="radio" value="Documentary"/>
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span class="font-label-technical text-[10px]">DOCS</span>
+</label>
+</div>
+<div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
+<div class="flex flex-col">
+<span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
+<span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 CR</span>
+</div>
+<button class="bg-surface-variant border border-outline text-[10px] px-sm py-1 font-label-technical hover:bg-primary-fixed-dim hover:text-on-primary transition-all" onclick="rechargeCredits()">RECHARGE</button>
+</div>
+</section>
+</aside>
+<!-- Center: Chat -->
+<div class="flex-grow flex flex-col gap-panel-gap min-h-0">
+<header class="bg-surface-container border border-outline-variant p-md flex justify-between items-center h-14 shrink-0">
+<div class="flex items-center gap-md">
+<span class="font-headline-sm text-headline-sm uppercase">Phase 02: <span class="text-primary-fixed-dim">Narrative Sync</span></span>
+</div>
+<button class="bg-primary-fixed-dim text-on-primary px-lg py-unit font-label-technical text-sm flex items-center gap-xs hover:shadow-[0_0_12px_rgba(168,215,0,0.4)] transition-all active:scale-[0.97]">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+                    SYNC SESSION
+                </button>
+</header>
+<!-- Chat Area -->
+<section id="chat-messages" class="flex-grow bg-surface-container-lowest border border-outline-variant overflow-y-auto p-lg flex flex-col gap-lg terminal-scroll relative">
+<!-- User Message -->
+<div class="flex gap-md self-end max-w-[80%]">
+<div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
+<p class="text-body-md text-on-surface">Initiate screenplay structure for 'CYBERPUNK NEON' series. Focus on Act 1 sequence 4 - The meeting at the rain-soaked docks.</p>
+<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 — USER_MAIN</span>
+</div>
+<div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center rounded-none border border-on-surface shrink-0">
+<span class="material-symbols-outlined">person</span>
+</div>
+</div>
+<!-- Robot Message -->
+<div class="flex gap-md max-w-[80%]">
+<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center rounded-none border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md corner-bracket relative">
+<div class="flex items-center gap-sm mb-xs">
+<span class="bg-primary-fixed-dim text-on-primary text-[9px] px-1 font-bold">ANALYZING</span>
+<div class="flex gap-[2px]">
+<div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div>
+<div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div>
+<div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div>
+</div>
+</div>
+<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">
+<span class="text-primary-fixed-dim">&gt;&gt;</span> Loading thematic assets...<br/>
+<span class="text-primary-fixed-dim">&gt;&gt;</span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
+<span class="text-primary-fixed-dim">&gt;&gt;</span> Screenplay protocol engaged. Ready for Act 1 details.
+                        </p>
+<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 — GEMINI-9</span>
+</div>
+</div>
+<!-- Voice Overlay (Hidden by default) -->
+<div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
+<div class="flex items-end gap-xs h-20">
+<div class="waveform-bar" style="animation-duration: 0.8s"></div>
+<div class="waveform-bar" style="animation-duration: 1.2s"></div>
+<div class="waveform-bar" style="animation-duration: 0.6s"></div>
+<div class="waveform-bar" style="animation-duration: 1s"></div>
+<div class="waveform-bar" style="animation-duration: 0.9s"></div>
+<div class="waveform-bar" style="animation-duration: 1.1s"></div>
+<div class="waveform-bar" style="animation-duration: 0.7s"></div>
+</div>
+<p class="font-headline-sm text-primary-fixed-dim tracking-widest animate-pulse" id="listening-text">LISTENING...</p>
+<button class="border border-outline px-lg py-sm font-label-technical hover:bg-error/20 hover:border-error transition-all" onclick="toggleVoice()">TERMINATE VOICE SYNC</button>
+</div>
+</section>
+<!-- Bottom Input -->
+<footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
+<div class="flex gap-md items-end">
+<div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
+<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="ENTER COMMAND OR NARRATIVE SEED..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+<div class="absolute bottom-2 right-2 flex gap-sm">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
+<button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#a8d700] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-label-technical text-on-surface-variant">
+<span>TOKEN LIMIT: 4,096 / 128,000</span>
+<span>ENCRYPTION: AES-256 ACTIVE</span>
+</div>
+</footer>
+</div>
+<!-- Right Sidebar: Pipeline -->
+<aside class="w-[clamp(240px,20vw,320px)] flex flex-col gap-panel-gap min-h-0">
+<!-- Cockpit Display -->
+<section class="h-[clamp(140px,18vh,200px)] bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center shrink-0">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale" data-alt="A futuristic cinematic wide shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL3mH4bdJKbd0Dm7EkItlv5ItJEndW7nhIEofXAH0Ejmnl9hNpFZmQirKJf_Iu29eDh47QUhqXr4byIhpHmkkqLMJKN-b6veHEycAX3jTUvWJwx9qgRnU-5OkXnyYdszbWgGcE2NrSUv6QuziEbtczF4ep6ICaWUM_hpuNGKOZmNGHKdsg80smcBoNAvyexlXRfN31FzJ1ls2lMijl6li79sCljaIAJ_ZYmZgVIoy2UAXI7PegDvOPm6-vVrslV-qv2wxvzbOa7xs"/>
+<div class="z-10 flex flex-col items-center">
+<span class="material-symbols-outlined text-[48px] text-primary-fixed-dim animate-blink mb-sm">videocam</span>
+<p class="font-label-technical text-primary-fixed-dim animate-blink text-sm tracking-widest">AWAITING SYNC</p>
+</div>
+<div class="absolute top-2 left-2 font-label-code text-[9px] text-primary-fixed-dim/70">REC // 00:00:00:00</div>
+<div class="absolute top-2 right-2 flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
+</div>
+</section>
+<!-- Pipeline Progress -->
+<section class="flex-grow bg-surface-container-low border border-outline-variant p-md flex flex-col gap-lg min-h-0">
+<h3 class="font-label-technical text-[11px] text-on-surface-variant border-b border-outline-variant pb-xs shrink-0">PIPELINE STAGES</h3>
+<div class="flex flex-col gap-md">
+<div class="pipeline-stage">
+<div class="flex justify-between items-center mb-unit">
+<span class="font-label-technical text-[10px]">01 // SCRIPT GEN</span>
+<span class="font-label-technical text-[10px] text-primary-fixed-dim" id="p1-val">0%</span>
+</div>
+<div class="w-full h-1 bg-surface-variant">
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700]" id="p1-bar" style="width: 0%"></div>
+</div>
+</div>
+<div class="pipeline-stage">
+<div class="flex justify-between items-center mb-unit">
+<span class="font-label-technical text-[10px]">02 // VOICE CLONE</span>
+<span class="font-label-technical text-[10px] text-primary-fixed-dim" id="p2-val">45%</span>
+</div>
+<div class="w-full h-1 bg-surface-variant">
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700] transition-all duration-1000" id="p2-bar" style="width: 45%"></div>
+</div>
+</div>
+<div class="pipeline-stage">
+<div class="flex justify-between items-center mb-unit">
+<span class="font-label-technical text-[10px]">03 // RENDER PASS</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant" id="p3-val">0%</span>
+</div>
+<div class="w-full h-1 bg-surface-variant">
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700] transition-all duration-1000" id="p3-bar" style="width: 0%"></div>
+</div>
+</div>
+</div>
+<!-- Live Sync Log -->
+<div class="mt-auto flex flex-col min-h-0">
+<h3 class="font-label-technical text-[11px] text-on-surface-variant mb-xs shrink-0">LIVE SYNC LOG</h3>
+<div class="flex-grow h-32 bg-black border border-outline-variant p-sm font-label-code text-[10px] text-primary-fixed-dim overflow-y-auto terminal-scroll leading-tight" id="sync-log">
+<div class="opacity-50">[09:40:12] INITIALIZING SYSTEM...</div>
+<div class="opacity-50">[09:40:13] CORE KERNEL CONNECTED</div>
+<div class="opacity-50">[09:40:15] AGENT_GEMINI_9 ATTACHED</div>
+<div class="opacity-50">[09:41:00] PIPELINE_AWARENESS_ACTIVE</div>
+<div class="text-white">&gt; SYSTEM READY.</div>
+</div>
+</div>
+</section>
+</aside>
+</main>
+<!-- Footer Controls -->
+<footer class="h-14 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-md z-50 shrink-0">
+<div class="flex items-center gap-xl">
+<div class="flex flex-col">
+<span class="text-[9px] text-on-surface-variant font-label-technical">CURRENT CREDITS</span>
+<span class="font-headline-sm text-primary-fixed-dim" id="footer-credits">1,000 CR</span>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-primary-fixed-dim shadow-[0_0_10px_#a8d700]" id="director-dot"></span>
+<span class="font-label-technical text-xs uppercase tracking-widest" id="active-director-name">DRAMA PROTOCOL</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex bg-surface-container-high border border-outline-variant p-1 rounded">
+<button id="btn-auto" class="px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical" onclick="setMode('AUTO')">AUTO</button>
+<button id="btn-manual" class="px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors" onclick="setMode('MANUAL')">MANUAL</button>
+</div>
+<button class="bg-secondary text-on-secondary px-xl py-2 font-headline-sm flex items-center gap-md hover:shadow-[0_0_20px_rgba(255,186,63,0.5)] transition-all active:scale-[0.95]" onclick="startGeneration()">
+<span class="material-symbols-outlined" data-weight="fill">rocket_launch</span>
+<span id="btn-generate-text">GENERATE</span>
+            </button>
+<a href="assembly.html" class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97]">
+<span class="material-symbols-outlined text-[18px]">movie_edit</span>
+OPEN ASSEMBLY →
+</a>
+</div>
+</footer>
+<script>
+        // State Management
+        let credits = parseInt(localStorage.getItem('md_credits')) || 1000;
+        let baseCost = 12;
+
+        // Director Cost Modifiers
+        const costTable = {
+            'Drama': 12,
+            'Action': 25,
+            'Comedy': 15,
+            'Documentary': 8
+        };
+
+        const directorColors = {
+            'Drama': '#a8d700',
+            'Action': '#ffb4ab',
+            'Comedy': '#ffba3f',
+            'Documentary': '#aecae2'
+        };
+
+        // Initialize display
+        updateCredits();
+
+        // Initialize listeners
+        document.querySelectorAll('input[name="director"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const val = e.target.value;
+                const cost = costTable[val];
+                
+                // Update internal UI
+                document.getElementById('sync-cost').innerText = `${cost} CR`;
+                document.getElementById('director-dot').style.backgroundColor = directorColors[val];
+                document.getElementById('director-dot').style.boxShadow = `0 0 10px ${directorColors[val]}`;
+                document.getElementById('active-director-name').innerText = `${val.toUpperCase()} PROTOCOL`;
+                
+                // Update styling for labels
+                document.querySelectorAll('#director-selector label').forEach(l => {
+                    l.classList.remove('border-primary-fixed-dim', 'bg-primary-fixed-dim/10', 'bg-surface-variant');
+                    l.classList.add('border-outline');
+                    // Reset to a common border color if not selected
+                    l.style.borderColor = ''; 
+                });
+                
+                const parent = e.target.parentElement;
+                parent.classList.remove('border-outline');
+                parent.style.borderColor = directorColors[val];
+                parent.classList.add('bg-surface-variant');
+                
+                addLogLine(`DIRECTOR PROTOCOL SWITCHED TO: ${val.toUpperCase()}`);
+            });
+        });
+
+        function toggleVoice() {
+            const overlay = document.getElementById('voice-overlay');
+            const isHidden = overlay.style.display === 'none' || overlay.style.display === '';
+            overlay.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) addLogLine('VOICE SYNC SESSION STARTED...');
+        }
+
+        function addLogLine(text) {
+            const log = document.getElementById('sync-log');
+            const entry = document.createElement('div');
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            entry.innerHTML = `<span class="opacity-50">[${time}]</span> ${text}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function startGeneration() {
+            const directorEl = document.querySelector('input[name="director"]:checked');
+            const director = directorEl ? directorEl.value : 'Drama';
+            const cost = costTable[director] || 12;
+
+            if (credits < cost) {
+                addLogLine('ERROR: INSUFFICIENT CREDITS FOR SYNC.');
+                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+                return;
+            }
+
+            if (currentPhaseState !== 'director') {
+                appendBubble('>> Complete the vision brief first. Answer the screenwriter questions.', 'bot', 'SYSTEM');
+                return;
+            }
+
+            addLogLine('GENERATE pressed — requesting scene from ' + director);
+            animatePipeline();
+            const typingId = showTyping();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'Generate the next scene now.',
+                        director: director,
+                        contentType: contentTypeMap[director] || 'Film',
+                        phase: 'director',
+                        history: chatHistory,
+                        dreamBrief: dreamBrief
+                    })
+                });
+
+                const data = await response.json();
+                removeTyping(typingId);
+
+                if (data.error) {
+                    appendBubble('>> DIRECTOR ERROR: ' + data.error, 'bot', 'SYSTEM');
+                    return;
+                }
+
+                if (data.scene) {
+                    handleSceneGenerated(data.scene, director);
+                    chatHistory.push({ role: 'user', content: 'Generate scene.' });
+                    chatHistory.push({ role: 'assistant', content: JSON.stringify(data.scene) });
+                } else {
+                    appendBubble(data.reply || '>> Scene generation in progress...', 'bot', director.toUpperCase() + '-DIRECTOR');
+                }
+
+            } catch (err) {
+                removeTyping(typingId);
+                addLogLine('GENERATE ERROR: ' + err.message);
+            }
+        }
+
+        function updateCredits() {
+            const formatted = credits.toLocaleString();
+            document.getElementById('top-credits').innerText = `${formatted} CR`;
+            document.getElementById('footer-credits').innerText = `${formatted} CR`;
+        }
+
+        function animatePipeline() {
+            // Reset and animate progress bars
+            const bars = ['p1', 'p2', 'p3'];
+            let current = 0;
+
+            function process() {
+                if (current >= bars.length) {
+                    addLogLine("PIPELINE TASK COMPLETED.");
+                    return;
+                }
+                
+                const id = bars[current];
+                const bar = document.getElementById(`${id}-bar`);
+                const val = document.getElementById(`${id}-val`);
+                
+                bar.style.width = '0%';
+                val.innerText = '0%';
+                
+                setTimeout(() => {
+                    bar.style.width = '100%';
+                    val.innerText = '100%';
+                    addLogLine(`STAGE ${current + 1} PROCESSED SUCCESSFULLY`);
+                    current++;
+                    setTimeout(process, 1200);
+                }, 100);
+            }
+            
+            process();
+        }
+
+        // ── STATE ─────────────────────────────────────────
+        let chatHistory = [];          // تاريخ المحادثة الكاملة
+        let currentPhaseState = 'screenwriter'; // screenwriter | director
+        let dreamBrief = null;         // الملخص بعد DREAM_CAPTURED
+        let sceneCount = 0;            // عداد المقاطع في هذه الجلسة
+
+        // contentType من Director Selector
+        const contentTypeMap = {
+            Drama: 'Film', Action: 'Film', Comedy: 'Film',
+            Documentary: 'Documentary', Ads: 'Ads', Music: 'Music'
+        };
+
+        // دالة مساعدة لإضافة فقاعة في الشات
+        function appendBubble(text, role, label) {
+            const chat = document.getElementById('chat-messages');
+            const voiceOverlay = document.getElementById('voice-overlay');
+            const now = new Date().toLocaleTimeString('en-GB', {hour12: false});
+            const div = document.createElement('div');
+            div.className = role === 'user'
+                ? 'flex gap-md self-end max-w-[80%]'
+                : 'flex gap-md max-w-[80%]';
+            if (role === 'user') {
+                const msgWrap = document.createElement('div');
+                msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
+                const msgP = document.createElement('p');
+                msgP.className = 'text-body-md text-on-surface';
+                msgP.textContent = text;
+                const ts = document.createElement('span');
+                ts.className = 'absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant';
+                ts.textContent = now + ' — USER_MAIN';
+                msgWrap.appendChild(msgP); msgWrap.appendChild(ts);
+                const icon = document.createElement('div');
+                icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
+                icon.innerHTML = '<span class="material-symbols-outlined">person</span>';
+                div.appendChild(msgWrap); div.appendChild(icon);
+            } else {
+                div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
+                const bubble = document.createElement('div');
+                bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
+                bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
+                div.appendChild(bubble);
+            }
+            chat.insertBefore(div, voiceOverlay);
+            chat.scrollTop = chat.scrollHeight;
+            return div;
+        }
+
+        // typing indicator
+        function showTyping() {
+            const chat = document.getElementById('chat-messages');
+            const voiceOverlay = document.getElementById('voice-overlay');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.className = 'flex gap-md max-w-[80%]';
+            div.id = id;
+            div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md flex gap-[3px] items-center h-10"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div>';
+            chat.insertBefore(div, voiceOverlay);
+            chat.scrollTop = chat.scrollHeight;
+            return id;
+        }
+
+        function removeTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // ── SEND MESSAGE ───────────────────────────────────
+        async function sendMessage() {
+            const textarea = document.getElementById('chat-input');
+            const text = textarea ? textarea.value.trim() : '';
+            if (!text) return;
+
+            appendBubble(text, 'user');
+            textarea.value = '';
+            addLogLine('USER INPUT: ' + text.substring(0, 60));
+
+            const directorEl = document.querySelector('input[name="director"]:checked');
+            const director = directorEl ? directorEl.value : 'Drama';
+            const contentType = contentTypeMap[director] || 'Film';
+            const typingId = showTyping();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        director: director,
+                        contentType: contentType,
+                        phase: currentPhaseState,
+                        history: chatHistory,
+                        dreamBrief: dreamBrief
+                    })
+                });
+
+                const data = await response.json();
+                removeTyping(typingId);
+
+                if (data.error) {
+                    appendBubble('>> ERROR: ' + data.error, 'bot', 'SYSTEM');
+                    addLogLine('API ERROR: ' + data.error);
+                    return;
+                }
+
+                // مشهد جاهز من المخرج
+                if (data.scene) {
+                    handleSceneGenerated(data.scene, director);
+                    chatHistory.push({ role: 'user', content: text });
+                    chatHistory.push({ role: 'assistant', content: JSON.stringify(data.scene) });
+                    return;
+                }
+
+                const reply = data.reply || '>> Processing...';
+
+                // DREAM_CAPTURED — انتهت مرحلة الكاتب
+                if (data.dreamCaptured) {
+                    dreamBrief = chatHistory
+                        .filter(h => h.role === 'user')
+                        .map(h => h.content).join(' | ');
+                    currentPhaseState = 'director';
+                    chatHistory = []; // نبدأ تاريخاً جديداً مع المخرج
+
+                    const directorNames = {
+                        Drama:'Marco Visconti', Action:'Rex Storm', Comedy:'Elena Bright',
+                        Documentary:'Sara Truth', Ads:'Nova Brand', Music:'Kai Neon'
+                    };
+                    const dirName = directorNames[director] || director;
+                    appendBubble(
+                        '>> VISION LOCKED. DREAM CAPTURED.<br>'
+                        + '>> Passing brief to <strong>' + dirName + '</strong>...<br>'
+                        + '>> Press <strong>GENERATE</strong> to create your first scene.',
+                        'bot', 'SYSTEM'
+                    );
+                    addLogLine('DREAM_CAPTURED — switching to director: ' + director);
+                    return;
+                }
+
+                // رد عادي
+                const label = currentPhaseState === 'screenwriter'
+                    ? 'SCREENWRITER' : director.toUpperCase() + '-DIRECTOR';
+                appendBubble(reply.split('\n').join('<br>'), 'bot', director.toUpperCase() + '-DIRECTOR');
                 addLogLine(label + ' RESPONSE');
 
                 chatHistory.push({ role: 'user', content: text });
