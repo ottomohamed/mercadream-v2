@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&amp;family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MERCADREAM | RAY-TRACED RELIGHTING</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Sora:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -101,7 +101,7 @@
             },
         }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
@@ -129,235 +129,367 @@
             background: #c8ff00;
             margin-top: -5px;
             border-radius: 0;
+            cursor: pointer;
+        }
+        /* كلاس موحد مخصص للـ Presets النشطة لتسهيل التبديل المظهري المستقر */
+        .preset-active {
+            border-color: #c8ff00 !important;
+            background-color: rgba(200, 255, 0, 0.1) !important;
+            box-shadow: 0 0 10px rgba(200, 255, 0, 0.15);
+        }
+        .preset-active span, .preset-active p {
+            color: #c8ff00 !important;
         }
     </style>
 </head>
 <body class="bg-void-black text-on-background font-body-md overflow-x-hidden min-h-screen">
-<!-- Top Navigation -->
-<header class="bg-void-black flex justify-between items-center w-full px-margin-desktop h-16 docked full-width top-0 border-b border-outline-variant fixed z-50">
-<div class="flex items-center gap-4">
-<button class="text-silver-technical hover:bg-surface-container-highest hover:text-neon-acid transition-colors duration-150 p-2 active:scale-95 duration-100">
-<span class="material-symbols-outlined">arrow_back</span>
-</button>
-<h1 class="font-headline-lg text-headline-lg tracking-tighter text-neon-acid">MERCADREAM | RELIGHTING</h1>
-</div>
-<div class="flex items-center gap-6">
-<span class="font-label-technical text-label-technical text-neon-acid border border-neon-acid/30 px-3 py-1 bg-neon-acid/5">2,450 CREDITS</span>
-<div class="w-8 h-8 bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant">
-<img alt="User Profile" data-alt="A high-fidelity digital portrait of a cybernetic systems operator with short neon hair, wearing sleek black techwear. The lighting is dramatic and clinical with neon acid highlights. The background is a dark, high-density data interface with surgical precision aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTigi0MJW8gTUPAjchXuUNEcuu1N1SDmVVTKIr6AgxaaZ33QPjqIgKj-H7jNT2qI8LSuQ1Et3OtPMoJL1oOFv9N8B9mAdk5N7ZsvZBU6oq3CmWgiP0oJMbiVCqRO7CCoijzonES3LXdkSvUmqs-doMO6KL1ge-7nzmNF5VKwC64YiaZOAaznr8fDRSxym1yGOKQT3JGs7lioRcPwv29lJmvu3regSQO7U5vuqEj8wKHmnf69K28b-c8L_lEZ5ULfxAGh1WYTlnXjI"/>
-</div>
-</div>
+
+<header class="bg-void-black flex justify-between items-center w-full px-margin-desktop h-16 border-b border-outline-variant fixed top-0 left-0 z-50">
+    <div class="flex items-center gap-4">
+        <button id="btn-back" class="text-silver-technical hover:bg-surface-container-highest hover:text-neon-acid transition-colors duration-150 p-2 active:scale-95">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="font-headline-lg text-headline-lg tracking-tighter text-neon-acid">MERCADREAM | RELIGHTING</h1>
+    </div>
+    <div class="flex items-center gap-6">
+        <span id="nav-credits-display" class="font-label-technical text-label-technical text-neon-acid border border-neon-acid/30 px-3 py-1 bg-neon-acid/5">2,450 CREDITS</span>
+        <div class="w-8 h-8 bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant">
+            <img alt="User Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTigi0MJW8gTUPAjchXuUNEcuu1N1SDmVVTKIr6AgxaaZ33QPjqIgKj-H7jNT2qI8LSuQ1Et3OtPMoJL1oOFv9N8B9mAdk5N7ZsvZBU6oq3CmWgiP0oJMbiVCqRO7CCoijzonES3LXdkSvUmqs-doMO6KL1ge-7nzmNF5VKwC64YiaZOAaznr8fDRSxym1yGOKQT3JGs7lioRcPwv29lJmvu3regSQO7U5vuqEj8wKHmnf69K28b-c8L_lEZ5ULfxAGh1WYTlnXjI"/>
+        </div>
+    </div>
 </header>
+
 <div class="flex pt-16 h-screen overflow-hidden">
-<!-- Side Navigation (Suppressed/Active as Relighting) -->
-<nav class="hidden md:flex flex-col h-full w-64 bg-surface-dim border-r border-outline-variant py-module-padding shrink-0">
-<div class="px-6 mb-8">
-<p class="font-label-caps text-label-caps text-neon-acid opacity-60">SYSTEM_OPERATOR</p>
-<p class="font-label-technical text-label-technical text-on-surface">OPERATOR_01</p>
-</div>
-<div class="flex-grow space-y-1">
-<a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
-<span class="material-symbols-outlined">settings_input_component</span> Engine
-                </a>
-<a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
-<span class="material-symbols-outlined">inventory_2</span> Assets
-                </a>
-<a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
-<span class="material-symbols-outlined">view_timeline</span> Timeline
-                </a>
-<a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps bg-surface-container-highest text-neon-acid border-l-4 border-neon-acid transition-all duration-200" href="#">
-<span class="material-symbols-outlined">wb_iridescent</span> Relighting
-                </a>
-<a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
-<span class="material-symbols-outlined">file_download</span> Export
-                </a>
-</div>
-<div class="px-4 mt-auto">
-<button class="w-full bg-neon-acid text-void-black font-label-caps py-3 hover:bg-white transition-colors duration-200 border border-neon-acid">INITIALIZE RENDER</button>
-</div>
-</nav>
-<!-- Main Content Canvas -->
-<main class="flex-grow overflow-y-auto hud-grid relative">
-<div class="p-margin-desktop max-w-7xl mx-auto space-y-gutter">
-<!-- Hero Section -->
-<section class="border border-outline-variant bg-surface-dim/80 backdrop-blur-md p-8 relative overflow-hidden group">
-<div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-neon-acid"></div>
-<div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-neon-acid"></div>
-<div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-neon-acid"></div>
-<div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-neon-acid"></div>
-<div class="flex justify-between items-start relative z-10">
-<div>
-<span class="font-label-technical text-label-technical text-neon-acid mb-2 block">MODULE_ID: RL_091</span>
-<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">RAY-TRACED RELIGHTING</h2>
-<p class="font-body-md text-silver-technical max-w-lg">Change the entire lighting environment of any scene with architectural precision. Our neural engine recalculates light bounces in real-time.</p>
-</div>
-<div class="text-right">
-<span class="font-label-caps text-label-caps text-cyber-gold block mb-1">SYSTEM_COST</span>
-<span class="font-headline-lg text-headline-lg text-neon-acid">15 CREDITS</span>
-</div>
-</div>
-<div class="scanline absolute inset-0 opacity-10 pointer-events-none"></div>
-</section>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-<!-- Left Column: Source & Presets -->
-<div class="lg:col-span-4 space-y-gutter">
-<!-- Upload Zone -->
-<div class="border-2 border-dashed border-outline-variant bg-surface-container-low p-10 text-center group hover:border-neon-acid/50 transition-colors duration-300">
-<span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid transition-colors mb-4">upload_file</span>
-<h3 class="font-label-technical text-label-technical text-on-surface mb-2 uppercase">Input Stream Source</h3>
-<p class="text-label-caps text-silver-technical">MP4, MOV, JPG, PNG (MAX 500MB)</p>
-<p class="text-label-caps text-neon-acid mt-4 opacity-0 group-hover:opacity-100 transition-opacity">DROP_DATA_PACKET_HERE</p>
-</div>
-<!-- Presets Grid -->
-<div class="border border-outline-variant bg-surface-container p-module-padding">
-<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
-<span class="font-label-technical text-label-technical text-neon-acid">LIGHTING_PRESETS</span>
-<span class="font-label-caps text-label-caps text-silver-technical">6_SLOTS_ACTIVE</span>
-</div>
-<div class="grid grid-cols-2 gap-2">
-<!-- Preset Cards -->
-<button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
-<span class="material-symbols-outlined text-silver-technical group-hover:text-neon-acid mb-2">wb_sunny</span>
-<span class="block font-label-caps text-label-caps text-on-surface group-hover:text-neon-acid">[GOLDEN HOUR]</span>
-</button>
-<button class="border border-neon-acid p-4 bg-neon-acid/10 group transition-all ring-1 ring-neon-acid/20">
-<span class="material-symbols-outlined text-neon-acid mb-2">video_camera_back</span>
-<span class="block font-label-caps text-label-caps text-neon-acid">[STUDIO]</span>
-</button>
-<button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
-<span class="material-symbols-outlined text-silver-technical group-hover:text-neon-acid mb-2">nightlight</span>
-<span class="block font-label-caps text-label-caps text-on-surface group-hover:text-neon-acid">[NIGHT CITY]</span>
-</button>
-<button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
-<span class="material-symbols-outlined text-silver-technical group-hover:text-neon-acid mb-2">cloud</span>
-<span class="block font-label-caps text-label-caps text-on-surface group-hover:text-neon-acid">[OVERCAST]</span>
-</button>
-<button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
-<span class="material-symbols-outlined text-silver-technical group-hover:text-neon-acid mb-2">flare</span>
-<span class="block font-label-caps text-label-caps text-on-surface group-hover:text-neon-acid">[BACKLIGHT]</span>
-</button>
-<button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
-<span class="material-symbols-outlined text-silver-technical group-hover:text-neon-acid mb-2">fluorescent</span>
-<span class="block font-label-caps text-label-caps text-on-surface group-hover:text-neon-acid">[NEON]</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Middle Column: Preview Area -->
-<div class="lg:col-span-5 space-y-gutter">
-<div class="border border-outline-variant bg-surface-container-high h-[400px] lg:h-[500px] relative overflow-hidden group">
-<img alt="Before After Preview" class="w-full h-full object-cover opacity-80" data-alt="A cinematic split-screen preview of a futuristic urban alleyway. The left side 'BEFORE' shows flat, grey overcast lighting with no depth. The right side 'AFTER' shows professional studio lighting with warm key lights and cool cyan rim lights, creating deep shadows and dramatic volumetric atmosphere. Surgical technical UI overlays define the separation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk2d27A_Gd6KxYhpraCqB900NO8oSq3Rn3kMydB7vQ3eEyMSZCPK0N0KbTsywqkb7ttSfJFZweGedYn0ovLe3CPiyLLttk7Z6Ov3b06swT52hJxAQTUbk-FKzpvk9iAWOxGaXTnwlqX3EKIw9xVm9DfaOd-TRvtVyxrqfXa7Rp_uwl5ez5hIlIZabeJqlIS9zovJlL6T6WITi6okkQYKNheMm5SEnfoWZIhBF08cWX0KvLSJU_Rs-KnFgfZ_MFetoLA5uEwouLqZg"/>
-<div class="absolute inset-0 flex">
-<div class="w-1/2 flex items-start p-4">
-<span class="bg-void-black/80 px-3 py-1 font-label-caps text-label-caps text-silver-technical border border-outline-variant">BEFORE | SRC_RAW</span>
-</div>
-<div class="w-1/2 border-l-2 border-neon-acid flex items-start justify-end p-4 bg-gradient-to-r from-neon-acid/5 to-transparent">
-<span class="bg-neon-acid text-void-black px-3 py-1 font-label-caps text-label-caps font-bold">AFTER | RT_PROCESSED</span>
-</div>
-</div>
-<!-- HUD Elements -->
-<div class="absolute bottom-4 left-4 font-label-technical text-label-technical text-neon-acid bg-void-black/60 p-2 border border-outline-variant">
-                                RESOLUTION: 3840x2160<br/>
-                                FPS: 24.00<br/>
-                                BIT_DEPTH: 10-BIT
+    <nav class="hidden md:flex flex-col h-full w-64 bg-surface-dim border-r border-outline-variant py-module-padding shrink-0">
+        <div class="px-6 mb-8">
+            <p class="font-label-caps text-label-caps text-neon-acid opacity-60">SYSTEM_OPERATOR</p>
+            <p class="font-label-technical text-label-technical text-on-surface">OPERATOR_01</p>
+        </div>
+        <div class="flex-grow space-y-1">
+            <a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
+                <span class="material-symbols-outlined">settings_input_component</span> Engine
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
+                <span class="material-symbols-outlined">inventory_2</span> Assets
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
+                <span class="material-symbols-outlined">view_timeline</span> Timeline
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps bg-surface-container-highest text-neon-acid border-l-4 border-neon-acid transition-all duration-200" href="#">
+                <span class="material-symbols-outlined">wb_iridescent</span> Relighting
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container hover:text-neon-acid transition-all duration-200" href="#">
+                <span class="material-symbols-outlined">file_download</span> Export
+            </a>
+        </div>
+        <div class="px-4 mt-auto">
+            <button id="btn-init-render" class="w-full bg-neon-acid text-void-black font-label-caps py-3 hover:bg-white transition-colors duration-200 border border-neon-acid">INITIALIZE RENDER</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow overflow-y-auto hud-grid relative">
+        <div class="p-margin-desktop max-w-7xl mx-auto space-y-gutter">
+            <section class="border border-outline-variant bg-surface-dim/80 backdrop-blur-md p-8 relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-neon-acid"></div>
+                <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-neon-acid"></div>
+                <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-neon-acid"></div>
+                <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-neon-acid"></div>
+                <div class="flex justify-between items-start relative z-10">
+                    <div>
+                        <span class="font-label-technical text-label-technical text-neon-acid mb-2 block">MODULE_ID: RL_091</span>
+                        <h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">RAY-TRACED RELIGHTING</h2>
+                        <p class="font-body-md text-silver-technical max-w-lg">Change the entire lighting environment of any scene with architectural precision. Our neural engine recalculates light bounces in real-time.</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-label-caps text-label-caps text-cyber-gold block mb-1">SYSTEM_COST</span>
+                        <span class="font-headline-lg text-headline-lg text-neon-acid">15 CREDITS</span>
+                    </div>
+                </div>
+                <div class="scanline absolute inset-0 opacity-10 pointer-events-none"></div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+                <div class="lg:col-span-4 space-y-gutter">
+                    <div id="upload-zone" class="border-2 border-dashed border-outline-variant bg-surface-container-low p-10 text-center group hover:border-neon-acid/50 transition-colors duration-300 cursor-pointer">
+                        <span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid transition-colors mb-4">upload_file</span>
+                        <h3 class="font-label-technical text-label-technical text-on-surface mb-2 uppercase">Input Stream Source</h3>
+                        <p class="text-label-caps text-silver-technical">MP4, MOV, JPG, PNG (MAX 500MB)</p>
+                        <p class="text-label-caps text-neon-acid mt-4 opacity-0 group-hover:opacity-100 transition-opacity">DROP_DATA_PACKET_HERE</p>
+                    </div>
+                    <div class="border border-outline-variant bg-surface-container p-module-padding">
+                        <div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+                            <span class="font-label-technical text-label-technical text-neon-acid">LIGHTING_PRESETS</span>
+                            <span class="font-label-caps text-label-caps text-silver-technical">6_SLOTS_ACTIVE</span>
+                        </div>
+                        <div id="presets-container" class="grid grid-cols-2 gap-2">
+                            <button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
+                                <span class="material-symbols-outlined text-silver-technical mb-2">wb_sunny</span>
+                                <span class="block font-label-caps text-label-caps text-on-surface">[GOLDEN HOUR]</span>
+                            </button>
+                            <button class="preset-active border p-4 bg-void-black hover:border-neon-acid group transition-all">
+                                <span class="material-symbols-outlined mb-2">video_camera_back</span>
+                                <span class="block font-label-caps text-label-caps">[STUDIO]</span>
+                            </button>
+                            <button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
+                                <span class="material-symbols-outlined text-silver-technical mb-2">nightlight</span>
+                                <span class="block font-label-caps text-label-caps text-on-surface">[NIGHT CITY]</span>
+                            </button>
+                            <button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
+                                <span class="material-symbols-outlined text-silver-technical mb-2">cloud</span>
+                                <span class="block font-label-caps text-label-caps text-on-surface">[OVERCAST]</span>
+                            </button>
+                            <button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
+                                <span class="material-symbols-outlined text-silver-technical mb-2">flare</span>
+                                <span class="block font-label-caps text-label-caps text-on-surface">[BACKLIGHT]</span>
+                            </button>
+                            <button class="border border-outline-variant p-4 bg-void-black hover:border-neon-acid group transition-all">
+                                <span class="material-symbols-outlined text-silver-technical mb-2">fluorescent</span>
+                                <span class="block font-label-caps text-label-caps text-on-surface">[NEON]</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 space-y-gutter">
+                    <div class="border border-outline-variant bg-surface-container-high h-[400px] lg:h-[500px] relative overflow-hidden group">
+                        <img alt="Before After Preview" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk2d27A_Gd6KxYhpraCqB900NO8oSq3Rn3kMydB7vQ3eEyMSZCPK0N0KbTsywqkb7ttSfJFZweGedYn0ovLe3CPiyLLttk7Z6Ov3b06swT52hJxAQTUbk-FKzpvk9iAWOxGaXTnwlqX3EKIw9xVm9DfaOd-TRvtVyxrqfXa7Rp_uwl5ez5hIlIZabeJqlIS9zovJlL6T6WITi6okkQYKNheMm5SEnfoWZIhBF08cWX0KvLSJU_Rs-KnFgfZ_MFetoLA5uEwouLqZg"/>
+                        <div class="absolute inset-0 flex">
+                            <div class="w-1/2 flex items-start p-4">
+                                <span class="bg-void-black/80 px-3 py-1 font-label-caps text-label-caps text-silver-technical border border-outline-variant">BEFORE | SRC_RAW</span>
                             </div>
-<div class="absolute inset-0 scanline opacity-5 pointer-events-none"></div>
+                            <div class="w-1/2 border-l-2 border-neon-acid flex items-start justify-end p-4 bg-gradient-to-r from-neon-acid/5 to-transparent">
+                                <span class="bg-neon-acid text-void-black px-3 py-1 font-label-caps text-label-caps font-bold">AFTER | RT_PROCESSED</span>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-4 left-4 font-label-technical text-label-technical text-neon-acid bg-void-black/60 p-2 border border-outline-variant">
+                            RESOLUTION: 3840x2160<br/>
+                            FPS: 24.00<br/>
+                            BIT_DEPTH: 10-BIT
+                        </div>
+                        <div class="absolute inset-0 scanline opacity-5 pointer-events-none"></div>
+                    </div>
+                    <button id="btn-relight" class="w-full group relative overflow-hidden bg-neon-acid text-void-black py-6 flex justify-center items-center gap-4 active:scale-[0.99] transition-all">
+                        <div class="absolute top-0 left-0 w-full h-[1px] bg-white/20"></div>
+                        <span class="material-symbols-outlined text-2xl group-hover:scale-125 transition-transform">bolt</span>
+                        <span class="btn-text font-headline-lg text-headline-lg tracking-tighter">RELIGHT — 15 CREDITS</span>
+                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-3 space-y-gutter">
+                    <div class="border border-outline-variant bg-surface-dim p-6 space-y-8">
+                        <div class="flex justify-between border-b border-outline-variant pb-2">
+                            <span class="font-label-technical text-label-technical text-on-surface">CORE_PARAMS</span>
+                            <span class="font-label-caps text-label-caps text-silver-technical">V_1.0.4</span>
+                        </div>
+                        <div class="space-y-4 flex flex-col items-center">
+                            <label class="font-label-caps text-label-caps text-silver-technical w-full text-left">LIGHT DIRECTION</label>
+                            <div id="light-dial-container" class="relative w-32 h-32 border border-outline-variant rounded-full flex items-center justify-center cursor-crosshair select-none">
+                                <div class="absolute inset-2 border border-outline-variant/30 rounded-full pointer-events-none"></div>
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="w-[1px] h-full bg-outline-variant absolute"></div>
+                                    <div class="h-[1px] w-full bg-outline-variant absolute"></div>
+                                </div>
+                                <div id="dial-pointer-axis" class="absolute inset-0 transition-transform duration-75 pointer-events-none" style="transform: rotate(0deg);">
+                                    <div class="w-4 h-4 bg-neon-acid absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-void-black shadow-[0_0_15px_rgba(200,255,0,0.5)]"></div>
+                                </div>
+                                <span id="angle-readout" class="font-label-technical text-label-technical text-on-surface relative z-10 pointer-events-none">0°</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between font-label-technical text-label-technical">
+                                <span class="text-on-surface">INTENSITY</span>
+                                <span id="intensity-val" class="text-neon-acid">8.5</span>
+                            </div>
+                            <input id="slider-intensity" class="w-full" max="10" min="1" step="0.1" type="range" value="8.5"/>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between font-label-technical text-label-technical">
+                                <span class="text-on-surface">COLOR TEMP</span>
+                                <span class="text-cyber-gold">6500K</span>
+                            </div>
+                            <div class="h-2 w-full bg-gradient-to-r from-blue-400 via-white to-orange-400 relative">
+                                <div class="absolute top-1/2 left-[70%] -translate-y-1/2 w-4 h-4 border-2 border-neon-acid bg-void-black"></div>
+                            </div>
+                            <div class="flex justify-between text-[8px] font-label-caps text-silver-technical mt-1">
+                                <span>COLD</span>
+                                <span>WARM</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between font-label-technical text-label-technical">
+                                <span class="text-on-surface">SHADOW DEPTH</span>
+                                <span id="shadow-val" class="text-neon-acid">4.2</span>
+                            </div>
+                            <input id="slider-shadow" class="w-full" max="10" min="1" step="0.1" type="range" value="4.2"/>
+                        </div>
+                        <div class="mt-10 p-4 bg-void-black border border-outline-variant font-label-technical text-label-technical text-silver-technical opacity-60">
+                            <p>RENDER_ENGINE: NEURAL_PATH</p>
+                            <p>BUFFER_STATUS: STABLE</p>
+                            <p>RAY_COUNT: 1024_SPP</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
-<!-- Generate Bar -->
-<button class="w-full group relative overflow-hidden bg-neon-acid text-void-black py-6 flex justify-center items-center gap-4 active:scale-95 transition-all">
-<div class="absolute top-0 left-0 w-full h-[1px] bg-white/20"></div>
-<span class="material-symbols-outlined text-2xl group-hover:scale-125 transition-transform">bolt</span>
-<span class="font-headline-lg text-headline-lg tracking-tighter">RELIGHT — 15 CREDITS</span>
-<div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-</button>
-</div>
-<!-- Right Column: Settings Panel -->
-<div class="lg:col-span-3 space-y-gutter">
-<div class="border border-outline-variant bg-surface-dim p-6 space-y-8">
-<div class="flex justify-between border-b border-outline-variant pb-2">
-<span class="font-label-technical text-label-technical text-on-surface">CORE_PARAMS</span>
-<span class="font-label-caps text-label-caps text-silver-technical">V_1.0.4</span>
-</div>
-<!-- Light Direction -->
-<div class="space-y-4 flex flex-col items-center">
-<label class="font-label-caps text-label-caps text-silver-technical w-full text-left">LIGHT DIRECTION</label>
-<div class="relative w-32 h-32 border border-outline-variant rounded-full flex items-center justify-center">
-<div class="absolute inset-2 border border-outline-variant/30 rounded-full"></div>
-<div class="absolute inset-0 flex items-center justify-center">
-<div class="w-[1px] h-full bg-outline-variant absolute"></div>
-<div class="h-[1px] w-full bg-outline-variant absolute"></div>
-</div>
-<!-- Compass Handle -->
-<div class="w-8 h-8 bg-neon-acid absolute -top-4 rounded-full border-4 border-void-black shadow-[0_0_15px_rgba(200,255,0,0.5)] cursor-pointer"></div>
-<span class="font-label-technical text-label-technical text-on-surface relative z-10">0°</span>
-</div>
-</div>
-<!-- Intensity -->
-<div class="space-y-3">
-<div class="flex justify-between font-label-technical text-label-technical">
-<span class="text-on-surface">INTENSITY</span>
-<span class="text-neon-acid">8.5</span>
-</div>
-<input class="w-full" max="10" min="1" step="0.1" type="range" value="8.5"/>
-</div>
-<!-- Color Temp -->
-<div class="space-y-3">
-<div class="flex justify-between font-label-technical text-label-technical">
-<span class="text-on-surface">COLOR TEMP</span>
-<span class="text-cyber-gold">6500K</span>
-</div>
-<div class="h-2 w-full bg-gradient-to-r from-blue-400 via-white to-orange-400 relative">
-<div class="absolute top-1/2 left-[70%] -translate-y-1/2 w-4 h-4 border-2 border-neon-acid bg-void-black"></div>
-</div>
-<div class="flex justify-between text-[8px] font-label-caps text-silver-technical mt-1">
-<span>COLD</span>
-<span>WARM</span>
-</div>
-</div>
-<!-- Shadow Depth -->
-<div class="space-y-3">
-<div class="flex justify-between font-label-technical text-label-technical">
-<span class="text-on-surface">SHADOW DEPTH</span>
-<span class="text-neon-acid">4.2</span>
-</div>
-<input class="w-full" max="10" min="1" step="0.1" type="range" value="4.2"/>
-</div>
-<!-- Technical Hud Readout -->
-<div class="mt-10 p-4 bg-void-black border border-outline-variant font-label-technical text-label-technical text-silver-technical opacity-60">
-<p>RENDER_ENGINE: NEURAL_PATH</p>
-<p>BUFFER_STATUS: STABLE</p>
-<p>RAY_COUNT: 1024_SPP</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
-<!-- Footer -->
-<footer class="bg-void-black flex justify-between items-center px-margin-desktop py-2 w-full fixed bottom-0 z-50 border-t border-outline-variant">
-<div class="flex gap-6">
-<span class="text-neon-acid font-label-caps text-label-caps">MERCADREAM_CORE</span>
-<div class="flex gap-4">
-<a class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-opacity" href="#">STABILITY_LOG</a>
-<a class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-opacity" href="#">NETWORK_STATUS</a>
-<a class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-opacity" href="#">API_DOCS</a>
-</div>
-</div>
-<p class="font-label-technical text-label-technical text-silver-technical">SYS_TELEMETRY: GPU_LOAD 84% | LATENCY 12ms | CLUSTERS_ACTIVE: 14</p>
+
+<footer class="bg-void-black flex justify-between items-center px-margin-desktop py-2 w-full fixed bottom-0 left-0 z-50 border-t border-outline-variant">
+    <div class="flex gap-6">
+        <span class="text-neon-acid font-label-caps text-label-caps">MERCADREAM_CORE</span>
+        <div class="flex gap-4">
+            <a class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-opacity" href="#">STABILITY_LOG</a>
+            <a class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-opacity" href="#">NETWORK_STATUS</a>
+            <a class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-opacity" href="#">API_DOCS</a>
+        </div>
+    </div>
+    <p class="font-label-technical text-label-technical text-silver-technical">SYS_TELEMETRY: GPU_LOAD 84% | LATENCY 12ms | CLUSTERS_ACTIVE: 14</p>
 </footer>
-<script src="/js/navigation.js"></script><script>
-var sf=null,preset="STUDIO",COST=30,angle=0;
-var uz=document.querySelector(".border-2.border-dashed");
-if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="image/*,video/mp4";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;var r=new FileReader();r.onload=function(ev){uz.innerHTML="<div style=\"padding:20px;text-align:center;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:11px\"> "+f.name.substring(0,30)+"</div>";};r.readAsDataURL(f);};i.click();};}
-document.querySelectorAll(".grid-cols-2 button").forEach(function(btn){btn.onclick=function(){preset=btn.querySelector(".font-label-caps").textContent.replace(/[\[\]]/g,"").trim();document.querySelectorAll(".grid-cols-2 button").forEach(function(b){b.style.borderColor="";b.style.background="";b.querySelector(".material-symbols-outlined").style.color="";b.querySelector(".font-label-caps").style.color="";});btn.style.borderColor="#c8ff00";btn.style.background="rgba(200,255,0,0.1)";btn.querySelector(".material-symbols-outlined").style.color="#c8ff00";btn.querySelector(".font-label-caps").style.color="#c8ff00";};});
-var compass=document.querySelector(".rounded-full.cursor-pointer");
-var angleDisplay=document.querySelector(".rounded-full span");
-if(compass){var dragging=false;compass.onmousedown=function(){dragging=true;};document.onmousemove=function(e){if(!dragging)return;var circle=compass.closest(".rounded-full");if(!circle)return;var rect=circle.getBoundingClientRect();var cx=rect.left+rect.width/2;var cy=rect.top+rect.height/2;angle=Math.round(Math.atan2(e.clientY-cy,e.clientX-cx)*180/Math.PI+90+360)%360;compass.style.transform="rotate("+angle+"deg) translateY(-50%)";if(angleDisplay)angleDisplay.textContent=angle+"°";};document.onmouseup=function(){dragging=false;};}
-var sliders=document.querySelectorAll("input[type=range]");var displays=document.querySelectorAll(".text-neon-acid.font-label-technical,.text-cyber-gold.font-label-technical");if(sliders[0])sliders[0].oninput=function(){if(displays[0])displays[0].textContent=parseFloat(this.value).toFixed(1);};if(sliders[1])sliders[1].oninput=function(){if(displays[1])displays[1].textContent=parseFloat(this.value).toFixed(1);};
-function go(){if(!sf){alert("Upload source file first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-relight");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=2;if(btn)btn.querySelector("span:last-child").textContent="PROCESSING... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.querySelector("span:last-child").textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},300);}
-window.addEventListener("load",function(){var btn=document.querySelector(".lg\\:col-span-5 button.bg-neon-acid,button.bg-neon-acid.w-full");if(btn){btn.id="btn-relight";btn.onclick=go;}var sb=document.querySelector("nav button.bg-neon-acid");if(sb){sb.id="btn-relight-nav";sb.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
-</script><script src="/js/pipeline.js"></script></body></html>
 
+<script src="/js/navigation.js"></script>
+<script>
+var sf = null, preset = "STUDIO", COST = 15, angle = 0;
 
+// 1. ميزة رفع الملف واستيراده
+var uploadZone = document.getElementById("upload-zone");
+if (uploadZone) {
+    uploadZone.onclick = function() {
+        var input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*,video/mp4,video/x-matroska,video/quicktime";
+        input.onchange = function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            sf = file;
+            uploadZone.innerHTML = "<div style='padding:10px; text-align:center; color:#c8ff00; font-family:IBM Plex Mono,monospace; font-size:12px; word-break:break-all;'><span class='material-symbols-outlined block mb-2'>check_circle</span> DATA PACKET LOADED:<br>" + file.name.substring(0, 25) + (file.name.length > 25 ? "..." : "") + "</div>";
+        };
+        input.click();
+    };
+}
 
+// 2. التحكم بتبديل الـ Presets عبر الـ Classes المستقرة
+document.querySelectorAll("#presets-container button").forEach(function(btn) {
+    btn.onclick = function() {
+        document.querySelectorAll("#presets-container button").forEach(function(b) {
+            b.classList.remove('preset-active');
+            b.classList.add('border-outline-variant', 'bg-void-black');
+            var icon = b.querySelector(".material-symbols-outlined");
+            var text = b.querySelector(".font-label-caps");
+            if (icon) icon.classList.add('text-silver-technical');
+            if (text) text.classList.add('text-on-surface');
+        });
+        btn.classList.add('preset-active');
+        btn.classList.remove('border-outline-variant', 'bg-void-black');
+        preset = btn.querySelector(".font-label-caps").textContent.replace(/[\[\]]/g, "").trim();
+    };
+});
+
+// 3. إصلاح عجلة اتجاه الإضاءة الدائرية (Light Direction Dial) بالماوس
+var dialContainer = document.getElementById("light-dial-container");
+var dialAxis = document.getElementById("dial-pointer-axis");
+var angleReadout = document.getElementById("angle-readout");
+if (dialContainer && dialAxis) {
+    var dragging = false;
+    function updateAngle(e) {
+        var rect = dialContainer.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        // حساب الزاوية وإضافة إزاحة 90 درجة ليطابق الصفر في الأعلى تماماً
+        angle = Math.round(Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI) + 90;
+        if (angle < 0) angle += 360;
+        angle = angle % 360;
+        
+        dialAxis.style.transform = "rotate(" + angle + "deg)";
+        if (angleReadout) angleReadout.textContent = angle + "°";
+    }
+    dialContainer.onmousedown = function(e) { dragging = true; updateAngle(e); };
+    document.addEventListener("mousemove", function(e) { if (dragging) updateAngle(e); });
+    document.addEventListener("mouseup", function() { dragging = false; });
+}
+
+// 4. إصلاح وتأمين منزلقات التحكم المستقلة وتحديث واجهاتها الرقمية
+var sliderIntensity = document.getElementById("slider-intensity");
+var intensityVal = document.getElementById("intensity-val");
+if (sliderIntensity && intensityVal) {
+    sliderIntensity.oninput = function() {
+        intensityVal.textContent = parseFloat(this.value).toFixed(1);
+    };
+}
+var sliderShadow = document.getElementById("slider-shadow");
+var shadowVal = document.getElementById("shadow-val");
+if (sliderShadow && shadowVal) {
+    sliderShadow.oninput = function() {
+        shadowVal.textContent = parseFloat(this.value).toFixed(1);
+    };
+}
+
+// 5. دالة معالجة الـ Render والـ Credits الخادعة (Simulated Processing Bar)
+function go() {
+    if (!sf) {
+        alert("Upload source file first.");
+        return;
+    }
+    var currentCredits = parseInt(localStorage.getItem("md_credits") || "2450");
+    if (currentCredits < COST) {
+        alert("Need " + COST + " credits.");
+        window.location.href = "pricing.html";
+        return;
+    }
+    
+    var btn = document.getElementById("btn-relight");
+    var btnText = btn ? btn.querySelector(".btn-text") : null;
+    if (btn && btnText) {
+        btn.disabled = true;
+        btn.style.background = "#8aad00";
+    }
+    
+    var progress = 0;
+    var interval = setInterval(function() {
+        progress += 2;
+        if (btnText) btnText.textContent = "PROCESSING... " + progress + "%";
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            localStorage.setItem("md_credits", currentCredits - COST);
+            updateCreditsUI(currentCredits - COST);
+            
+            if (btn && btnText) {
+                btn.disabled = false;
+                btn.style.background = "#c8ff00";
+                btnText.textContent = "COMPLETE // SEND TO ASSEMBLY";
+                btn.onclick = function() {
+                    window.location.href = "assembly.html";
+                };
+            }
+        }
+    }, 100);
+}
+
+function updateCreditsUI(val) {
+    var navDisplay = document.getElementById("nav-credits-display");
+    if (navDisplay) navDisplay.textContent = val.toLocaleString() + " CREDITS";
+}
+
+// 6. تحميل الأحداث والربط
+window.addEventListener("load", function() {
+    var btnRelight = document.getElementById("btn-relight");
+    if (btnRelight) btnRelight.onclick = go;
+    
+    var btnInitRender = document.getElementById("btn-init-render");
+    if (btnInitRender) btnInitRender.onclick = go;
+    
+    var btnBack = document.getElementById("btn-back");
+    if (btnBack) {
+        btnBack.onclick = function() {
+            window.location.href = "directors.html";
+        };
+    }
+    
+    var savedCredits = parseInt(localStorage.getItem("md_credits") || "2450");
+    updateCreditsUI(savedCredits);
+});
+</script>
+<script src="/js/pipeline.js"></script>
+</body>
+</html>
