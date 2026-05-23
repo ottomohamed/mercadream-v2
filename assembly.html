@@ -597,3 +597,20 @@ UPLOAD ASSET
     });
 </script>
 </body></html>
+
+<script>
+// ????? ??????? ??? ??????? ???? ????? ?????? ????? ?????? ??????? ???????
+async function generateScene(card, prompt) {
+    const img = card.querySelector('img');
+    if (img && img.src && !img.src.includes('unsplash.com')) {
+        const previewVideo = document.querySelector('video');
+        if (previewVideo) {
+            previewVideo.src = img.src;
+            previewVideo.classList.remove('hidden');
+            previewVideo.play();
+        }
+        return;
+    }
+    alert('Please generate and capture this scene concept inside the Studio (studio.html) first using the Director Protocol.');
+}
+</script>
