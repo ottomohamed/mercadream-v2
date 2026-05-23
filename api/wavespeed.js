@@ -1,57 +1,50 @@
-module.exports = async function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  if(req.method === "OPTIONS") return res.status(200).end();
+var KEY = process.env.WAVESPEED_KEY || process.env.WAVESPEED_API_KEY;
 
-  var KEY = process.env.WAVESPEED_KEY || process.env.WAVESPEED_API_KEY;
-  var body = req.body || {};
-  var action = body.action || req.query.action || "generate";
+export default async function handler(req, res) {
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    
+    var body = req.body || {};
+    
+    // ??? ??? ????? ????? ?? ??? ???? (Polling)
+    if (body.action === 'poll' || body.id) {
+        var pollId = body.id;
+        try {
+            var pr = await fetch("https://api.wavespeed.ai/api/v3/predictions/" + pollId, {
+                headers: { "Authorization": "Bearer " + KEY }
+            });
+            var pd = await pr.json();
+            return res.status(200).json({ status: pd.status, url: pd.output || pd.url });
+        } catch (e) {
+            return res.status(500).json({ error: e.message });
+        }
+    }
 
-  // Poll existing prediction
-  if(action === "poll") {
-    var pollId = body.id || req.query.id;
-    if(!pollId) return res.status(400).json({error:"No prediction ID"});
+    // ??? ??? ??? ????? ???? (Generation)
+    var promptText = body.prompt || "Cinematic masterpiece sequence";
     try {
-      var pr = await fetch("https://api.wavespeed.ai/api/v3/predictions/"+pollId, {
-        headers:{"Authorization":"Bearer "+KEY}
-      });
-      var pd = await pr.json();
-      var status = pd.data && pd.data.status;
-      var url = pd.data && pd.data.outputs && pd.data.outputs[0];
-      return res.json({status, url, id:pollId});
-    } catch(e) {
-      return res.status(500).json({error:e.message});
+        var r = await fetch("https://api.wavespeed.ai/api/v3/vidu/q3/text-to-video", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + KEY,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: promptText,
+                duration: body.duration || 5,
+                resolution: "720p",
+                aspect_ratio: "16:9"
+            })
+        });
+        var d = await r.json();
+        
+        // ????? ?????? ???? ??? ??????? ?? ???????? ??????
+        var jobId = d.id || d.task_id || (d.data ? d.data.id : null);
+        if (!jobId) {
+            return res.status(400).json({ error: "Failed to create generation task", details: d });
+        }
+        
+        return res.status(200).json({ id: jobId, status: "processing" });
+    } catch (e) {
+        return res.status(500).json({ error: e.message });
     }
-  }
-
-  // Generate new video
-  var prompt = body.prompt || req.query.prompt || "cinematic scene";
-  var duration = parseInt(body.duration || req.query.duration) || 5;
-
-  try {
-    var r = await fetch("https://api.wavespeed.ai/api/v3/vidu/q3/text-to-video", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer "+KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        prompt: prompt,
-        duration: duration,
-        resolution: "720p",
-        aspect_ratio: "16:9",
-        style: "cinematic",
-        generate_audio: false,
-        movement_amplitude: "auto"
-      })
-    });
-    var data = await r.json();
-    if(!data.data || !data.data.id) {
-      return res.json({error:"No prediction ID", raw:data});
-    }
-    res.json({id: data.data.id, status:"processing"});
-  } catch(e) {
-    res.status(500).json({error:e.message});
-  }
-};
+}

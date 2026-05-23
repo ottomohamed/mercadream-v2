@@ -458,7 +458,7 @@ UPLOAD ASSET
                         body: JSON.stringify({ action: 'poll', id: d.id })
                     });
                     const pd = await pr.json();
-                    if (pd.status === 'completed' && pd.url) {
+                    if (pd.status === 'completed') {
                         clearInterval(poll);
                         const newBal = current - 15;
                         localStorage.setItem('md_credits', newBal);
