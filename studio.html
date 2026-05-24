@@ -489,7 +489,7 @@ OPEN ASSEMBLY →
                 let attempts = 0;
                 const poll = setInterval(async () => {
                     attempts++;
-                    if (attempts > 60) {
+                    if (attempts > 40) {
                         clearInterval(poll);
                         appendBubble('>> TIMEOUT: Generation took too long.', 'bot', 'SYSTEM');
                         return;
@@ -506,6 +506,9 @@ OPEN ASSEMBLY →
 
                         addLogLine('POLL [' + attempts + ']: ' + status);
 
+                        // طباعة كاملة للـ response للـ debugging
+                        addLogLine('POLL DATA: ' + JSON.stringify({status, url: url ? url.substring(0,50) : 'NULL', pollData: JSON.stringify(pd).substring(0,100)}));
+                        
                         if ((status === 'completed' || status === 'succeeded') && url) {
                             clearInterval(poll);
 
@@ -567,12 +570,12 @@ OPEN ASSEMBLY →
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: 'Generate the next scene now.',
+                        message: 'Generate the next scene now. IMPORTANT: THE prompt FIELD IN YOUR JSON RESPONSE MUST BE WRITTEN IN ENGLISH LANGUAGE ONLY. No Arabic. No other language. English only for the prompt field.',
                         director: director,
                         contentType: contentTypeMap[director] || 'Film',
                         phase: 'director',
                         history: chatHistory,
-                        dreamBrief: dreamBrief
+                        dreamBrief: dreamBrief ? '[TRANSLATE TO ENGLISH FOR PROMPT FIELD] ' + dreamBrief : null
                     })
                 });
 
@@ -626,7 +629,7 @@ OPEN ASSEMBLY →
         let chatHistory = [];
         let currentPhaseState = 'screenwriter';
         let dreamBrief = null;
-        const contentTypeMap = { Drama: 'Film', Action: 'Film', Comedy: 'Film', Documentary: 'Documentary', Ads: 'Ads', Music: 'Music' }; // All use Film screenwriter for now
+        const contentTypeMap = { Drama: 'Film', Action: 'Film', Comedy: 'Film', Documentary: 'Documentary', Ads: 'Ads', Music: 'Music' };
 
         function appendBubble(text, role, label) {
             const chat = document.getElementById('chat-messages');

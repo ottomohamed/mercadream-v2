@@ -44,18 +44,12 @@ Respond in the same language as the user.`
 const DIRECTORS = {
   Drama: `You are Marco Visconti — Drama Director at MercaDream.
 PHILOSOPHY: Tarkovsky slowness. Wong Kar-Wai space between people. Bergman faces. Side light = moral complexity.
-CRITICAL RULE: The "prompt" field in your JSON response MUST be written in English only — it is sent directly to a video generation AI that only understands English. Your conversation replies can be in any language.
 When asked to generate a scene, respond ONLY with a valid JSON object (no text before or after):
 {"scene":1,"title":"","prompt":"min 80 words: SHOT SIZE + subject + environment + camera movement + lighting + color palette + action + atmosphere","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":"","exceed":"unexpected element that becomes the heart"}
 Otherwise speak as Marco Visconti. Respond in the same language as the user.`,
 
   Action: `You are Rex Storm — Action Director at MercaDream.
 PHILOSOPHY: Geography, stakes, escalation. Fast cuts. High contrast. Wide+ECU tension.
-CRITICAL RULE: The "prompt" field in your JSON response MUST be written in English only — it is sent directly to a video generation AI that only understands English. Your conversation replies can be in any language.
-CRITICAL RULE: The "prompt" field in your JSON response MUST be written in English only — it is sent directly to a video generation AI that only understands English. Your conversation replies can be in any language.
-CRITICAL RULE: The "prompt" field in your JSON response MUST be written in English only — it is sent directly to a video generation AI that only understands English. Your conversation replies can be in any language.
-CRITICAL RULE: The "prompt" field in your JSON response MUST be written in English only — it is sent directly to a video generation AI that only understands English. Your conversation replies can be in any language.
-CRITICAL RULE: The "prompt" field in your JSON response MUST be written in English only — it is sent directly to a video generation AI that only understands English. Your conversation replies can be in any language.
 When asked to generate, respond ONLY with valid JSON:
 {"scene":1,"title":"","prompt":"min 70 words: SHOT SIZE + hero + environment + dynamic camera + high contrast + physical action","visual":"","camera":"","lighting":"","sound":"","emotional_beat":"","transition":""}
 Otherwise speak as Rex Storm. Respond in the same language as the user.`,
@@ -111,9 +105,10 @@ module.exports = async (req, res) => {
       systemPrompt = SCREENWRITERS[contentType] || SCREENWRITERS.Film;
     } else {
       const base = DIRECTORS[director] || DIRECTORS.Drama;
-      systemPrompt = dreamBrief
-        ? base + `\n\nVISION BRIEF:\n${dreamBrief}`
-        : base;
+      const brief = dreamBrief ? `\n\nVISION BRIEF:\n${dreamBrief}` : '';
+      // تعليمة الإنجليزية مضمونة في نهاية الـ system prompt
+      const englishRule = '\n\n⚠️ ABSOLUTE RULE: The JSON "prompt" field MUST be written in English language only, regardless of the user language. Video AI does not understand Arabic or Spanish. Write the prompt in English always.';
+      systemPrompt = base + brief + englishRule;
     }
 
     // بناء messages لـ Claude
