@@ -19,25 +19,28 @@ module.exports = async function handler(req, res) {
     if (!pollId) return res.status(400).json({ error: 'No prediction ID' });
 
     try {
-      const pr = await fetch('https://api.wavespeed.ai/api/v3/predictions/' + pollId, {
+      // استخدام pollUrl إذا متوفر وإلا بناء الـ URL يدوياً
+      const pollUrl = body.pollUrl || ('https://api.wavespeed.ai/api/v3/predictions/' + pollId + '/result');
+      const pr = await fetch(pollUrl, {
         headers: { 'Authorization': 'Bearer ' + KEY }
       });
       const pd = await pr.json();
 
-      // WaveSpeed يُعيد البيانات داخل pd.data
       const data = pd.data || pd;
       const status = data.status || 'processing';
 
-      // الـ URL في outputs[0] أو url أو output
-      const url = (data.outputs && data.outputs[0])
+      // الـ URL في outputs[0]
+      const url = (data.outputs && data.outputs.length > 0 && data.outputs[0])
         || data.url
         || data.output
         || null;
 
-      // log للـ debugging
-      console.log('Poll response:', JSON.stringify({ status, url, raw_status: data.status }));
+      console.log('Poll response:', JSON.stringify({ status, url, outputs: data.outputs }));
 
-      return res.status(200).json({ status, url, id: pollId });
+      // WaveSpeed statuses: created → processing → succeeded/failed
+      const normalizedStatus = status === 'succeeded' ? 'completed' : status;
+
+      return res.status(200).json({ status: normalizedStatus, url, id: pollId });
 
     } catch (e) {
       return res.status(500).json({ error: e.message });
@@ -80,17 +83,14 @@ module.exports = async function handler(req, res) {
     console.log('Generate HTTP status:', r.status);
     console.log('Generate response FULL:', JSON.stringify(d));
 
-    // استخراج الـ ID من أي مكان محتمل
-    const jobId = (d.data && d.data.id)
-      || d.id
-      || d.task_id
-      || null;
+    const jobId = (d.data && d.data.id) || d.id || d.task_id || null;
+    const pollUrl = (d.data && d.data.urls && d.data.urls.get) || null;
 
     if (!jobId) {
       return res.status(400).json({ error: 'No job ID returned', raw: d });
     }
 
-    return res.status(200).json({ id: jobId, status: 'processing' });
+    return res.status(200).json({ id: jobId, pollUrl: pollUrl, status: 'processing' });
 
   } catch (e) {
     return res.status(500).json({ error: e.message });

@@ -453,12 +453,11 @@ OPEN ASSEMBLY →
             log.scrollTop = log.scrollHeight;
         }
 
-        // ── handleSceneGenerated: يرسل الـ prompt لـ WaveSpeed ──
+        // ── تعديل دالة الاستوديو المحدثة لإرسال البث لغرفة المونتاج ──
         async function handleSceneGenerated(scene, director) {
             const cost = costTable[director] || 12;
             if (credits < cost) {
                 appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
-                addLogLine('ERROR: INSUFFICIENT CREDITS');
                 return;
             }
 
@@ -467,7 +466,6 @@ OPEN ASSEMBLY →
             appendBubble('>> GENERATING VIDEO... please wait 30-60 seconds.', 'bot', 'SYSTEM');
 
             try {
-                // خطوة 1: إرسال الـ prompt لـ WaveSpeed
                 const genRes = await fetch('/api/wavespeed', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -477,43 +475,38 @@ OPEN ASSEMBLY →
 
                 if (genData.error || !genData.id) {
                     appendBubble('>> WAVESPEED ERROR: ' + (genData.error || 'No job ID'), 'bot', 'SYSTEM');
-                    addLogLine('WAVESPEED ERROR: ' + JSON.stringify(genData));
                     return;
                 }
 
                 const jobId = genData.id;
+                const pollUrl = genData.pollUrl || null;
                 addLogLine('JOB SUBMITTED: ' + jobId);
 
-                // خطوة 2: خصم الرصيد بعد نجاح الإرسال
                 credits -= cost;
                 localStorage.setItem('md_credits', credits);
                 updateCredits();
 
-                // خطوة 3: polling كل 3 ثوانٍ حتى الاكتمال
                 let attempts = 0;
-                const maxAttempts = 40;
-
                 const poll = setInterval(async () => {
                     attempts++;
-                    if (attempts > maxAttempts) {
+                    if (attempts > 40) {
                         clearInterval(poll);
-                        appendBubble('>> TIMEOUT: Video generation took too long.', 'bot', 'SYSTEM');
+                        appendBubble('>> TIMEOUT: Generation took too long.', 'bot', 'SYSTEM');
                         return;
                     }
-
                     try {
                         const pollRes = await fetch('/api/wavespeed', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'poll', id: jobId })
+                            body: JSON.stringify({ action: 'poll', id: jobId, pollUrl: pollUrl })
                         });
-                        const pollData = await pollRes.json();
-                        const status = pollData.status;
-                        const url = pollData.url || pollData.videoUrl;
+                        const pd = await pollRes.json();
+                        const status = pd.status;
+                        const url = pd.url;
 
-                        addLogLine('POLL [' + attempts + ']: ' + status + (url ? ' | URL: ' + url.substring(0,40) : ''));
+                        addLogLine('POLL [' + attempts + ']: ' + status);
 
-                        if (status === 'completed' && url) {
+                        if ((status === 'completed' || status === 'succeeded') && url) {
                             clearInterval(poll);
 
                             const sceneObj = {
@@ -532,17 +525,13 @@ OPEN ASSEMBLY →
                             const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
                             existing.push(sceneObj);
                             localStorage.setItem('md_6scenes', JSON.stringify(existing));
-
                             localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
                                 name: sceneObj.title.toUpperCase() + '.mp4',
                                 url: url,
                                 timestamp: Date.now()
                             }));
 
-                            const confirmMsg = '>> VIDEO READY: <strong>' + sceneObj.title + '</strong><br>'
-                                + '>> URL: ' + url.substring(0, 60) + '...<br>'
-                                + '>> COST: -' + cost + ' CR | SCENES: ' + existing.length;
-                            appendBubble(confirmMsg, 'bot', director.toUpperCase() + '-DIRECTOR');
+                            appendBubble('>> VIDEO READY: <strong>' + sceneObj.title + '</strong><br>>> SCENES: ' + existing.length, 'bot', director.toUpperCase() + '-DIRECTOR');
                             addLogLine('VIDEO READY: ' + url);
                             animatePipeline();
 
@@ -550,14 +539,11 @@ OPEN ASSEMBLY →
                             clearInterval(poll);
                             appendBubble('>> GENERATION FAILED. Try again.', 'bot', 'SYSTEM');
                         }
-                    } catch (pollErr) {
-                        addLogLine('POLL ERROR: ' + pollErr.message);
-                    }
+                    } catch(e) { addLogLine('POLL ERROR: ' + e.message); }
                 }, 3000);
 
             } catch (err) {
                 appendBubble('>> NETWORK ERROR: ' + err.message, 'bot', 'SYSTEM');
-                addLogLine('NETWORK ERROR: ' + err.message);
             }
         }
 
