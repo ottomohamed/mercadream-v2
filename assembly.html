@@ -1,398 +1,626 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html class="dark" dir="ltr" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>MERCADREAM Assembly - Master Assembly</title>
+    <title>NEON_CUT PRO | Ultimate Assembly Suite</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght=100..800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <style>
-        :root { --timeline-height: clamp(160px, 22vh, 240px); }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        body { height: 100vh; width: 100vw; overflow: hidden; background-color: #121509; color: #e2e4d1; }
-        .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(168, 215, 0, 0.03) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 100; }
-        .monitor-bracket { position: absolute; width: 20px; height: 20px; border-color: #c3f432; }
-        .crt-glow { text-shadow: 0 0 8px rgba(168, 215, 0, 0.5); }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c3f432; }
-        @keyframes scanning { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
-        .scan-line-anim { animation: scanning 2s linear infinite; }
-        
-        .razor-active .timeline-clip { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23c3f432" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="9.8" y1="8.5" x2="22" y2="14"></line><line x1="9.8" y1="15.5" x2="22" y2="10"></line></svg>') 0 10, pointer !important; }
-        
-        /* تأثير مرئي عند سحب كليب فوق مسار التايملاين */
-        .track-drag-over { background-color: rgba(195, 244, 50, 0.15) !important; border-color: #c3f432 !important; }
-    </style>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "surface-tint": "#a8d700", "tertiary-fixed": "#cae6ff", "on-error": "#690005", "tertiary-fixed-dim": "#aecae2", "inverse-on-surface": "#2f3225", "outline-variant": "#444934", "surface-bright": "#373b2d", "on-tertiary-container": "#4d677d", "on-primary-fixed": "#161f00", "primary-fixed": "#c3f432", "tertiary": "#ffffff", "surface-container-lowest": "#0c0f05", "primary-fixed-dim": "#a8d700", "on-tertiary": "#173346", "on-surface-variant": "#c4c9ae", "on-secondary": "#432c00", "tertiary-container": "#cae6ff", "surface-container": "#1e2115", "error": "#ffb4ab", "on-tertiary-fixed": "#001e2f", "surface-dim": "#121509", "on-primary-fixed-variant": "#3b4d00", "on-secondary-container": "#3e2800", "error-container": "#93000a", "on-secondary-fixed-variant": "#604100", "inverse-surface": "#e2e4d1", "surface-container-high": "#282b1f", "on-background": "#e2e4d1", "outline": "#8e937b", "secondary": "#ffba3f", "primary": "#ffffff", "surface-container-highest": "#333629", "surface": "#121509", "secondary-fixed-dim": "#ffba3f", "primary-container": "#c3f432", "on-error-container": "#ffdad6", "background": "#121509", "on-tertiary-fixed-variant": "#2f4a5e", "secondary-fixed": "#ffdeae", "secondary-container": "#c48800", "on-secondary-fixed": "#281900", "on-primary": "#273500", "on-surface": "#e2e4d1", "on-primary-container": "#546d00", "inverse-primary": "#4f6600", "surface-variant": "#333629", "surface-container-low": "#1a1d11"
+                        "outline-variant": "#444934",
+                        "primary-fixed-dim": "#a8d700",
+                        "background": "#051424",
+                        "on-surface-variant": "#c4c9ae",
+                        "primary": "#ffffff",
+                        "surface-variant": "#273647",
+                        "surface-container-low": "#0d1c2d",
+                        "surface-container-highest": "#273647",
+                        "surface-container-high": "#1c2b3c",
+                        "primary-container": "#c3f432",
+                        "on-primary-container": "#546d00",
+                        "surface": "#051424",
+                        "primary-fixed": "#c3f432",
+                        "on-surface": "#d4e4fa",
+                        "surface-container": "#122131"
                     },
-                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
-                    spacing: { "xs": "4px", "sm": "8px", "md": "16px", "xl": "32px", "panel-gap": "2px", "unit": "4px", "lg": "24px" },
-                    fontFamily: { "display-lg": ["Orbitron"], "label-technical": ["IBM Plex Mono"], "body-md": ["Inter"], "headline-sm": ["Orbitron"], "headline-md": ["Orbitron"], "body-lg": ["Inter"], "label-code": ["IBM Plex Mono"] },
-                    fontSize: { "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}], "label-technical": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}], "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}], "headline-sm": ["18px", {"lineHeight": "1.2", "fontWeight": "500"}], "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}], "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}], "label-code": ["11px", {"lineHeight": "1.4", "fontWeight": "400"}] }
+                    "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem" },
+                    "spacing": { "edge-margin": "16px", "timeline-track-height": "42px", "gutter": "8px", "panel-padding": "12px" },
+                    "fontFamily": { "display-lg": ["Sora"], "code-data": ["Space Mono"] }
                 }
             }
-        };
+        }
     </script>
+    <style>
+        body { background-color: #051424; color: #d4e4fa; font-family: 'Sora', sans-serif; }
+        .glass-panel { background: rgba(13, 28, 45, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(142, 147, 123, 0.2); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #051424; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #444934; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #c3f432; }
+        .timeline-clip:active { cursor: grabbing !important; }
+        .time-mark { position: absolute; font-size: 9px; font-family: 'Space Mono', monospace; color: #57657b; transform: translateX(-50%); top: 2px; }
+        .time-tick { position: absolute; width: 1px; height: 6px; background-color: rgba(142, 147, 123, 0.3); bottom: 0; }
+        #videoMonitorContainer video { transition: opacity 0.2s ease-in-out; }
+        .recording-active { animation: blink 1s infinite; color: #ef4444 !important; background-color: rgba(239, 68, 68, 0.15) !important; border-color: #ef4444 !important; }
+        @keyframes blink { 50% { opacity: 0.4; } }
+        #customContextMenu { z-index: 1000; display: none; }
+    </style>
 </head>
-<body class="flex flex-col h-screen overflow-hidden bg-background text-on-surface select-none">
-<div class="scanlines"></div>
+<body class="h-screen w-screen flex flex-col select-none overflow-hidden">
 
-<div id="context-menu" class="hidden absolute bg-surface-container-high border border-primary-container/40 text-on-surface shadow-[0_4px_20px_rgba(0,0,0,0.8)] z-[200] w-48 font-label-technical rounded py-1">
-    <button onclick="unlinkAudioFromContextMenu()" class="w-full text-left px-md py-sm hover:bg-primary-container hover:text-on-primary-container flex items-center gap-sm text-[11px]">
-        <span class="material-symbols-outlined text-[16px]">music_off</span> UNLINK / MUTE AUDIO
+<div id="customContextMenu" class="absolute bg-surface-container-high border border-outline-variant/60 shadow-2xl rounded p-1 w-44 text-xs font-code-data">
+    <button onclick="executeContextAction('delete')" class="w-full text-left px-3 py-1.5 hover:bg-red-900/40 hover:text-red-400 rounded flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">delete</span> Delete Clip
     </button>
-    <button onclick="deleteClipFromContextMenu()" class="w-full text-left px-md py-sm hover:bg-error-container hover:text-on-error-container flex items-center gap-sm text-[11px] border-t border-outline-variant/30 text-error">
-        <span class="material-symbols-outlined text-[16px]">delete</span> DELETE CLIP
+    <button onclick="executeContextAction('duplicate')" class="w-full text-left px-3 py-1.5 hover:bg-white/10 rounded flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">content_copy</span> Duplicate Clip
+    </button>
+    <div class="border-t border-outline-variant/30 my-1"></div>
+    <button onclick="executeContextAction('properties')" class="w-full text-left px-3 py-1.5 hover:bg-primary-fixed/20 hover:text-primary-fixed rounded flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">info</span> Info / Properties
     </button>
 </div>
 
-<header class="flex justify-between items-center w-full px-md h-16 z-50 bg-surface border-b border-outline-variant shadow-[0_0_12px_rgba(168,215,0,0.3)] flex-shrink-0">
-    <div class="flex items-center gap-md">
-        <span class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">MERCADREAM</span>
-        <a class="font-label-technical text-on-surface-variant hover:text-primary-container transition-colors flex items-center gap-xs" href="studio.html">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span> STUDIO
-        </a>
-        <div class="px-sm py-xs bg-surface-container-highest border border-primary-container/30 text-primary-container font-label-technical rounded-xs text-[10px] tracking-widest">
-            V.21.0 ASSEMBLY
-        </div>
-    </div>
-    <div class="flex items-center gap-lg">
-        <div class="flex items-center gap-md">
-            <div class="flex flex-col items-end">
-                <span class="font-label-technical text-[10px] text-on-surface-variant uppercase">Credits</span>
-                <span class="font-label-technical text-primary-container" id="credit-counter">2,450 CR</span>
+<header class="flex justify-between items-center w-full px-edge-margin h-12 flex-none z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30">
+    <div class="flex items-center gap-6">
+        <span class="font-display-lg text-sm font-bold text-primary-fixed uppercase tracking-widest">NEON_CUT PRO</span>
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-on-surface-variant font-code-data bg-surface-container px-2 py-1 rounded">Unified Assembly</span>
+            <div id="connectionStatus" class="flex items-center gap-1.5 text-[10px] text-emerald-400 bg-emerald-950/50 px-2 py-1 rounded border border-emerald-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE
             </div>
-        </div>
-        <div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
-            <img alt="User" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100"/>
+            <div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded border border-outline-variant/30 text-xs font-code-data">
+                <span class="material-symbols-outlined text-sm text-amber-400">toll</span>
+                <span id="editorCreditsDisplay">0</span> <span class="text-[9px] text-on-surface-variant">CRS</span>
+            </div>
         </div>
     </div>
 </header>
 
-<main class="flex flex-1 min-h-0 gap-panel-gap p-[2px]">
-    <aside class="w-[clamp(280px,20vw,340px)] flex flex-col bg-surface-container border-r border-outline-variant min-h-0">
-        <div class="p-md border-b border-outline-variant">
-            <div class="w-full py-sm bg-surface-container-highest border border-outline-variant text-center font-label-technical text-[10px] text-on-surface-variant">
-                DRAG READY ASSETS TO TIMELINE
+<div class="flex-1 flex overflow-hidden w-full">
+    
+    <aside class="w-60 glass-panel flex flex-col border-r border-outline-variant/20 flex-none overflow-hidden">
+        <div class="p-panel-padding border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-low/50">
+            <h3 class="font-code-data text-xs text-primary-fixed uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">video_library</span> Media Library
+            </h3>
+            <div class="flex items-center gap-2">
+                <label class="material-symbols-outlined text-base cursor-pointer hover:text-primary-fixed-dim" title="Import Video from PC">
+                    video_file
+                    <input type="file" id="pcVideoImporter" accept="video/*" class="hidden">
+                </label>
+                <label class="material-symbols-outlined text-base cursor-pointer hover:text-cyan-400" title="Import Audio from PC">
+                    audio_file
+                    <input type="file" id="pcAudioImporter" accept="audio/*" class="hidden">
+                </label>
             </div>
-        </div>
-        <div class="flex border-b border-outline-variant">
-            <button class="flex-1 py-sm font-label-technical text-primary-container border-b-2 border-primary-container bg-surface-variant/30" type="button">PRODUCTION suite</button>
         </div>
         
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-md grid grid-cols-2 gap-sm" id="assets-grid">
-            <div class="group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-grab active:cursor-grabbing transition-all rounded overflow-hidden" 
-                 draggable="true" 
-                 ondragstart="handleAssetDragStart(this, event)"
-                 data-video-url="https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-23146-large.mp4"
-                 data-title="LASER_PULSE_01.MP4">
-                <img class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=200"/>
-                <span class="absolute top-1 left-1 bg-primary-container text-on-primary-container font-label-technical text-[8px] px-1 rounded">READY</span>
-                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                    <span class="font-label-technical text-primary-container text-[10px] tracking-tighter">↔ DRAG ME</span>
-                </div>
+        <div id="assetContainer" class="flex-1 overflow-y-auto p-gutter custom-scrollbar space-y-3">
+            <div class="text-center py-12 text-xs text-on-surface-variant/40 font-code-data px-4" id="emptyLibraryMsg">
+                <span class="material-symbols-outlined text-2xl mb-2 block animate-pulse">downloading</span>
+                Library Empty.<br>Upload from PC or generate via Mercadream Studio.
             </div>
         </div>
     </aside>
 
-    <section class="flex-1 flex flex-col min-w-0 bg-surface">
-        <div class="flex-1 relative flex flex-col items-center justify-center p-lg overflow-hidden group">
-            <div class="w-full h-full max-w-4xl bg-black relative border border-surface-variant flex items-center justify-center shadow-2xl overflow-hidden">
-                <div class="monitor-bracket top-0 left-0 border-t-2 border-l-2"></div>
-                <div class="monitor-bracket top-0 right-0 border-t-2 border-r-2"></div>
-                <div class="monitor-bracket bottom-0 left-0 border-b-2 border-l-2"></div>
-                <div class="monitor-bracket bottom-0 right-0 border-b-2 border-r-2"></div>
-                
-                <img id="monitor-image" alt="Main Program Monitor" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800"/>
-                <video id="monitor-video" class="w-full h-full object-cover hidden" controls autoplay loop></video>
+    <main class="flex-1 flex flex-col bg-background relative overflow-hidden border-r border-outline-variant/10">
+        <div class="flex-1 p-gutter flex items-center justify-center relative bg-surface-container-lowest overflow-hidden">
+            <div id="videoMonitorContainer" class="w-full h-full max-w-4xl max-h-full aspect-video bg-black rounded-lg relative overflow-hidden border border-outline-variant/30 flex items-center justify-center">
+                <video id="mainVideoPlayer" class="absolute w-full h-full object-contain opacity-100" preload="auto" muted playsinline crossorigin="anonymous"></video>
+                <audio id="mainAudioTrack1" crossorigin="anonymous"></audio>
+                <audio id="mainAudioTrack2" crossorigin="anonymous"></audio>
 
-                <div class="absolute top-4 left-4 flex flex-col">
-                    <span class="font-label-technical text-primary-container crt-glow text-[14px]" id="real-timecode">00:00:14:23</span>
-                    <span class="font-label-technical text-[9px] text-on-surface-variant">4K // LIVE ASSEMBLY MODE</span>
+                <div id="textOverlayContainer" class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center transition-all">
+                    <span id="videoSubtitle" class="hidden font-bold px-4 py-2 rounded tracking-wide backdrop-blur-sm shadow-xl"></span>
+                </div>
+
+                <div class="absolute top-4 left-4 flex gap-2 z-10">
+                    <span class="bg-black/70 px-2 py-1 rounded text-xs font-code-data text-primary-fixed border border-primary-fixed/20" id="timecodeDisplay">00:00:00:00</span>
                 </div>
             </div>
         </div>
-
-        <div id="timeline-container" class="flex-none bg-surface-container border-t-2 border-outline-variant flex flex-col min-h-0" style="height: var(--timeline-height);">
-            <div class="h-10 px-md flex items-center justify-between border-b border-outline-variant bg-surface-container-high">
-                <div class="flex items-center gap-sm">
-                    <button id="tool-select" onclick="setTimelineTool('select')" class="p-1 text-primary-container bg-surface-variant border border-primary-container/30 transition-all rounded shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">near_me</span>
-                    </button>
-                    <button id="tool-razor" onclick="setTimelineTool('razor')" class="p-1 text-on-surface-variant hover:text-primary-container hover:bg-surface-variant border border-transparent transition-all rounded">
-                        <span class="material-symbols-outlined text-[18px]">content_cut</span>
-                    </button>
-                </div>
-                <div class="font-label-technical text-primary-container text-[10px]" id="tool-indicator">TOOL: SELECTION MODE</div>
-            </div>
+        
+        <div class="h-14 flex items-center justify-between px-8 bg-surface-container-low border-t border-outline-variant/20 flex-none">
+            <button id="micRecordBtn" class="w-9 h-9 rounded bg-surface-container-high border border-outline-variant/20 flex items-center justify-center text-on-surface hover:text-red-500 transition-colors" title="Record Live Voiceover">
+                <span class="material-symbols-outlined text-xl">mic</span>
+            </button>
             
-            <div class="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar relative bg-[#060606] p-md">
-                <div class="flex flex-col h-full space-y-md">
-                    <div id="v1-track-row" class="h-12 relative flex items-center border border-outline-variant/20 bg-surface-container-low/50 rounded transition-all"
-                         ondragover="handleTrackDragOver(event)"
-                         ondragleave="handleTrackDragLeave(event)"
-                         ondrop="handleTrackDrop(event)">
-                        <div class="absolute left-0 w-12 h-full bg-surface-container-high border-r border-outline-variant flex items-center justify-center font-label-technical text-[10px] z-30 shadow-md">V1</div>
-                        
-                        <div id="v1-track-container" class="ml-14 flex gap-xs h-full items-center relative w-full">
-                            </div>
-                    </div>
-                    
-                    <div class="h-10 relative flex items-center border border-outline-variant/20 bg-surface-container-low/50 rounded">
-                        <div class="absolute left-0 w-12 h-full bg-surface-container-high border-r border-outline-variant flex items-center justify-center font-label-technical text-[10px] z-30">A1</div>
-                        <div id="a1-track-container" class="ml-14 flex gap-xs h-full items-center w-full">
-                            <div id="audio-track-bar" class="w-0 bg-secondary/20 border border-secondary/40 h-1/2 rounded transition-all"></div>
-                        </div>
-                    </div>
+            <button class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container active:scale-95 transition-all shadow-lg" id="playBtn">
+                <span class="material-symbols-outlined" style="font-size: 26px; font-variation-settings: 'FILL' 1;">play_arrow</span>
+            </button>
+            
+            <button id="fullscreenBtn" class="w-9 h-9 rounded bg-surface-container-high border border-outline-variant/20 flex items-center justify-center text-on-surface hover:text-primary-fixed transition-colors" title="Toggle Fullscreen">
+                <span class="material-symbols-outlined text-xl">fullscreen</span>
+            </button>
+        </div>
+    </main>
+
+    <aside class="w-66 glass-panel flex flex-col flex-none overflow-hidden bg-surface-container-low/40">
+        <div class="p-panel-padding border-b border-outline-variant/30 bg-surface-container-high/30">
+            <h3 class="font-code-data text-xs text-purple-400 font-bold uppercase tracking-wider flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">text_fields</span> Text Designer
+            </h3>
+        </div>
+        
+        <div class="p-3 space-y-3 text-xs border-b border-outline-variant/20">
+            <textarea id="textPanelInput" rows="2" class="w-full bg-surface border border-outline-variant/40 rounded p-1.5 text-white focus:border-purple-500 focus:ring-0 text-xs" placeholder="Type overlay text..."></textarea>
+            <button id="insertTextToTimelineBtn" class="w-full py-1.5 rounded bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all text-xs">
+                Add Text Track
+            </button>
+        </div>
+
+        <div class="p-panel-padding border-b border-outline-variant/30 bg-surface-container-high/60">
+            <h3 class="font-code-data text-xs text-primary-fixed font-bold uppercase tracking-wider flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">download_for_offline</span> Export Video
+            </h3>
+        </div>
+        <div class="p-4 flex-grow flex flex-col justify-end text-xs">
+            <button id="startExportBtn" class="w-full py-3 rounded bg-primary-fixed hover:bg-lime-400 text-on-surface-container font-bold transition-all text-[11px] uppercase tracking-wider">
+                Render Master Sequence
+            </button>
+        </div>
+    </aside>
+</div>
+
+<footer class="h-72 glass-panel border-t border-outline-variant/40 flex flex-col flex-none z-50 overflow-hidden">
+    <div class="h-9 bg-surface-container-low border-b border-outline-variant/20 flex items-center px-edge-margin justify-between flex-none">
+        <div class="flex items-center gap-2">
+            <span class="font-code-data text-[10px] text-on-surface-variant tracking-widest">5-TRACK SEQUENCE EDITOR</span>
+            <button id="zoomOutBtn" class="w-5 h-5 rounded bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface hover:border-primary-fixed font-bold text-xs">-</button>
+            <button id="zoomInBtn" class="w-5 h-5 rounded bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface hover:border-primary-fixed font-bold text-xs">+</button>
+        </div>
+        <span class="text-primary-fixed text-xs font-code-data" id="timelineCurrentTime">00:00:00:00</span>
+    </div>
+    
+    <div class="flex-1 flex overflow-hidden relative" id="timelineArea">
+        <div class="sticky left-0 top-0 h-full w-14 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col pt-7 z-40 text-[9px] font-code-data text-center text-on-surface-variant">
+            <div class="h-timeline-track-height flex items-center justify-center border-b border-outline-variant/10 font-bold bg-white/5">V1</div>
+            <div class="h-timeline-track-height flex items-center justify-center border-b border-outline-variant/10 font-bold bg-white/5">V2</div>
+            <div class="h-timeline-track-height flex items-center justify-center border-b border-outline-variant/10 font-bold bg-cyan-500/10 text-cyan-400">A1</div>
+            <div class="h-timeline-track-height flex items-center justify-center border-b border-outline-variant/10 font-bold bg-red-500/10 text-red-400">A2</div>
+            <div class="h-timeline-track-height flex items-center justify-center border-b border-outline-variant/10 font-bold bg-purple-500/10 text-purple-400">T1</div>
+        </div>
+        
+        <div class="flex-1 overflow-auto custom-scrollbar relative bg-surface-container-low/10" id="trackScrollContainer">
+            <div class="relative h-full" style="width: 5000px;" id="trackCanvas">
+                <div class="h-7 w-full border-b border-outline-variant/20 bg-surface-container-low/50 relative" id="timeRuler"></div>
+                <div class="absolute top-0 bottom-0 w-[1px] bg-yellow-400 z-30 pointer-events-none" style="left: 0px;" id="playhead">
+                    <div class="absolute top-0 -left-[6px] w-3 h-3 bg-yellow-400 rounded-b-full cursor-ew-resize pointer-events-auto"></div>
+                </div>
+                
+                <div class="flex flex-col w-full pt-0">
+                    <div class="h-timeline-track-height border-b border-outline-variant/10 w-full hover:bg-white/5 relative" data-track-type="video" id="v1Track"></div>
+                    <div class="h-timeline-track-height border-b border-outline-variant/10 w-full hover:bg-white/5 relative" data-track-type="video" id="v2Track"></div>
+                    <div class="h-timeline-track-height border-b border-outline-variant/10 w-full hover:bg-cyan-500/5 relative" data-track-type="audio" id="a1Track"></div>
+                    <div class="h-timeline-track-height border-b border-outline-variant/10 w-full hover:bg-red-500/5 relative" data-track-type="audio" id="a2Track"></div>
+                    <div class="h-timeline-track-height border-b border-outline-variant/10 w-full hover:bg-purple-500/5 relative" data-track-type="text" id="t1Track"></div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <aside class="w-[280px] flex flex-col bg-surface-container border-l border-outline-variant min-h-0">
-        <div class="p-md font-headline-sm border-b border-outline-variant flex items-center justify-between">
-            CONSOLE <span class="material-symbols-outlined text-primary-container">terminal</span>
-        </div>
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-md font-label-code text-[11px]">
-            <div id="log-console" class="text-on-surface-variant/70 space-y-xs">
-                <div>[16:53:00] DRAG & DROP PIPELINE ATTACHED.</div>
-                <span class="text-primary-container">[READY] Grab any media card from the left panel and drop it into V1 track.</span>
-            </div>
-        </div>
-    </aside>
-</main>
+    </div>
+</footer>
 
 <script>
-    const STORAGE_KEY = 'md_credits';
-    const SCENES_STORAGE_KEY = 'md_6scenes';
-    let activeTool = 'select';
-    let selectedClipElement = null;
+    let pixelsPerSecond = 100; 
+    let globalTime = 0;
+    let isPlaying = false;
+    let isScrubbing = false;
+    let animationFrameId = null;
 
-    // عداد الوقت التلقائي للسينما (Timecode)
-    let frames = 23, seconds = 14, minutes = 0, hours = 0;
-    setInterval(() => {
-        frames++; if (frames >= 24) { frames = 0; seconds++; }
-        if (seconds >= 60) { seconds = 0; minutes++; }
-        document.getElementById('real-timecode').innerText = [hours, minutes, seconds, frames].map(v => v.toString().padStart(2, '0')).join(':');
-    }, 41.67);
+    // عناصر الواجهة الأساسية
+    const assetContainer = document.getElementById('assetContainer');
+    const emptyLibraryMsg = document.getElementById('emptyLibraryMsg');
+    const mainVideoPlayer = document.getElementById('mainVideoPlayer');
+    const mainAudioTrack1 = document.getElementById('mainAudioTrack1');
+    const mainAudioTrack2 = document.getElementById('mainAudioTrack2');
+    const videoSubtitle = document.getElementById('videoSubtitle');
+    const connectionStatus = document.getElementById('connectionStatus');
+    const editorCreditsDisplay = document.getElementById('editorCreditsDisplay');
+    const playBtn = document.getElementById('playBtn');
+    const playhead = document.getElementById('playhead');
+    const timecodeDisplay = document.getElementById('timecodeDisplay');
+    const timelineCurrentTime = document.getElementById('timelineCurrentTime');
+    const timeRuler = document.getElementById('timeRuler');
+    const trackScrollContainer = document.getElementById('trackScrollContainer');
+    const micRecordBtn = document.getElementById('micRecordBtn');
+    const customContextMenu = document.getElementById('customContextMenu');
+    const textPanelInput = document.getElementById('textPanelInput');
+    const insertTextToTimelineBtn = document.getElementById('insertTextToTimelineBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-    // ── 1. منطق السحب (Drag) من القائمة اليسرى ──
-    function handleAssetDragStart(card, event) {
-        const videoUrl = card.dataset.videoUrl;
-        const title = card.dataset.title || "UNTITLED_CLIP.MP4";
-        
-        if (!videoUrl) {
-            event.preventDefault();
-            alert("This asset is not rendered yet! Generate it first.");
-            return;
-        }
-        
-        // تمرير البيانات عبر حزمة بيانات الـ Drag event
-        event.dataTransfer.setData("text/plain", JSON.stringify({ videoUrl, title }));
-        addLog(`[DRAG] Started dragging asset: ${title}`);
+    const pcVideoImporter = document.getElementById('pcVideoImporter');
+    const pcAudioImporter = document.getElementById('pcAudioImporter');
+
+    const v1Track = document.getElementById('v1Track');
+    const v2Track = document.getElementById('v2Track');
+    const a1Track = document.getElementById('a1Track');
+    const a2Track = document.getElementById('a2Track');
+    const t1Track = document.getElementById('t1Track');
+
+    let rightClickedClip = null; // يحفظ المقطع المستهدف من القائمة الجانبية المخصصة
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecordingVoice = false;
+
+    // ==========================================
+    // ⚙️ نظام مزامنة الرصيد
+    // ==========================================
+    function syncUserCredits() {
+        let currentCredits = parseInt(localStorage.getItem('md_credits')) || 1000;
+        editorCreditsDisplay.textContent = currentCredits.toLocaleString();
+        return currentCredits;
     }
 
-    // ── 2. منطق حركة السحب فوق التايملاين (Over/Leave) ──
-    function handleTrackDragOver(event) {
-        event.preventDefault(); // ضروري للسماح بالإفلات
-        document.getElementById('v1-track-row').classList.add('track-drag-over');
-    }
+    // ==========================================
+    // 💥 الاستماع الفوري لعمليات توليد الفيديوهات (AI)
+    // ==========================================
+    let lastTrackedTimestamp = 0;
 
-    function handleTrackDragLeave(event) {
-        document.getElementById('v1-track-row').classList.remove('track-drag-over');
-    }
-
-    // ── 3. منطق الإفلات الحقيقي (Drop & Append) ──
-    function handleTrackDrop(event) {
-        event.preventDefault();
-        const trackRow = document.getElementById('v1-track-row');
-        trackRow.classList.remove('track-drag-over');
-
+    function checkActiveStudioStream() {
         try {
-            const rawData = event.dataTransfer.getData("text/plain");
-            if (!rawData) return;
-            const data = JSON.parse(rawData);
-
-            // إنشاء كليب برمجياً داخل التايملاين بدقة
-            createClipInTimeline(data.videoUrl, data.title);
-        } catch (e) {
-            console.error("Drop layout error:", e);
-        }
-    }
-
-    // بناء الكليب هندسياً داخل مسار العمل التفاعلي
-    function createClipInTimeline(videoUrl, title) {
-        const container = document.getElementById('v1-track-container');
-        const uniqueId = "clip_" + Date.now();
-
-        const clip = document.createElement('div');
-        clip.className = "timeline-clip w-56 bg-primary-container/20 border-2 border-primary-container flex flex-col justify-center px-4 font-label-technical text-primary-container text-[10px] h-[85%] relative overflow-hidden rounded transition-all group animate-fade-in";
-        clip.setAttribute('data-clip-id', uniqueId);
-        clip.setAttribute('data-source-video', videoUrl);
-        
-        // ربط الأحداث بالكليب الجديد ديناميكياً
-        clip.onclick = (e) => handleClipClick(clip, e);
-        clip.oncontextmenu = (e) => showContextMenu(clip, e);
-
-        clip.innerHTML = `
-            <span class="font-bold block truncate clip-title">${title}</span>
-            <span class="text-[8px] text-on-surface-variant block clip-duration">DURATION: 100%</span>
-        `;
-
-        container.appendChild(clip);
-        
-        // مزامنة تراك الصوت تلقائياً ليعطي إيحاء واقعي بالارتباط الاحترافي
-        const audioBar = document.getElementById('audio-track-bar');
-        if (audioBar) audioBar.className = "w-56 bg-secondary/20 border border-secondary/60 h-1/2 rounded transition-all";
-
-        addLog(`[TIMELINE] Successfully dropped and integrated: ${title}`);
-    }
-
-    // ── 4. أدوات المونتاج (المقص والقطع) ──
-    function setTimelineTool(tool) {
-        activeTool = tool;
-        const container = document.getElementById('timeline-container');
-        const indicator = document.getElementById('tool-indicator');
-        
-        document.getElementById('tool-select').className = "p-1 text-on-surface-variant hover:text-primary-container hover:bg-surface-variant border border-transparent transition-all rounded";
-        document.getElementById('tool-razor').className = "p-1 text-on-surface-variant hover:text-primary-container hover:bg-surface-variant border border-transparent transition-all rounded";
-
-        if (tool === 'razor') {
-            document.getElementById('tool-razor').className = "p-1 text-primary-container bg-surface-variant border border-primary-container/30 transition-all rounded shadow-sm";
-            container.classList.add('razor-active');
-            indicator.innerText = "TOOL: RAZOR (CUT ON CLICK)";
-            addLog("[TOOL] Razor Tool Activated. Click on any timeline clip to slice it.");
-        } else {
-            document.getElementById('tool-select').className = "p-1 text-primary-container bg-surface-variant border border-primary-container/30 transition-all rounded shadow-sm";
-            container.classList.remove('razor-active');
-            indicator.innerText = "TOOL: SELECTION MODE";
-        }
-    }
-
-    function handleClipClick(clip, event) {
-        if (activeTool === 'razor') {
-            event.stopPropagation();
-            splitClip(clip, event);
-        } else {
-            const videoUrl = clip.dataset.sourceVideo;
-            const monitorImg = document.getElementById('monitor-image');
-            const monitorVid = document.getElementById('monitor-video');
-            
-            if (videoUrl) {
-                monitorImg.classList.add('hidden');
-                monitorVid.src = videoUrl;
-                monitorVid.classList.remove('hidden');
-                monitorVid.play();
-                addLog(`[PLAYBACK] Live preview: ${clip.querySelector('.clip-title').innerText}`);
-            }
-        }
-    }
-
-    function splitClip(clip, event) {
-        const rect = clip.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        const totalWidth = rect.width;
-        
-        if (clickX < 15 || clickX > totalWidth - 15) return;
-
-        const ratio = clickX / totalWidth;
-        const currentWidth = clip.offsetWidth;
-
-        clip.style.width = `${clickX}px`;
-        clip.querySelector('.clip-duration').innerText = `PART A (${Math.round(ratio * 100)}%)`;
-
-        const newClip = clip.cloneNode(true);
-        newClip.style.width = `${currentWidth - clickX}px`;
-        newClip.querySelector('.clip-duration').innerText = `PART B (${Math.round((1 - ratio) * 100)}%)`;
-        newClip.classList.remove('border-primary-container');
-        newClip.classList.add('border-secondary');
-
-        newClip.onclick = (e) => handleClipClick(newClip, e);
-        newClip.oncontextmenu = (e) => showContextMenu(newClip, e);
-
-        clip.parentNode.insertBefore(newClip, clip.nextSibling);
-        addLog(`[RAZOR] Clip divided into two chunks at ${Math.round(ratio * 100)}% marker.`);
-        setTimelineTool('select');
-    }
-
-    // ── 5. القائمة المخصصة لزر الفأر الأيمن (Context Menu) ──
-    function showContextMenu(clip, event) {
-        event.preventDefault();
-        event.stopPropagation();
-        selectedClipElement = clip;
-
-        const menu = document.getElementById('context-menu');
-        menu.style.top = `${event.clientY}px`;
-        menu.style.left = `${event.clientX}px`;
-        menu.classList.remove('hidden');
-    }
-
-    document.addEventListener('click', () => { document.getElementById('context-menu').classList.add('hidden'); });
-
-    function unlinkAudioFromContextMenu() {
-        if (!selectedClipElement) return;
-        document.getElementById('monitor-video').muted = true;
-        const audioBar = document.getElementById('audio-track-bar');
-        if (audioBar) audioBar.className = "w-full bg-error/10 border border-error/40 h-1/2 rounded relative after:content-['MUTED'] after:absolute after:right-2 after:text-[8px] after:text-error";
-        addLog(`[AUDIO] Track Muted/Separated for chosen clip.`);
-    }
-
-    function deleteClipFromContextMenu() {
-        if (!selectedClipElement) return;
-        addLog(`[TIMELINE] Erased clip: ${selectedClipElement.querySelector('.clip-title').innerText}`);
-        selectedClipElement.remove();
-        selectedClipElement = null;
-    }
-
-    // ── 6. جلب وربط المشاهد المكتملة من الاستوديو ──
-    function populateAssetsFromStorage() {
-        const storedScenesRaw = localStorage.getItem(SCENES_STORAGE_KEY);
-        const grid = document.getElementById('assets-grid');
-        if (!grid || !storedScenesRaw) return;
-        try {
-            const scenes = JSON.parse(storedScenesRaw);
-            if (!Array.isArray(scenes)) return;
-            
-            scenes.forEach((scene, index) => {
-                if (scene.videoUrl) { // نعرض فقط المشاهد التي تم رندرتها وتوليدها بنجاح
-                    const card = document.createElement('div');
-                    card.className = "group relative aspect-video bg-surface-container-highest border border-outline-variant hover:border-primary-container cursor-grab active:cursor-grabbing transition-all rounded overflow-hidden";
-                    card.setAttribute('draggable', 'true');
-                    card.setAttribute('data-video-url', scene.videoUrl);
-                    card.setAttribute('data-title', `STUDIO_SCENE_${index + 1}.MP4`);
+            const rawStream = localStorage.getItem('NEURA_ACTIVE_STREAM');
+            if (rawStream) {
+                const streamData = JSON.parse(rawStream);
+                if (streamData.timestamp && streamData.timestamp > lastTrackedTimestamp) {
+                    lastTrackedTimestamp = streamData.timestamp;
                     
-                    card.ondragstart = (e) => handleAssetDragStart(card, e);
-
-                    card.innerHTML = `
-                        <img class="w-full h-full object-cover opacity-70 group-hover:opacity-100" src="${scene.thumbnail || scene.image}"/>
-                        <span class="absolute top-1 left-1 bg-surface-tint text-background font-label-technical text-[8px] px-1 rounded">RENDERED</span>
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                            <span class="font-label-technical text-primary-container text-[10px]">↔ DRAG TO V1</span>
-                        </div>
-                    `;
-                    grid.appendChild(card);
+                    // الخصم الحقيقي يتم التحقق منه ومزامنته هنا فور استقبال البث
+                    syncUserCredits();
+                    handleMediaImport(streamData.url, 'video', streamData.name, true);
+                    
+                    connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce"></span> AI CLIP INGESTED! CREDITS SYNCED`;
+                    setTimeout(() => {
+                        connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE`;
+                    }, 4000);
                 }
-            });
-        } catch (e) { console.error("Error populating storage assets:", e); }
+            }
+        } catch (e) { console.error(e); }
     }
 
-    function addLog(text) {
-        const consoleLog = document.getElementById('log-console');
-        const time = new Date().toTimeString().split(' ')[0];
-        consoleLog.innerHTML += `<div>[${time}] ${text}</div>`;
-        consoleLog.scrollTop = consoleLog.scrollHeight;
+    window.addEventListener('load', () => {
+        syncUserCredits();
+        checkActiveStudioStream();
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'NEURA_ACTIVE_STREAM') checkActiveStudioStream();
+            if (e.key === 'md_credits') syncUserCredits();
+        });
+    });
+
+    // ==========================================
+    // 🎤 محرك تسجيل الصوت المباشر (Microphone Core)
+    // ==========================================
+    micRecordBtn.addEventListener('click', async () => {
+        if (!isRecordingVoice) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioURL = URL.createObjectURL(audioBlob);
+                    
+                    // حساب مدة التسجيل الصوتي بدقة لحقنه فوراً في التايم لاين
+                    const tempAudio = new Audio(audioURL);
+                    tempAudio.onloadedmetadata = () => {
+                        const recDuration = tempAudio.duration || 5;
+                        // حقن الملف الصوتي المسجل مباشرة في مسار التايم لاين A2 المخصص للتعليق الصوتي عند موضع البلاي هيد الحالي
+                        createClipOnTrack(a2Track, audioURL, "Live Voiceover.wav", 'audio', recDuration, globalTime);
+                    };
+                };
+
+                mediaRecorder.start();
+                isRecordingVoice = true;
+                micRecordBtn.classList.add('recording-active');
+                micRecordBtn.title = "Stop Recording Voiceover";
+            } catch (err) {
+                alert("تعذر الوصول إلى الميكروفون: تأكد من منح الصلاحيات للمتصفح.");
+            }
+        } else {
+            mediaRecorder.stop();
+            isRecordingVoice = false;
+            micRecordBtn.classList.remove('recording-active');
+            micRecordBtn.title = "Record Live Voiceover";
+        }
+    });
+
+    // ==========================================
+    // 🖱️ نظام القائمة البرمجية المخصصة عند النقر بالزر الأيمن
+    // ==========================================
+    window.addEventListener('contextmenu', (e) => {
+        const targetClip = e.target.closest('.timeline-clip');
+        if (targetClip) {
+            e.preventDefault();
+            rightClickedClip = targetClip;
+            customContextMenu.style.display = 'block';
+            customContextMenu.style.left = `${e.clientX}px`;
+            customContextMenu.style.top = `${e.clientY}px`;
+        } else {
+            customContextMenu.style.display = 'none';
+        }
+    });
+
+    window.addEventListener('click', () => { customContextMenu.style.display = 'none'; });
+
+    function executeContextAction(action) {
+        if (!rightClickedClip) return;
+        
+        if (action === 'delete') {
+            rightClickedClip.remove();
+            updateEngine();
+        } else if (action === 'duplicate') {
+            const track = rightClickedClip.parentElement;
+            const newStart = parseFloat(rightClickedClip.dataset.startSeconds) + parseFloat(rightClickedClip.dataset.duration);
+            createClipOnTrack(
+                track, 
+                rightClickedClip.dataset.src, 
+                rightClickedClip.dataset.textValue + " (Copy)", 
+                rightClickedClip.dataset.type, 
+                parseFloat(rightClickedClip.dataset.duration), 
+                newStart
+            );
+        } else if (action === 'properties') {
+            alert(`Clip Details:\nName: ${rightClickedClip.dataset.textValue}\nDuration: ${parseFloat(rightClickedClip.dataset.duration).toFixed(2)}s\nStart Time: ${parseFloat(rightClickedClip.dataset.startSeconds).toFixed(2)}s`);
+        }
+        customContextMenu.style.display = 'none';
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        populateAssetsFromStorage();
+    // ==========================================
+    // 📂 استقبال ورفع الملفات المحلية (PC Importers)
+    // ==========================================
+    pcVideoImporter.addEventListener('change', (e) => {
+        if(e.target.files.length > 0) {
+            const file = e.target.files[0];
+            handleMediaImport(URL.createObjectURL(file), 'video', file.name, false);
+        }
+    });
+
+    pcAudioImporter.addEventListener('change', (e) => {
+        if(e.target.files.length > 0) {
+            const file = e.target.files[0];
+            handleMediaImport(URL.createObjectURL(file), 'audio', file.name, false);
+        }
+    });
+
+    function handleMediaImport(mediaURL, type, fileName, isAI = false) {
+        if (emptyLibraryMsg) emptyLibraryMsg.remove();
+
+        const assetCard = document.createElement('div');
+        assetCard.className = `group relative aspect-video bg-black rounded border transition-all cursor-grab overflow-hidden ${type === 'audio' ? 'border-cyan-500/30 hover:border-cyan-400' : 'border-outline-variant/40 hover:border-primary-fixed-dim'}`;
+        assetCard.draggable = true;
+        
+        if(type === 'video') {
+            assetCard.innerHTML = `
+                <video src="${mediaURL}" class="w-full h-full object-cover opacity-60 pointer-events-none" crossorigin="anonymous"></video>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none flex items-end p-1.5">
+                    <span class="font-code-data text-[9px] text-on-surface truncate w-full">${fileName}</span>
+                </div>
+                <div class="absolute top-1 left-1 ${isAI ? 'bg-amber-500 text-black' : 'bg-slate-700 text-white'} text-[8px] font-bold px-1 rounded">${isAI ? 'AI ⚡' : 'PC'}</div>
+                <div class="absolute bottom-1 right-1 font-code-data text-[8px] text-primary-fixed-dim" id="card-dur">..s</div>
+            `;
+        } else {
+            assetCard.innerHTML = `
+                <div class="w-full h-full flex flex-col items-center justify-center bg-cyan-950/40 text-cyan-400">
+                    <span class="material-symbols-outlined text-xl">audiotrack</span>
+                    <span class="font-code-data text-[8px] mt-1 text-slate-400 truncate max-w-[100px] px-1">${fileName}</span>
+                </div>
+                <div class="absolute top-1 left-1 bg-slate-700 text-white text-[8px] font-bold px-1 rounded">PC</div>
+                <div class="absolute bottom-1 right-1 font-code-data text-[8px] text-cyan-400" id="card-dur">..s</div>
+            `;
+        }
+
+        const tempMedia = document.createElement(type === 'video' ? 'video' : 'audio');
+        tempMedia.src = mediaURL;
+        tempMedia.onloadedmetadata = () => {
+            const calculatedDuration = tempMedia.duration || 10;
+            assetCard.dataset.duration = calculatedDuration;
+            assetCard.querySelector('#card-dur').textContent = Math.floor(calculatedDuration) + "s";
+        };
+
+        assetCard.addEventListener('dragstart', (evt) => {
+            window.currentDraggedSrc = mediaURL;
+            window.currentDraggedName = fileName;
+            window.currentDraggedType = type;
+            window.currentDraggedDuration = parseFloat(assetCard.dataset.duration) || 10;
+        });
+
+        assetContainer.insertBefore(assetCard, assetContainer.firstChild);
+    }
+
+    // ==========================================
+    // 🧱 بناء شبكة التايم لاين والتحكم بالنطاق (Zoom & Tracks)
+    // ==========================================
+    function buildRuler() {
+        timeRuler.innerHTML = '';
+        for (let i = 0; i < 150; i++) {
+            const mark = document.createElement('div'); mark.className = 'time-mark';
+            mark.style.left = `${i * pixelsPerSecond}px`; mark.textContent = `${i}s`;
+            const tick = document.createElement('div'); tick.className = 'time-tick';
+            tick.style.left = `${i * pixelsPerSecond}px`;
+            timeRuler.appendChild(mark); timeRuler.appendChild(tick);
+        }
+    }
+    buildRuler();
+
+    document.getElementById('zoomInBtn').addEventListener('click', () => { pixelsPerSecond = Math.min(pixelsPerSecond + 20, 200); buildRuler(); updateClipsPosition(); });
+    document.getElementById('zoomOutBtn').addEventListener('click', () => { pixelsPerSecond = Math.max(pixelsPerSecond - 20, 50); buildRuler(); updateClipsPosition(); });
+
+    function updateClipsPosition() {
+        document.querySelectorAll('.timeline-clip').forEach(clip => {
+            const start = parseFloat(clip.dataset.startSeconds);
+            const duration = parseFloat(clip.dataset.duration);
+            clip.style.left = `${start * pixelsPerSecond}px`;
+            clip.style.width = `${duration * pixelsPerSecond}px`;
+        });
+        playhead.style.left = `${globalTime * pixelsPerSecond}px`;
+    }
+
+    // إعداد مسارات السحب والإفلات
+    [v1Track, v2Track, a1Track, a2Track, t1Track].forEach(track => {
+        track.addEventListener('dragover', (e) => { e.preventDefault(); });
+        track.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const src = window.currentDraggedSrc;
+            const name = window.currentDraggedName;
+            const type = window.currentDraggedType;
+            const duration = window.currentDraggedDuration || 10;
+            if (src && track.dataset.trackType === type) {
+                const rect = track.getBoundingClientRect();
+                const dropX = e.clientX - rect.left + trackScrollContainer.scrollLeft;
+                createClipOnTrack(track, src, name, type, duration, dropX / pixelsPerSecond);
+            }
+        });
+    });
+
+    function createClipOnTrack(track, src, name, type, duration, startSeconds) {
+        const clip = document.createElement('div');
+        let customClass = "bg-surface-variant border-primary-fixed-dim/50 text-white";
+        if (type === 'audio') {
+            customClass = (track.id === 'a1Track') ? "bg-cyan-950 border-cyan-500/40 text-cyan-300" : "bg-red-950 border-red-500/40 text-red-300";
+        }
+        if (type === 'text') customClass = "bg-purple-950 border-purple-400 text-purple-200";
+
+        clip.className = `absolute top-1 bottom-1 border rounded flex items-center px-2 shadow-xl timeline-clip cursor-pointer overflow-hidden ${customClass}`;
+        clip.dataset.src = src; clip.dataset.duration = duration; clip.dataset.startSeconds = startSeconds; clip.dataset.type = type; clip.dataset.textValue = name;
+        clip.style.left = `${startSeconds * pixelsPerSecond}px`; clip.style.width = `${duration * pixelsPerSecond}px`;
+        clip.innerHTML = `<span class="text-[9px] font-code-data truncate pointer-events-none">${name}</span>`;
+        
+        // تفعيل سحب وتحريك المقاطع داخل المسار بحرية
+        let isDraggingClip = false; let startX, initialLeft;
+        clip.addEventListener('mousedown', (e) => { if(e.button === 0) { e.stopPropagation(); isDraggingClip = true; startX = e.clientX; initialLeft = parseInt(clip.style.left); } });
+        window.addEventListener('mousemove', (e) => { if (!isDraggingClip) return; const dx = e.clientX - startX; let nl = initialLeft + dx; if(nl<0) nl=0; clip.style.left = `${nl}px`; clip.dataset.startSeconds = nl / pixelsPerSecond; updateEngine(); });
+        window.addEventListener('mouseup', () => { isDraggingClip = false; });
+        
+        track.appendChild(clip);
+        updateEngine();
+    }
+
+    // ==========================================
+    // 📝 معالج إضافة شريط نصوص مصمم يدوياً
+    // ==========================================
+    insertTextToTimelineBtn.addEventListener('click', () => {
+        const text = textPanelInput.value.trim();
+        if(!text) return;
+        createClipOnTrack(t1Track, "", text, 'text', 4, globalTime);
+        textPanelInput.value = '';
+    });
+
+    // ==========================================
+    // 🎞️ محرك البث الحقيقي المزامِن للصوت والصور والفيديو
+    // ==========================================
+    let lastTimestamp = 0;
+    function playbackLoop(timestamp) {
+        if (!isPlaying) return;
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        globalTime += (timestamp - lastTimestamp) / 1000;
+        lastTimestamp = timestamp;
+        playhead.style.left = `${globalTime * pixelsPerSecond}px`;
+        timecodeDisplay.textContent = formatTimecode(globalTime);
+        timelineCurrentTime.textContent = formatTimecode(globalTime);
+        updateEngine(true);
+        animationFrameId = requestAnimationFrame(playbackLoop);
+    }
+
+    function updateEngine(isFromLoop = false) {
+        const clips = Array.from(document.querySelectorAll('.timeline-clip'));
+        let activeVideo = null;
+        let activeAudio1 = null;
+        let activeAudio2 = null;
+        let activeText = null;
+
+        clips.forEach(clip => {
+            const start = parseFloat(clip.dataset.startSeconds);
+            const end = start + parseFloat(clip.dataset.duration);
+            if (globalTime >= start && globalTime <= end) {
+                if (clip.dataset.type === 'video') activeVideo = { src: clip.dataset.src, offset: globalTime - start };
+                if (clip.dataset.type === 'audio') {
+                    if (clip.parentElement.id === 'a1Track') activeAudio1 = { src: clip.dataset.src, offset: globalTime - start };
+                    if (clip.parentElement.id === 'a2Track') activeAudio2 = { src: clip.dataset.src, offset: globalTime - start };
+                }
+                if (clip.dataset.type === 'text') activeText = clip.dataset.textValue;
+            }
+        });
+
+        // تشغيل أو إيقاف عارض الفيديو الأساسي
+        if (activeVideo) {
+            if (mainVideoPlayer.dataset.currentSrc !== activeVideo.src) {
+                mainVideoPlayer.pause();
+                mainVideoPlayer.src = activeVideo.src;
+                mainVideoPlayer.dataset.currentSrc = activeVideo.src;
+                mainVideoPlayer.load();
+                mainVideoPlayer.addEventListener('canplay', function onReady() {
+                    mainVideoPlayer.removeEventListener('canplay', onReady);
+                    mainVideoPlayer.currentTime = activeVideo.offset || 0;
+                    if (isPlaying) mainVideoPlayer.play().catch(()=>{});
+                }, { once: true });
+            } else {
+                mainVideoPlayer.style.opacity = "1";
+                if (!isFromLoop || Math.abs(mainVideoPlayer.currentTime - activeVideo.offset) > 0.3) mainVideoPlayer.currentTime = activeVideo.offset;
+                if (isPlaying && mainVideoPlayer.paused) mainVideoPlayer.play().catch(()=>{});
+            }
+            mainVideoPlayer.style.opacity = "1";
+        } else {
+            mainVideoPlayer.style.opacity = "0"; mainVideoPlayer.pause();
+        }
+
+        // تشغيل أو إيقاف مسار الصوت الأول A1
+        if (activeAudio1) {
+            if (mainAudioTrack1.src !== activeAudio1.src) { mainAudioTrack1.src = activeAudio1.src; }
+            if (!isFromLoop || Math.abs(mainAudioTrack1.currentTime - activeAudio1.offset) > 0.3) mainAudioTrack1.currentTime = activeAudio1.offset;
+            if (isPlaying && mainAudioTrack1.paused) mainAudioTrack1.play().catch(()=>{});
+        } else { mainAudioTrack1.pause(); }
+
+        // تشغيل أو إيقاف مسار الصوت الثاني المباشر A2
+        if (activeAudio2) {
+            if (mainAudioTrack2.src !== activeAudio2.src) { mainAudioTrack2.src = activeAudio2.src; }
+            if (!isFromLoop || Math.abs(mainAudioTrack2.currentTime - activeAudio2.offset) > 0.3) mainAudioTrack2.currentTime = activeAudio2.offset;
+            if (isPlaying && mainAudioTrack2.paused) mainAudioTrack2.play().catch(()=>{});
+        } else { mainAudioTrack2.pause(); }
+
+        // إظهار أو إخفاء النصوص المضافة المتراكبة فوق الشاشة
+        if (activeText) { videoSubtitle.textContent = activeText; videoSubtitle.className = "inline-block font-bold px-4 py-2 bg-black/80 rounded border border-purple-500/30 text-white text-base shadow-lg animate-pulse"; videoSubtitle.classList.remove('hidden'); }
+        else { videoSubtitle.classList.add('hidden'); }
+    }
+
+    // التحكم بالتشغيل والايقاف المؤقت
+    playBtn.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        if (isPlaying) { playBtn.querySelector('.material-symbols-outlined').textContent = 'pause'; lastTimestamp = 0; animationFrameId = requestAnimationFrame(playbackLoop); }
+        else { playBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow'; cancelAnimationFrame(animationFrameId); mainVideoPlayer.pause(); mainAudioTrack1.pause(); mainAudioTrack2.pause(); }
+    });
+
+    // السحب والمشاهدة الحرة عبر المسطرة الزمنية (Scrubbing)
+    timeRuler.addEventListener('mousedown', (e) => { isScrubbing = true; handleScrub(e); });
+    window.addEventListener('mousemove', (e) => { if (isScrubbing) handleScrub(e); });
+    window.addEventListener('mouseup', () => { isScrubbing = false; });
+    
+    function handleScrub(e) {
+        const rect = timeRuler.getBoundingClientRect();
+        let targetX = Math.max(0, e.clientX - rect.left + trackScrollContainer.scrollLeft);
+        playhead.style.left = `${targetX}px`; globalTime = targetX / pixelsPerSecond;
+        timecodeDisplay.textContent = formatTimecode(globalTime);
+        timelineCurrentTime.textContent = formatTimecode(globalTime);
+        updateEngine(false);
+    }
+
+    function formatTimecode(secs) {
+        const m = Math.floor(secs / 60).toString().padStart(2, '0');
+        const s = Math.floor(secs % 60).toString().padStart(2, '0');
+        const f = Math.floor((secs % 1) * 24).toString().padStart(2, '0');
+        return `00:${m}:${s}:${f}`;
+    }
+
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) { mainVideoPlayer.requestFullscreen().catch(()=>{}); }
     });
 </script>
 </body>
