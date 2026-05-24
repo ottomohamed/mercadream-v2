@@ -847,12 +847,8 @@ OPEN ASSEMBLY →
                             // عرض الفيديو في الكارد
                             if (resultDiv) {
                                 resultDiv.className = 'mt-sm';
-                                resultDiv.innerHTML = \`
-                                    <video src="\${url}" controls autoplay muted loop playsinline
-                                        class="w-full max-h-48 object-cover border border-primary-fixed-dim">
-                                    </video>
-                                    <p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">✓ VIDEO READY</p>
-                                \`;
+                                resultDiv.className = 'mt-sm';
+                                resultDiv.innerHTML = '<video src="' + url + '" controls autoplay muted loop playsinline class="w-full max-h-48 object-cover border border-primary-fixed-dim"></video><p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">✓ VIDEO READY</p>';
                             }
 
                             if (btn) { btn.disabled = false; btn.innerHTML = '✓ DONE — REGENERATE'; }
