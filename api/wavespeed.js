@@ -52,6 +52,12 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Prompt too short' });
   }
 
+  // LOG للـ debugging
+  console.log('=== WAVESPEED GENERATE ===');
+  console.log('Prompt:', prompt);
+  console.log('Duration:', duration);
+  console.log('KEY exists:', !!KEY);
+
   try {
     const r = await fetch('https://api.wavespeed.ai/api/v3/vidu/q3/text-to-video', {
       method: 'POST',
@@ -71,7 +77,8 @@ module.exports = async function handler(req, res) {
     });
 
     const d = await r.json();
-    console.log('Generate response:', JSON.stringify(d));
+    console.log('Generate HTTP status:', r.status);
+    console.log('Generate response FULL:', JSON.stringify(d));
 
     // استخراج الـ ID من أي مكان محتمل
     const jobId = (d.data && d.data.id)
