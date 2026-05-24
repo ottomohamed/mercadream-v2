@@ -126,6 +126,7 @@ VISUAL RULES: Handheld camera. Available light. Real locations. Long takes.`
 
 // ── SCENE FORMAT (shared across all directors) ──
 const SCENE_FORMAT = `
+CRITICAL: ALL prompt fields MUST be written in English only — they go directly to a video AI.
 Generate EXACTLY 6 scenes of 10 seconds each (60-second film total).
 OUTPUT: Valid JSON array ONLY. No text before or after. No markdown backticks.
 
@@ -147,7 +148,7 @@ For drama and action: Scene 4 MUST include:
 "exceed": "The unexpected element that becomes the emotional heart. Why it could not have been predicted. Why it is immediately felt as necessary."
 `;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -159,7 +160,7 @@ export default async function handler(req, res) {
     type = 'drama',
     conversation = '',
     brief = '',
-    model = 'claude-sonnet-4-20250514'
+    model = 'claude-haiku-4-5-20251001'
   } = req.body || {};
 
   // Validate director type
