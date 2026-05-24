@@ -489,7 +489,7 @@ OPEN ASSEMBLY →
                 let attempts = 0;
                 const poll = setInterval(async () => {
                     attempts++;
-                    if (attempts > 40) {
+                    if (attempts > 60) {
                         clearInterval(poll);
                         appendBubble('>> TIMEOUT: Generation took too long.', 'bot', 'SYSTEM');
                         return;
@@ -626,7 +626,7 @@ OPEN ASSEMBLY →
         let chatHistory = [];
         let currentPhaseState = 'screenwriter';
         let dreamBrief = null;
-        const contentTypeMap = { Drama: 'Film', Action: 'Film', Comedy: 'Film', Documentary: 'Documentary', Ads: 'Ads', Music: 'Music' };
+        const contentTypeMap = { Drama: 'Film', Action: 'Film', Comedy: 'Film', Documentary: 'Documentary', Ads: 'Ads', Music: 'Music' }; // All use Film screenwriter for now
 
         function appendBubble(text, role, label) {
             const chat = document.getElementById('chat-messages');
