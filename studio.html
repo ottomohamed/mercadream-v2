@@ -729,15 +729,10 @@ OPEN ASSEMBLY →
             // header
             const header = document.createElement('div');
             header.className = 'flex gap-md max-w-full w-full';
-            header.innerHTML = \`
-                <div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0">
-                    <span class="material-symbols-outlined">movie</span>
-                </div>
-                <div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">
-                    <p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: \${directorName || director}</p>
-                    <p class="text-body-md text-on-surface-variant">\${scenes.length} scenes generated. Each scene costs <strong class="text-primary-fixed-dim">\${cost} CR</strong>. Click GENERATE on any scene to create the video.</p>
-                </div>
-            \`;
+            header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
+                + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
+                + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: ' + (directorName || director) + '</p>'
+                + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' CR each. Click GENERATE.</p></div>';
             chat.insertBefore(header, voiceOverlay);
 
             // مشهد واحد في كل مرة
@@ -745,23 +740,16 @@ OPEN ASSEMBLY →
                 const card = document.createElement('div');
                 card.className = 'w-full bg-surface-container border border-outline-variant p-md space-y-sm';
                 card.id = 'scene-card-' + idx;
-                card.innerHTML = \`
-                    <div class="flex justify-between items-start gap-md">
-                        <div class="flex-1">
-                            <span class="font-label-technical text-[10px] text-primary-fixed-dim">SCENE \${scene.scene}</span>
-                            <h3 class="font-headline-sm text-sm text-on-surface mt-xs">\${scene.title || 'Untitled'}</h3>
-                            <p class="font-label-technical text-[11px] text-on-surface-variant mt-xs leading-relaxed">\${(scene.prompt || '').substring(0, 120)}...</p>
-                        </div>
-                        <button 
-                            id="gen-btn-\${idx}"
-                            onclick="generateSceneVideo(\${idx})"
-                            class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs">
-                            <span class="material-symbols-outlined text-[16px]">bolt</span>
-                            GENERATE (\${cost} CR)
-                        </button>
-                    </div>
-                    <div id="video-result-\${idx}" class="hidden"></div>
-                \`;
+                card.innerHTML = '<div class="flex justify-between items-start gap-md">'
+                    + '<div class="flex-1">'
+                    + '<span class="font-label-technical text-[10px] text-primary-fixed-dim">SCENE ' + scene.scene + '</span>'
+                    + '<h3 class="font-label-technical text-sm text-on-surface mt-xs font-bold">' + (scene.title || 'Scene') + '</h3>'
+                    + '<p class="font-label-technical text-[11px] text-on-surface-variant mt-xs">' + (scene.prompt || '').substring(0, 150) + '...</p>'
+                    + '</div>'
+                    + '<button id="gen-btn-' + idx + '" onclick="generateSceneVideo(' + idx + ')"'
+                    + ' class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs">'
+                    + '<span class="material-symbols-outlined text-[16px]">bolt</span> GENERATE (' + cost + ' CR)</button>'
+                    + '</div><div id="video-result-' + idx + '" class="mt-sm hidden"></div>';
                 chat.insertBefore(card, voiceOverlay);
             });
 
