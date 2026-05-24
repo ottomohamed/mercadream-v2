@@ -469,7 +469,7 @@ OPEN ASSEMBLY →
                 const genRes = await fetch('/api/wavespeed', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, duration: 5 })
+                    body: JSON.stringify({ prompt: prompt, duration: 10 })
                 });
                 const genData = await genRes.json();
 
@@ -506,9 +506,6 @@ OPEN ASSEMBLY →
 
                         addLogLine('POLL [' + attempts + ']: ' + status);
 
-                        // طباعة كاملة للـ response للـ debugging
-                        addLogLine('POLL DATA: ' + JSON.stringify({status, url: url ? url.substring(0,50) : 'NULL', pollData: JSON.stringify(pd).substring(0,100)}));
-                        
                         if ((status === 'completed' || status === 'succeeded') && url) {
                             clearInterval(poll);
 
@@ -570,12 +567,12 @@ OPEN ASSEMBLY →
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: 'Generate the next scene now. IMPORTANT: THE prompt FIELD IN YOUR JSON RESPONSE MUST BE WRITTEN IN ENGLISH LANGUAGE ONLY. No Arabic. No other language. English only for the prompt field.',
+                        message: 'Generate the next scene now.',
                         director: director,
                         contentType: contentTypeMap[director] || 'Film',
                         phase: 'director',
                         history: chatHistory,
-                        dreamBrief: dreamBrief ? '[TRANSLATE TO ENGLISH FOR PROMPT FIELD] ' + dreamBrief : null
+                        dreamBrief: dreamBrief
                     })
                 });
 
