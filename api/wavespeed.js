@@ -70,7 +70,7 @@ module.exports = async function handler(req, res) {
         duration: duration,
         resolution: '720p',
         aspect_ratio: '16:9',
-        style: 'cinematic',
+        style: 'general',
         generate_audio: false,
         movement_amplitude: 'auto'
       })
