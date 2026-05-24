@@ -71,7 +71,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         prompt: prompt.trim(),
         duration: Math.min(duration, 10), // max 10s
-        resolution: '480p',  // أرخص
+        resolution: '540p',  // أرخص
         aspect_ratio: '16:9',
         style: 'general',
         generate_audio: false,
