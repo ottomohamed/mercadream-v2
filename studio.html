@@ -453,8 +453,8 @@ OPEN ASSEMBLY →
             log.scrollTop = log.scrollHeight;
         }
 
-        // ── تعديل دالة الاستوديو المحدثة لإرسال البث لغرفة المونتاج ──
-        function handleSceneGenerated(scene, director) {
+        // ── handleSceneGenerated: يرسل الـ prompt لـ WaveSpeed ──
+        async function handleSceneGenerated(scene, director) {
             const cost = costTable[director] || 12;
             if (credits < cost) {
                 appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
@@ -462,42 +462,103 @@ OPEN ASSEMBLY →
                 return;
             }
 
-            credits -= cost;
-            localStorage.setItem('md_credits', credits);
-            updateCredits();
+            const prompt = scene.prompt || scene.title || 'Cinematic scene, high quality, 16:9';
+            addLogLine('SUBMITTING TO WAVESPEED: ' + prompt.substring(0, 80));
+            appendBubble('>> GENERATING VIDEO... please wait 30-60 seconds.', 'bot', 'SYSTEM');
 
-            const generatedVideoUrl = scene.video_url || 'https://assets.mixkit.co/videos/preview/mixkit-cyberpunk-neon-city-scenery-43187-large.mp4';
+            try {
+                // خطوة 1: إرسال الـ prompt لـ WaveSpeed
+                const genRes = await fetch('/api/wavespeed', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt, duration: 5 })
+                });
+                const genData = await genRes.json();
 
-            const sceneObj = {
-                id: 'scene-' + Date.now(),
-                sceneNumber: JSON.parse(localStorage.getItem('md_6scenes') || '[]').length + 1,
-                title: scene.title || 'Untitled Scene',
-                prompt: scene.prompt || '',
-                director: director,
-                videoUrl: generatedVideoUrl,
-                thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
-                duration: '00:10',
-                status: 'ready',
-                cost: cost
-            };
+                if (genData.error || !genData.id) {
+                    appendBubble('>> WAVESPEED ERROR: ' + (genData.error || 'No job ID'), 'bot', 'SYSTEM');
+                    addLogLine('WAVESPEED ERROR: ' + JSON.stringify(genData));
+                    return;
+                }
 
-            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-            existing.push(sceneObj);
-            localStorage.setItem('md_6scenes', JSON.stringify(existing));
+                const jobId = genData.id;
+                addLogLine('JOB SUBMITTED: ' + jobId);
 
-            // بث التوكن لغرفة المونتاج فوراً عبر التخزين
-            localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
-                name: sceneObj.title.toUpperCase() + '.mp4',
-                url: generatedVideoUrl,
-                timestamp: Date.now()
-            }));
+                // خطوة 2: خصم الرصيد بعد نجاح الإرسال
+                credits -= cost;
+                localStorage.setItem('md_credits', credits);
+                updateCredits();
 
-            const confirmMsg = '>> SCENE GENERATED: <strong>' + sceneObj.title + '</strong><br>'
-                + '>> STREAM SENT TO ASSEMBLY & EDITING ROOM.<br>'
-                + '>> COST: -' + cost + ' CR | SCENES IN ASSEMBLY: ' + existing.length;
-            appendBubble(confirmMsg, 'bot', director.toUpperCase() + '-DIRECTOR');
-            addLogLine('SCENE SENT TO EDITING SUITE: ' + sceneObj.title);
-            animatePipeline();
+                // خطوة 3: polling كل 3 ثوانٍ حتى الاكتمال
+                let attempts = 0;
+                const maxAttempts = 40;
+
+                const poll = setInterval(async () => {
+                    attempts++;
+                    if (attempts > maxAttempts) {
+                        clearInterval(poll);
+                        appendBubble('>> TIMEOUT: Video generation took too long.', 'bot', 'SYSTEM');
+                        return;
+                    }
+
+                    try {
+                        const pollRes = await fetch('/api/wavespeed', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'poll', id: jobId })
+                        });
+                        const pollData = await pollRes.json();
+                        const status = pollData.status;
+                        const url = pollData.url || pollData.videoUrl;
+
+                        addLogLine('POLL [' + attempts + ']: ' + status + (url ? ' | URL: ' + url.substring(0,40) : ''));
+
+                        if (status === 'completed' && url) {
+                            clearInterval(poll);
+
+                            const sceneObj = {
+                                id: 'scene-' + Date.now(),
+                                sceneNumber: JSON.parse(localStorage.getItem('md_6scenes') || '[]').length + 1,
+                                title: scene.title || 'Untitled Scene',
+                                prompt: prompt,
+                                director: director,
+                                videoUrl: url,
+                                thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
+                                duration: '00:10',
+                                status: 'ready',
+                                cost: cost
+                            };
+
+                            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+                            existing.push(sceneObj);
+                            localStorage.setItem('md_6scenes', JSON.stringify(existing));
+
+                            localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
+                                name: sceneObj.title.toUpperCase() + '.mp4',
+                                url: url,
+                                timestamp: Date.now()
+                            }));
+
+                            const confirmMsg = '>> VIDEO READY: <strong>' + sceneObj.title + '</strong><br>'
+                                + '>> URL: ' + url.substring(0, 60) + '...<br>'
+                                + '>> COST: -' + cost + ' CR | SCENES: ' + existing.length;
+                            appendBubble(confirmMsg, 'bot', director.toUpperCase() + '-DIRECTOR');
+                            addLogLine('VIDEO READY: ' + url);
+                            animatePipeline();
+
+                        } else if (status === 'failed') {
+                            clearInterval(poll);
+                            appendBubble('>> GENERATION FAILED. Try again.', 'bot', 'SYSTEM');
+                        }
+                    } catch (pollErr) {
+                        addLogLine('POLL ERROR: ' + pollErr.message);
+                    }
+                }, 3000);
+
+            } catch (err) {
+                appendBubble('>> NETWORK ERROR: ' + err.message, 'bot', 'SYSTEM');
+                addLogLine('NETWORK ERROR: ' + err.message);
+            }
         }
 
         async function startGeneration() {
