@@ -309,7 +309,7 @@
 <footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
 <div class="flex gap-md items-end">
 <div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
-<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="ENTER COMMAND OR NARRATIVE SEED..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="اكتب فكرتك هنا... (بأي لغة)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
 <div class="absolute bottom-2 right-2 flex gap-sm">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
 <button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#a8d700] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
@@ -623,10 +623,9 @@ OPEN ASSEMBLY →
             process();
         }
 
-        let chatHistory = [];
-        let currentPhaseState = 'screenwriter';
-        let dreamBrief = null;
-        const contentTypeMap = { Drama: 'Film', Action: 'Film', Comedy: 'Film', Documentary: 'Documentary', Ads: 'Ads', Music: 'Music' };
+        // ── STATE ─────────────────────────────────────
+        let generatedScenes = []; // المشاهد المولّدة من الـ script
+        let activeGenerations = {}; // تتبع التوليدات الجارية
 
         function appendBubble(text, role, label) {
             const chat = document.getElementById('chat-messages');
@@ -670,30 +669,32 @@ OPEN ASSEMBLY →
 
         function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
+        // ── SEND MESSAGE: فكرة واحدة → script كامل ──────
         async function sendMessage() {
             const textarea = document.getElementById('chat-input');
             const text = textarea ? textarea.value.trim() : '';
             if (!text) return;
+
             appendBubble(text, 'user');
             textarea.value = '';
-            addLogLine('USER INPUT: ' + text.substring(0, 60));
+            addLogLine('IDEA RECEIVED: ' + text.substring(0, 60));
 
             const directorEl = document.querySelector('input[name="director"]:checked');
             const director = directorEl ? directorEl.value : 'Drama';
-            const contentType = contentTypeMap[director] || 'Film';
+            const directorType = director.toLowerCase() === 'documentary' ? 'doc' : director.toLowerCase();
+
             const typingId = showTyping();
+            appendBubble('>> Generating your script... please wait.', 'bot', 'SYSTEM');
 
             try {
-                const response = await fetch('/api/chat', {
+                // استدعاء /api/director مباشرة لتوليد 6 مشاهد
+                const response = await fetch('/api/director', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: text,
-                        director: director,
-                        contentType: contentType,
-                        phase: currentPhaseState,
-                        history: chatHistory,
-                        dreamBrief: dreamBrief
+                        type: directorType,
+                        brief: text,
+                        model: 'claude-haiku-4-5-20251001'
                     })
                 });
                 const data = await response.json();
@@ -704,40 +705,205 @@ OPEN ASSEMBLY →
                     return;
                 }
 
-                if (data.scene) {
-                    handleSceneGenerated(data.scene, director);
-                    chatHistory.push({ role: 'user', content: text });
-                    chatHistory.push({ role: 'assistant', content: JSON.stringify(data.scene) });
+                if (!data.scenes || !data.scenes.length) {
+                    appendBubble('>> Could not generate script. Try again.', 'bot', 'SYSTEM');
                     return;
                 }
 
-                const reply = data.reply || '>> Processing...';
-
-                if (data.dreamCaptured) {
-                    dreamBrief = chatHistory.filter(h => h.role === 'user').map(h => h.content).join(' | ');
-                    currentPhaseState = 'director';
-                    chatHistory = [];
-                    const dirNames = { Drama:'Marco Visconti', Action:'Rex Storm', Comedy:'Elena Bright', Documentary:'Sara Truth', Ads:'Nova Brand', Music:'Kai Neon' };
-                    appendBubble('>> VISION LOCKED. DREAM CAPTURED.<br>>> Passing brief to <strong>' + (dirNames[director]||director) + '</strong>...<br>>> Press <strong>GENERATE</strong> to create your first scene.', 'bot', 'SYSTEM');
-                    addLogLine('DREAM_CAPTURED — director: ' + director);
-                    return;
-                }
-
-                const label = currentPhaseState === 'screenwriter' ? 'SCREENWRITER' : director.toUpperCase() + '-DIRECTOR';
-                appendBubble(reply.split('\n').join('<br>'), 'bot', label);
-                chatHistory.push({ role: 'user', content: text });
-                chatHistory.push({ role: 'assistant', content: reply });
-                if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+                generatedScenes = data.scenes;
+                addLogLine('SCRIPT GENERATED: ' + data.scenes.length + ' scenes');
+                renderScriptCards(data.scenes, director, data.director_name);
 
             } catch (err) {
                 removeTyping(typingId);
-                appendBubble('>> CONNECTION ERROR. CHECK NETWORK.', 'bot', 'SYSTEM');
-                addLogLine('FETCH ERROR: ' + err.message);
+                appendBubble('>> CONNECTION ERROR: ' + err.message, 'bot', 'SYSTEM');
             }
         }
 
-        function cycleLang() { addLogLine(`LANGUAGE CYCLED.`); }
-        function rechargeCredits() { credits = Math.min(credits + 500, 9999); localStorage.setItem('md_credits', credits); updateCredits(); }
+        // ── RENDER SCRIPT CARDS ───────────────────────────
+        function renderScriptCards(scenes, director, directorName) {
+            const chat = document.getElementById('chat-messages');
+            const voiceOverlay = document.getElementById('voice-overlay');
+            const cost = costTable[director] || 12;
+
+            // header
+            const header = document.createElement('div');
+            header.className = 'flex gap-md max-w-full w-full';
+            header.innerHTML = \`
+                <div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0">
+                    <span class="material-symbols-outlined">movie</span>
+                </div>
+                <div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">
+                    <p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: \${directorName || director}</p>
+                    <p class="text-body-md text-on-surface-variant">\${scenes.length} scenes generated. Each scene costs <strong class="text-primary-fixed-dim">\${cost} CR</strong>. Click GENERATE on any scene to create the video.</p>
+                </div>
+            \`;
+            chat.insertBefore(header, voiceOverlay);
+
+            // مشهد واحد في كل مرة
+            scenes.forEach((scene, idx) => {
+                const card = document.createElement('div');
+                card.className = 'w-full bg-surface-container border border-outline-variant p-md space-y-sm';
+                card.id = 'scene-card-' + idx;
+                card.innerHTML = \`
+                    <div class="flex justify-between items-start gap-md">
+                        <div class="flex-1">
+                            <span class="font-label-technical text-[10px] text-primary-fixed-dim">SCENE \${scene.scene}</span>
+                            <h3 class="font-headline-sm text-sm text-on-surface mt-xs">\${scene.title || 'Untitled'}</h3>
+                            <p class="font-label-technical text-[11px] text-on-surface-variant mt-xs leading-relaxed">\${(scene.prompt || '').substring(0, 120)}...</p>
+                        </div>
+                        <button 
+                            id="gen-btn-\${idx}"
+                            onclick="generateSceneVideo(\${idx})"
+                            class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-[16px]">bolt</span>
+                            GENERATE (\${cost} CR)
+                        </button>
+                    </div>
+                    <div id="video-result-\${idx}" class="hidden"></div>
+                \`;
+                chat.insertBefore(card, voiceOverlay);
+            });
+
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // ── GENERATE SCENE VIDEO ──────────────────────────
+        async function generateSceneVideo(idx) {
+            const scene = generatedScenes[idx];
+            if (!scene) return;
+
+            const cost = costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 12;
+
+            if (credits < cost) {
+                appendBubble('>> INSUFFICIENT CREDITS. Please recharge.', 'bot', 'SYSTEM');
+                return;
+            }
+
+            if (activeGenerations[idx]) return; // منع الضغط المزدوج
+            activeGenerations[idx] = true;
+
+            const btn = document.getElementById('gen-btn-' + idx);
+            const resultDiv = document.getElementById('video-result-' + idx);
+            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> GENERATING...'; }
+
+            // ترجمة الـ prompt إذا كان عربياً
+            let prompt = scene.prompt || scene.title || 'Cinematic scene';
+            const hasArabic = /[؀-ۿ]/.test(prompt);
+            if (hasArabic) {
+                try {
+                    const tr = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: 'Translate to English for video AI, return only translation: ' + prompt, director: 'Drama', phase: 'director', history: [], dreamBrief: null })
+                    });
+                    const td = await tr.json();
+                    if (td.reply) prompt = td.reply;
+                } catch(e) {}
+            }
+
+            addLogLine('GENERATING SCENE ' + (idx+1) + ': ' + prompt.substring(0, 60));
+
+            try {
+                // إرسال لـ WaveSpeed
+                const genRes = await fetch('/api/wavespeed', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, duration: 10 })
+                });
+                const genData = await genRes.json();
+
+                if (genData.error || !genData.id) {
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">bolt</span> RETRY'; }
+                    activeGenerations[idx] = false;
+                    addLogLine('ERROR: ' + (genData.error || 'No job ID'));
+                    return;
+                }
+
+                // خصم الرصيد
+                credits -= cost;
+                localStorage.setItem('md_credits', credits);
+                updateCredits();
+                if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...';
+
+                // polling
+                const jobId = genData.id;
+                const pollUrl = genData.pollUrl;
+                let attempts = 0;
+
+                const poll = setInterval(async () => {
+                    attempts++;
+                    if (attempts > 60) {
+                        clearInterval(poll);
+                        if (btn) { btn.disabled = false; btn.innerHTML = 'TIMEOUT — RETRY'; }
+                        activeGenerations[idx] = false;
+                        return;
+                    }
+
+                    try {
+                        const pr = await fetch('/api/wavespeed', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'poll', id: jobId, pollUrl })
+                        });
+                        const pd = await pr.json();
+                        const status = pd.status;
+                        const url = pd.url;
+
+                        addLogLine('SCENE ' + (idx+1) + ' [' + attempts + ']: ' + status);
+
+                        if ((status === 'completed' || status === 'succeeded') && url) {
+                            clearInterval(poll);
+                            activeGenerations[idx] = false;
+
+                            // عرض الفيديو في الكارد
+                            if (resultDiv) {
+                                resultDiv.className = 'mt-sm';
+                                resultDiv.innerHTML = \`
+                                    <video src="\${url}" controls autoplay muted loop playsinline
+                                        class="w-full max-h-48 object-cover border border-primary-fixed-dim">
+                                    </video>
+                                    <p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">✓ VIDEO READY</p>
+                                \`;
+                            }
+
+                            if (btn) { btn.disabled = false; btn.innerHTML = '✓ DONE — REGENERATE'; }
+
+                            // حفظ في md_6scenes
+                            const sceneObj = {
+                                id: 'scene-' + Date.now() + '-' + idx,
+                                sceneNumber: idx + 1,
+                                title: scene.title,
+                                prompt: prompt,
+                                videoUrl: url,
+                                thumbnail: '',
+                                duration: '00:10',
+                                status: 'ready',
+                                cost
+                            };
+                            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+                            existing.push(sceneObj);
+                            localStorage.setItem('md_6scenes', JSON.stringify(existing));
+                            addLogLine('VIDEO READY — SCENE ' + (idx+1) + ': ' + url.substring(0,50));
+                            animatePipeline();
+
+                        } else if (status === 'failed') {
+                            clearInterval(poll);
+                            activeGenerations[idx] = false;
+                            if (btn) { btn.disabled = false; btn.innerHTML = 'FAILED — RETRY'; }
+                        }
+                    } catch(e) { addLogLine('POLL ERROR: ' + e.message); }
+                }, 3000);
+
+            } catch (err) {
+                if (btn) { btn.disabled = false; btn.innerHTML = 'ERROR — RETRY'; }
+                activeGenerations[idx] = false;
+                addLogLine('NETWORK ERROR: ' + err.message);
+            }
+        }
+
+        function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
+        function rechargeCredits() { credits = Math.min(credits + 500, 9999); localStorage.setItem('md_credits', credits); updateCredits(); addLogLine('CREDITS RECHARGED: +500'); }
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }
     </script>
