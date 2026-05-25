@@ -624,11 +624,6 @@ OPEN ASSEMBLY →
         }
 
         // ── STATE ─────────────────────────────────────
-        // فحص الجلسة — إذا لا يوجد حساب مسجّل → رصيد 0
-        if (!localStorage.getItem('sb_session')) {
-            localStorage.setItem('md_credits', '0');
-        }
-        let generatedScenes = []; // المشاهد المولّدة من الـ script
         let activeGenerations = {}; // تتبع التوليدات الجارية
 
         function appendBubble(text, role, label) {
@@ -896,3 +891,4 @@ OPEN ASSEMBLY →
         function setMode(m) { addLogLine('MODE: ' + m); }
     </script>
 </body></html>
+
