@@ -324,6 +324,14 @@ async function handleRegister(e){
   if(btn){btn.textContent='CREATING ACCOUNT...';btn.disabled=true;}
   var r=await sb.auth.signUp({email:email,password:pass});
   if(r.error){alert('Error: '+r.error.message);if(btn){btn.textContent='CREATE ACCOUNT';btn.disabled=false;}return;}
+  
+  // فحص إذا كان يحتاج تأكيد إيميل
+  if(r.data.user && !r.data.session) {
+    // Supabase يحتاج تأكيد الإيميل أولاً
+    if(btn){btn.textContent='CHECK YOUR EMAIL';btn.disabled=true;}
+    showConfirmationMessage(email);
+    return;
+  }
   // مسح كل البيانات القديمة أولاً
   localStorage.clear();
   // تعيين بيانات الحساب الجديد
@@ -333,11 +341,45 @@ async function handleRegister(e){
   localStorage.setItem('md_credits','0');
   localStorage.setItem('md_plan','free');
   localStorage.setItem('md_user_id', r.data.user.id || email);
-  alert('Account created! Purchase credits to start generating.');
-  window.location.href='profile.html';
+  // إذا وصل هنا — الجلسة نشطة مباشرة (email confirmation معطّل)
+  showSuccessAndRedirect();
 }
 window.addEventListener('load',function(){
   if(localStorage.getItem('sb_session')){window.location.href='profile.html';return;}
+  
+function showConfirmationMessage(email) {
+  // إخفاء الفورم وعرض رسالة التأكيد
+  var form = document.querySelector('form') || document.querySelector('.form-wrap') || document.body;
+  var card = document.querySelector('.card') || document.querySelector('[class*="border"]');
+  
+  var msg = document.createElement('div');
+  msg.style.cssText = 'background:#0a0a0a;border:1px solid rgba(168,215,0,0.3);padding:32px;text-align:center;max-width:420px;margin:0 auto';
+  msg.innerHTML = '<div style="font-family:Orbitron,monospace;font-size:18px;color:#a8d700;margin-bottom:12px">✉ CHECK YOUR EMAIL</div>'
+    + '<div style="font-size:11px;color:#888;line-height:1.8;margin-bottom:20px">'
+    + 'We sent a confirmation link to:<br>'
+    + '<strong style="color:#e2e4d1">' + email + '</strong><br><br>'
+    + 'Click the link in the email to activate your account,<br>'
+    + 'then come back and sign in.'
+    + '</div>'
+    + '<a href="login.html" style="display:inline-block;padding:12px 32px;background:#a8d700;color:#060606;font-family:Orbitron,monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-decoration:none">GO TO SIGN IN →</a>'
+    + '<div style="margin-top:16px;font-size:9px;color:#444">Didn't receive it? Check your spam folder.</div>';
+  
+  var container = document.querySelector('body > div:last-of-type') || document.body;
+  container.innerHTML = '';
+  container.appendChild(msg);
+  container.style.display = 'flex';
+  container.style.alignItems = 'center';
+  container.style.justifyContent = 'center';
+  container.style.minHeight = '100vh';
+}
+
+function showSuccessAndRedirect() {
+  localStorage.clear();
+  localStorage.setItem('md_credits','0');
+  localStorage.setItem('md_plan','free');
+  alert('Account created! Sign in to continue.');
+  window.location.href = 'login.html';
+}
   var form=document.querySelector('form');
   if(form)form.onsubmit=handleRegister;
   var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
