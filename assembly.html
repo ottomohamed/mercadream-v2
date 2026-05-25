@@ -284,12 +284,41 @@
         } catch (e) { console.error(e); }
     }
 
+    // ── تحميل كل مشاهد md_6scenes عند فتح assembly ──
+    function loadScenesFromStudio() {
+        try {
+            const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+            if (!scenes.length) return;
+            
+            // فرز حسب رقم المشهد
+            scenes.sort((a, b) => (a.sceneNumber || 0) - (b.sceneNumber || 0));
+            
+            let loaded = 0;
+            scenes.forEach(function(scene) {
+                if (scene.videoUrl && scene.videoUrl.length > 10) {
+                    const name = (scene.title || 'Scene ' + scene.sceneNumber) + '.mp4';
+                    handleMediaImport(scene.videoUrl, 'video', name, false);
+                    loaded++;
+                }
+            });
+            
+            if (loaded > 0) {
+                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ' + loaded + ' SCENES LOADED FROM STUDIO';
+                setTimeout(() => {
+                    connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+                }, 3000);
+            }
+        } catch(e) { console.error('loadScenes error:', e); }
+    }
+
     window.addEventListener('load', () => {
         syncUserCredits();
+        loadScenesFromStudio();
         checkActiveStudioStream();
         window.addEventListener('storage', (e) => {
             if (e.key === 'NEURA_ACTIVE_STREAM') checkActiveStudioStream();
             if (e.key === 'md_credits') syncUserCredits();
+            if (e.key === 'md_6scenes') loadScenesFromStudio();
         });
     });
 
