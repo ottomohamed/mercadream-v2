@@ -5,9 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM — PROFILE COMMAND CENTER</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
         body {
             background-color: #060606;
@@ -31,15 +30,6 @@
         .neon-glow:hover {
             box-shadow: 0 0 12px #c8f500;
             border-color: #c8f500;
-        }
-        .technical-crosshair::before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            width: 1px;
-            height: 20px;
-            background: #434933;
         }
     </style>
 <script id="tailwind-config">
@@ -96,32 +86,17 @@
                     "surface-container-high": "#2a2a2a",
                     "on-primary-container": "#546d00"
             },
-            "borderRadius": {
-                    "DEFAULT": "0px",
-                    "lg": "0px",
-                    "xl": "0px",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "unit": "4px",
-                    "margin-desktop": "32px",
-                    "container-max": "1440px",
-                    "margin-mobile": "16px",
-                    "gutter": "16px"
-            },
+            "borderRadius": { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+            "spacing": { "unit": "4px", "margin-desktop": "32px", "container-max": "1440px", "margin-mobile": "16px", "gutter": "16px" },
             "fontFamily": {
-                    "display-lg": ["Sora"],
-                    "technical-sm": ["IBM Plex Mono"],
-                    "headline-lg": ["Sora"],
-                    "body-md": ["Inter"],
-                    "label-xs": ["IBM Plex Mono"]
+                    "display-lg": ["Sora"], "technical-sm": ["IBM Plex Mono"], "headline-lg": ["Sora"], "body-md": ["Inter"], "label-xs": ["IBM Plex Mono"]
             },
             "fontSize": {
                     "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
                     "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
                     "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
                     "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
-                    "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}]
+                    "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
             }
           },
         },
@@ -131,7 +106,7 @@
 <body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
 <div class="scanline-overlay"></div>
 <div class="flex h-screen overflow-hidden">
-<!-- Sidebar Navigation -->
+
 <aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface w-64 z-20">
 <div class="p-6">
 <div class="flex items-center gap-2 mb-8">
@@ -140,10 +115,10 @@
 </div>
 <div class="mb-8 p-4 bg-surface-container-low border border-outline-variant">
 <div class="flex items-center gap-3 mb-2">
-<img alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
+<img id="sidebar-avatar" alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
 <div>
-<p class="font-technical-sm text-label-xs text-primary-fixed">PRO MEMBER</p>
-<p class="font-technical-sm text-label-xs text-on-surface-variant">Studio Tier 1</p>
+<p class="font-technical-sm text-label-xs text-primary-fixed" id="sidebar-tier-label">NO PLAN</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant" id="sidebar-tier-sub">Studio Tier 0</p>
 </div>
 </div>
 </div>
@@ -185,8 +160,16 @@
 </a>
 </div>
 </aside>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
+<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<span class="material-symbols-outlined text-on-surface-variant">movie_filter</span>
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="material-symbols-outlined text-on-surface-variant">bolt</span>
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</nav>
+
 <main class="flex-1 overflow-y-auto bg-surface-container-lowest">
-<!-- Top App Bar -->
 <header class="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-outline-variant px-margin-desktop py-4 flex justify-between items-center max-w-container-max mx-auto w-full">
 <div class="flex items-center gap-8">
 <h1 class="font-display-lg text-headline-lg tracking-tighter text-primary-fixed">COMMAND CENTER</h1>
@@ -200,16 +183,15 @@
 <div class="flex items-center gap-4">
 <div class="hidden md:flex bg-surface-variant/30 border border-outline-variant px-3 py-1 items-center gap-2">
 <span class="material-symbols-outlined text-[16px] text-primary-fixed">account_balance_wallet</span>
-<span class="font-technical-sm text-label-xs text-on-surface">2.4k CR</span>
+<span class="font-technical-sm text-label-xs text-on-surface" id="top-wallet-credits">0 CR</span>
 </div>
 <button class="bg-primary-fixed text-on-primary-fixed font-technical-sm text-label-xs px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8f500] transition-all">Upgrade</button>
 <span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">notifications</span>
 </div>
 </header>
+
 <div class="max-w-container-max mx-auto px-margin-desktop py-8 space-y-gutter">
-<!-- SECTION 1: Profile & Stats Split -->
 <section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-<!-- Profile Card -->
 <div class="lg:col-span-5 bg-surface border border-outline-variant p-8 relative overflow-hidden group">
 <div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
 <span class="material-symbols-outlined text-[64px] text-primary-fixed">person_pin</span>
@@ -217,29 +199,29 @@
 <div class="flex flex-col items-center md:flex-row md:items-start gap-8 relative z-10">
 <div class="relative group/avatar">
 <div class="w-32 h-32 border-2 border-primary-fixed p-1">
-<img class="w-full h-full object-cover" data-alt="High-fidelity cinematic portrait of a professional digital artist in a dark, tech-filled studio. The user has a focused expression, illuminated by the neon-acid glow of high-end monitors. The background features complex wiring and server racks, maintaining a surgical cyberpunk aesthetic with deep blacks and sharp yellow accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
+<img id="main-avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
 </div>
 <button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-technical-sm text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors">UPLOAD PHOTO</button>
 </div>
 <div class="flex-1 space-y-4">
 <div>
-<h2 class="font-display-lg text-headline-lg text-primary-fixed">OTTO MERCADREAM</h2>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant">otto.ops@mercadream.tech</p>
+<h2 class="font-display-lg text-headline-lg text-primary-fixed" id="profile-name-display">INITIALIZING...</h2>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="profile-email-display">...</p>
 </div>
-<div class="inline-flex items-center gap-2 bg-primary-container/10 border border-primary-fixed/30 px-3 py-2">
-<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div class="inline-flex items-center gap-2 bg-surface-variant border border-outline-variant px-3 py-2" id="subscription-status-box">
+<span class="material-symbols-outlined text-on-surface-variant" id="subscription-status-icon" style="font-variation-settings: 'FILL' 0;">shield</span>
 <div class="flex flex-col">
-<span class="font-technical-sm text-label-xs text-primary-fixed font-bold">SUBSCRIPTION ACTIVE</span>
-<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase">Director Tier 1 • Resets in 14d</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant font-bold" id="subscription-status-title">NO ACTIVE PLAN</span>
+<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase" id="subscription-status-sub">Initialize subscription</span>
 </div>
 </div>
 <div class="pt-4">
-<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow">EDIT PROFILE</button>
+<button id="edit-profile-btn" class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow">EDIT PROFILE</button>
 </div>
 </div>
 </div>
 </div>
-<!-- Stats Dashboard -->
+
 <div class="lg:col-span-7 grid grid-cols-2 gap-gutter">
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
@@ -247,9 +229,9 @@
 <span class="material-symbols-outlined text-primary-fixed">token</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-primary-fixed leading-none">1,250</p>
+<p class="font-display-lg text-[48px] text-primary-fixed leading-none" id="main-credits-val">0</p>
 <div class="h-1 bg-surface-variant mt-4 w-full">
-<div class="h-full bg-primary-fixed w-[65%]"></div>
+<div class="h-full bg-primary-fixed w-[0%]" id="credits-progress-bar"></div>
 </div>
 </div>
 </div>
@@ -259,8 +241,8 @@
 <span class="material-symbols-outlined text-secondary">movie_creation</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-on-surface leading-none">47</p>
-<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">+12 this month</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="renders-val">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2" id="renders-sub">+0 this month</p>
 </div>
 </div>
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
@@ -269,7 +251,7 @@
 <span class="material-symbols-outlined text-tertiary-fixed-dim">history</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-on-surface leading-none">12</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="recharges-val">0</p>
 <p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">Lifetime total</p>
 </div>
 </div>
@@ -279,17 +261,17 @@
 <span class="material-symbols-outlined text-primary-fixed-dim">folder_shared</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-on-surface leading-none">08</p>
-<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">1.2 GB utilized</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="assets-val">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2" id="assets-sub">0.0 GB utilized</p>
 </div>
 </div>
 </div>
 </section>
-<!-- SECTION 2: Billing History Table -->
+
 <section class="bg-surface border border-outline-variant overflow-hidden">
 <div class="bg-surface-variant/20 px-6 py-3 border-b border-outline-variant flex justify-between items-center">
-<h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
-<span class="font-technical-sm text-label-xs text-on-surface-variant">System Time: 2024.05.24 // 14:02 UTC</span>
+<h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing & Transaction Log</h3>
+<span class="font-technical-sm text-label-xs text-on-surface-variant" id="system-time-display">System Time: --:-- UTC</span>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left font-technical-sm text-technical-sm">
@@ -302,63 +284,28 @@
 <th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider text-right">Status</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/30">
-<tr class="hover:bg-surface-variant/10 transition-colors">
-<td class="px-6 py-4 text-on-surface">2024.05.20</td>
-<td class="px-6 py-4 text-on-surface">Premium Render Pack (L)</td>
-<td class="px-6 py-4 text-primary-fixed">+500 CR</td>
-<td class="px-6 py-4 text-on-surface-variant">$49.99</td>
-<td class="px-6 py-4 text-right">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
-<span class="w-1 h-1 bg-primary-fixed rounded-full animate-ping"></span>
-                                            COMPLETED
-                                        </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-variant/10 transition-colors">
-<td class="px-6 py-4 text-on-surface">2024.05.12</td>
-<td class="px-6 py-4 text-on-surface">Director Monthly Sub</td>
-<td class="px-6 py-4 text-primary-fixed">+1000 CR</td>
-<td class="px-6 py-4 text-on-surface-variant">$99.00</td>
-<td class="px-6 py-4 text-right">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
-                                            COMPLETED
-                                        </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-variant/10 transition-colors">
-<td class="px-6 py-4 text-on-surface">2024.04.15</td>
-<td class="px-6 py-4 text-on-surface">Asset Storage Upgrade</td>
-<td class="px-6 py-4 text-on-surface-variant">--</td>
-<td class="px-6 py-4 text-on-surface-variant">$15.00</td>
-<td class="px-6 py-4 text-right">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
-                                            COMPLETED
-                                        </span>
-</td>
-</tr>
+<tbody class="divide-y divide-outline-variant/30" id="billing-history-body">
 </tbody>
 </table>
 </div>
 </section>
-<!-- SECTION 3: Bottom Widgets -->
+
 <section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-<!-- REFER & EARN BOX -->
 <div class="bg-surface border border-outline-variant p-8 flex flex-col">
 <div class="mb-6">
-<h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER &amp; EARN</h3>
+<h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER & EARN</h3>
 <p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
 </div>
 <div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-<span class="font-technical-sm text-headline-lg tracking-widest text-on-surface">MERCADREAM-OTTO-4829</span>
+<span class="font-technical-sm text-headline-lg tracking-widest text-on-surface" id="ref-code-display">FETCHING...</span>
 <div class="flex gap-2">
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Copy Code">
+<button id="copy-ref-btn" class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Copy Code">
 <span class="material-symbols-outlined">content_copy</span>
 </button>
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share WhatsApp">
+<button id="whatsapp-ref-btn" class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share WhatsApp">
 <span class="material-symbols-outlined">share</span>
 </button>
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share Twitter/X">
+<button id="twitter-ref-btn" class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share Twitter/X">
 <span class="material-symbols-outlined">alternate_email</span>
 </button>
 </div>
@@ -381,19 +328,18 @@
 <div class="flex gap-8">
 <div>
 <p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Friends</p>
-<p class="font-display-lg text-headline-lg text-on-surface">3</p>
+<p class="font-display-lg text-headline-lg text-on-surface" id="friends-count">0</p>
 </div>
 <div>
 <p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Earned</p>
-<p class="font-display-lg text-headline-lg text-primary-fixed">45 <span class="text-label-xs uppercase">CR</span></p>
+<p class="font-display-lg text-headline-lg text-primary-fixed" id="friends-earned">0 <span class="text-label-xs uppercase">CR</span></p>
 </div>
 </div>
 <span class="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
 </div>
 </div>
-<!-- HOW TO USE BOX -->
+
 <div class="bg-surface border border-outline-variant p-8 flex flex-col relative overflow-hidden">
-<!-- Technical Crosshair Decor -->
 <div class="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary-fixed/20"></div>
 <div class="mb-8">
 <div class="flex items-center gap-3 mb-4">
@@ -433,11 +379,11 @@
 </div>
 </section>
 </div>
-<!-- Footer -->
+
 <footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
-<p class="font-technical-sm text-label-xs text-on-surface-variant">© 2024 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant">© 2026 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
 <div class="flex gap-4">
 <a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Privacy Protocol</a>
 <a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Service Terms</a>
@@ -460,27 +406,192 @@
 </footer>
 </main>
 </div>
-<!-- Mobile Navigation Bottom Bar -->
-<div class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
-<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
-<span class="material-symbols-outlined text-on-surface-variant">movie_filter</span>
-<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span>
-<span class="material-symbols-outlined text-on-surface-variant">bolt</span>
-<span class="material-symbols-outlined text-on-surface-variant">settings</span>
-</div>
-<script src="/js/navigation.js"></script><script>
-function loadProfile(){var c=parseInt(localStorage.getItem("md_credits")||"0");var plan=localStorage.getItem("md_plan")||"free";var name=localStorage.getItem("md_name")||"MERCADREAM USER";var renders=parseInt(localStorage.getItem("md_renders")||"0");var recharges=parseInt(localStorage.getItem("md_recharges")||"0");var cEl=document.querySelector("[class*=text-primary-fixed][class*=text-\\\\[48px\\\\]]");if(cEl)cEl.textContent=c.toLocaleString();var rEls=document.querySelectorAll("[class*=text-on-surface][class*=text-\\\\[48px\\\\]]");if(rEls[0])rEls[0].textContent=renders;if(rEls[1])rEls[1].textContent=recharges;var shields={free:"NO PLAN",creator:"CREATOR SHIELD",pro:"PRO SHIELD",studio:"STUDIO SHIELD"};var shieldEl=document.querySelector(".text-primary-fixed.font-bold");if(shieldEl)shieldEl.textContent=shields[plan]||"NO PLAN";}
-var savedAvatar=localStorage.getItem("md_avatar");if(savedAvatar){var img=document.querySelector(".w-32.h-32 img");if(img)img.src=savedAvatar;}
-var uploadBtn=document.querySelector("button.absolute.-bottom-2");if(uploadBtn)uploadBtn.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="image/*";i.onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){var img=document.querySelector(".w-32.h-32 img");if(img)img.src=ev.target.result;localStorage.setItem("md_avatar",ev.target.result);};r.readAsDataURL(f);};i.click();};
-var refCode=localStorage.getItem("md_ref_code")||("MERCADREAM-"+Math.random().toString(36).substring(2,6).toUpperCase()+"-"+Math.floor(1000+Math.random()*9000));localStorage.setItem("md_ref_code",refCode);var codeEl=document.querySelector(".tracking-widest.text-on-surface");if(codeEl)codeEl.textContent=refCode;
-var copyBtn=document.querySelector("button[title=Copy Code]");if(copyBtn)copyBtn.onclick=function(){navigator.clipboard.writeText(refCode).then(function(){copyBtn.querySelector(".material-symbols-outlined").textContent="check";setTimeout(function(){copyBtn.querySelector(".material-symbols-outlined").textContent="content_copy";},2000);});};
-var waBtn=document.querySelector("button[title=Share WhatsApp]");if(waBtn)waBtn.onclick=function(){window.open("https://wa.me/?text=Join MercaDream with my code "+refCode+"! https://mercadream-v2.vercel.app");};
-var twBtn=document.querySelector("button[title=Share Twitter/X]");if(twBtn)twBtn.onclick=function(){window.open("https://twitter.com/intent/tweet?text=Join MercaDream "+refCode+" mercadream-v2.vercel.app");};
-document.querySelectorAll("nav a,aside nav a").forEach(function(a){var t=a.textContent.trim().toLowerCase();if(t.includes("studio")||t.includes("production"))a.href="studio.html";else if(t.includes("assembly"))a.href="assembly.html";else if(t.includes("marketplace"))a.href="directors.html";else if(t.includes("power")||t.includes("bolt"))a.href="pricing.html";else if(t.includes("dashboard"))a.href="directors.html";});
-var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};
-var upgBtn=document.querySelector("button.bg-primary-fixed.text-on-primary-fixed");if(upgBtn)upgBtn.onclick=function(){window.location.href="pricing.html";};
-var editBtn=document.querySelector("button.border.border-primary-fixed");if(editBtn)editBtn.onclick=function(){var n=prompt("Enter your name:",localStorage.getItem("md_name")||"");if(n){localStorage.setItem("md_name",n);loadProfile();}};
-window.addEventListener("load",function(){loadProfile();if(window.MD)window.MD.updateCredits();});
-</script></body></html>
 
+<script src="/js/navigation.js"></script>
 
+<script>
+// تحديث الوقت المباشر للوحة التحكّم
+const now = new Date();
+const timeString = now.getUTCFullYear() + "." + String(now.getUTCMonth()+1).padStart(2,'0') + "." + String(now.getUTCDate()).padStart(2,'0') + " // " + String(now.getUTCHours()).padStart(2,'0') + ":" + String(now.getUTCMinutes()).padStart(2,'0') + " UTC";
+const sysTimeEl = document.getElementById("system-time-display");
+if(sysTimeEl) sysTimeEl.textContent = "System Time: " + timeString;
+
+// دالة توليد كود فريد بناءً على نص (البريد الإلكتروني مثلاً) لضمان عدم تكراره واختلافه لكل مستخدم
+function generateDeterministicCode(seed) {
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+        hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const part1 = Math.abs(hash).toString(36).substring(0, 4).toUpperCase();
+    const part2 = Math.abs(hash * 31).toString(36).substring(0, 4).toUpperCase();
+    return "MD-" + part1 + "-" + part2;
+}
+
+function loadProfileData() {
+    var credits = parseInt(localStorage.getItem("md_credits") || "0");
+    var plan = localStorage.getItem("md_plan") || "free";
+    var username = localStorage.getItem("md_name") || "NEW_NODE_" + Math.floor(1000 + Math.random() * 9000);
+    var email = localStorage.getItem("md_email") || "guest.ops@mercadream.tech";
+    var renders = parseInt(localStorage.getItem("md_renders") || "0");
+    var recharges = parseInt(localStorage.getItem("md_recharges") || "0");
+    var assets = parseFloat(localStorage.getItem("md_assets_size") || "0.0");
+    var friendsCount = parseInt(localStorage.getItem("md_friends_referred") || "0");
+    var friendsEarned = parseInt(localStorage.getItem("md_credits_earned") || "0");
+    
+    // استخراج وتوليد كود الإحالة الفريد بناءً على بريد المستخدم الفعلي لضمان التغير والفردية ثنائية الاتجاه
+    var currentRef = generateDeterministicCode(email);
+    localStorage.setItem("md_ref_code", currentRef);
+    
+    var refCodeEl = document.getElementById("ref-code-display");
+    if(refCodeEl) refCodeEl.textContent = currentRef;
+
+    // ربط الأزرار بالكود الفريد المستخرج
+    setupReferralActions(currentRef);
+
+    // تحديث النصوص والواجهات
+    var nameEl = document.getElementById("profile-name-display");
+    if(nameEl) nameEl.textContent = username.toUpperCase();
+    
+    var emailEl = document.getElementById("profile-email-display");
+    if(emailEl) emailEl.textContent = email;
+
+    var cMainEl = document.getElementById("main-credits-val");
+    if(cMainEl) cMainEl.textContent = credits.toLocaleString();
+    
+    var cTopEl = document.getElementById("top-wallet-credits");
+    if(cTopEl) cTopEl.textContent = credits + " CR";
+    
+    var progress = credits > 0 ? Math.min((credits / 2000) * 100, 100) : 0;
+    var barEl = document.getElementById("credits-progress-bar");
+    if(barEl) barEl.style.width = progress + "%";
+
+    var rendersEl = document.getElementById("renders-val");
+    if(rendersEl) rendersEl.textContent = renders;
+    var rendersSub = document.getElementById("renders-sub");
+    if(rendersSub) rendersSub.textContent = "+" + renders + " this month";
+    
+    var rechargesEl = document.getElementById("recharges-val");
+    if(rechargesEl) rechargesEl.textContent = recharges;
+    
+    var assetsEl = document.getElementById("assets-val");
+    if(assetsEl) assetsEl.textContent = assets > 0 ? assets.toFixed(1) : "0";
+    var assetsSub = document.getElementById("assets-sub");
+    if(assetsSub) assetsSub.textContent = assets.toFixed(1) + " GB utilized";
+
+    // لوحة حالة باقة الاشتراك
+    var shieldIcon = document.getElementById("subscription-status-icon");
+    var shieldTitle = document.getElementById("subscription-status-title");
+    var shieldSub = document.getElementById("subscription-status-sub");
+    var statusBox = document.getElementById("subscription-status-box");
+    var sidebarTier = document.getElementById("sidebar-tier-label");
+    var sidebarTierSub = document.getElementById("sidebar-tier-sub");
+
+    if (plan === "free" || plan === "") {
+        if(shieldTitle) shieldTitle.textContent = "NO ACTIVE PLAN";
+        if(shieldSub) shieldSub.textContent = "Initialize subscription";
+        if(shieldIcon) {
+            shieldIcon.textContent = "shield";
+            shieldIcon.style.variationSettings = "'FILL' 0";
+            shieldIcon.className = "material-symbols-outlined text-on-surface-variant";
+        }
+        if(statusBox) statusBox.className = "inline-flex items-center gap-2 bg-surface-variant border border-outline-variant px-3 py-2";
+        if(sidebarTier) sidebarTier.textContent = "NO PLAN";
+        if(sidebarTierSub) sidebarTierSub.textContent = "Studio Tier 0";
+    } else {
+        var plansDict = { creator: "CREATOR SHIELD", pro: "PRO SHIELD", studio: "STUDIO SHIELD" };
+        if(shieldTitle) shieldTitle.textContent = plansDict[plan] || "ACTIVE PLAN";
+        if(shieldSub) shieldSub.textContent = "Premium Node Enabled";
+        if(shieldIcon) {
+            shieldIcon.textContent = "shield";
+            shieldIcon.style.variationSettings = "'FILL' 1";
+            shieldIcon.className = "material-symbols-outlined text-primary-fixed";
+        }
+        if(statusBox) statusBox.className = "inline-flex items-center gap-2 bg-primary-container/10 border border-primary-fixed/30 px-3 py-2";
+        if(sidebarTier) sidebarTier.textContent = plan.toUpperCase() + " MEMBER";
+        if(sidebarTierSub) sidebarTierSub.textContent = "Studio " + (plan === "pro" ? "Tier 1" : "Tier 2");
+    }
+
+    // بناء جدول المعاملات والعمليات المالية
+    var tableBody = document.getElementById("billing-history-body");
+    var rawLogs = localStorage.getItem("md_billing_history"); 
+    
+    if(!rawLogs || JSON.parse(rawLogs).length === 0) {
+        if(tableBody) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-on-surface-variant opacity-60 font-technical-sm tracking-wider uppercase">
+                        -- Node Terminal Secured: No Transaction History Found --
+                    </td>
+                </tr>
+            `;
+        }
+    } else {
+        var logs = JSON.parse(rawLogs);
+        var html = "";
+        logs.forEach(function(item){
+            html += `<tr class="hover:bg-surface-variant/10 transition-colors">
+                <td class="px-6 py-4 text-on-surface">${item.date}</td>
+                <td class="px-6 py-4 text-on-surface">${item.desc}</td>
+                <td class="px-6 py-4 text-primary-fixed">${item.credits}</td>
+                <td class="px-6 py-4 text-on-surface-variant">${item.amount}</td>
+                <td class="px-6 py-4 text-right"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">COMPLETED</span></td>
+            </tr>`;
+        });
+        if(tableBody) tableBody.innerHTML = html;
+    }
+
+    // تحديث أعداد المشتركين المحالين والأرباح الفعلية
+    var friendsCountEl = document.getElementById("friends-count");
+    if(friendsCountEl) friendsCountEl.textContent = friendsCount;
+    var friendsEarnedEl = document.getElementById("friends-earned");
+    if(friendsEarnedEl) friendsEarnedEl.innerHTML = friendsEarned + ` <span class="text-label-xs uppercase">CR</span>`;
+}
+
+// دالة إعداد الأزرار لتأخذ الكود الفريد الناتج بدقة وتمنع ظهور الأكواد المؤقتة
+function setupReferralActions(refCode) {
+    var copyBtn = document.getElementById("copy-ref-btn");
+    if(copyBtn) {
+        copyBtn.onclick = function(){
+            navigator.clipboard.writeText(refCode).then(function(){
+                var icon = copyBtn.querySelector(".material-symbols-outlined");
+                if(icon) {
+                    icon.textContent = "check";
+                    setTimeout(function(){ icon.textContent = "content_copy"; }, 2000);
+                }
+            });
+        };
+    }
+
+    var whatsappBtn = document.getElementById("whatsapp-ref-btn");
+    if(whatsappBtn) {
+        whatsappBtn.onclick = function(){
+            window.open("https://wa.me/?text=" + encodeURIComponent("Join MercaDream with my unique cinematic uplink code [" + refCode + "] to claim your rendering bonus! https://mercadream.tech"));
+        };
+    }
+
+    var twitterBtn = document.getElementById("twitter-ref-btn");
+    if(twitterBtn) {
+        twitterBtn.onclick = function(){
+            window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent("Expanding the collective. Initialize your studio node on MercaDream with my unique code: " + refCode + " #AI #Cinematic"));
+        };
+    }
+}
+
+// معالجة ومزامنة الصورة الشخصية (الأفاتار)
+var savedAvatar = localStorage.getItem("md_avatar");
+if(savedAvatar){
+    var img1 = document.getElementById("sidebar-avatar");
+    var img2 = document.getElementById("main-avatar");
+    if(img1) img1.src = savedAvatar;
+    if(img2) img2.src = savedAvatar;
+}
+
+var uploadBtn = document.querySelector("button.absolute.-bottom-2");
+if(uploadBtn) {
+    uploadBtn.onclick = function(){
+        var i = document.createElement("input");
+        i.type = "file"; i.accept = "image/*";
+        i.onchange = function(e){
+            var f = e.target.files[0]; if(!f) return;
+            var r = new FileReader();
+            r.onload = function(ev){
