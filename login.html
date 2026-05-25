@@ -1,203 +1,144 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM � Sign In</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+<title>MERCADREAM — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-:root{--acid:#c8ff00;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060606;color:var(--text);font-family:'Inter',sans-serif;min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
-body.lang-ar{direction:rtl;font-family:'Cairo',sans-serif}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,255,0,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
-.left{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 60px;background:var(--s2);border-right:1px solid var(--border);overflow-y:auto;position:relative;z-index:1}
-.left-inner{width:100%;max-width:380px}
-.right{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.orb{position:absolute;border-radius:50%;filter:blur(130px);pointer-events:none}
-.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,255,0,0.04),transparent);top:-100px;right:-80px}
-.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(255,186,63,0.025),transparent);bottom:-80px;left:-80px}
-.right-content{position:relative;z-index:2;padding:40px;max-width:440px;width:100%}
-.logo-wrap{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:32px}
-.logo-mark{width:30px;height:30px;border:1px solid var(--border-b);display:flex;align-items:center;justify-content:center;background:rgba(200,255,0,0.04);font-family:var(--display);font-size:7px;font-weight:900;color:var(--acid);letter-spacing:1px}
-.logo-name{font-family:var(--display);font-size:13px;font-weight:900;color:var(--text-bright);letter-spacing:3px}
-.logo-name span{color:var(--acid)}
-.lang-sw{display:flex;gap:2px;background:var(--s3);border:1px solid var(--border);padding:2px;margin-bottom:28px}
-.lb{font-family:var(--mono);font-size:8px;padding:4px 9px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.lb.on{background:var(--acid);color:#000;font-weight:700}
-.form-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--text-bright);letter-spacing:1px;margin-bottom:4px}
-.form-sub{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:.5px;margin-bottom:24px}
-.form-sub a{color:var(--acid);text-decoration:none}
-.field{margin-bottom:14px}
-.field-label{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;display:block;text-transform:uppercase}
-.field-wrap{position:relative}
-.fi{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-dim)}
-input{width:100%;background:var(--s3);border:1px solid var(--border);padding:10px 12px 10px 34px;color:var(--text-bright);font-family:var(--mono);font-size:11px;letter-spacing:1px;outline:none;transition:border-color .2s}
-input:focus{border-color:var(--border-b)}
-input::placeholder{color:var(--text-dim)}
-.divider{display:flex;align-items:center;gap:10px;margin:18px 0}
-.divider-line{flex:1;height:1px;background:var(--border)}
-.divider-text{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--text-dim)}
-.btn-google{width:100%;padding:11px;background:transparent;border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
-.btn-google:hover{border-color:var(--border-b);color:var(--text-bright)}
-.btn-submit{width:100%;padding:12px;background:var(--acid);color:#000;border:none;font-family:var(--display);font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;margin-bottom:12px;clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
-.btn-submit:hover{background:#d4ff1a}
-.btn-submit:disabled{background:var(--s4);color:var(--text-dim);cursor:not-allowed}
-.btn-text{width:100%;padding:8px;background:transparent;border:none;font-family:var(--mono);font-size:9px;color:var(--text-dim);cursor:pointer;transition:color .2s}
-.btn-text:hover{color:var(--acid)}
-.alert{padding:8px 12px;border:1px solid rgba(255,80,80,0.3);background:rgba(255,80,80,0.06);font-family:var(--mono);font-size:9px;color:#ff5050;margin-bottom:12px;display:none}
+body{background:#060606;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.bg{background-image:linear-gradient(rgba(168,215,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(168,215,0,0.03) 1px,transparent 1px);background-size:40px 40px;position:fixed;inset:0;pointer-events:none}
+input{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;color:#e2e4d1;padding:12px 14px;font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
+input:focus{border-color:#a8d700}
+.btn-main{width:100%;padding:14px;background:#a8d700;border:none;color:#060606;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:3px;transition:all .2s}
+.btn-main:hover{background:#c8ff00}
+.btn-main:disabled{opacity:.5;cursor:not-allowed}
+.btn-google{width:100%;padding:12px;background:transparent;border:1px solid #2a2a2a;color:#888;font-family:inherit;font-size:11px;cursor:pointer;letter-spacing:2px;transition:all .2s}
+.btn-google:hover{border-color:#a8d700;color:#a8d700}
+a{color:#a8d700;text-decoration:none}
+a:hover{color:#c8ff00}
+.alert{padding:10px;font-size:10px;letter-spacing:1px;display:none;margin-top:8px}
 .alert.show{display:block}
-.alert.ok{border-color:rgba(200,255,0,0.3);background:rgba(200,255,0,0.04);color:var(--acid)}
-.rp-dot{width:5px;height:5px;border-radius:50%;background:var(--acid);animation:blink 1.4s infinite;display:inline-block;margin-right:8px}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-.rp-title{font-family:var(--display);font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--text-bright);line-height:1.1;margin-bottom:12px;margin-top:20px}
-.rp-title span{color:var(--acid)}
-.rp-sub{font-size:13px;color:var(--text);line-height:1.75;margin-bottom:24px;font-weight:300}
-.feat-list{background:var(--s3);border:1px solid var(--border);padding:16px}
-.feat-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px}
-.feat-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(200,255,0,0.04);font-size:12px;color:var(--text)}
-.feat-item:last-child{border-bottom:none;padding-bottom:0}
-.feat-item::before{content:'?';color:var(--acid);font-family:var(--mono);font-size:10px;flex-shrink:0}
-@media(max-width:900px){body{grid-template-columns:1fr}.right{display:none}.left{padding:24px 16px;min-height:100dvh}}
+.alert.err{background:rgba(255,70,70,0.1);border:1px solid rgba(255,70,70,0.3);color:#ff7070}
+.alert.ok{background:rgba(168,215,0,0.1);border:1px solid rgba(168,215,0,0.3);color:#a8d700}
 </style>
 </head>
-<body class="lang-en">
-<div class="left">
-  <div class="left-inner">
-    <a href="index.html" class="logo-wrap">
-      <div class="logo-mark">MD</div>
-      <span class="logo-name">MERCA<span>DREAM</span></span>
-    </a>
-    <div class="lang-sw">
-      <button class="lb on" onclick="setLang('en')">EN</button>
-      <button class="lb" onclick="setLang('es')">ES</button>
-      <button class="lb" onclick="setLang('ar')">AR</button>
-    </div>
-    <div class="form-title" id="ttl">SIGN IN</div>
-    <div class="form-sub" id="sub">New here? <a href="register.html">Create account ?</a></div>
-    <div class="alert" id="alert"></div>
-    <button class="btn-google" onclick="signInGoogle()">
-      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      <span id="gBtn">Continue with Google</span>
-    </button>
-    <div class="divider"><div class="divider-line"></div><div class="divider-text" id="orTxt">OR</div><div class="divider-line"></div></div>
-    <div class="field">
-      <label class="field-label" id="emLbl">EMAIL</label>
-      <div class="field-wrap"><span class="fi">?</span><input type="email" id="em" placeholder="you@mercadream.com"/></div>
-    </div>
-    <div class="field">
-      <label class="field-label" id="pwLbl">PASSWORD</label>
-      <div class="field-wrap"><span class="fi">??</span><input type="password" id="pw" placeholder="��������"/></div>
-    </div>
-    <button class="btn-submit" id="subBtn" onclick="signInEmail()"><span id="subTxt">SIGN IN ?</span></button>
-    <button class="btn-text" id="fgtBtn" onclick="forgotPw()">Forgot password?</button>
+<body>
+<div class="bg"></div>
+<div style="width:100%;max-width:420px;padding:20px">
+  <!-- Logo -->
+  <div style="text-align:center;margin-bottom:32px">
+    <a href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
+    <div style="font-size:9px;color:#444;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
   </div>
-</div>
-<div class="right">
-  <div class="orb orb1"></div><div class="orb orb2"></div>
-  <div class="right-content">
-    <div><div class="rp-dot"></div><span style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid)">AI CINEMA STUDIO</span></div>
-    <div class="rp-title">Welcome<br><span>Back.</span></div>
-    <p class="rp-sub">Your projects, your vault, your films � all waiting for you.</p>
-    <div class="feat-list">
-      <div class="feat-title">YOUR ACCOUNT INCLUDES</div>
-      <div class="feat-item">Dream Extractor� PhD Edition</div>
-      <div class="feat-item">6-scene cinematic film generation</div>
-      <div class="feat-item">Assembly Room & film vault</div>
-      <div class="feat-item">Credit balance & history</div>
+
+  <!-- Card -->
+  <div style="background:#0a0a0a;border:1px solid #1a1a1a;padding:32px">
+    <div style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
+    <div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account →</a></div>
+
+    <!-- Google -->
+    <button class="btn-google" onclick="signInGoogle()">⊕ Continue with Google</button>
+    <div style="text-align:center;margin:16px 0;font-size:9px;color:#333;letter-spacing:3px">OR</div>
+
+    <!-- Email/Password -->
+    <div style="margin-bottom:12px">
+      <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/>
+    </div>
+
+    <button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN →</button>
+    <div id="alert" class="alert"></div>
+
+    <div style="text-align:center;margin-top:16px">
+      <a href="#" onclick="forgotPw();return false" style="font-size:10px;color:#555">Forgot password?</a>
     </div>
   </div>
+
+  <div style="text-align:center;margin-top:16px;font-size:10px;color:#444">
+    <a href="index.html">← Back to Home</a>
+  </div>
 </div>
+
 <script>
-const SURL='https://xvkxogrmewnzwhtghuiz.supabase.co';
-const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
-const sb=supabase.createClient(SURL,SKEY);
-sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='profile.html';});
-async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/profile.html'}});if(error)showAlert(error.message);}
-async function signInEmail(){
-  const em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value;
-  if(!em||!pw)return showAlert('Please enter email and password.');
-  const btn=document.getElementById('subBtn');btn.disabled=true;document.getElementById('subTxt').textContent='SIGNING IN...';
-  const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
-  if(error){btn.disabled=false;document.getElementById('subTxt').textContent=I18N[lang].submit;return showAlert(error.message);}
-  await fetch('/api/credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'check',email:em})});
-  window.location.href='profile.html';
+const SURL = 'https://xvkxogrmewnzwhtghuiz.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
+const sb = supabase.createClient(SURL, SKEY);
+
+// إذا مسجّل مسبقاً → profile مباشرة
+sb.auth.getSession().then(function({data}) {
+  if (data.session) window.location.href = 'profile.html';
+});
+
+function showAlert(msg, type) {
+  var el = document.getElementById('alert');
+  el.textContent = msg;
+  el.className = 'alert show ' + (type || 'err');
 }
-async function forgotPw(){
-  const em=document.getElementById('em').value.trim();
-  if(!em)return showAlert('Enter your email first.');
-  const{error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:window.location.origin+'/register.html?reset=true'});
-  if(error)return showAlert(error.message);
-  showAlert('Check your email for a reset link.','ok');
+
+async function signIn() {
+  var email = document.getElementById('email').value.trim();
+  var pass = document.getElementById('password').value;
+  if (!email || !pass) { showAlert('Enter email and password.'); return; }
+
+  var btn = document.getElementById('signInBtn');
+  btn.textContent = 'AUTHENTICATING...'; btn.disabled = true;
+
+  var r = await sb.auth.signInWithPassword({email: email, password: pass});
+  if (r.error) {
+    showAlert(r.error.message);
+    btn.textContent = 'SIGN IN →'; btn.disabled = false;
+    return;
+  }
+
+  // مسح البيانات القديمة إذا إيميل مختلف
+  var oldEmail = localStorage.getItem('md_email');
+  if (oldEmail && oldEmail !== email) localStorage.clear();
+
+  // حفظ بيانات الجلسة
+  localStorage.setItem('sb_session', '1');
+  localStorage.setItem('md_email', email);
+  localStorage.setItem('md_user_id', r.data.user.id);
+  localStorage.setItem('md_user', JSON.stringify(r.data.user));
+
+  // جلب الرصيد من Supabase
+  var p = await sb.from('profiles').select('credits,plan').eq('id', r.data.user.id).single();
+  if (p.data) {
+    localStorage.setItem('md_credits', p.data.credits || 0);
+    localStorage.setItem('md_plan', p.data.plan || 'free');
+  } else {
+    localStorage.setItem('md_credits', '0');
+    localStorage.setItem('md_plan', 'free');
+  }
+
+  window.location.href = 'profile.html';
 }
-function showAlert(msg,type='err'){const b=document.getElementById('alert');b.textContent=msg;b.className='alert show'+(type==='ok'?' ok':'');}
-const I18N={
-  en:{ttl:'SIGN IN',sub:'New here? <a href="register.html">Create account ?</a>',gBtn:'Continue with Google',or:'OR',emLbl:'EMAIL',pwLbl:'PASSWORD',submit:'SIGN IN ?',fgt:'Forgot password?'},
-  es:{ttl:'INICIAR SESI�N',sub:'�Nuevo? <a href="register.html">Crear cuenta ?</a>',gBtn:'Continuar con Google',or:'O',emLbl:'CORREO',pwLbl:'CONTRASE�A',submit:'INICIAR SESI�N ?',fgt:'�Olvidaste tu contrase�a?'},
-  ar:{ttl:'????? ??????',sub:'????? <a href="register.html">????? ???? ?</a>',gBtn:'???????? ?? Google',or:'??',emLbl:'?????? ??????????',pwLbl:'???? ??????',submit:'???? ?',fgt:'???? ???? ???????'}
-};
-let lang='en';
-function setLang(l){lang=l;document.documentElement.lang=l;document.body.className=l==='ar'?'lang-ar':'lang-en';document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));const tx=I18N[l];document.getElementById('ttl').textContent=tx.ttl;document.getElementById('sub').innerHTML=tx.sub;document.getElementById('gBtn').textContent=tx.gBtn;document.getElementById('orTxt').textContent=tx.or;document.getElementById('emLbl').textContent=tx.emLbl;document.getElementById('pwLbl').textContent=tx.pwLbl;document.getElementById('subTxt').textContent=tx.submit;document.getElementById('fgtBtn').textContent=tx.fgt;localStorage.setItem('md_lang',l);}
-window.onload=()=>setLang(localStorage.getItem('md_lang')||'en');
+
+async function signInGoogle() {
+  var {error} = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {redirectTo: window.location.origin + '/profile.html'}
+  });
+  if (error) showAlert(error.message);
+}
+
+async function forgotPw() {
+  var email = document.getElementById('email').value.trim();
+  if (!email) { showAlert('Enter your email first.'); return; }
+  var {error} = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/register.html?reset=true'
+  });
+  if (error) showAlert(error.message);
+  else showAlert('Check your email for a reset link.', 'ok');
+}
 </script>
-<script src="/js/navigation.js"></script><script>const SUPA_URL="https://xvkxogrmewnzwhtghuiz.supabase.co";
-const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ5MDI0MDAsImV4cCI6MjAzMDQ3ODQwMH0.placeholder";
-const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
-async function handleLogin(e){
-  e.preventDefault();
-  var email=document.querySelector("input[type=email]").value;
-  var pass=document.querySelector("input[type=password]").value;
-  var btn=document.querySelector("button[type=submit]")||document.querySelector("button.submit")||document.querySelector("button");
-  if(btn){btn.textContent="AUTHENTICATING...";btn.disabled=true;}
-  var r=await sb.auth.signInWithPassword({email:email,password:pass});
-  if(r.error){alert("Error: "+r.error.message);if(btn){btn.textContent="SIGN IN";btn.disabled=false;}return;}
-  localStorage.setItem("md_user",JSON.stringify(r.data.user));
-  localStorage.setItem("md_email",r.data.user.email);
-  localStorage.setItem("sb_session","1");
-  var p=await sb.from("profiles").select("credits,plan").eq("id",r.data.user.id).single();
-  if(p.data){localStorage.setItem("md_credits",p.data.credits||0);localStorage.setItem("md_plan",p.data.plan||"free");}
-  window.location.href="profile.html";
-}
-window.addEventListener("load",function(){
-  if(localStorage.getItem("sb_session")){window.location.href="profile.html";return;}
-  var form=document.querySelector("form");
-  if(form)form.onsubmit=handleLogin;
-  else{var btn=document.querySelector("button");if(btn)btn.onclick=handleLogin;}
-});
-</script><script>
-var SUPA_URL='https://xvkxogrmewnzwhtghuiz.supabase.co';
-var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
-var sb=supabase.createClient(SUPA_URL,SUPA_KEY);
-async function handleLogin(e){
-  if(e)e.preventDefault();
-  var email=document.querySelector('input[type=email]').value.trim();
-  var pass=document.querySelector('input[type=password]').value;
-  if(!email||!pass){alert('Enter email and password.');return;}
-  var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
-  if(btn){btn.textContent='AUTHENTICATING...';btn.disabled=true;}
-  var r=await sb.auth.signInWithPassword({email:email,password:pass});
-  if(r.error){alert('Error: '+r.error.message);if(btn){btn.textContent='SIGN IN';btn.disabled=false;}return;}
-  localStorage.setItem('md_user',JSON.stringify(r.data.user));
-  localStorage.setItem('md_email',r.data.user.email);
-  var oldEmail=localStorage.getItem('md_email');if(oldEmail&&oldEmail!==email)localStorage.clear();
-  localStorage.setItem('sb_session','1');
-  var p=await sb.from('profiles').select('credits,plan').eq('id',r.data.user.id).single();
-  if(p && p.data){localStorage.setItem('md_credits',p.data.credits||0);localStorage.setItem('md_plan',p.data.plan||'free');}
-  else{localStorage.setItem('md_credits','0');}
-  window.location.href='profile.html';
-}
-window.addEventListener('load',function(){
-  if(localStorage.getItem('sb_session')){window.location.href='profile.html';return;}
-  var form=document.querySelector('form');
-  if(form)form.onsubmit=handleLogin;
-  var btn=document.querySelector('button[type=submit]')||document.querySelector('button');
-  if(btn&&!form)btn.onclick=handleLogin;
-});
-</script></body>
+<script src="/js/navigation.js"></script>
+</body>
 </html>
-
-
-
-
-
