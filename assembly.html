@@ -315,12 +315,206 @@
         syncUserCredits();
         loadScenesFromStudio();
         checkActiveStudioStream();
+        setupExportButton();
+        setupVolumeControls();
         window.addEventListener('storage', (e) => {
             if (e.key === 'NEURA_ACTIVE_STREAM') checkActiveStudioStream();
             if (e.key === 'md_credits') syncUserCredits();
             if (e.key === 'md_6scenes') loadScenesFromStudio();
         });
     });
+
+    // ══════════════════════════════════════════
+    // 🎚️ VOLUME CONTROLS
+    // ══════════════════════════════════════════
+    function setupVolumeControls() {
+        // إضافة volume slider للـ video player
+        const monitorContainer = document.getElementById('videoMonitorContainer');
+        if (!monitorContainer) return;
+        
+        const volDiv = document.createElement('div');
+        volDiv.className = 'absolute bottom-2 right-2 flex items-center gap-2 bg-black/70 px-2 py-1 rounded z-10';
+        volDiv.innerHTML = '<span class="material-symbols-outlined text-white text-sm">volume_up</span>'
+            + '<input type="range" id="masterVolume" min="0" max="1" step="0.05" value="0.8" class="w-20 accent-lime-400">'
+            + '<button onclick="toggleMute()" id="muteBtn" class="text-white text-xs font-bold">MUTE</button>';
+        monitorContainer.appendChild(volDiv);
+        
+        document.getElementById('masterVolume').addEventListener('input', function() {
+            mainVideoPlayer.volume = parseFloat(this.value);
+            mainAudioTrack1.volume = parseFloat(this.value);
+            mainAudioTrack2.volume = parseFloat(this.value);
+        });
+        
+        // unmute للـ video player
+        mainVideoPlayer.muted = false;
+        mainVideoPlayer.volume = 0.8;
+    }
+    
+    function toggleMute() {
+        const btn = document.getElementById('muteBtn');
+        mainVideoPlayer.muted = !mainVideoPlayer.muted;
+        mainAudioTrack1.muted = !mainAudioTrack1.muted;
+        btn.textContent = mainVideoPlayer.muted ? 'UNMUTE' : 'MUTE';
+        btn.style.color = mainVideoPlayer.muted ? '#ff4444' : 'white';
+    }
+
+    // ══════════════════════════════════════════
+    // 🎬 EXPORT & MERGE VIDEOS
+    // ══════════════════════════════════════════
+    function setupExportButton() {
+        const btn = document.getElementById('startExportBtn');
+        if (!btn) return;
+        btn.addEventListener('click', exportMasterSequence);
+    }
+
+    async function exportMasterSequence() {
+        const btn = document.getElementById('startExportBtn');
+        
+        // جمع كل الـ video clips من الـ timeline بالترتيب
+        const videoClips = [];
+        const tracks = ['v1Track', 'v2Track'];
+        
+        tracks.forEach(function(trackId) {
+            const track = document.getElementById(trackId);
+            if (!track) return;
+            const clips = Array.from(track.querySelectorAll('.timeline-clip[data-type="video"]'));
+            clips.sort((a, b) => parseFloat(a.style.left) - parseFloat(b.style.left));
+            clips.forEach(function(clip) {
+                if (clip.dataset.src) videoClips.push(clip.dataset.src);
+            });
+        });
+
+        if (!videoClips.length) {
+            // إذا لم يوجد clips في timeline — استخدم md_6scenes مباشرة
+            const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+            const urls = scenes.filter(s => s.videoUrl).map(s => s.videoUrl);
+            if (!urls.length) {
+                alert('No videos to export. Generate scenes first.');
+                return;
+            }
+            await downloadVideosAsZip(urls, btn);
+            return;
+        }
+
+        await downloadVideosAsZip(videoClips, btn);
+    }
+
+    async function downloadVideosAsZip(urls, btn) {
+        if (btn) { btn.textContent = 'PREPARING...'; btn.disabled = true; }
+        
+        // إذا فيديو واحد فقط — تنزيله مباشرة
+        if (urls.length === 1) {
+            const a = document.createElement('a');
+            a.href = urls[0];
+            a.download = 'mercadream_scene_1.mp4';
+            a.target = '_blank';
+            a.click();
+            if (btn) { btn.textContent = 'Render Master Sequence'; btn.disabled = false; }
+            return;
+        }
+
+        // تنزيل كل فيديو بشكل منفصل مع أسماء مرتبة
+        if (btn) btn.textContent = 'DOWNLOADING ' + urls.length + ' SCENES...';
+        
+        for (let i = 0; i < urls.length; i++) {
+            await new Promise(function(resolve) { setTimeout(resolve, 500); });
+            const a = document.createElement('a');
+            a.href = urls[i];
+            a.download = 'mercadream_scene_' + (i+1).toString().padStart(2,'0') + '.mp4';
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        
+        // محاولة دمج الفيديوهات في المتصفح
+        if (btn) btn.textContent = 'MERGING IN BROWSER...';
+        await mergeVideosInBrowser(urls, btn);
+    }
+
+    async function mergeVideosInBrowser(urls, btn) {
+        try {
+            // استخدام Canvas API لدمج الفيديوهات
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280;
+            canvas.height = 720;
+            const ctx = canvas.getContext('2d');
+            
+            // إعداد MediaRecorder للـ canvas
+            const stream = canvas.captureStream(30);
+            
+            // إضافة audio track
+            const audioCtx = new AudioContext();
+            const destination = audioCtx.createMediaStreamDestination();
+            stream.addTrack(destination.stream.getAudioTracks()[0]);
+            
+            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9,opus' });
+            const chunks = [];
+            recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+            
+            recorder.onstop = function() {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mercadream_master_' + Date.now() + '.webm';
+                a.click();
+                URL.revokeObjectURL(url);
+                if (btn) { btn.textContent = 'Render Master Sequence'; btn.disabled = false; }
+            };
+            
+            recorder.start();
+            
+            // تشغيل كل فيديو على الـ canvas بالترتيب
+            for (let i = 0; i < urls.length; i++) {
+                if (btn) btn.textContent = 'RENDERING SCENE ' + (i+1) + '/' + urls.length + '...';
+                await renderVideoToCanvas(urls[i], canvas, ctx, audioCtx, destination);
+            }
+            
+            recorder.stop();
+            
+        } catch(err) {
+            console.error('Merge error:', err);
+            if (btn) { 
+                btn.textContent = 'Scenes Downloaded — Check Downloads Folder'; 
+                btn.disabled = false; 
+            }
+        }
+    }
+
+    function renderVideoToCanvas(url, canvas, ctx, audioCtx, destination) {
+        return new Promise(function(resolve) {
+            const video = document.createElement('video');
+            video.crossOrigin = 'anonymous';
+            video.muted = false;
+            video.src = url;
+            
+            // Audio routing
+            try {
+                const source = audioCtx.createMediaElementSource(video);
+                source.connect(destination);
+                source.connect(audioCtx.destination);
+            } catch(e) {}
+            
+            video.addEventListener('canplay', function() {
+                video.play();
+                
+                function drawFrame() {
+                    if (video.ended || video.paused) {
+                        resolve();
+                        return;
+                    }
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    requestAnimationFrame(drawFrame);
+                }
+                drawFrame();
+            }, { once: true });
+            
+            video.addEventListener('ended', resolve, { once: true });
+            video.addEventListener('error', resolve, { once: true });
+            video.load();
+        });
+    }
 
     // ==========================================
     // 🎤 محرك تسجيل الصوت المباشر (Microphone Core)
