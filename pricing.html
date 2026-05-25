@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | POWER STATION</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline-overlay {
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.05) 0px,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+        .surgical-border {
+            border: 1px solid #222222;
+        }
+        .neon-glow {
+            box-shadow: 0 0 12px rgba(192, 245, 0, 0.2);
+        }
+        .neon-glow-hover:hover {
+            box-shadow: 0 0 15px rgba(192, 245, 0, 0.4);
+            border-color: #c0f500;
+        }
+        .cursor-crosshair {
+            cursor: crosshair;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#0e0e0e",
+                      "primary-container": "#c0f500",
+                      "inverse-primary": "#4f6600",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "primary-fixed-dim": "#a8d700",
+                      "surface-dim": "#131313",
+                      "on-secondary": "#432c00",
+                      "on-background": "#e5e2e1",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "on-tertiary-fixed": "#1b1c1c",
+                      "on-surface-variant": "#c4caac",
+                      "on-primary-container": "#546d00",
+                      "on-error-container": "#ffdad6",
+                      "surface-tint": "#a8d700",
+                      "error-container": "#93000a",
+                      "surface-container": "#201f1f",
+                      "on-tertiary-container": "#656464",
+                      "on-error": "#690005",
+                      "primary-fixed": "#c0f500",
+                      "outline": "#8e9479",
+                      "secondary-container": "#c48800",
+                      "surface-bright": "#3a3939",
+                      "primary": "#ffffff",
+                      "on-tertiary": "#303030",
+                      "on-primary-fixed-variant": "#3b4d00",
+                      "on-secondary-fixed-variant": "#604100",
+                      "inverse-surface": "#e5e2e1",
+                      "tertiary-container": "#e5e2e1",
+                      "surface-container-low": "#1c1b1b",
+                      "on-secondary-container": "#3e2800",
+                      "surface-variant": "#353534",
+                      "tertiary-fixed": "#e5e2e1",
+                      "inverse-on-surface": "#313030",
+                      "on-secondary-fixed": "#281900",
+                      "error": "#ffb4ab",
+                      "secondary-fixed-dim": "#ffba3f",
+                      "tertiary": "#ffffff",
+                      "on-surface": "#e5e2e1",
+                      "surface-container-high": "#2a2a2a",
+                      "surface-container-highest": "#353534",
+                      "on-primary-fixed": "#161f00",
+                      "on-primary": "#273500",
+                      "outline-variant": "#434933",
+                      "background": "#131313",
+                      "secondary-fixed": "#ffdeae",
+                      "surface": "#131313",
+                      "secondary": "#ffba3f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "unit": "4px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Sora"],
+                      "technical-sm": ["IBM Plex Mono"],
+                      "display-lg": ["Sora"],
+                      "label-xs": ["IBM Plex Mono"],
+                      "headline-lg": ["Sora"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen font-body-md relative overflow-x-hidden">
+<div class="fixed inset-0 scanline-overlay z-[100] opacity-30 pointer-events-none"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center h-16 px-margin-desktop">
+<div class="flex items-center gap-gutter">
+<button class="active:scale-95 transition-transform flex items-center gap-2 group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-container">arrow_back</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant group-hover:text-primary-container uppercase">Back</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<h1 class="font-display-lg text-[24px] uppercase tracking-tighter text-primary">MERCADREAM | POWER STATION</h1>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Active Credits</span>
+<span class="font-technical-sm text-technical-sm text-primary-container">2,450 CREDITS</span>
+</div>
+<button class="material-symbols-outlined text-primary text-3xl active:scale-95 transition-transform" data-icon="account_circle">account_circle</button>
+</div>
+</header>
+<main class="pt-24 pb-16 px-margin-desktop max-w-container-max mx-auto space-y-12">
+<!-- SECTION 1: RECHARGE -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant">
+<!-- LEFT: CREDIT CALCULATOR -->
+<div class="bg-surface-container-low p-8 flex flex-col justify-between space-y-8">
+<div>
+<div class="flex items-center gap-2 mb-6">
+<div class="w-1 h-4 bg-primary-container"></div>
+<h2 class="font-technical-sm text-technical-sm uppercase text-on-surface-variant">Credit Acquisition Protocol</h2>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-xs text-label-xs text-on-surface-variant uppercase">How many credits?</label>
+<div class="relative">
+<input class="w-full bg-surface border border-outline-variant focus:border-primary-container focus:ring-0 text-primary-container font-technical-sm p-4 text-xl outline-none transition-colors" type="number" value="1000"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 font-technical-sm text-on-surface-variant text-sm">CRDS</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">100</button>
+<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">500</button>
+<button class="surgical-border p-3 font-technical-sm text-technical-sm border-primary-container text-primary-container bg-primary-container/10 active:scale-95">1K</button>
+<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">5K</button>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-outline-variant">
+<div class="flex justify-between items-end mb-6">
+<div>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Unit Cost</span>
+<span class="font-technical-sm text-technical-sm text-primary">$0.10/CREDIT</span>
+</div>
+<div class="text-right">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Total Cost</span>
+<span class="font-headline-lg text-headline-lg text-primary-container">$100.00</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-4 font-headline-lg text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all neon-glow">
+<span class="material-symbols-outlined" data-weight="fill">bolt</span>
+                        BUY CREDITS
+                    </button>
+</div>
+</div>
+<!-- RIGHT: LIVE BALANCE -->
+<div class="bg-surface-container p-8 flex flex-col justify-between border-l border-outline-variant">
+<div class="relative overflow-hidden group">
+<div class="flex justify-between items-start mb-12">
+<div class="space-y-1">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Live Engine Status</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="font-technical-sm text-technical-sm text-primary uppercase">System Optimal</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Member Since</span>
+<span class="font-technical-sm text-technical-sm text-primary">MAY 2026</span>
+</div>
+</div>
+<div class="text-center py-8">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block mb-2">Available Processing Power</span>
+<div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">2,450</div>
+<div class="flex justify-center">
+<span id="credits-label" class="text-primary-container text-xs font-technical-sm tracking-widest">CREDITS</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-6 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center surgical-border bg-surface-dim text-on-surface-variant">
+<span class="material-symbols-outlined text-3xl">shield</span>
+</div>
+<div>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Current Shield</span>
+<span class="font-technical-sm text-technical-sm text-primary uppercase">UNPROTECTED / NO PLAN</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Tier</span>
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase">NONE</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: SUBSCRIPTIONS -->
+<section class="space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-outline-variant pb-6 gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary mb-2">Upgrade Your Arsenal</h2>
+<p class="font-body-md text-on-surface-variant max-w-2xl">Elevate your production workflow with dedicated hardware allocation, priority rendering, and commercial usage rights.</p>
+</div>
+<div class="flex items-center gap-4 p-1 bg-surface-container border border-outline-variant">
+<button class="px-6 py-2 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase">Monthly</button>
+<button class="px-6 py-2 hover:text-primary-container transition-colors font-technical-sm text-technical-sm uppercase">Yearly <span class="text-primary-fixed-dim">(-20%)</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- FREE -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-on-surface-variant transition-colors group cursor-crosshair">
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 surgical-border flex items-center justify-center text-on-surface-variant group-hover:bg-on-surface-variant/10">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase border border-on-surface-variant/20 px-2 py-1">Standard</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">FREE</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$0</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-primary-container text-[10px]">?</span> 100 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-primary-container text-[10px]">?</span> Standard 1080p
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
+<span class="text-primary-container text-[10px]">?</span> Public Asset Gallery
+                        </li>
+</ul>
+<button class="w-full py-4 border border-outline-variant font-technical-sm text-technical-sm uppercase text-on-surface-variant bg-surface-variant/20 cursor-default">
+                        CURRENT PLAN
+                    </button>
+</div>
+<!-- CREATOR -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-primary-fixed-dim transition-all group neon-glow-hover cursor-crosshair">
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 surgical-border flex items-center justify-center text-primary-fixed-dim border-primary-fixed-dim/40 group-hover:border-primary-fixed-dim group-hover:bg-primary-fixed-dim/10">
+<span class="material-symbols-outlined" data-weight="fill">shield</span>
+</div>
+<span class="font-label-xs text-label-xs text-primary-fixed-dim uppercase border border-primary-fixed-dim/40 px-2 py-1">+20% Bonus</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">CREATOR</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$49</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> 1,200 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> 4K Ultra Rendering
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> Private Asset Vault
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> Commercial Rights
+                        </li>
+</ul>
+<button class="w-full py-4 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
+                        UPGRADE NOW
+                    </button>
+</div>
+<!-- PRO -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col border-secondary/40 hover:border-secondary transition-all group cursor-crosshair relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-on-secondary px-3 py-1 font-label-xs text-label-xs uppercase">Elite Choice</div>
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 border border-secondary/40 flex items-center justify-center text-secondary group-hover:bg-secondary/10">
+<span class="material-symbols-outlined" data-weight="fill">shield</span>
+</div>
+<span class="font-label-xs text-label-xs text-secondary uppercase border border-secondary/40 px-2 py-1">+30% Bonus</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">PRO</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$199</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> 5,500 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> 8K Production Grade
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> Early API Access
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> Priority GPU Queue
+                        </li>
+</ul>
+<button class="w-full py-4 bg-secondary text-on-secondary font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_15px_rgba(255,186,63,0.3)]">
+                        UPGRADE NOW
+                    </button>
+</div>
+<!-- STUDIO -->
+<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-primary transition-all group cursor-crosshair">
+<div class="flex justify-between items-start mb-8">
+<div class="w-10 h-10 surgical-border flex items-center justify-center text-primary group-hover:bg-primary/10">
+<span class="material-symbols-outlined" data-weight="fill">diamond</span>
+</div>
+<span class="font-label-xs text-label-xs text-primary uppercase border border-primary/40 px-2 py-1">+40% Bonus</span>
+</div>
+<div class="mb-8">
+<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">STUDIO</h3>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-[32px] text-primary">$499</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
+</div>
+</div>
+<ul class="space-y-4 mb-10 flex-grow">
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> 15,000 Credits / mo
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> Enterprise API Access
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> White Label Export
+                        </li>
+<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
+<span class="text-primary-container text-[10px]">?</span> Dedicated Account Mgr
+                        </li>
+</ul>
+<button class="w-full py-4 bg-primary text-background font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
+                        UPGRADE NOW
+                    </button>
+</div>
+</div>
+</section>
+<!-- DATA VISUALIZER (Visual Break) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant surgical-border">
+<div class="bg-surface p-6 flex flex-col gap-4">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Global GPU Load</span>
+<div class="h-2 w-full bg-surface-container-high relative">
+<div class="absolute inset-y-0 left-0 bg-primary-container w-[74%]"></div>
+</div>
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-on-surface-variant">ALLOCATED: 12,442 TFLOPS</span>
+<span class="text-primary-container">74%</span>
+</div>
+</div>
+<div class="bg-surface p-6 flex flex-col gap-4">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Network Latency</span>
+<div class="flex items-end gap-1 h-8">
+<div class="w-2 h-4 bg-primary-container"></div>
+<div class="w-2 h-6 bg-primary-container"></div>
+<div class="w-2 h-3 bg-primary-container"></div>
+<div class="w-2 h-5 bg-primary-container"></div>
+<div class="w-2 h-8 bg-primary-container"></div>
+<div class="w-2 h-4 bg-primary-container"></div>
+<div class="w-2 h-6 bg-primary-container"></div>
+</div>
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-on-surface-variant">POP: SAN FRANCISCO v.4</span>
+<span class="text-primary-container">12MS</span>
+</div>
+</div>
+<div class="bg-surface p-6 flex flex-col gap-4">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Security Protocol</span>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-sm">lock</span>
+<span class="font-technical-sm text-technical-sm text-primary">ENCRYPTION: AES-256</span>
+</div>
+<div class="flex justify-between font-technical-sm text-[10px]">
+<span class="text-on-surface-variant">VERIFIED: MERCADREAM_SEC</span>
+<span class="text-primary-container">ACTIVE</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center h-8 px-margin-desktop">
+<div class="flex items-center gap-6">
+<span class="font-technical-sm text-label-xs text-primary uppercase">SYSTEM STATUS: OPTIMAL</span>
+<div class="h-3 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-4 text-on-tertiary-fixed-variant font-label-xs">
+<span>GPU: 84%</span>
+<span>LATENCY: 12MS</span>
+<span>VRAM: 22GB/24GB</span>
+</div>
+</div>
+<nav class="flex items-center gap-6">
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Telemetry</a>
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Logs</a>
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Docs</a>
+<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Support</a>
+</nav>
+</footer>
+<script src="/js/navigation.js"></script><script>
+var RATE=0.10,currentPlan=localStorage.getItem("md_plan")||"free";
+
+//  Update balance display 
+function updateBalance(){
+  var c=parseInt(localStorage.getItem("md_credits")||"0");
+  var el=document.querySelector(".font-display-lg.text-primary-container.text-\\[64px\\]");
+  if(el)el.textContent=c.toLocaleString();
+  var hel=document.querySelector(".font-technical-sm.text-technical-sm.text-primary-container");
+  if(hel)hel.textContent=c.toLocaleString()+" CREDITS";
+  updateShield();
+}
+
+//  Shield system 
+function updateShield(){
+  var shields={free:{label:"UNPROTECTED / NO PLAN",tier:"NONE",color:"#a1a1a1"},creator:{label:"CREATOR SHIELD",tier:"CREATOR",color:"#a8d700"},pro:{label:"PRO SHIELD",tier:"PRO",color:"#ffba3f"},studio:{label:"STUDIO SHIELD ",tier:"STUDIO",color:"#ffffff"}};
+  var s=shields[currentPlan]||shields.free;
+  var shieldLabel=document.querySelector(".font-technical-sm.text-primary.uppercase:not(.text-primary-container)");
+  var tierEl=document.querySelector(".font-technical-sm.text-on-surface-variant.uppercase");
+  var shieldIcon=document.querySelector(".material-symbols-outlined.text-3xl");
+  if(shieldLabel)shieldLabel.textContent=s.label;
+  if(tierEl)tierEl.textContent=s.tier;
+  if(shieldIcon)shieldIcon.style.color=s.color;
+}
+
+//  Calculator 
+var input=document.querySelector("input[type=number]");
+var totalEl=document.querySelector(".font-headline-lg.text-primary-container");
+var buyBtn=document.querySelector("button.bg-primary-container.w-full");
+
+function calcTotal(){
+  var amt=parseInt(input.value)||0;
+  var total=(amt*RATE).toFixed(2);
+  if(totalEl)totalEl.textContent="$"+total;
+  if(buyBtn){var span=buyBtn.querySelector("span:last-child")||buyBtn;buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" CREDITS  $"+total;}
+}
+
+if(input)input.oninput=calcTotal;
+
+//  Quick amounts 
+document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
+  btn.onclick=function(){
+    var map={"100":100,"500":500,"1K":1000,"5K":5000};
+    var v=map[btn.textContent.trim()]||parseInt(btn.textContent)||0;
+    if(input){input.value=v;calcTotal();}
+    document.querySelectorAll(".grid-cols-4 button").forEach(function(b){b.style.background="";b.style.color="";});
+    btn.style.background="#c8ff00";btn.style.color="#060606";
+  };
+});
+
+//  Buy credits via Stripe
+if(buyBtn)buyBtn.onclick=async function(){
+  var amt=parseInt(input?input.value:0)||0;
+  if(amt<1){alert("Enter amount.");return;}
+  var cost=(amt*RATE).toFixed(2);
+  if(!confirm("Buy "+amt+" credits for $"+cost+"?"))return;
+  buyBtn.disabled=true;buyBtn.textContent="REDIRECTING TO STRIPE...";
+  var userId=localStorage.getItem("md_user_id")||("guest_"+Date.now());
+  localStorage.setItem("md_user_id",userId);
+  localStorage.setItem("md_pending_credits",amt);
+  try{
+    var r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({type:"credits",amount:amt,userId:userId})});
+    var d=await r.json();
+    if(d.url){window.location.href=d.url;}
+    else{alert("Error: "+(d.error||"Unknown"));buyBtn.disabled=false;buyBtn.textContent="BUY CREDITS";}
+  }catch(e){alert("Error: "+e.message);buyBtn.disabled=false;buyBtn.textContent="BUY CREDITS";}
+};
+
+//  Subscription upgrade 
+document.querySelectorAll(".grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 button").forEach(function(btn){
+  var txt=btn.textContent.trim().toUpperCase();
+  if(!txt.includes("UPGRADE") && !txt.includes("NOW"))return;
+  btn.onclick=function(){
+    var card=btn.closest(".surgical-border,.bg-surface-container-low");
+    var planName=card&&card.querySelector('h3')?card.querySelector('h3').textContent.trim().toLowerCase():'creator';
+    btn.disabled=true;btn.textContent='REDIRECTING...';
+    var userId=localStorage.getItem('md_user_id')||('guest_'+Date.now());
+    localStorage.setItem('md_user_id',userId);
+    localStorage.setItem('md_pending_plan',planName);
+    fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'subscription',plan:planName,billing:'monthly',userId:userId})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.url){window.location.href=d.url;}
+      else{alert('Error: '+(d.error||'Price not configured in Stripe'));btn.disabled=false;btn.textContent='UPGRADE NOW';}
+    }).catch(function(e){alert('Error: '+e.message);btn.disabled=false;btn.textContent='UPGRADE NOW';});
+  };
+});
+
+//  Back button 
+var bb=document.querySelector("header button");
+if(bb)bb.onclick=function(){window.location.href="directors.html";};
+
+//  Monthly/Yearly toggle 
+var toggleBtns=document.querySelectorAll(".flex.items-center.gap-4.p-1 button");
+if(toggleBtns[1])toggleBtns[1].onclick=function(){
+  toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
+  this.style.background="#c8ff00";this.style.color="#060606";
+  // Apply 20% discount
+  document.querySelectorAll(".font-display-lg.text-\\[32px\\]").forEach(function(el){
+    var base={"$49":39,"$199":159,"$499":399};
+    if(base[el.textContent])el.textContent="$"+base[el.textContent];
+  });
+};
+if(toggleBtns[0])toggleBtns[0].onclick=function(){
+  toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
+  this.style.background="#c8ff00";this.style.color="#060606";
+  document.querySelectorAll(".font-display-lg.text-\\[32px\\]").forEach(function(el){
+    var base={"$39":49,"$159":199,"$399":499};
+    if(base[el.textContent])el.textContent="$"+base[el.textContent];
+  });
+};
+
+//  Init + Stripe return handler
+window.addEventListener("load",function(){
+  updateBalance();calcTotal();
+  var params=new URLSearchParams(window.location.search);
+  var status=params.get("status");
+  if(status==="success"){
+    var pc=parseInt(localStorage.getItem("md_pending_credits")||"0");
+    var pp=localStorage.getItem("md_pending_plan")||"";
+    if(pc>0){
+      var cur=parseInt(localStorage.getItem("md_credits")||"0");
+      localStorage.setItem("md_credits",cur+pc);
+      localStorage.removeItem("md_pending_credits");
+      updateBalance();
+      alert("✅ "+pc+" credits added!");
+    }
+    if(pp){localStorage.setItem("md_plan",pp);localStorage.removeItem("md_pending_plan");currentPlan=pp;updateBalance();alert("✅ Upgraded to "+pp.toUpperCase()+"!");}
+    window.history.replaceState({},"","/pricing.html");
+  } else if(status==="cancelled"){
+    alert("Payment cancelled.");
+    window.history.replaceState({},"","/pricing.html");
+  }
+});
+</script></body></html>

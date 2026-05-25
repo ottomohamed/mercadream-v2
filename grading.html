@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&amp;family=Inter:wght@400;500&amp;family=Sora:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#e5e2e1",
+                    "on-secondary-container": "#3e2800",
+                    "tertiary-container": "#d0e5f5",
+                    "surface-container-low": "#1c1b1b",
+                    "tertiary-fixed": "#d0e5f5",
+                    "surface-variant": "#353534",
+                    "inverse-on-surface": "#313030",
+                    "primary": "#ffffff",
+                    "surface-bright": "#3a3939",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "on-tertiary": "#1f333f",
+                    "outline-variant": "#434933",
+                    "secondary-fixed": "#ffdeae",
+                    "secondary": "#ffba3f",
+                    "on-secondary-fixed": "#281900",
+                    "secondary-fixed-dim": "#ffba3f",
+                    "on-surface": "#e5e2e1",
+                    "neon-acid": "#c8ff00",
+                    "surface-container-high": "#2a2a2a",
+                    "primary-container": "#c0f500",
+                    "surface-container-lowest": "#0e0e0e",
+                    "tertiary-fixed-dim": "#b5c9d9",
+                    "inverse-primary": "#4f6600",
+                    "primary-fixed-dim": "#a8d700",
+                    "surface-container": "#201f1f",
+                    "void-black": "#060606",
+                    "on-error": "#690005",
+                    "on-tertiary-container": "#536774",
+                    "silver-technical": "#a1a1a1",
+                    "cyber-gold": "#ffba3f",
+                    "on-tertiary-fixed-variant": "#364956",
+                    "on-surface-variant": "#c4caac",
+                    "on-primary-container": "#546d00",
+                    "on-error-container": "#ffdad6",
+                    "surface-tint": "#a8d700",
+                    "on-secondary-fixed-variant": "#604100",
+                    "primary-fixed": "#c0f500",
+                    "secondary-container": "#c48800",
+                    "outline": "#8e9479",
+                    "background": "#131313",
+                    "surface": "#131313",
+                    "error": "#ffb4ab",
+                    "tertiary": "#ffffff",
+                    "surface-container-highest": "#353534",
+                    "on-primary-fixed": "#161f00",
+                    "on-primary": "#273500",
+                    "surface-dim": "#131313",
+                    "on-secondary": "#432c00",
+                    "on-background": "#e5e2e1",
+                    "slate-data": "#242424",
+                    "on-tertiary-fixed": "#081e29",
+                    "error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "unit": "4px",
+                    "margin-desktop": "40px",
+                    "module-padding": "12px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Sora"],
+                    "label-technical": ["IBM Plex Mono"],
+                    "label-caps": ["IBM Plex Mono"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(200, 255, 0, 0.05) 50.5%, transparent 51%);
+            background-size: 100% 4px;
+        }
+        .technical-grid {
+            background-image: linear-gradient(rgba(200, 255, 0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(200, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center px-gutter h-16 z-50 bg-surface-container border-b border-surface-variant">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-silver-technical hover:text-neon-acid transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-label-technical text-label-technical">RETURN_CORE</span>
+</button>
+<div class="w-px h-6 bg-surface-variant"></div>
+<h1 class="font-headline-lg text-headline-lg font-extrabold tracking-tighter text-primary">MERCADREAM | COLOR GRADING</h1>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex items-center bg-surface-container-highest px-3 py-1 border border-surface-variant">
+<span class="font-label-technical text-label-technical text-neon-acid">1,250 CREDITS</span>
+</div>
+<div class="flex gap-2">
+<button class="material-symbols-outlined text-silver-technical hover:text-neon-acid transition-colors">settings</button>
+<button class="material-symbols-outlined text-silver-technical hover:text-neon-acid transition-colors">account_circle</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-gutter max-w-7xl mx-auto space-y-10 relative">
+<!-- Scanline Overlay -->
+<div class="fixed inset-0 pointer-events-none scanline opacity-20 z-10"></div>
+<!-- Hero Section -->
+<section class="flex justify-between items-end border-b border-surface-variant pb-8 relative z-20">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<div class="h-1 w-12 bg-neon-acid"></div>
+<span class="font-label-caps text-label-caps text-neon-acid uppercase tracking-widest">Neural_Processor_v4.2</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl uppercase tracking-tighter text-primary">Automated Color Grading</h2>
+<p class="font-body-md text-silver-technical mt-2 max-w-xl">Apply Hollywood-grade color looks instantly using our spectral mapping engine. Calibrated for 8K HDR delivery.</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="bg-primary-container text-on-primary-container px-4 py-2 font-label-technical text-label-technical font-bold uppercase tracking-wider">
+                    10 CREDITS Per Render
+                </div>
+<div class="mt-2 font-label-caps text-label-caps text-silver-technical">LATENCY: 420MS / SPECTRAL ANALYSIS: READY</div>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-8 relative z-20">
+<!-- Left Column: Upload & Preview -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- Upload Zone -->
+<div class="relative group border-2 border-dashed border-surface-variant bg-surface-container-lowest h-64 flex flex-col items-center justify-center transition-all hover:border-neon-acid overflow-hidden">
+<div class="absolute top-2 left-2 font-label-caps text-label-caps text-silver-technical">MODULE_ID: UPLOAD_GATE_01</div>
+<div class="absolute inset-0 technical-grid opacity-20 pointer-events-none"></div>
+<span class="material-symbols-outlined text-5xl text-silver-technical group-hover:text-neon-acid transition-colors mb-4">cloud_upload</span>
+<div class="text-center">
+<p class="font-label-technical text-label-technical text-primary">DRAG &amp; DROP MEDIA BUFFER</p>
+<p class="font-body-sm text-silver-technical mt-1">SUPPORTED: MP4, MOV, JPG, PNG // MAX 500MB</p>
+</div>
+<button class="mt-6 px-6 py-2 border border-neon-acid text-neon-acid font-label-technical text-label-technical hover:bg-neon-acid hover:text-void-black transition-all">
+                        SELECT_SOURCE_FILES
+                    </button>
+</div>
+<!-- Preview Section -->
+<div class="bg-surface-container border border-surface-variant relative">
+<div class="flex border-b border-surface-variant">
+<div class="px-4 py-2 bg-surface-variant font-label-caps text-label-caps text-primary">REALTIME_A/B_MONITOR</div>
+<div class="ml-auto flex items-center px-4 gap-4">
+<span class="font-label-caps text-label-caps text-neon-acid">FPS: 24.0</span>
+<span class="font-label-caps text-label-caps text-silver-technical">RES: 3840x2160</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-px bg-surface-variant">
+<div class="relative aspect-video bg-void-black overflow-hidden">
+<img alt="RAW footage" class="w-full h-full object-cover opacity-80" data-alt="Cinematic raw camera footage of a futuristic cityscape at night, showing muted colors, flat contrast, and deep shadows. The scene features high-density architectural elements and distant glowing lights in a desaturated, high-fidelity technical style, representing the 'Before' state of professional color grading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKn9XCJzIelQwAa4nXTZ67_GVHnE_3NTCieWIMFqdkKNlUc9NoGUKevW3DbytQMMpj_RpTnl-4lmmLi6zIDMHTP5PHwoSsmQSJk8l6m0K2nle5NhkGFSCVNeXEeaNR2hwCZcF8u3N3RQ62P1bK4Mk_G9AJ6Cq1kzTX1W2HYz23v_9bopmZhiLzpXR7cNmtUeTdhm5wpgcL43LelONjklP4syVoCOYpp7Pcj4NJAc0Y9U-50AXtERdX1TwuIHpepqIQ4XK4luxTevw"/>
+<div class="absolute bottom-4 left-4 bg-void-black/80 backdrop-blur-md px-3 py-1 border border-surface-variant font-label-technical text-label-technical">BEFORE</div>
+</div>
+<div class="relative aspect-video bg-void-black overflow-hidden">
+<img alt="Graded footage" class="w-full h-full object-cover" data-alt="The same futuristic cityscape at night, now transformed with a professional 'Teal and Orange' color grade. Deep shadows are infused with rich cyan and teal tones, while highlights on buildings and streetlights glow with vibrant, warm amber and orange. The contrast is surgically precise, creating a high-end Hollywood cinematic look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDhuOD1h6gce93Q3T-TOt74AOczD0PO3lv7Dx8C19TpF9sFhntnSexFLhU-S_g8iYmK9f4rXMdf28in-Wc4xag1PXhQfDZp5Y6XR4_n_jBpFa71qZBIacjoOuLWywS-Hkv--1IbO9p9vE4AfhGDUwrYL4OUABzaEOxzW7cy8ASaCs2ZUSsRjU9hQyFhorneGLE9DB0iMSxa_A_tE4ybKTvRYautk04n3V5AXkiAodxQNO4JLKhy83VTeaMCmUgz7Up6dPRvivhxM0"/>
+<div class="absolute bottom-4 right-4 bg-neon-acid text-void-black px-3 py-1 font-label-technical text-label-technical font-bold">AFTER</div>
+</div>
+</div>
+<div class="p-4 flex gap-4 bg-void-black">
+<button class="material-symbols-outlined text-silver-technical hover:text-neon-acid">play_arrow</button>
+<div class="flex-1 h-1 bg-surface-variant self-center relative">
+<div class="absolute left-0 top-0 h-full w-1/3 bg-neon-acid"></div>
+<div class="absolute left-1/3 top-1/2 -translate-y-1/2 w-3 h-3 bg-neon-acid rounded-full shadow-[0_0_10px_rgba(200,255,0,0.5)]"></div>
+</div>
+<span class="font-label-technical text-label-technical text-silver-technical">00:04 / 00:12</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Settings & Presets -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Precision Sliders -->
+<div class="bg-surface-container border border-surface-variant p-module-padding relative">
+<div class="absolute -top-3 left-4 px-2 bg-surface-container text-silver-technical font-label-caps text-label-caps">PRECISION_ADJUSTMENT</div>
+<div class="space-y-6 mt-4">
+<div>
+<div class="flex justify-between mb-2">
+<label class="font-label-technical text-label-technical uppercase">Intensity</label>
+<span class="font-label-technical text-label-technical text-neon-acid">84%</span>
+</div>
+<input class="w-full h-1 bg-surface-variant appearance-none cursor-pointer accent-neon-acid" type="range" value="84"/>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<label class="font-label-technical text-label-technical uppercase">Contrast</label>
+<span class="font-label-technical text-label-technical text-neon-acid">+12</span>
+</div>
+<input class="w-full h-1 bg-surface-variant appearance-none cursor-pointer accent-neon-acid" type="range" value="60"/>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<label class="font-label-technical text-label-technical uppercase">Saturation</label>
+<span class="font-label-technical text-label-technical text-neon-acid">1.05x</span>
+</div>
+<input class="w-full h-1 bg-surface-variant appearance-none cursor-pointer accent-neon-acid" type="range" value="52"/>
+</div>
+</div>
+</div>
+<!-- Presets Grid -->
+<div class="space-y-4">
+<h3 class="font-label-caps text-label-caps text-silver-technical flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">palette</span>
+                        CORE_LOOK_LIBRARY
+                    </h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+<!-- Preset Card 1 (Active) -->
+<button class="group relative flex text-left border border-neon-acid bg-surface-container-high p-2 transition-all">
+<div class="w-16 h-16 bg-gradient-to-br from-[#00ffff] to-[#ff8c00] shrink-0 border border-void-black"></div>
+<div class="ml-3 flex flex-col justify-center">
+<span class="font-label-technical text-label-technical text-neon-acid font-bold">[TEAL &amp; ORANGE]</span>
+<span class="font-body-sm text-[11px] text-silver-technical leading-tight mt-1">High-contrast cinematic blockbuster aesthetic.</span>
+</div>
+<div class="absolute top-2 right-2 h-2 w-2 bg-neon-acid rounded-full"></div>
+</button>
+<!-- Preset Card 2 -->
+<button class="group relative flex text-left border border-surface-variant bg-surface-container p-2 hover:border-silver-technical transition-all">
+<div class="w-16 h-16 bg-gradient-to-br from-black to-white shrink-0 border border-void-black opacity-60 group-hover:opacity-100"></div>
+<div class="ml-3 flex flex-col justify-center">
+<span class="font-label-technical text-label-technical text-primary">[NOIR]</span>
+<span class="font-body-sm text-[11px] text-silver-technical leading-tight mt-1">Deep shadows and surgical highlights.</span>
+</div>
+</button>
+<!-- Preset Card 3 -->
+<button class="group relative flex text-left border border-surface-variant bg-surface-container p-2 hover:border-silver-technical transition-all">
+<div class="w-16 h-16 bg-gradient-to-br from-[#ffcc33] to-[#ff6600] shrink-0 border border-void-black opacity-60 group-hover:opacity-100"></div>
+<div class="ml-3 flex flex-col justify-center">
+<span class="font-label-technical text-label-technical text-primary">[GOLDEN HOUR]</span>
+<span class="font-body-sm text-[11px] text-silver-technical leading-tight mt-1">Ethereal warm tones and soft bloom.</span>
+</div>
+</button>
+<!-- Preset Card 4 -->
+<button class="group relative flex text-left border border-surface-variant bg-surface-container p-2 hover:border-silver-technical transition-all">
+<div class="w-16 h-16 bg-gradient-to-br from-[#ff00ff] to-[#00ffff] shrink-0 border border-void-black opacity-60 group-hover:opacity-100"></div>
+<div class="ml-3 flex flex-col justify-center">
+<span class="font-label-technical text-label-technical text-primary">[CYBERPUNK]</span>
+<span class="font-body-sm text-[11px] text-silver-technical leading-tight mt-1">Acid neons and digital distortion.</span>
+</div>
+</button>
+<!-- More presets condensed for brevity -->
+<div class="grid grid-cols-2 gap-3">
+<button class="border border-surface-variant bg-surface-container p-2 text-center hover:border-silver-technical">
+<span class="font-label-caps text-[10px] text-silver-technical">[BLEACH]</span>
+</button>
+<button class="border border-surface-variant bg-surface-container p-2 text-center hover:border-silver-technical">
+<span class="font-label-caps text-[10px] text-silver-technical">[WARM CINEMA]</span>
+</button>
+<button class="border border-surface-variant bg-surface-container p-2 text-center hover:border-silver-technical">
+<span class="font-label-caps text-[10px] text-silver-technical">[COLD STEEL]</span>
+</button>
+<button class="border border-surface-variant bg-surface-container p-2 text-center hover:border-silver-technical">
+<span class="font-label-caps text-[10px] text-silver-technical">[NEON NIGHT]</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Generate Bar -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-gutter h-16 z-50 bg-void-black border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-neon-acid">SYSTEM STATUS: NOMINAL</span>
+<div class="flex gap-4">
+<span class="font-label-caps text-[10px] text-silver-technical">GPU LOAD: 84%</span>
+<span class="font-label-caps text-[10px] text-silver-technical">VRAM: 12GB/16GB</span>
+<span class="font-label-caps text-[10px] text-silver-technical">LATENCY: 22MS</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex flex-col items-end">
+<span class="font-label-technical text-label-technical text-silver-technical uppercase">Total Estimation</span>
+<span class="font-label-technical text-label-technical text-primary font-bold">5.00 CREDITS</span>
+</div>
+<button class="h-12 px-10 bg-neon-acid text-void-black font-label-technical text-label-technical font-extrabold flex items-center gap-2 hover:shadow-[0_0_20px_rgba(200,255,0,0.4)] transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                [⚡ GRADE — 10 CREDITS]
+            </button>
+</div>
+</footer>
+<!-- Secondary Technical Overlay (Scanning line effect logic) -->
+<div class="fixed bottom-10 left-0 w-full h-[1px] bg-neon-acid/20 z-50 pointer-events-none"></div>
+<script src="/js/navigation.js"></script><script>var sf=null,preset="TEAL & ORANGE",COST=5;var uz=document.querySelector(".border-2.border-dashed");if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="image/*,video/mp4";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;var r=new FileReader();r.onload=function(ev){var bi=document.querySelector(".grid-cols-2 img");if(bi){bi.src=ev.target.result;bi.style.opacity="1";}uz.style.borderColor="#c8ff00";uz.querySelector("p").textContent=" "+f.name.substring(0,30);};r.readAsDataURL(f);};i.click();};}document.querySelectorAll(".space-y-4 button").forEach(function(btn){btn.onclick=function(){preset=btn.textContent.replace(/[\[\]]/g,"").trim();document.querySelectorAll(".space-y-4 button").forEach(function(b){b.style.borderColor="";});btn.style.borderColor="#c8ff00";};});var sliders=document.querySelectorAll("input[type=range]");var labels=["84%","+12","1.05x"];sliders.forEach(function(sl,i){sl.oninput=function(){var v=this.value;var spans=document.querySelectorAll(".text-neon-acid.font-label-technical");if(spans[i])spans[i].textContent=i===0?v+"%":i===1?"+"+(v-50):((50+parseInt(v)*0.01).toFixed(2))+"x";};});function go(){if(!sf){alert("Upload a file first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-grade");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=8;if(btn)btn.textContent="GRADING... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}};},250);}window.addEventListener("load",function(){var btn=document.querySelector("footer button.bg-neon-acid");if(btn){btn.id="btn-grade";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};var sb=document.querySelector("header button.material-symbols-outlined");if(sb)sb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+
+
+

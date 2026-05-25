@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM LAB - Physics Cinema Laboratory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#f2daff",
+                        "secondary-fixed": "#7df4ff",
+                        "primary": "#ffffff",
+                        "surface-bright": "#3a3939",
+                        "primary-fixed": "#c0f500",
+                        "multiverse-purple": "#a300ff",
+                        "on-primary": "#273500",
+                        "surface-tint": "#a8d700",
+                        "outline-variant": "#434933",
+                        "on-primary-fixed": "#161f00",
+                        "on-secondary-fixed": "#002022",
+                        "tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "on-secondary": "#00363a",
+                        "error-container": "#93000a",
+                        "primary-container": "#c0f500",
+                        "surface-container": "#201f1f",
+                        "inverse-surface": "#e5e2e1",
+                        "acid-green": "#c8ff00",
+                        "glow-green": "rgba(200, 255, 0, 0.3)",
+                        "on-secondary-fixed-variant": "#004f54",
+                        "on-tertiary-fixed-variant": "#6d00ac",
+                        "on-tertiary-fixed": "#2e004d",
+                        "on-tertiary": "#4c007b",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#a8d700",
+                        "surface-container-highest": "#353434",
+                        "surface": "#141313",
+                        "neural-cyan": "#00f0ff",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-container": "#00686f",
+                        "on-background": "#e5e2e1",
+                        "on-primary-container": "#546d00",
+                        "surface-variant": "#353434",
+                        "background": "#141313",
+                        "outline": "#8e9479",
+                        "tertiary-fixed-dim": "#e1b6ff",
+                        "inverse-on-surface": "#313030",
+                        "secondary-container": "#00eefc",
+                        "error": "#ffb4ab",
+                        "surface-dim": "#141313",
+                        "on-error": "#690005",
+                        "void-black": "#020202",
+                        "secondary": "#d3fbff",
+                        "inverse-primary": "#4f6600",
+                        "on-tertiary-container": "#9800ee",
+                        "surface-container-high": "#2a2a2a",
+                        "panel-glass": "rgba(10, 10, 10, 0.6)",
+                        "on-surface-variant": "#c4caac",
+                        "grid-line": "rgba(0, 240, 255, 0.1)",
+                        "tertiary-fixed": "#f2daff",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "cyber-gold": "#FFD700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "unit": "4px",
+                        "margin": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Space Grotesk"],
+                        "label-caps": ["IBM Plex Mono"],
+                        "readout-data": ["IBM Plex Mono"],
+                        "headline-xl": ["Space Grotesk"],
+                        "body-main": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .viewport-grid {
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(200, 255, 0, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+        .chromatic-hover:hover {
+            text-shadow: 2px 0 #00f0ff, -2px 0 #a300ff;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #141313; }
+        ::-webkit-scrollbar-thumb { background: #c8ff00; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-main selection:bg-acid-green selection:text-void-black">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full h-16 z-50 flex justify-between items-center px-margin py-unit bg-panel-glass backdrop-blur-xl border-b border-grid-line shadow-[0_0_15px_rgba(200,255,0,0.1)]">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-headline-lg tracking-tighter text-acid-green font-bold">MERCADREAM LAB</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-crosshair transition-all duration-300 hover:text-acid-green" data-icon="lock_open">lock_open</span>
+<span class="material-symbols-outlined cursor-crosshair transition-all duration-300 hover:text-acid-green" data-icon="settings_input_component">settings_input_component</span>
+<span class="material-symbols-outlined cursor-crosshair transition-all duration-300 hover:text-acid-green" data-icon="terminal">terminal</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 z-40 flex flex-col bg-panel-glass backdrop-blur-2xl border-r border-grid-line">
+<div class="p-6 border-b border-grid-line">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full border border-acid-green overflow-hidden">
+<img alt="Neural Architect Profile" class="w-full h-full object-cover" data-alt="A high-detail close-up of a futuristic neural architect wearing a matte black carbon-fiber helmet with glowing neon cyan circuitry patterns. The background is a dark, tech-heavy laboratory with soft acid green ambient lighting. The atmosphere is professional and sophisticated, reflecting a high-power computing environment with a cinematic, cyberpunk finish." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPHQTUfmZ_PaC8ga-yuVAae4rHG8wr0UFcHScpfyTKxAGIfU6nj2w2s9alRPUgEgmpXziT3R9-KPLlzSMZJzjOcani9yiRzWiVopMQkYDdATBdSb_nN65VpgFuvtSzNWvxbCud2JUzXWxSNvgJyQE2P-7G7aC-pJCOKm5q-eTTab4NZVzZ5OWzgYPowciEEPdgeRw45iRHdFPbjwXzznV2jtB9qp4MRDpgbMQzsxrTEfKlthPeso4a48te84g-JkL7CcCSIhKd9yo"/>
+</div>
+<div>
+<div class="font-label-caps text-[10px] text-acid-green">SYSTEM ACTIVE</div>
+<div class="font-headline-lg text-sm text-acid-green font-bold">NEURAL ENGINE v20.0</div>
+</div>
+</div>
+<button class="w-full py-2 bg-acid-green text-void-black font-label-caps text-[10px] tracking-widest hover:brightness-110 transition-all">
+                INITIALIZE NEURAL LINK
+            </button>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto">
+<div class="px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-grid-line transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="video_settings">video_settings</span>
+<span>Video Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-grid-line transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="neurology">neurology</span>
+<span>Entity Creation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 font-label-caps text-label-caps text-on-surface-variant hover:bg-grid-line transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+<span>Environment Arch</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 font-label-caps text-label-caps bg-acid-green/10 text-acid-green border-r-2 border-acid-green transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="science">science</span>
+<span>Physics Control</span>
+</a>
+</div>
+</nav>
+<div class="p-4 border-t border-grid-line space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-neural-cyan transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Diagnostics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-neural-cyan transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="pl-64 pt-16 min-h-screen flex flex-col">
+<div class="flex-1 grid grid-cols-12 gap-gutter p-gutter bg-void-black">
+<!-- Left Panel: PhD Physics Agents -->
+<div class="col-span-3 flex flex-col gap-4">
+<div class="flex items-center justify-between mb-2">
+<h2 class="font-label-caps text-label-caps text-acid-green border-l-2 border-acid-green pl-3">PHD_PHYSICS_AGENTS</h2>
+<span class="text-[10px] font-readout-data text-on-surface-variant">ACTIVE: 06</span>
+</div>
+<div class="flex-1 space-y-3 overflow-y-auto pr-2">
+<!-- Agent Card -->
+<div class="bg-panel-glass border border-grid-line p-4 relative group cursor-crosshair">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant block">CORE_SYSTEM.01</span>
+<h3 class="font-readout-data text-acid-green font-bold text-sm">GRAVITY_MASTER</h3>
+</div>
+<span class="material-symbols-outlined text-acid-green text-sm" data-icon="south">south</span>
+</div>
+<p class="mt-2 text-[11px] text-on-surface-variant font-readout-data">Controlling vertical down-force vectors and planetary scale attraction.</p>
+<div class="mt-3 h-1 bg-grid-line w-full">
+<div class="h-full bg-acid-green w-4/5 shadow-[0_0_8px_rgba(200,255,0,0.5)]"></div>
+</div>
+</div>
+<div class="bg-panel-glass border border-grid-line p-4 relative group cursor-crosshair opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant block">FLUID_ENGINE.02</span>
+<h3 class="font-readout-data text-neural-cyan font-bold text-sm">FLUID_VOYANT</h3>
+</div>
+<span class="material-symbols-outlined text-neural-cyan text-sm" data-icon="waves">waves</span>
+</div>
+<p class="mt-2 text-[11px] text-on-surface-variant font-readout-data">Managing complex water, gas, and atmospheric smoke dynamics.</p>
+<div class="mt-3 h-1 bg-grid-line w-full">
+<div class="h-full bg-neural-cyan w-1/3"></div>
+</div>
+</div>
+<div class="bg-panel-glass border border-grid-line p-4 relative group cursor-crosshair">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant block">LOGIC_GATE.03</span>
+<h3 class="font-readout-data text-acid-green font-bold text-sm">COLLISION_LOGIC</h3>
+</div>
+<span class="material-symbols-outlined text-acid-green text-sm" data-icon="center_focus_strong">center_focus_strong</span>
+</div>
+<p class="mt-2 text-[11px] text-on-surface-variant font-readout-data">Defining hit-box accuracy and mesh-to-mesh interaction protocols.</p>
+</div>
+<div class="bg-panel-glass border border-grid-line p-4 relative group cursor-crosshair">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant block">SURFACE_INT.04</span>
+<h3 class="font-readout-data text-acid-green font-bold text-sm">FRICTION_NEURAL</h3>
+</div>
+<span class="material-symbols-outlined text-acid-green text-sm" data-icon="texture">texture</span>
+</div>
+<p class="mt-2 text-[11px] text-on-surface-variant font-readout-data">Surface interaction laws, kinetic heat transfer and slippage.</p>
+</div>
+<div class="bg-panel-glass border border-grid-line p-4 relative group cursor-crosshair">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant block">MOTION_CON.05</span>
+<h3 class="font-readout-data text-acid-green font-bold text-sm">INERTIA_SYNC</h3>
+</div>
+<span class="material-symbols-outlined text-acid-green text-sm" data-icon="auto_videocam">auto_videocam</span>
+</div>
+<p class="mt-2 text-[11px] text-on-surface-variant font-readout-data">Momentum conservation and multi-object force distribution.</p>
+</div>
+<div class="bg-panel-glass border border-grid-line p-4 relative group cursor-crosshair border-l-multiverse-purple border-l-2">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="font-label-caps text-[10px] text-multiverse-purple block">CHAOS_ENGINE.06</span>
+<h3 class="font-readout-data text-multiverse-purple font-bold text-sm">ENTROPY_GEN</h3>
+</div>
+<span class="material-symbols-outlined text-multiverse-purple text-sm" data-icon="flare">flare</span>
+</div>
+<p class="mt-2 text-[11px] text-on-surface-variant font-readout-data">Organic destruction cycles and stochastic chaos simulation.</p>
+</div>
+</div>
+</div>
+<!-- Central Viewport -->
+<div class="col-span-6 flex flex-col gap-4">
+<div class="flex-1 relative bg-surface overflow-hidden border border-grid-line group">
+<!-- 3D Viewport Content -->
+<div class="absolute inset-0 viewport-grid opacity-30"></div>
+<img alt="Physics Simulation Viewport" class="w-full h-full object-cover mix-blend-screen opacity-60" data-alt="A cinematic 3D digital simulation showing a humanoid chrome mannequin floating in zero gravity within a dark laboratory. Vibrant acid green and neural cyan particle streams are swirling around the mannequin, reacting to invisible physical forces. The lighting is high-contrast with glowing accents, and the style is futuristic cyberpunk with a focus on high-fidelity motion and technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBET0VqE17uARic1Vb7dMCBvN92f_1APut9ONZd4-oTQiyD_1BOQrNP3aoRuJNUemqkmk7mkr1tAAFlTzaCRzM-Ihc7NBFtla3-T19naTbxj17O3mTIurDj1o7t1KUIvyaKJfRK2zMA2qkQUphnh24BkjBkQGJKeYmvm46vDUvckk-FjBEBwYj2GQmUzvRTTea1nf2jHsKDTwCsANESLkr-4c6ka6RhSWZu2D4movzihac__lm9zf0c-JfOReruFlRyhE1JRmw_yFI"/>
+<!-- HUD Overlays -->
+<div class="absolute inset-0 pointer-events-none p-6 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="space-y-1 bg-void-black/80 p-3 border-l-2 border-acid-green backdrop-blur-md">
+<div class="font-label-caps text-[10px] text-acid-green">SIM_STATUS: STABLE</div>
+<div class="font-readout-data text-xl text-primary font-bold">PHYS_RENDER_NODE_09</div>
+</div>
+<div class="text-right font-readout-data text-[10px] text-neural-cyan">
+                                COORDINATE_SPACE: [X: 44.2 | Y: -12.1 | Z: 104.9]<br/>
+                                FPS: 144.02 // LATENCY: 2.1ms
+                            </div>
+</div>
+<!-- Real-time Readouts -->
+<div class="grid grid-cols-3 gap-4 mb-12">
+<div class="bg-void-black/60 border border-grid-line p-3 backdrop-blur-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-1">COLLISIONAL FORCE</span>
+<span class="font-readout-data text-acid-green text-lg font-bold">14,204.2 N</span>
+</div>
+<div class="bg-void-black/60 border border-grid-line p-3 backdrop-blur-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-1">MOLECULAR DRAG</span>
+<span class="font-readout-data text-neural-cyan text-lg font-bold">0.842 η</span>
+</div>
+<div class="bg-void-black/60 border border-grid-line p-3 backdrop-blur-md">
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-1">PARTICLE LIFE</span>
+<span class="font-readout-data text-multiverse-purple text-lg font-bold">88.4%</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-on-surface-variant flex gap-4">
+<span>[X-AXIS] RED</span>
+<span>[Y-AXIS] GREEN</span>
+<span>[Z-AXIS] BLUE</span>
+</div>
+</div>
+<!-- Crosshair -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-12 h-12 border border-acid-green/30 relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-2 bg-acid-green"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1px] h-2 bg-acid-green"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-[1px] bg-acid-green"></div>
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-[1px] bg-acid-green"></div>
+</div>
+</div>
+</div>
+<!-- BIND_PHYSICS_TO_REALITY Action Button -->
+<button class="w-full h-16 bg-acid-green text-void-black font-headline-lg text-lg font-extrabold tracking-widest flex items-center justify-center gap-4 hover:shadow-[0_0_30px_rgba(200,255,0,0.4)] transition-all group overflow-hidden relative">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-180 transition-transform duration-500" data-icon="settings_b_roll">settings_b_roll</span>
+                    BIND_PHYSICS_TO_REALITY
+                    <div class="absolute top-0 right-0 p-2 opacity-50 font-label-caps text-[10px]">AUTH_REQUIRED</div>
+</button>
+</div>
+<!-- Right Panel: Force Field Controls -->
+<div class="col-span-3 flex flex-col gap-4">
+<div class="flex items-center justify-between mb-2">
+<h2 class="font-label-caps text-label-caps text-acid-green border-l-2 border-acid-green pl-3">FORCE_FIELD_CONTROLS</h2>
+<span class="material-symbols-outlined text-acid-green text-sm" data-icon="tune">tune</span>
+</div>
+<div class="bg-panel-glass border border-grid-line p-6 flex-1 space-y-8">
+<!-- Control Item -->
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[10px] text-on-surface-variant">GRAVITY_CONSTANT</label>
+<span class="font-readout-data text-acid-green text-xs">9.81 m/s²</span>
+</div>
+<div class="relative h-2 bg-void-black border border-grid-line">
+<div class="absolute top-0 left-0 h-full bg-acid-green w-[49%]"></div>
+<div class="absolute top-1/2 -translate-y-1/2 left-[49%] w-3 h-4 bg-acid-green shadow-lg cursor-pointer"></div>
+</div>
+<div class="flex justify-between text-[8px] font-readout-data text-on-surface-variant">
+<span>0</span><span>10</span><span>20</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[10px] text-on-surface-variant">VISCOSITY_THROTTLE</label>
+<span class="font-readout-data text-neural-cyan text-xs">0.024 Pa·s</span>
+</div>
+<input class="w-full accent-neural-cyan bg-void-black border-none cursor-pointer" type="range"/>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[10px] text-on-surface-variant">AIR_RESISTANCE_BIAS</label>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span>
+<span class="font-readout-data text-cyber-gold text-xs">0.12 Cw</span>
+</div>
+</div>
+<input class="w-full accent-cyber-gold bg-void-black border-none cursor-pointer" type="range"/>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-[10px] text-on-surface-variant">MOLECULAR_BOND_STRENGTH</label>
+<span class="font-readout-data text-multiverse-purple text-xs">MAX</span>
+</div>
+<div class="flex gap-1">
+<div class="flex-1 h-3 bg-multiverse-purple/40"></div>
+<div class="flex-1 h-3 bg-multiverse-purple/60"></div>
+<div class="flex-1 h-3 bg-multiverse-purple/80"></div>
+<div class="flex-1 h-3 bg-multiverse-purple"></div>
+</div>
+</div>
+<div class="pt-6 border-t border-grid-line">
+<div class="bg-cyber-gold/10 border border-cyber-gold/30 p-3 flex gap-3 items-center">
+<span class="material-symbols-outlined text-cyber-gold" data-icon="warning">warning</span>
+<div class="text-[10px] font-readout-data text-cyber-gold leading-tight">
+                                WARNING: OVER-MODULATION OF ENTROPY MAY CAUSE VIRTUAL GEOMETRY COLLAPSE.
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Panel: Physics Timeline -->
+<div class="col-span-12">
+<div class="bg-panel-glass border border-grid-line p-4 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<span class="font-label-caps text-label-caps text-acid-green">PHYSICS_TIMELINE</span>
+<span class="font-readout-data text-xs text-on-surface-variant">STREAM_SYNC: 00:04:32 / 00:10:00</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-lg cursor-pointer hover:text-acid-green" data-icon="skip_previous">skip_previous</span>
+<span class="material-symbols-outlined text-lg cursor-pointer hover:text-acid-green" data-icon="pause">pause</span>
+<span class="material-symbols-outlined text-lg cursor-pointer hover:text-acid-green" data-icon="skip_next">skip_next</span>
+</div>
+</div>
+<div class="relative h-20 w-full bg-void-black border border-grid-line overflow-hidden group">
+<!-- Spikes and Events -->
+<div class="absolute inset-0 flex items-end">
+<div class="w-[10%] h-[20%] bg-acid-green/40 border-r border-acid-green"></div>
+<div class="w-[5%] h-[60%] bg-multiverse-purple/40 border-r border-multiverse-purple"></div>
+<div class="w-[15%] h-[30%] bg-acid-green/40 border-r border-acid-green"></div>
+<div class="w-[2%] h-[90%] bg-cyber-gold/60 border-r border-cyber-gold"></div>
+<div class="w-[18%] h-[40%] bg-acid-green/40 border-r border-acid-green"></div>
+<div class="w-[5%] h-[75%] bg-neural-cyan/40 border-r border-neural-cyan"></div>
+<div class="w-[45%] h-[25%] bg-grid-line/40"></div>
+</div>
+<!-- Timeline Playhead -->
+<div class="absolute top-0 bottom-0 left-[45%] w-[1px] bg-acid-green z-10 shadow-[0_0_10px_#c8ff00]">
+<div class="absolute -top-1 -left-1 w-3 h-3 bg-acid-green rounded-full"></div>
+</div>
+<!-- Labels Overlay -->
+<div class="absolute inset-0 pointer-events-none flex justify-between px-4 items-center">
+<span class="font-readout-data text-[10px] text-on-surface-variant">INITIATION</span>
+<span class="font-readout-data text-[10px] text-cyber-gold">FORCE_SPIKE_DELTA</span>
+<span class="font-readout-data text-[10px] text-multiverse-purple">COLLISION_EVENT_04</span>
+<span class="font-readout-data text-[10px] text-on-surface-variant">END_STREAM</span>
+</div>
+<div class="absolute inset-0 scanline opacity-20"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB - Only for main logic but suppressed here per rules as it's a detail screen -->
+</body></html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060606;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.bg{background-image:linear-gradient(rgba(168,215,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(168,215,0,0.03) 1px,transparent 1px);background-size:40px 40px;position:fixed;inset:0;pointer-events:none}
+input{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;color:#e2e4d1;padding:12px 14px;font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
+input:focus{border-color:#a8d700}
+.btn-main{width:100%;padding:14px;background:#a8d700;border:none;color:#060606;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:3px;transition:all .2s}
+.btn-main:hover{background:#c8ff00}
+.btn-main:disabled{opacity:.5;cursor:not-allowed}
+.btn-google{width:100%;padding:12px;background:transparent;border:1px solid #2a2a2a;color:#888;font-family:inherit;font-size:11px;cursor:pointer;letter-spacing:2px;transition:all .2s}
+.btn-google:hover{border-color:#a8d700;color:#a8d700}
+a{color:#a8d700;text-decoration:none}
+a:hover{color:#c8ff00}
+.alert{padding:10px;font-size:10px;letter-spacing:1px;display:none;margin-top:8px}
+.alert.show{display:block}
+.alert.err{background:rgba(255,70,70,0.1);border:1px solid rgba(255,70,70,0.3);color:#ff7070}
+.alert.ok{background:rgba(168,215,0,0.1);border:1px solid rgba(168,215,0,0.3);color:#a8d700}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div style="width:100%;max-width:420px;padding:20px">
+  <!-- Logo -->
+  <div style="text-align:center;margin-bottom:32px">
+    <a href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
+    <div style="font-size:9px;color:#444;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
+  </div>
+
+  <!-- Card -->
+  <div style="background:#0a0a0a;border:1px solid #1a1a1a;padding:32px">
+    <div style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
+    <div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account →</a></div>
+
+    <!-- Google -->
+    <button class="btn-google" onclick="signInGoogle()">⊕ Continue with Google</button>
+    <div style="text-align:center;margin:16px 0;font-size:9px;color:#333;letter-spacing:3px">OR</div>
+
+    <!-- Email/Password -->
+    <div style="margin-bottom:12px">
+      <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/>
+    </div>
+
+    <button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN →</button>
+    <div id="alert" class="alert"></div>
+
+    <div style="text-align:center;margin-top:16px">
+      <a href="#" onclick="forgotPw();return false" style="font-size:10px;color:#555">Forgot password?</a>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:16px;font-size:10px;color:#444">
+    <a href="index.html">← Back to Home</a>
+  </div>
+</div>
+
+<script>
+const SURL = 'https://xvkxogrmewnzwhtghuiz.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
+const sb = supabase.createClient(SURL, SKEY);
+
+// إذا مسجّل مسبقاً → profile مباشرة
+sb.auth.getSession().then(function({data}) {
+  if (data.session) window.location.href = 'profile.html';
+});
+
+function showAlert(msg, type) {
+  var el = document.getElementById('alert');
+  el.textContent = msg;
+  el.className = 'alert show ' + (type || 'err');
+}
+
+async function signIn() {
+  var email = document.getElementById('email').value.trim();
+  var pass = document.getElementById('password').value;
+  if (!email || !pass) { showAlert('Enter email and password.'); return; }
+
+  var btn = document.getElementById('signInBtn');
+  btn.textContent = 'AUTHENTICATING...'; btn.disabled = true;
+
+  var r = await sb.auth.signInWithPassword({email: email, password: pass});
+  if (r.error) {
+    showAlert(r.error.message);
+    btn.textContent = 'SIGN IN →'; btn.disabled = false;
+    return;
+  }
+
+  // مسح البيانات القديمة إذا إيميل مختلف
+  var oldEmail = localStorage.getItem('md_email');
+  if (oldEmail && oldEmail !== email) localStorage.clear();
+
+  // حفظ بيانات الجلسة
+  localStorage.setItem('sb_session', '1');
+  localStorage.setItem('md_email', email);
+  localStorage.setItem('md_user_id', r.data.user.id);
+  localStorage.setItem('md_user', JSON.stringify(r.data.user));
+
+  // جلب الرصيد من Supabase
+  var p = await sb.from('profiles').select('credits,plan').eq('id', r.data.user.id).single();
+  if (p.data) {
+    localStorage.setItem('md_credits', p.data.credits || 0);
+    localStorage.setItem('md_plan', p.data.plan || 'free');
+  } else {
+    localStorage.setItem('md_credits', '0');
+    localStorage.setItem('md_plan', 'free');
+  }
+
+  window.location.href = 'profile.html';
+}
+
+async function signInGoogle() {
+  var {error} = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {redirectTo: window.location.origin + '/profile.html'}
+  });
+  if (error) showAlert(error.message);
+}
+
+async function forgotPw() {
+  var email = document.getElementById('email').value.trim();
+  if (!email) { showAlert('Enter your email first.'); return; }
+  var {error} = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/register.html?reset=true'
+  });
+  if (error) showAlert(error.message);
+  else showAlert('Check your email for a reset link.', 'ok');
+}
+</script>
+<script src="/js/navigation.js"></script>
+</body>
+</html>
