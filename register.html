@@ -327,9 +327,9 @@ async function handleRegister(e){
   localStorage.setItem('md_user',JSON.stringify(r.data.user));
   localStorage.setItem('md_email',email);
   localStorage.setItem('sb_session','1');
-  localStorage.setItem('md_credits','100');
+  localStorage.setItem('md_credits','0');
   localStorage.setItem('md_plan','free');
-  alert('Account created! You have 100 free credits.');
+  alert('Account created! Purchase credits to start generating.');
   window.location.href='profile.html';
 }
 window.addEventListener('load',function(){
