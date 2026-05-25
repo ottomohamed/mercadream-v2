@@ -181,7 +181,7 @@
 <a class="text-on-surface-variant font-label-technical text-label-technical uppercase tracking-widest hover:text-neon-acid transition-colors duration-200" href="javascript:void(0)">Pricing</a>
 </div>
 <div class="flex items-center gap-3 md:gap-6">
-<div class="flex items-center gap-3 md:gap-4 mr-2 md:mr-4"><button onclick="window.location.href='login.html'" class="px-4 md:px-6 py-1.5 md:py-2 border border-white text-white font-label-technical text-label-technical uppercase hover:bg-white hover:text-void-black transition-all duration-200">LOG IN</button><button onclick="window.location.href='register.html'" class="px-4 md:px-6 py-1.5 md:py-2 bg-[#c8ff00] text-void-black font-orbitron font-bold text-label-technical uppercase hover:bg-white transition-all duration-200">START FREE →</button></div><div class="flex items-center gap-1 md:gap-2 font-label-technical text-[10px] md:text-label-technical text-neon-acid border border-neon-acid/30 px-2 md:px-3 py-1 bg-neon-acid/5" id="header-credits">
+<div class="flex items-center gap-3 md:gap-4 mr-2 md:mr-4"><button id="auth-button" onclick="handleAuthClick()" class="px-4 md:px-6 py-1.5 md:py-2 border border-white text-white font-label-technical text-label-technical uppercase hover:bg-white hover:text-void-black transition-all duration-200">LOG IN</button><button onclick="window.location.href='register.html'" class="px-4 md:px-6 py-1.5 md:py-2 bg-[#c8ff00] text-void-black font-orbitron font-bold text-label-technical uppercase hover:bg-white transition-all duration-200">START FREE →</button></div><div class="flex items-center gap-1 md:gap-2 font-label-technical text-[10px] md:text-label-technical text-neon-acid border border-neon-acid/30 px-2 md:px-3 py-1 bg-neon-acid/5" id="header-credits">
 <span class="material-symbols-outlined text-[14px] md:text-[18px]">payments</span>
 <span class="font-bold">240.00 CRD</span>
 </div>
@@ -443,7 +443,20 @@
 </footer>
 
 
-<script src="/js/navigation.js"></script></body>
+<script src="/js/navigation.js"></script>
+<script>
+function handleAuthClick() {
+    const isLoggedIn = localStorage.getItem("is_logged_in") === "true";
+    window.location.href = isLoggedIn ? "profile.html" : "profile.html";
+    if (!isLoggedIn) localStorage.setItem("is_logged_in", "true");
+}
+window.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("is_logged_in") === "true") {
+        document.getElementById("auth-button").innerText = "MY PROFILE";
+    }
+});
+</script>
+</body>
 <!-- SEO Content Block -->
 <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">
 <h1>MercaDream AI Film Studio — Create Professional Videos with AI</h1>
@@ -460,6 +473,7 @@
 </ul>
 </div>
 </html>
+
 
 
 
