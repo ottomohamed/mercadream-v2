@@ -25,7 +25,11 @@ const HTML_PAGES = [
 ];
 
 // قائمة الـ API endpoints المتوقعة
-const API_ENDPOINTS = [\n  'animate','chat','checkout','convert','credits','deaging','director',\n  'faceswap','grading','lipsync','pexels','semantic','upscale','video',\n  'wavespeed','webhook'\n];
+const API_ENDPOINTS = [
+  'animate','chat','checkout','convert','credits','deaging','director',
+  'faceswap','grading','lipsync','pexels','semantic','upscale','video',
+  'wavespeed','webhook'
+];
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

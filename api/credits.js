@@ -1,12 +1,13 @@
 // ═══════════════════════════════════════════════════════
 // MERCADREAM — /api/credits.js
-// Credits Management: check, spend, topup
+// Credits Management: check, spend, topup, history
 // ═══════════════════════════════════════════════════════
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 
-async function supabase(path, method = 'GET', body = null) {
+async function supabase(path, method, body) {
+  method = method || 'GET';
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     method,
     headers: {
@@ -24,8 +25,7 @@ async function supabase(path, method = 'GET', body = null) {
   return res.json().catch(() => null);
 }
 
-export default async function handler(req, res) {
-
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
 
       const user = users[0];
       const credits = await supabase(`credits?user_id=eq.${user.id}&select=balance`);
-      const balance = credits?.[0]?.balance || 0;
+      const balance = credits && credits[0] ? credits[0].balance : 0;
 
       return res.status(200).json({
         user_id: user.id,
@@ -82,11 +82,12 @@ export default async function handler(req, res) {
 
     // ── SPEND CREDITS ──
     if (action === 'spend') {
-      const { user_id, cost } = req.body;
+      const user_id = req.body.user_id;
+      const cost    = req.body.cost;
       if (!user_id || !cost) return res.status(400).json({ error: 'user_id and cost required.' });
 
       const credits = await supabase(`credits?user_id=eq.${user_id}&select=balance`);
-      const current = credits?.[0]?.balance || 0;
+      const current = credits && credits[0] ? credits[0].balance : 0;
 
       if (current < cost) {
         return res.status(402).json({
@@ -98,13 +99,11 @@ export default async function handler(req, res) {
 
       const newBalance = current - cost;
 
-      // Update balance
       await supabase(`credits?user_id=eq.${user_id}`, 'PATCH', {
         balance: newBalance,
         updated_at: new Date().toISOString()
       });
 
-      // Log transaction
       await supabase('transactions', 'POST', {
         user_id,
         type: 'spend',
@@ -117,11 +116,12 @@ export default async function handler(req, res) {
 
     // ── TOP UP CREDITS ──
     if (action === 'topup') {
-      const { user_id, credits_amount } = req.body;
+      const user_id       = req.body.user_id;
+      const credits_amount = req.body.credits_amount;
       if (!user_id || !credits_amount) return res.status(400).json({ error: 'user_id and credits_amount required.' });
 
       const credits = await supabase(`credits?user_id=eq.${user_id}&select=balance`);
-      const current = credits?.[0]?.balance || 0;
+      const current = credits && credits[0] ? credits[0].balance : 0;
       const newBalance = current + credits_amount;
 
       await supabase(`credits?user_id=eq.${user_id}`, 'PATCH', {
@@ -141,7 +141,7 @@ export default async function handler(req, res) {
 
     // ── GET TRANSACTION HISTORY ──
     if (action === 'history') {
-      const { user_id } = req.body;
+      const user_id = req.body.user_id;
       if (!user_id) return res.status(400).json({ error: 'user_id required.' });
 
       const transactions = await supabase(
@@ -157,4 +157,4 @@ export default async function handler(req, res) {
     console.error('Credits error:', err.message);
     return res.status(500).json({ error: err.message });
   }
-}
+};

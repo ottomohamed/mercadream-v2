@@ -147,7 +147,7 @@ For drama and action: Scene 4 MUST include:
 "exceed": "The unexpected element that becomes the emotional heart. Why it could not have been predicted. Why it is immediately felt as necessary."
 `;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');

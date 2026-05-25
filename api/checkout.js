@@ -1,9 +1,9 @@
-﻿// 
-// MERCADREAM  /api/checkout.js
+// ═══════════════════════════════════════════════════════
+// MERCADREAM — /api/checkout.js
 // بروتوكول توليد روابط الدفع الآمنة عبر Stripe Checkout
-// 
-import Stripe from 'stripe';
+// ═══════════════════════════════════════════════════════
 
+const Stripe = require('stripe');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // جدول تعريفي بأسعار الخطط التي تحددها في لوحة تحكم Stripe الخاصة بك
@@ -16,13 +16,13 @@ const SUBSCRIPTION_PRICE_IDS = {
   studio_yearly:   process.env.STRIPE_PRICE_STUDIO_YEARLY   || 'price_default_studio_yr',
 };
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // تفعيل إعدادات CORS لتسهيل الاتصال بين الصفحات والسيرفر
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
-  
+
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   const { type, amount, plan, billing, userId } = req.body || {};
@@ -47,12 +47,12 @@ export default async function handler(req, res) {
             name: `MERCADREAM Processing Power: ${totalAmount.toLocaleString()} Credits`,
             description: 'Direct GPU compute core allocation.',
           },
-          unit_amount: 10, // القيمة بالسنتات (10 سنت = 0.10 دولار) ليتوافق مع RATE = 0.10 الخاص بك
+          unit_amount: 10, // القيمة بالسنتات (10 سنت = 0.10 دولار)
         },
         quantity: totalAmount,
       }];
       mode = 'payment';
-    } 
+    }
     // الحالة الثانية: ترقية الاشتراك الشهري أو السنوي للخطط الأربعة
     else if (type === 'subscription') {
       const lookupKey = `${plan.toLowerCase()}_${billing.toLowerCase()}`;
@@ -71,8 +71,8 @@ export default async function handler(req, res) {
       payment_method_types: ['card'],
       mode: mode,
       line_items: line_items,
-      success_url: `${req.headers.origin}/power-station.html?status=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/power-station.html?status=cancelled`,
+      success_url: `${req.headers.origin}/pricing.html?status=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:  `${req.headers.origin}/pricing.html?status=cancelled`,
       client_reference_id: userId,
       metadata: {
         transaction_type: type,
@@ -86,4 +86,4 @@ export default async function handler(req, res) {
     console.error('Stripe Engine Session Failure:', err.message);
     return res.status(500).json({ error: err.message });
   }
-}
+};

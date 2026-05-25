@@ -108,14 +108,28 @@ async function signIn() {
   localStorage.setItem('md_user_id', r.data.user.id);
   localStorage.setItem('md_user', JSON.stringify(r.data.user));
 
-  // جلب الرصيد من Supabase
-  var p = await sb.from('profiles').select('credits,plan').eq('id', r.data.user.id).single();
-  if (p.data) {
-    localStorage.setItem('md_credits', p.data.credits || 0);
-    localStorage.setItem('md_plan', p.data.plan || 'free');
-  } else {
+  // جلب الرصيد والاشتراك بأمان من السيرفر الموحد
+  try {
+    var crRes = await fetch('/api/credits', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'check', email: email, name: r.data.user.email.split('@')[0] })
+    });
+    var crData = await crRes.json();
+    if (crData && !crData.error) {
+      localStorage.setItem('md_credits', crData.balance !== undefined ? crData.balance : 0);
+      localStorage.setItem('md_plan', crData.type || 'free');
+      localStorage.setItem('md_user_id', crData.user_id || r.data.user.id);
+    } else {
+      localStorage.setItem('md_credits', '0');
+      localStorage.setItem('md_plan', 'free');
+      localStorage.setItem('md_user_id', r.data.user.id);
+    }
+  } catch (err) {
+    console.error('Failed to sync credits on login:', err);
     localStorage.setItem('md_credits', '0');
     localStorage.setItem('md_plan', 'free');
+    localStorage.setItem('md_user_id', r.data.user.id);
   }
 
   window.location.href = 'profile.html';

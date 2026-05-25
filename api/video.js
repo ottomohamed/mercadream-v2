@@ -1,4 +1,4 @@
-﻿// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // MERCADREAM — /api/video.js
 // Video Generation → WaveSpeed API
 // ═══════════════════════════════════════════════════════
@@ -18,7 +18,7 @@ const MODELS = {
   regular: 'wavespeed-ai/wan-2.2/t2v-720p',   // standard — 720p
 };
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
