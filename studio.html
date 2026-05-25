@@ -406,7 +406,7 @@ OPEN ASSEMBLY →
 </div>
 </footer>
 <script>
-        let credits = parseInt(localStorage.getItem('md_credits')) || 1000;
+        let credits = parseInt(localStorage.getItem('md_credits') || '0');
         let baseCost = 12;
 
         const costTable = { 'Drama': 12, 'Action': 25, 'Comedy': 15, 'Documentary': 8 };
@@ -624,6 +624,11 @@ OPEN ASSEMBLY →
         }
 
         // ── STATE ─────────────────────────────────────
+        // فحص الجلسة — إذا لا يوجد حساب مسجّل → رصيد 0
+        if (!localStorage.getItem('sb_session')) {
+            localStorage.setItem('md_credits', '0');
+        }
+        let credits = parseInt(localStorage.getItem('md_credits') || '0');
         let generatedScenes = []; // المشاهد المولّدة من الـ script
         let activeGenerations = {}; // تتبع التوليدات الجارية
 
