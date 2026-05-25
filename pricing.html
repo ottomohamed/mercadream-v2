@@ -205,17 +205,8 @@
 <div class="text-center py-8">
 <span class="font-label-xs text-label-xs text-on-surface-variant uppercase block mb-2">Available Processing Power</span>
 <div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">2,450</div>
-<div class="flex justify-center gap-1">
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
-<span class="text-primary-container text-xs font-technical-sm">?</span>
+<div class="flex justify-center">
+<span id="credits-label" class="text-primary-container text-xs font-technical-sm tracking-widest">CREDITS</span>
 </div>
 </div>
 </div>
@@ -490,18 +481,23 @@ document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
   };
 });
 
-//  Buy credits 
-if(buyBtn)buyBtn.onclick=function(){
-  var amt=parseInt(input.value)||0;
+//  Buy credits via Stripe
+if(buyBtn)buyBtn.onclick=async function(){
+  var amt=parseInt(input?input.value:0)||0;
   if(amt<1){alert("Enter amount.");return;}
   var cost=(amt*RATE).toFixed(2);
-  if(confirm("Buy "+amt+" credits for $"+cost+"?\n(Stripe integration coming soon)")){
-    var current=parseInt(localStorage.getItem("md_credits")||"0");
-    localStorage.setItem("md_credits",current+amt);
-    if(window.MD)window.MD.updateCredits();
-    updateBalance();
-    alert(" "+amt+" credits added! New balance: "+(current+amt).toLocaleString());
-  }
+  if(!confirm("Buy "+amt+" credits for $"+cost+"?"))return;
+  buyBtn.disabled=true;buyBtn.textContent="REDIRECTING TO STRIPE...";
+  var userId=localStorage.getItem("md_user_id")||("guest_"+Date.now());
+  localStorage.setItem("md_user_id",userId);
+  localStorage.setItem("md_pending_credits",amt);
+  try{
+    var r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({type:"credits",amount:amt,userId:userId})});
+    var d=await r.json();
+    if(d.url){window.location.href=d.url;}
+    else{alert("Error: "+(d.error||"Unknown"));buyBtn.disabled=false;buyBtn.textContent="BUY CREDITS";}
+  }catch(e){alert("Error: "+e.message);buyBtn.disabled=false;buyBtn.textContent="BUY CREDITS";}
 };
 
 //  Subscription upgrade 
@@ -510,21 +506,18 @@ document.querySelectorAll(".grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 button
   if(!txt.includes("UPGRADE") && !txt.includes("NOW"))return;
   btn.onclick=function(){
     var card=btn.closest(".surgical-border,.bg-surface-container-low");
-    var planName=card?card.querySelector("h3").textContent.trim().toLowerCase():"creator";
-    currentPlan=planName;
-    localStorage.setItem("md_plan",planName);
-    // Add bonus credits
-    var bonus={creator:300,pro:1000,studio:5000};
-    var b=bonus[planName]||0;
-    var current=parseInt(localStorage.getItem("md_credits")||"0");
-    localStorage.setItem("md_credits",current+b);
-    if(window.MD)window.MD.updateCredits();
-    updateBalance();
-    // Update button
-    document.querySelectorAll(".grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 button").forEach(function(b){if(b.textContent.includes("CURRENT"))b.textContent="UPGRADE NOW";});
-    btn.textContent=" CURRENT PLAN";
-    btn.disabled=true;
-    alert(" Upgraded to "+planName.toUpperCase()+"! "+b+" bonus credits added!");
+    var planName=card&&card.querySelector('h3')?card.querySelector('h3').textContent.trim().toLowerCase():'creator';
+    btn.disabled=true;btn.textContent='REDIRECTING...';
+    var userId=localStorage.getItem('md_user_id')||('guest_'+Date.now());
+    localStorage.setItem('md_user_id',userId);
+    localStorage.setItem('md_pending_plan',planName);
+    fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'subscription',plan:planName,billing:'monthly',userId:userId})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.url){window.location.href=d.url;}
+      else{alert('Error: '+(d.error||'Price not configured in Stripe'));btn.disabled=false;btn.textContent='UPGRADE NOW';}
+    }).catch(function(e){alert('Error: '+e.message);btn.disabled=false;btn.textContent='UPGRADE NOW';});
   };
 });
 
@@ -552,6 +545,26 @@ if(toggleBtns[0])toggleBtns[0].onclick=function(){
   });
 };
 
-//  Init 
-window.addEventListener("load",function(){updateBalance();calcTotal();});
+//  Init + Stripe return handler
+window.addEventListener("load",function(){
+  updateBalance();calcTotal();
+  var params=new URLSearchParams(window.location.search);
+  var status=params.get("status");
+  if(status==="success"){
+    var pc=parseInt(localStorage.getItem("md_pending_credits")||"0");
+    var pp=localStorage.getItem("md_pending_plan")||"";
+    if(pc>0){
+      var cur=parseInt(localStorage.getItem("md_credits")||"0");
+      localStorage.setItem("md_credits",cur+pc);
+      localStorage.removeItem("md_pending_credits");
+      updateBalance();
+      alert("✅ "+pc+" credits added!");
+    }
+    if(pp){localStorage.setItem("md_plan",pp);localStorage.removeItem("md_pending_plan");currentPlan=pp;updateBalance();alert("✅ Upgraded to "+pp.toUpperCase()+"!");}
+    window.history.replaceState({},"","/pricing.html");
+  } else if(status==="cancelled"){
+    alert("Payment cancelled.");
+    window.history.replaceState({},"","/pricing.html");
+  }
+});
 </script></body></html>
