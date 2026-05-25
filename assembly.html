@@ -369,34 +369,189 @@
 
     async function exportMasterSequence() {
         const btn = document.getElementById('startExportBtn');
-        
-        // جمع كل الـ video clips من الـ timeline بالترتيب
-        const videoClips = [];
-        const tracks = ['v1Track', 'v2Track'];
-        
-        tracks.forEach(function(trackId) {
+        btn.disabled = true;
+        btn.textContent = 'READING TIMELINE...';
+
+        // ── جمع كل الـ clips من الـ timeline مرتبة حسب الوقت ──
+        const allClips = [];
+        ['v1Track','v2Track','a1Track','a2Track','t1Track'].forEach(function(trackId) {
             const track = document.getElementById(trackId);
             if (!track) return;
-            const clips = Array.from(track.querySelectorAll('.timeline-clip[data-type="video"]'));
-            clips.sort((a, b) => parseFloat(a.style.left) - parseFloat(b.style.left));
-            clips.forEach(function(clip) {
-                if (clip.dataset.src) videoClips.push(clip.dataset.src);
+            Array.from(track.querySelectorAll('.timeline-clip')).forEach(function(clip) {
+                allClips.push({
+                    src: clip.dataset.src || '',
+                    type: clip.dataset.type || 'video',
+                    start: parseFloat(clip.dataset.startSeconds) || 0,
+                    duration: parseFloat(clip.dataset.duration) || 10,
+                    text: clip.dataset.textValue || '',
+                    trackId: trackId
+                });
             });
         });
 
+        // فرز حسب وقت البداية
+        allClips.sort((a,b) => a.start - b.start);
+
+        const videoClips = allClips.filter(c => c.type === 'video' && c.src);
+        const audioClips = allClips.filter(c => c.type === 'audio' && c.src);
+        const textClips  = allClips.filter(c => c.type === 'text');
+
         if (!videoClips.length) {
-            // إذا لم يوجد clips في timeline — استخدم md_6scenes مباشرة
+            // fallback: md_6scenes
             const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-            const urls = scenes.filter(s => s.videoUrl).map(s => s.videoUrl);
+            const urls = scenes.filter(s => s.videoUrl).map(s => ({
+                src: s.videoUrl, type: 'video',
+                start: 0, duration: 10, text: s.title || ''
+            }));
             if (!urls.length) {
-                alert('No videos to export. Generate scenes first.');
+                alert('No videos on timeline. Drag scenes first.');
+                btn.disabled = false;
+                btn.textContent = 'Render Master Sequence';
                 return;
             }
-            await downloadVideosAsZip(urls, btn);
-            return;
+            videoClips.push(...urls);
         }
 
-        await downloadVideosAsZip(videoClips, btn);
+        // حساب المدة الكاملة
+        const totalDuration = Math.max(...allClips.map(c => c.start + c.duration), 
+                                        videoClips.reduce((s,c) => s + c.duration, 0));
+
+        btn.textContent = 'RENDERING ' + videoClips.length + ' CLIPS...';
+
+        try {
+            await renderTimelineToVideo(videoClips, audioClips, textClips, totalDuration, btn);
+        } catch(err) {
+            console.error('Export error:', err);
+            // fallback: تنزيل منفرد
+            btn.textContent = 'DOWNLOADING SEPARATELY...';
+            for (let i = 0; i < videoClips.length; i++) {
+                await new Promise(r => setTimeout(r, 400));
+                const a = document.createElement('a');
+                a.href = videoClips[i].src;
+                a.download = 'mercadream_scene_' + (i+1).toString().padStart(2,'0') + '.mp4';
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+            btn.textContent = 'Render Master Sequence';
+            btn.disabled = false;
+        }
+    }
+
+    async function renderTimelineToVideo(videoClips, audioClips, textClips, totalDuration, btn) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1280;
+        canvas.height = 720;
+        const ctx = canvas.getContext('2d');
+
+        // AudioContext للصوت
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const destination = audioCtx.createMediaStreamDestination();
+
+        // Canvas stream
+        const canvasStream = canvas.captureStream(30);
+        canvasStream.addTrack(destination.stream.getAudioTracks()[0]);
+
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+            ? 'video/webm;codecs=vp9,opus'
+            : 'video/webm';
+
+        const recorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: 5000000 });
+        const chunks = [];
+        recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+
+        recorder.onstop = function() {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'MercaDream_Master_' + Date.now() + '.webm';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+            btn.textContent = 'Render Master Sequence';
+            btn.disabled = false;
+            // عرض رسالة نجاح
+            const status = document.getElementById('connectionStatus');
+            if (status) status.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse"></span> MASTER EXPORTED SUCCESSFULLY';
+        };
+
+        recorder.start(100);
+
+        // تشغيل كل فيديو على الـ canvas
+        for (let i = 0; i < videoClips.length; i++) {
+            btn.textContent = 'RENDERING ' + (i+1) + '/' + videoClips.length + '...';
+            const clip = videoClips[i];
+            
+            // إيجاد النصوص المتزامنة مع هذا الكليب
+            const overlayTexts = textClips.filter(t => 
+                t.start >= clip.start && t.start < clip.start + clip.duration
+            );
+            
+            await playClipToCanvas(clip.src, canvas, ctx, audioCtx, destination, overlayTexts);
+        }
+
+        // تشغيل الـ audio clips المنفردة
+        for (const audioClip of audioClips) {
+            try {
+                const response = await fetch(audioClip.src);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                const source = audioCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(destination);
+            } catch(e) {}
+        }
+
+        recorder.stop();
+    }
+
+    function playClipToCanvas(url, canvas, ctx, audioCtx, destination, textOverlays) {
+        return new Promise(function(resolve) {
+            const video = document.createElement('video');
+            video.crossOrigin = 'anonymous';
+            video.src = url;
+            video.muted = true;
+
+            // ربط صوت الفيديو بالـ AudioContext
+            try {
+                const source = audioCtx.createMediaElementSource(video);
+                source.connect(destination);
+                source.connect(audioCtx.destination);
+                video.muted = false;
+            } catch(e) {}
+
+            video.addEventListener('canplay', function() {
+                video.play().catch(() => {});
+                
+                function draw() {
+                    if (video.ended || video.paused) { resolve(); return; }
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // رسم النصوص فوق الفيديو
+                    textOverlays.forEach(function(t) {
+                        if (!t.text) return;
+                        ctx.save();
+                        ctx.font = 'bold 42px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                        ctx.fillRect(canvas.width/2 - 300, canvas.height - 100, 600, 60);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(t.text, canvas.width/2, canvas.height - 60);
+                        ctx.restore();
+                    });
+                    
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }, { once: true });
+
+            video.addEventListener('ended', resolve, { once: true });
+            video.addEventListener('error', resolve, { once: true });
+            video.load();
+        });
     }
 
     async function downloadVideosAsZip(urls, btn) {
