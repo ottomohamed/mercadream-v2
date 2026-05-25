@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>MercaDream — AI Film Studio | Create Cinematic Videos with AI Directors</title>
+    <title>MercaDream � AI Film Studio | Create Cinematic Videos with AI Directors</title>
     <meta name="description" content="MercaDream is the world's first AI-powered film production platform. Create professional cinematic videos, ads, documentaries and music videos using AI directors. No crew needed. From idea to film in minutes.">
     <meta name="keywords" content="AI video generator, AI film studio, text to video, AI director, cinematic video AI, AI movie maker, video generation AI, AI commercial maker, MercaDream">
-    <meta property="og:title" content="MercaDream — AI Film Studio">
+    <meta property="og:title" content="MercaDream � AI Film Studio">
     <meta property="og:description" content="Turn any idea into a professional cinematic film using AI directors. No crew. No budget. Real cinema.">
     <meta property="og:image" content="https://www.mercadream.com/media/og-image.jpg">
     <meta property="og:url" content="https://www.mercadream.com">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MercaDream — AI Film Studio">
+    <meta name="twitter:title" content="MercaDream � AI Film Studio">
     <meta name="twitter:description" content="AI directors. Real cinema. Your idea in 60 seconds.">
     <link rel="canonical" href="https://www.mercadream.com">
     
@@ -152,7 +152,7 @@
             background-size: 20px 20px;
         }
         .flow-arrow::after {
-            content: '→';
+            content: '?';
             position: absolute;
             right: -24px;
             top: 50%;
@@ -164,7 +164,7 @@
         }
         @media (max-width: 768px) {
             .flow-arrow::after {
-                content: '↓';
+                content: '?';
                 right: auto;
                 left: 50%;
                 bottom: -24px;
@@ -188,7 +188,7 @@
     <div class="flex items-center gap-3 md:gap-6">
         <div class="flex items-center gap-3 md:gap-4 mr-2 md:mr-4">
             <button id="btn-login" class="px-4 md:px-6 py-1.5 md:py-2 border border-white text-white font-label-technical text-label-technical uppercase hover:bg-white hover:text-void-black transition-all duration-200">LOG IN</button>
-            <button id="btn-register" class="px-4 md:px-6 py-1.5 md:py-2 bg-[#c8ff00] text-void-black font-orbitron font-bold text-label-technical uppercase hover:bg-white transition-all duration-200">START FREE →</button>
+            <button id="btn-register" class="px-4 md:px-6 py-1.5 md:py-2 bg-[#c8ff00] text-void-black font-orbitron font-bold text-label-technical uppercase hover:bg-white transition-all duration-200">START FREE ?</button>
         </div>
         <div class="flex items-center gap-1 md:gap-2 font-label-technical text-[10px] md:text-label-technical text-neon-acid border border-neon-acid/30 px-2 md:px-3 py-1 bg-neon-acid/5" id="header-credits">
             <span class="material-symbols-outlined text-[14px] md:text-[18px]">payments</span>
@@ -213,7 +213,7 @@
     <div class="scanning-line"></div>
 
     <div class="absolute bottom-8 right-8 pointer-events-none z-10 select-none">
-        <span style="font-size:3.5rem;font-weight:900;color:rgba(168,215,0,0.15);font-family:serif;letter-spacing:-0.02em">梦想</span>
+        <span style="font-size:3.5rem;font-weight:900;color:rgba(168,215,0,0.15);font-family:serif;letter-spacing:-0.02em">??</span>
     </div>
 </section>
 
@@ -428,7 +428,7 @@
 </section>
 
 <footer class="w-full border-t border-outline-variant/30 bg-surface-container-lowest flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-8 md:py-module-padding gap-6">
-    <div class="font-label-caps text-label-caps text-silver-technical uppercase text-center md:text-left">© 2026 MERCADREAM AI CINEMA STUDIO. ALL RIGHTS RESERVED. V1.0.4-STABLE</div>
+    <div class="font-label-caps text-label-caps text-silver-technical uppercase text-center md:text-left">� 2026 MERCADREAM AI CINEMA STUDIO. ALL RIGHTS RESERVED. V1.0.4-STABLE</div>
     <div class="flex flex-wrap justify-center gap-4 md:gap-8">
         <a class="text-silver-technical font-label-technical text-label-technical hover:text-primary-fixed-dim transition-colors opacity-80 hover:opacity-100 uppercase" href="privacy.html">Privacy Policy</a>
         <a class="text-silver-technical font-label-technical text-label-technical hover:text-primary-fixed-dim transition-colors opacity-80 hover:opacity-100 uppercase" href="terms.html">Terms of Service</a>
@@ -444,18 +444,18 @@ window.addEventListener("DOMContentLoaded", () => {
     const authBtn = document.getElementById("btn-login");
     if (authBtn) {
         authBtn.addEventListener("click", (e) => {
-            // التحقق من المتغير الأصلي للموقع sb_session قبل اتخاذ أي قرار
-            if (!!localStorage.getItem('sb_session')) {
-                e.preventDefault();
-                window.location.href = "profile.html";
-            } else {
-                // محاكاة تسجيل دخول آمن يدعم ملف البروفايل فوراً دون ارتداد
-                localStorage.setItem("sb_session", "demo_session_token_12345");
-                localStorage.setItem("md_credits", "240.00");
-                window.location.href = "profile.html";
-            }
-        });
+            // ?????? ?? ??????? ?????? ?????? sb_session ??? ????? ?? ????
+function handleAuthClick() {
+    if (localStorage.getItem("sb_session")) {
+        ["sb_session","md_email","md_user_id","md_user","md_credits","md_plan","is_logged_in"].forEach(function(k){localStorage.removeItem(k);});
+        document.getElementById("auth-button").innerText = "LOG IN";
+    } else { window.location.href = "login.html"; }
+}
+window.addEventListener("DOMContentLoaded", function() {
+    if (localStorage.getItem("sb_session")) {
+        document.getElementById("auth-button").innerText = "LOG OUT";
     }
+});
 });
 </script>
 
