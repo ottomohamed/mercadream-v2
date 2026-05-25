@@ -113,8 +113,8 @@ input::placeholder{color:var(--text-dim)}
 const SURL='https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
 const sb=supabase.createClient(SURL,SKEY);
-sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='studio.html';});
-async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/studio.html'}});if(error)showAlert(error.message);}
+sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='profile.html';});
+async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/profile.html'}});if(error)showAlert(error.message);}
 async function signInEmail(){
   const em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value;
   if(!em||!pw)return showAlert('Please enter email and password.');
@@ -122,7 +122,7 @@ async function signInEmail(){
   const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
   if(error){btn.disabled=false;document.getElementById('subTxt').textContent=I18N[lang].submit;return showAlert(error.message);}
   await fetch('/api/credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'check',email:em})});
-  window.location.href='studio.html';
+  window.location.href='profile.html';
 }
 async function forgotPw(){
   const em=document.getElementById('em').value.trim();
