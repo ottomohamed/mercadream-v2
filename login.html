@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Sign In</title>
+<title>MERCADREAM � Sign In</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -58,7 +58,7 @@ input::placeholder{color:var(--text-dim)}
 .feat-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px}
 .feat-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(200,255,0,0.04);font-size:12px;color:var(--text)}
 .feat-item:last-child{border-bottom:none;padding-bottom:0}
-.feat-item::before{content:'✓';color:var(--acid);font-family:var(--mono);font-size:10px;flex-shrink:0}
+.feat-item::before{content:'?';color:var(--acid);font-family:var(--mono);font-size:10px;flex-shrink:0}
 @media(max-width:900px){body{grid-template-columns:1fr}.right{display:none}.left{padding:24px 16px;min-height:100dvh}}
 </style>
 </head>
@@ -75,7 +75,7 @@ input::placeholder{color:var(--text-dim)}
       <button class="lb" onclick="setLang('ar')">AR</button>
     </div>
     <div class="form-title" id="ttl">SIGN IN</div>
-    <div class="form-sub" id="sub">New here? <a href="register.html">Create account →</a></div>
+    <div class="form-sub" id="sub">New here? <a href="register.html">Create account ?</a></div>
     <div class="alert" id="alert"></div>
     <button class="btn-google" onclick="signInGoogle()">
       <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -84,13 +84,13 @@ input::placeholder{color:var(--text-dim)}
     <div class="divider"><div class="divider-line"></div><div class="divider-text" id="orTxt">OR</div><div class="divider-line"></div></div>
     <div class="field">
       <label class="field-label" id="emLbl">EMAIL</label>
-      <div class="field-wrap"><span class="fi">✉</span><input type="email" id="em" placeholder="you@mercadream.com"/></div>
+      <div class="field-wrap"><span class="fi">?</span><input type="email" id="em" placeholder="you@mercadream.com"/></div>
     </div>
     <div class="field">
       <label class="field-label" id="pwLbl">PASSWORD</label>
-      <div class="field-wrap"><span class="fi">🔒</span><input type="password" id="pw" placeholder="••••••••"/></div>
+      <div class="field-wrap"><span class="fi">??</span><input type="password" id="pw" placeholder="��������"/></div>
     </div>
-    <button class="btn-submit" id="subBtn" onclick="signInEmail()"><span id="subTxt">SIGN IN →</span></button>
+    <button class="btn-submit" id="subBtn" onclick="signInEmail()"><span id="subTxt">SIGN IN ?</span></button>
     <button class="btn-text" id="fgtBtn" onclick="forgotPw()">Forgot password?</button>
   </div>
 </div>
@@ -99,10 +99,10 @@ input::placeholder{color:var(--text-dim)}
   <div class="right-content">
     <div><div class="rp-dot"></div><span style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid)">AI CINEMA STUDIO</span></div>
     <div class="rp-title">Welcome<br><span>Back.</span></div>
-    <p class="rp-sub">Your projects, your vault, your films — all waiting for you.</p>
+    <p class="rp-sub">Your projects, your vault, your films � all waiting for you.</p>
     <div class="feat-list">
       <div class="feat-title">YOUR ACCOUNT INCLUDES</div>
-      <div class="feat-item">Dream Extractor™ PhD Edition</div>
+      <div class="feat-item">Dream Extractor� PhD Edition</div>
       <div class="feat-item">6-scene cinematic film generation</div>
       <div class="feat-item">Assembly Room & film vault</div>
       <div class="feat-item">Credit balance & history</div>
@@ -113,8 +113,8 @@ input::placeholder{color:var(--text-dim)}
 const SURL='https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
 const sb=supabase.createClient(SURL,SKEY);
-sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='studio.html';});
-async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/studio.html'}});if(error)showAlert(error.message);}
+sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='profile.html';});
+async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/profile.html'}});if(error)showAlert(error.message);}
 async function signInEmail(){
   const em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value;
   if(!em||!pw)return showAlert('Please enter email and password.');
@@ -122,7 +122,7 @@ async function signInEmail(){
   const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
   if(error){btn.disabled=false;document.getElementById('subTxt').textContent=I18N[lang].submit;return showAlert(error.message);}
   await fetch('/api/credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'check',email:em})});
-  window.location.href='studio.html';
+  window.location.href='profile.html';
 }
 async function forgotPw(){
   const em=document.getElementById('em').value.trim();
@@ -133,9 +133,9 @@ async function forgotPw(){
 }
 function showAlert(msg,type='err'){const b=document.getElementById('alert');b.textContent=msg;b.className='alert show'+(type==='ok'?' ok':'');}
 const I18N={
-  en:{ttl:'SIGN IN',sub:'New here? <a href="register.html">Create account →</a>',gBtn:'Continue with Google',or:'OR',emLbl:'EMAIL',pwLbl:'PASSWORD',submit:'SIGN IN →',fgt:'Forgot password?'},
-  es:{ttl:'INICIAR SESIÓN',sub:'¿Nuevo? <a href="register.html">Crear cuenta →</a>',gBtn:'Continuar con Google',or:'O',emLbl:'CORREO',pwLbl:'CONTRASEÑA',submit:'INICIAR SESIÓN →',fgt:'¿Olvidaste tu contraseña?'},
-  ar:{ttl:'تسجيل الدخول',sub:'جديد؟ <a href="register.html">إنشاء حساب →</a>',gBtn:'المتابعة مع Google',or:'أو',emLbl:'البريد الإلكتروني',pwLbl:'كلمة المرور',submit:'دخول →',fgt:'نسيت كلمة المرور؟'}
+  en:{ttl:'SIGN IN',sub:'New here? <a href="register.html">Create account ?</a>',gBtn:'Continue with Google',or:'OR',emLbl:'EMAIL',pwLbl:'PASSWORD',submit:'SIGN IN ?',fgt:'Forgot password?'},
+  es:{ttl:'INICIAR SESI�N',sub:'�Nuevo? <a href="register.html">Crear cuenta ?</a>',gBtn:'Continuar con Google',or:'O',emLbl:'CORREO',pwLbl:'CONTRASE�A',submit:'INICIAR SESI�N ?',fgt:'�Olvidaste tu contrase�a?'},
+  ar:{ttl:'????? ??????',sub:'????? <a href="register.html">????? ???? ?</a>',gBtn:'???????? ?? Google',or:'??',emLbl:'?????? ??????????',pwLbl:'???? ??????',submit:'???? ?',fgt:'???? ???? ???????'}
 };
 let lang='en';
 function setLang(l){lang=l;document.documentElement.lang=l;document.body.className=l==='ar'?'lang-ar':'lang-en';document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));const tx=I18N[l];document.getElementById('ttl').textContent=tx.ttl;document.getElementById('sub').innerHTML=tx.sub;document.getElementById('gBtn').textContent=tx.gBtn;document.getElementById('orTxt').textContent=tx.or;document.getElementById('emLbl').textContent=tx.emLbl;document.getElementById('pwLbl').textContent=tx.pwLbl;document.getElementById('subTxt').textContent=tx.submit;document.getElementById('fgtBtn').textContent=tx.fgt;localStorage.setItem('md_lang',l);}
@@ -157,10 +157,10 @@ async function handleLogin(e){
   localStorage.setItem("sb_session","1");
   var p=await sb.from("profiles").select("credits,plan").eq("id",r.data.user.id).single();
   if(p.data){localStorage.setItem("md_credits",p.data.credits||0);localStorage.setItem("md_plan",p.data.plan||"free");}
-  window.location.href="directors.html";
+  window.location.href="profile.html";
 }
 window.addEventListener("load",function(){
-  if(localStorage.getItem("sb_session")){window.location.href="directors.html";return;}
+  if(localStorage.getItem("sb_session")){window.location.href="profile.html";return;}
   var form=document.querySelector("form");
   if(form)form.onsubmit=handleLogin;
   else{var btn=document.querySelector("button");if(btn)btn.onclick=handleLogin;}

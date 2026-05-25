@@ -247,7 +247,7 @@
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
 <span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 CR</span>
 </div>
-<button class="bg-surface-variant border border-outline text-[10px] px-sm py-1 font-label-technical hover:bg-primary-fixed-dim hover:text-on-primary transition-all" onclick="rechargeCredits()">RECHARGE</button>
+<button class="bg-surface-variant border border-outline text-[10px] px-sm py-1 font-label-technical hover:bg-primary-fixed-dim hover:text-on-primary transition-all" onclick="window.location.href='pricing.html'">RECHARGE</button>
 </div>
 </section>
 </aside>
@@ -628,7 +628,6 @@ OPEN ASSEMBLY →
         if (!localStorage.getItem('sb_session')) {
             localStorage.setItem('md_credits', '0');
         }
-        let credits = parseInt(localStorage.getItem('md_credits') || '0');
         let generatedScenes = []; // المشاهد المولّدة من الـ script
         let activeGenerations = {}; // تتبع التوليدات الجارية
 
@@ -892,7 +891,7 @@ OPEN ASSEMBLY →
         }
 
         function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
-        function rechargeCredits() { credits = Math.min(credits + 500, 9999); localStorage.setItem('md_credits', credits); updateCredits(); addLogLine('CREDITS RECHARGED: +500'); }
+        function rechargeCredits() { window.location.href = 'pricing.html'; }
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }
     </script>
