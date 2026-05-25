@@ -617,7 +617,7 @@ OPEN ASSEMBLY →
                 bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
                 div.appendChild(bubble);
             }
-            chat.insertBefore(div, voiceOverlay);
+            if(voiceOverlay){chat.insertBefore(div,voiceOverlay);}else{chat.appendChild(div);};
             chat.scrollTop = chat.scrollHeight;
             return div;
         }
@@ -630,7 +630,7 @@ OPEN ASSEMBLY →
             div.className = 'flex gap-md max-w-[80%]';
             div.id = id;
             div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md flex gap-[3px] items-center h-10"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div>';
-            chat.insertBefore(div, voiceOverlay);
+            if(voiceOverlay){chat.insertBefore(div,voiceOverlay);}else{chat.appendChild(div);};
             chat.scrollTop = chat.scrollHeight;
             return id;
         }
@@ -701,7 +701,7 @@ OPEN ASSEMBLY →
                 + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
                 + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: ' + (directorName || director) + '</p>'
                 + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' CR each. Click GENERATE.</p></div>';
-            chat.insertBefore(header, voiceOverlay);
+            if(voiceOverlay){chat.insertBefore(header,voiceOverlay);}else{chat.appendChild(header);};
 
             // مشهد واحد في كل مرة
             scenes.forEach((scene, idx) => {
@@ -718,7 +718,7 @@ OPEN ASSEMBLY →
                     + ' class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs">'
                     + '<span class="material-symbols-outlined text-[16px]">bolt</span> GENERATE (' + cost + ' CR)</button>'
                     + '</div><div id="video-result-' + idx + '" class="mt-sm hidden"></div>';
-                chat.insertBefore(card, voiceOverlay);
+                if(voiceOverlay){chat.insertBefore(card,voiceOverlay);}else{chat.appendChild(card);};
             });
 
             chat.scrollTop = chat.scrollHeight;
