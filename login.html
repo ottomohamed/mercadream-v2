@@ -113,8 +113,8 @@ input::placeholder{color:var(--text-dim)}
 const SURL='https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
 const sb=supabase.createClient(SURL,SKEY);
-sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='profile.html';});
-async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/profile.html'}});if(error)showAlert(error.message);}
+sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='studio.html';});
+async function signInGoogle(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/studio.html'}});if(error)showAlert(error.message);}
 async function signInEmail(){
   const em=document.getElementById('em').value.trim(),pw=document.getElementById('pw').value;
   if(!em||!pw)return showAlert('Please enter email and password.');
@@ -122,7 +122,7 @@ async function signInEmail(){
   const{error}=await sb.auth.signInWithPassword({email:em,password:pw});
   if(error){btn.disabled=false;document.getElementById('subTxt').textContent=I18N[lang].submit;return showAlert(error.message);}
   await fetch('/api/credits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'check',email:em})});
-  window.location.href='profile.html';
+  window.location.href='studio.html';
 }
 async function forgotPw(){
   const em=document.getElementById('em').value.trim();
@@ -180,10 +180,11 @@ async function handleLogin(e){
   if(r.error){alert('Error: '+r.error.message);if(btn){btn.textContent='SIGN IN';btn.disabled=false;}return;}
   localStorage.setItem('md_user',JSON.stringify(r.data.user));
   localStorage.setItem('md_email',r.data.user.email);
+  var oldEmail=localStorage.getItem('md_email');if(oldEmail&&oldEmail!==email)localStorage.clear();
   localStorage.setItem('sb_session','1');
   var p=await sb.from('profiles').select('credits,plan').eq('id',r.data.user.id).single();
-  if(p.data){localStorage.setItem('md_credits',p.data.credits||100);localStorage.setItem('md_plan',p.data.plan||'free');}
-  else{localStorage.setItem('md_credits','100');}
+  if(p && p.data){localStorage.setItem('md_credits',p.data.credits||0);localStorage.setItem('md_plan',p.data.plan||'free');}
+  else{localStorage.setItem('md_credits','0');}
   window.location.href='profile.html';
 }
 window.addEventListener('load',function(){

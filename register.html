@@ -324,11 +324,15 @@ async function handleRegister(e){
   if(btn){btn.textContent='CREATING ACCOUNT...';btn.disabled=true;}
   var r=await sb.auth.signUp({email:email,password:pass});
   if(r.error){alert('Error: '+r.error.message);if(btn){btn.textContent='CREATE ACCOUNT';btn.disabled=false;}return;}
+  // مسح كل البيانات القديمة أولاً
+  localStorage.clear();
+  // تعيين بيانات الحساب الجديد
   localStorage.setItem('md_user',JSON.stringify(r.data.user));
   localStorage.setItem('md_email',email);
   localStorage.setItem('sb_session','1');
   localStorage.setItem('md_credits','0');
   localStorage.setItem('md_plan','free');
+  localStorage.setItem('md_user_id', r.data.user.id || email);
   alert('Account created! Purchase credits to start generating.');
   window.location.href='profile.html';
 }
