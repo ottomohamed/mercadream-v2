@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -68,11 +68,11 @@ const SURL = 'https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
 const sb = supabase.createClient(SURL, SKEY);
 
-// التحقق من الجلسة الحالية
+// ?????? ?? ?????? ???????
 sb.auth.getSession().then(function({data}) {
   if (data.session) {
-    // بالفعل مسجل دخول - حفظ البيانات واذهب للبروفايل
-    localStorage.setItem('sb_session', 'true');
+    // ?????? ???? ???? - ??? ???????? ????? ?????????
+    localStorage.setItem('sb_session', 'true'); localStorage.setItem('sb_session', 'true');
     localStorage.setItem('md_email', data.session.user.email);
     localStorage.setItem('md_user', JSON.stringify(data.session.user));
     window.location.href = 'profile.html';
@@ -90,7 +90,7 @@ function hideAlert() {
   el.className = 'alert';
 }
 
-// دالة تسجيل الدخول الوحيدة - سليمة 100%
+// ???? ????? ?????? ??????? - ????? 100%
 async function signIn() {
   var email = document.getElementById('email').value.trim();
   var pass = document.getElementById('password').value;
@@ -107,7 +107,7 @@ async function signIn() {
   hideAlert();
 
   try {
-    // 1. تسجيل الدخول مع Supabase
+    // 1. ????? ?????? ?? Supabase
     const { data, error } = await sb.auth.signInWithPassword({
       email: email,
       password: pass
@@ -129,14 +129,14 @@ async function signIn() {
 
     console.log('Login successful for:', email);
 
-    // 2. حفظ البيانات الأساسية فورا
-    localStorage.setItem('sb_session', 'true');
+    // 2. ??? ???????? ???????? ????
+    localStorage.setItem('sb_session', 'true'); localStorage.setItem('sb_session', 'true');
     localStorage.setItem('md_email', email);
     localStorage.setItem('md_user', JSON.stringify(data.user));
     localStorage.setItem('md_user_id', data.user.id);
     localStorage.setItem('md_logged_in_at', Date.now().toString());
 
-    // 3. محاولة جلب الرصيد (لا نعتمد على نجاحها)
+    // 3. ?????? ??? ?????? (?? ????? ??? ??????)
     try {
       const crRes = await fetch('/api/credits', {
         method: 'POST',
@@ -163,12 +163,12 @@ async function signIn() {
       localStorage.setItem('md_plan', 'free');
     }
 
-    // 4. تأكيد أن البيانات كتبت بنجاح
+    // 4. ????? ?? ???????? ???? ?????
     console.log('Session saved, redirecting to profile...');
     console.log('sb_session:', localStorage.getItem('sb_session'));
     console.log('md_email:', localStorage.getItem('md_email'));
 
-    // 5. الانتقال إلى البروفايل
+    // 5. ???????? ??? ?????????
     window.location.replace('profile.html');
 
   } catch (err) {
