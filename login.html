@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Sign In</title>
+<title>MERCADREAM  Sign In</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -29,32 +29,28 @@ a:hover{color:#c8ff00}
 <body>
 <div class="bg"></div>
 <div style="width:100%;max-width:420px;padding:20px">
-  <!-- Logo -->
   <div style="text-align:center;margin-bottom:32px">
     <a href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
     <div style="font-size:9px;color:#444;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
   </div>
 
-  <!-- Card -->
   <div style="background:#0a0a0a;border:1px solid #1a1a1a;padding:32px">
     <div style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
-    <div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account →</a></div>
+    <div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account </a></div>
 
-    <!-- Google -->
-    <button class="btn-google" onclick="signInGoogle()">⊕ Continue with Google</button>
+    <button class="btn-google" onclick="signInGoogle()"> Continue with Google</button>
     <div style="text-align:center;margin:16px 0;font-size:9px;color:#333;letter-spacing:3px">OR</div>
 
-    <!-- Email/Password -->
     <div style="margin-bottom:12px">
       <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
       <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
     </div>
     <div style="margin-bottom:20px">
       <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
-      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/>
+      <input type="password" id="password" placeholder="" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/>
     </div>
 
-    <button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN →</button>
+    <button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN </button>
     <div id="alert" class="alert"></div>
 
     <div style="text-align:center;margin-top:16px">
@@ -63,7 +59,7 @@ a:hover{color:#c8ff00}
   </div>
 
   <div style="text-align:center;margin-top:16px;font-size:10px;color:#444">
-    <a href="index.html">← Back to Home</a>
+    <a href="index.html"> Back to Home</a>
   </div>
 </div>
 
@@ -72,9 +68,15 @@ const SURL = 'https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
 const sb = supabase.createClient(SURL, SKEY);
 
-// إذا مسجّل مسبقاً → profile مباشرة
+// التحقق من الجلسة الحالية
 sb.auth.getSession().then(function({data}) {
-  if (data.session) window.location.href = 'profile.html';
+  if (data.session) {
+    // بالفعل مسجل دخول - حفظ البيانات واذهب للبروفايل
+    localStorage.setItem('sb_session', 'true');
+    localStorage.setItem('md_email', data.session.user.email);
+    localStorage.setItem('md_user', JSON.stringify(data.session.user));
+    window.location.href = 'profile.html';
+  }
 });
 
 function showAlert(msg, type) {
@@ -83,127 +85,122 @@ function showAlert(msg, type) {
   el.className = 'alert show ' + (type || 'err');
 }
 
+function hideAlert() {
+  var el = document.getElementById('alert');
+  el.className = 'alert';
+}
+
+// دالة تسجيل الدخول الوحيدة - سليمة 100%
 async function signIn() {
   var email = document.getElementById('email').value.trim();
   var pass = document.getElementById('password').value;
-  if (!email || !pass) { showAlert('Enter email and password.'); return; }
+  
+  if (!email || !pass) {
+    showAlert('Enter email and password.');
+    return;
+  }
 
   var btn = document.getElementById('signInBtn');
-  btn.textContent = 'AUTHENTICATING...'; 
+  var originalText = btn.textContent;
+  btn.textContent = 'AUTHENTICATING...';
   btn.disabled = true;
+  hideAlert();
 
   try {
-    var r = await sb.auth.signInWithPassword({email: email, password: pass});
-    
-    if (r.error) {
-      showAlert(r.error.message);
-      btn.textContent = 'SIGN IN ';
+    // 1. تسجيل الدخول مع Supabase
+    const { data, error } = await sb.auth.signInWithPassword({
+      email: email,
+      password: pass
+    });
+
+    if (error) {
+      showAlert(error.message);
+      btn.textContent = originalText;
       btn.disabled = false;
       return;
     }
 
-    // ?????? ??? ?????? ???? ?? ????? ???? ????????
-    try {
-      var crRes = await fetch('/api/credits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'check', email: email, name: r.data.user.email.split('@')[0] })
-      });
-      var crData = await crRes.json();
-      
-      localStorage.setItem('md_credits', crData?.balance ?? 0);
-      localStorage.setItem('md_plan', crData?.type ?? 'free');
-      localStorage.setItem('md_user_id', crData?.user_id || r.data.user.id);
-    } catch (err) {
-      console.log('Credits sync failed, continuing anyway');
-      localStorage.setItem('md_credits', '0');
-      localStorage.setItem('md_plan', 'free');
-      localStorage.setItem('md_user_id', r.data.user.id);
+    if (!data || !data.user) {
+      showAlert('Login failed. Please try again.');
+      btn.textContent = originalText;
+      btn.disabled = false;
+      return;
     }
-    
-    // ??? ?????? ?????? - ??? ?? ?????
+
+    console.log('Login successful for:', email);
+
+    // 2. حفظ البيانات الأساسية فورا
     localStorage.setItem('sb_session', 'true');
     localStorage.setItem('md_email', email);
-    localStorage.setItem('md_user', JSON.stringify(r.data.user));
+    localStorage.setItem('md_user', JSON.stringify(data.user));
+    localStorage.setItem('md_user_id', data.user.id);
     localStorage.setItem('md_logged_in_at', Date.now().toString());
-    
-    // ????? ????? localStorage
-    console.log('Session saved, redirecting...');
-    
-    // ???????? ??????? ???? ????? ????
+
+    // 3. محاولة جلب الرصيد (لا نعتمد على نجاحها)
+    try {
+      const crRes = await fetch('/api/credits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'check', 
+          email: email, 
+          name: email.split('@')[0] 
+        })
+      });
+      const crData = await crRes.json();
+      
+      if (crData && !crData.error) {
+        localStorage.setItem('md_credits', crData.balance !== undefined ? crData.balance : '0');
+        localStorage.setItem('md_plan', crData.type || 'free');
+        if (crData.user_id) localStorage.setItem('md_user_id', crData.user_id);
+      } else {
+        localStorage.setItem('md_credits', '0');
+        localStorage.setItem('md_plan', 'free');
+      }
+    } catch (err) {
+      console.warn('Credits sync failed, using defaults:', err);
+      localStorage.setItem('md_credits', '0');
+      localStorage.setItem('md_plan', 'free');
+    }
+
+    // 4. تأكيد أن البيانات كتبت بنجاح
+    console.log('Session saved, redirecting to profile...');
+    console.log('sb_session:', localStorage.getItem('sb_session'));
+    console.log('md_email:', localStorage.getItem('md_email'));
+
+    // 5. الانتقال إلى البروفايل
     window.location.replace('profile.html');
-    
+
   } catch (err) {
-    console.error('Login error:', err);
-    showAlert('An error occurred. Please try again.');
-    btn.textContent = 'SIGN IN ';
+    console.error('Unexpected login error:', err);
+    showAlert('An unexpected error occurred. Please try again.');
+    btn.textContent = originalText;
     btn.disabled = false;
   }
 }
 
-  var btn = document.getElementById('signInBtn');
-  btn.textContent = 'AUTHENTICATING...'; btn.disabled = true;
-
-  var r = await sb.auth.signInWithPassword({email: email, password: pass});
-  if (r.error) {
-    showAlert(r.error.message);
-    btn.textContent = 'SIGN IN →'; btn.disabled = false;
-    return;
-  }
-
-  // مسح البيانات القديمة إذا إيميل مختلف
-  var oldEmail = localStorage.getItem('md_email');
-  if (oldEmail && oldEmail !== email) localStorage.clear();
-
-  // حفظ بيانات الجلسة
-  localStorage.setItem('sb_session', '1');
-  localStorage.setItem('md_email', email);
-  localStorage.setItem('md_user_id', r.data.user.id);
-  localStorage.setItem('md_user', JSON.stringify(r.data.user));
-
-  // جلب الرصيد والاشتراك بأمان من السيرفر الموحد
-  try {
-    var crRes = await fetch('/api/credits', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'check', email: email, name: r.data.user.email.split('@')[0] })
-    });
-    var crData = await crRes.json();
-    if (crData && !crData.error) {
-      localStorage.setItem('md_credits', crData.balance !== undefined ? crData.balance : 0);
-      localStorage.setItem('md_plan', crData.type || 'free');
-      localStorage.setItem('md_user_id', crData.user_id || r.data.user.id);
-    } else {
-      localStorage.setItem('md_credits', '0');
-      localStorage.setItem('md_plan', 'free');
-      localStorage.setItem('md_user_id', r.data.user.id);
-    }
-  } catch (err) {
-    console.error('Failed to sync credits on login:', err);
-    localStorage.setItem('md_credits', '0');
-    localStorage.setItem('md_plan', 'free');
-    localStorage.setItem('md_user_id', r.data.user.id);
-  }
-
-  window.location.href = 'profile.html';
-}
-
 async function signInGoogle() {
-  var {error} = await sb.auth.signInWithOAuth({
+  const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: {redirectTo: window.location.origin + '/profile.html'}
+    options: { redirectTo: window.location.origin + '/profile.html' }
   });
   if (error) showAlert(error.message);
 }
 
 async function forgotPw() {
   var email = document.getElementById('email').value.trim();
-  if (!email) { showAlert('Enter your email first.'); return; }
-  var {error} = await sb.auth.resetPasswordForEmail(email, {
+  if (!email) {
+    showAlert('Enter your email first.');
+    return;
+  }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + '/register.html?reset=true'
   });
-  if (error) showAlert(error.message);
-  else showAlert('Check your email for a reset link.', 'ok');
+  if (error) {
+    showAlert(error.message);
+  } else {
+    showAlert('Check your email for a reset link.', 'ok');
+  }
 }
 </script>
 <script src="/js/navigation.js"></script>
