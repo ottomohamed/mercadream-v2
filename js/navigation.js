@@ -95,6 +95,23 @@
       }
     });
 
+    var registerBtn = document.getElementById('btn-register');
+    if (registerBtn) {
+      if (loggedIn) {
+        registerBtn.textContent = 'PROFILE';
+        registerBtn.onclick = function(e) {
+          e.preventDefault();
+          navigate('profile');
+        };
+      } else {
+        registerBtn.textContent = t('btn_register');
+        registerBtn.onclick = function(e) {
+          e.preventDefault();
+          navigate('register');
+        };
+      }
+    }
+
     var navEmail = document.getElementById('nav-user-email');
     if (navEmail) navEmail.textContent = loggedIn ? email : '';
 
@@ -161,9 +178,6 @@
       var btn = document.getElementById('lang-' + code);
       if (btn) btn.onclick = function() { setLang(code); };
     });
-
-    var regBtn = document.getElementById('btn-register');
-    if (regBtn) regBtn.onclick = function() { navigate('register'); };
 
     ['btn-wallet','btn-recharge'].forEach(function(id) {
       var btn = document.getElementById(id);
