@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+<html class="dark" dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MERCADREAM | Hollywood AI Studio</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;600&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffffff",
+                        "primary-fixed": "#c8ff00",
+                        "on-primary-fixed": "#060606",
+                        "background": "#060606",
+                        "surface": "#131313",
+                        "surface-container": "#1A1A1A",
+                        "outline": "#434933",
+                        "outline-variant": "#2a2a2a",
+                        "secondary": "#ffba3f",
+                        "on-surface": "#e5e2e1",
+                        "on-surface-variant": "#c4caac"
+                    },
+                    "fontFamily": {
+                        "cairo": ["Cairo", "sans-serif"],
+                        "technical": ["IBM Plex Mono", "monospace"],
+                        "display": ["Orbitron", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #060606;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        [dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .grid-overlay {
+            background-image: linear-gradient(rgba(200, 255, 0, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(200, 255, 0, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .service-card, .crew-card {
+            background: #131313;
+            border: 1px solid #2a2a2a;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .service-card:hover, .crew-card:hover {
+            border-color: #c8ff00;
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(200, 255, 0, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 5;
+            background: linear-gradient(0deg, rgba(200,255,0,0) 0%, rgba(200,255,0,0.05) 50%, rgba(200,255,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 8s linear infinite;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+        .hero-vignette {
+            background: radial-gradient(circle, transparent 20%, #060606 100%);
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(200, 255, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
+<div class="fixed inset-0 grid-overlay pointer-events-none z-0"></div>
+
+<header class="fixed top-0 w-full z-50 flex flex-row justify-between items-center px-6 md:px-10 h-20 border-b border-white/5 bg-black/60 backdrop-blur-xl">
+    <div class="flex flex-row items-center gap-10">
+        <span class="font-display text-2xl font-bold text-white tracking-[0.2em]">MERCADREAM</span>
+        <nav class="hidden lg:flex flex-row gap-8 items-center font-technical text-[10px] uppercase tracking-widest">
+            <a class="text-white hover:text-primary-fixed transition-colors" href="javascript:void(0)">Project_Archive</a>
+            <a class="text-white/40 hover:text-white transition-colors" href="javascript:void(0)">Neural_Network</a>
+            <a class="text-primary-fixed border-b border-primary-fixed pb-1" href="javascript:void(0)">Studio_Core</a>
+        </nav>
+    </div>
+    <div class="flex flex-row items-center gap-6">
+        <div class="flex flex-row items-center gap-3 bg-surface-container border border-outline-variant px-4 py-2 rounded-sm group cursor-help" id="header-credits">
+            <span class="font-technical text-primary-fixed text-xs font-bold tracking-tighter">0 CRD</span>
+            <span class="w-1.5 h-1.5 bg-primary-fixed rounded-full animate-pulse"></span>
+        </div>
+        <div class="hidden sm:flex flex-row items-center gap-4 font-technical text-[11px] border-x border-white/10 px-6">
+            <button class="hover:text-primary-fixed transition-colors" id="btn-lang-toggle">
+                <span class="material-symbols-outlined text-[18px]">language</span>
+            </button>
+            <div class="flex gap-3">
+                <button class="text-primary-fixed font-bold" id="lang-en">EN</button>
+                <button class="hover:text-primary-fixed transition-colors text-white/40" id="lang-es">ES</button>
+                <button class="hover:text-primary-fixed transition-colors text-white/40" id="lang-ar">AR</button>
+            </div>
+        </div>
+        <button class="bg-primary-fixed text-on-primary-fixed px-6 py.5 text-[11px] font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(200,255,0,0.2)]" id="btn-studio-nav">
+            New Session
+        </button>
+    </div>
+</header>
+
+<main class="relative z-10">
+    <section class="relative h-screen w-full overflow-hidden flex items-center justify-center bg-black">
+        <div class="scanline"></div>
+        <video id="hero-video" autoplay muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-70" style="transition:opacity 0.8s ease">
+            <source src="/media/hero1.mp4" type="video/mp4"/>
+        </video>
+        <div class="absolute bottom-6 left-1/2 z-10 flex gap-3" style="transform:translateX(-50%)">
+            <div class="video-dot" data-i="0" style="width:32px;height:2px;background:#c8ff00;transition:all .3s"></div>
+            <div class="video-dot" data-i="1" style="width:8px;height:2px;background:rgba(255,255,255,0.2);transition:all .3s"></div>
+            <div class="video-dot" data-i="2" style="width:8px;height:2px;background:rgba(255,255,255,0.2);transition:all .3s"></div>
+        </div>
+        <div class="absolute inset-0 hero-vignette"></div>
+    </section>
+
+    <section class="max-w-[1440px] mx-auto px-6 md:px-16 py-32 relative" id="supermarket">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 border-b border-white/10 pb-12">
+            <div class="max-w-2xl">
+                <h2 class="font-display text-4xl text-white mb-4 uppercase tracking-tight">Hollywood Supermarket</h2>
+                <p class="font-technical text-primary-fixed text-xs tracking-[0.4em] uppercase mb-6">High-Density Neural Micro-Services</p>
+                <p class="text-white/40 text-sm leading-relaxed font-cairo" data-lang-ar="أدوات ذكاء اصطناعي بمواصفات استوديوهات هوليوود، متاحة الآن لكل صانع أفلام. كفاءة معمارية، دقة فيزيائية، وسرعة معالجة غير مسبوقة.">
+                    Hollywood-spec AI tools, now accessible to every filmmaker. Architectural efficiency, physical precision, and unprecedented processing speeds.
+                </p>
+            </div>
+            <div class="flex gap-4 font-technical text-[9px] uppercase">
+                <div class="border border-white/10 px-4 py-2 bg-white/5">
+                    <span class="text-primary-fixed">Status:</span> Nominal
+                </div>
+                <div class="border border-white/10 px-4 py-2 bg-white/5">
+                    <span class="text-primary-fixed">Load:</span> 14%
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-deaging">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: NR-001</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed animate-pulse"></span>
+                            <span class="font-technical text-[9px] text-white/40 uppercase">Ready</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">face_retouching_natural</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="تصغير العمر الرقمي">Digital De-aging</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="استعادة ملامح الشباب بدقة مسامية للجلد وحفاظ كامل على الأداء العاطفي.">Restore youthful features with pore-level skin accuracy and full emotional performance retention.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">45 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-relighting">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: RT-042</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                            <span class="font-technical text-[9px] text-white/40 uppercase">Ready</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">light_mode</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="إعادة إضاءة شعاعية">Ray-traced Relighting</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="تغيير بيئة الإضاءة بالكامل مع حساب دقيق لارتداد الضوء على الأسطح.">Completely alter lighting environments with precise surface light bounce calculation.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">30 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-volumetric">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: VC-099</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                            <span class="font-technical text-[9px] text-white/40 uppercase">Computing</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">3d_rotation</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="التقاط حجمي AI">AI Volumetric Capture</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="تحويل فيديو ثنائي الأبعاد إلى نموذج ثلاثي الأبعاد متكامل فائق الدقة.">Convert 2D video into a fully integrated high-fidelity 3D model.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">120 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-script">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: SA-015</span>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                            <span class="font-technical text-[9px] text-white/40 uppercase">Ready</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">psychology</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="تحليل سيمانتك للدراما">Dramatic Semantic Analysis</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed font-cairo" data-lang-ar="تحليل عميق لإيقاع المشاهد، تطور الشخصيات، وقوة الحوار درامياً.">Deep analysis of scene pacing, character evolution, and dialogue strength.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">15 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-lipsync">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: LP-882</span>
+                        <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="font-technical text-[9px] text-white/40">Ready</span></div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">record_voice_over</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="مزامنة شفاه كونية">Universal Lip Sync</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed" data-lang-ar="تحريك مخارج الحروف لأي لغة بدقة ميكرومترية تناسب الشاشات العملاقة.">Animate mouth movements for any language with micrometer precision for giant screens.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">25 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all"><span class="material-symbols-outlined text-[18px]">add</span></button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-physics">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: PX-500</span>
+                        <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span><span class="font-technical text-[9px] text-white/40">Computing</span></div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">waves</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="محاكاة فيزيائية عصبية">Neural Physics Simulation</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed" data-lang-ar="محاكاة الشعر، القماش، والسوائل بتفاعل ذكي مع حركة الممثلين.">Simulate hair, cloth, and fluids with intelligent interaction with actor movements.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">60 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all"><span class="material-symbols-outlined text-[18px]">add</span></button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-crowd">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: CR-007</span>
+                        <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="font-technical text-[9px] text-white/40">Ready</span></div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">groups</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="توليد حشود ذكية">Smart Crowd Generation</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed" data-lang-ar="إنشاء آلاف الكومبارس الافتراضي بسلوكيات متنوعة وتفاعل بيئي حقيقي.">Create thousands of virtual extras with diverse behaviors and real environmental interaction.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">85 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all"><span class="material-symbols-outlined text-[18px]">add</span></button>
+                </div>
+            </div>
+
+            <div class="service-card p-6 flex flex-col gap-6 group cursor-pointer" id="service-grading">
+                <div class="flex justify-between items-start">
+                    <div class="flex flex-col gap-1">
+                        <span class="font-technical text-[10px] text-primary-fixed font-bold tracking-tighter">ID: CG-331</span>
+                        <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="font-technical text-[9px] text-white/40">Ready</span></div>
+                    </div>
+                    <span class="material-symbols-outlined text-3xl text-white/20 group-hover:text-primary-fixed transition-colors">palette</span>
+                </div>
+                <div>
+                    <h3 class="font-cairo text-lg font-bold text-white mb-2" data-lang-ar="تلوين سينمائي مؤتمت">Automated Color Grading</h3>
+                    <p class="text-[13px] text-white/50 leading-relaxed" data-lang-ar="مطابقة الألوان عبر جميع الكاميرات وتطبيق Look احترافي بضغطة واحدة.">Match colors across all cameras and apply professional looks in one click.</p>
+                </div>
+                <div class="mt-auto pt-6 flex justify-between items-center border-t border-white/5">
+                    <span class="font-technical text-sm text-secondary font-bold">20 ◆</span>
+                    <button class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary-fixed group-hover:bg-primary-fixed group-hover:text-black transition-all"><span class="material-symbols-outlined text-[18px]">add</span></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1440px] mx-auto px-6 md:px-16 py-32 bg-white/[0.02] border-y border-white/5 relative overflow-hidden" id="production-crew">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-fixed/5 rounded-full blur-[120px] -mr-48 -mt-48"></div>
+        <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 relative z-10">
+            <div class="max-w-2xl">
+                <h2 class="font-display text-4xl text-white mb-4 uppercase tracking-tight" data-lang-ar="المخرجون والتقنيون">Production Crew</h2>
+                <p class="font-technical text-primary-fixed text-xs tracking-[0.4em] uppercase mb-6">Neural Talent Management</p>
+                <p class="text-white/40 text-sm leading-relaxed font-cairo" data-lang-ar="نخبة من المتخصصين الرقميين لإدارة إنتاجك السينمائي بأعلى المعايير التقنية.">A digital elite of specialists to manage your cinematic production with the highest technical standards.</p>
+            </div>
+            <div class="flex flex-col items-end gap-2 font-technical text-[10px] uppercase">
+                <div class="flex gap-4">
+                    <span class="text-white/40">Total_Nodes: <span class="text-primary-fixed">1,024</span></span>
+                    <span class="text-white/40">Active_Lease: <span class="text-primary-fixed">12</span></span>
+                </div>
+                <div class="w-32 h-1 bg-white/5 overflow-hidden">
+                    <div class="w-2/3 h-full bg-primary-fixed"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                <div class="flex justify-between items-center">
+                    <div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                        <span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">equalizer</span>
+                    </div>
+                    <span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_IV</span>
+                </div>
+                <div>
+                    <h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: SE_992</h4>
+                    <h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مهندس صوت">Sound Engineer</h3>
+                    <p class="text-[11px] text-white/40 uppercase font-technical">Specialty: Acoustic Ray Tracing</p>
+                </div>
+                <div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                        <span class="font-technical text-[9px] text-white/60">ONLINE</span>
+                    </div>
+                    <span class="font-technical text-xs text-secondary font-bold">12 ◆/hr</span>
+                </div>
+            </div>
+
+            <div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                <div class="flex justify-between items-center">
+                    <div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                        <span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">fluorescent</span>
+                    </div>
+                    <span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_VI</span>
+                </div>
+                <div>
+                    <h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: LD_045</h4>
+                    <h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مهندس إضاءة">Lighting Director</h3>
+                    <p class="text-[11px] text-white/40 uppercase font-technical">Specialty: Global Illumination</p>
+                </div>
+                <div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                        <span class="font-technical text-[9px] text-white/60">ONLINE</span>
+                    </div>
+                    <span class="font-technical text-xs text-secondary font-bold">18 ◆/hr</span>
+                </div>
+            </div>
+
+            <div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                <div class="flex justify-between items-center">
+                    <div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                        <span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">history_edu</span>
+                    </div>
+                    <span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_V</span>
+                </div>
+                <div>
+                    <h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: SW_712</h4>
+                    <h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="سيناريست">Screenwriter</h3>
+                    <p class="text-[11px] text-white/40 uppercase font-technical">Specialty: Narrative Geometry</p>
+                </div>
+                <div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                        <span class="font-technical text-[9px] text-white/60">THINKING</span>
+                    </div>
+                    <span class="font-technical text-xs text-secondary font-bold">15 ◆/hr</span>
+                </div>
+            </div>
+
+            <div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                <div class="flex justify-between items-center">
+                    <div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                        <span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">auto_fix_high</span>
+                    </div>
+                    <span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_VIII</span>
+                </div>
+                <div>
+                    <h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: VX_110</h4>
+                    <h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مشرف مؤثرات بصرية">VFX Supervisor</h3>
+                    <p class="text-[11px] text-white/40 uppercase font-technical">Specialty: Reality Morphing</p>
+                </div>
+                <div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                        <span class="font-technical text-[9px] text-white/60">ONLINE</span>
+                    </div>
+                    <span class="font-technical text-xs text-secondary font-bold">25 ◆/hr</span>
+                </div>
+            </div>
+
+            <div class="crew-card p-5 flex flex-col gap-5 group cursor-pointer relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-fixed/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                <div class="flex justify-between items-center">
+                    <div class="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary-fixed/50 transition-colors">
+                        <span class="material-symbols-outlined text-white/40 group-hover:text-primary-fixed">palette</span>
+                    </div>
+                    <span class="font-technical text-[9px] text-primary-fixed px-2 py-0.5 border border-primary-fixed/30">LEVEL_VII</span>
+                </div>
+                <div>
+                    <h4 class="font-technical text-[11px] text-white/40 uppercase tracking-tighter mb-1">ID: AD_300</h4>
+                    <h3 class="font-cairo text-base font-bold text-white mb-1" data-lang-ar="مدير فني">Art Director</h3>
+                    <p class="text-[11px] text-white/40 uppercase font-technical">Specialty: Aesthetic Cohesion</p>
+                </div>
+                <div class="mt-auto pt-4 flex justify-between items-center border-t border-white/5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+                        <span class="font-technical text-[9px] text-white/60">ONLINE</span>
+                    </div>
+                    <span class="font-technical text-xs text-secondary font-bold">22 ◆/hr</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="sticky bottom-0 w-full z-40 h-24 bg-surface-container/90 backdrop-blur-2xl border-t border-white/10 flex flex-row items-center justify-between px-8 md:px-16 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+        <div class="flex flex-col">
+            <span class="font-technical text-[10px] text-white/40 uppercase tracking-widest mb-1">Estimated Cost</span>
+            <div class="flex flex-row items-center gap-2">
+                <span class="font-display text-4xl text-primary-fixed leading-none" id="footer-credits">0</span>
+                <span class="font-technical text-2xl text-secondary">◆</span>
+            </div>
+        </div>
+        <div class="flex flex-row items-center gap-6">
+            <button class="hidden sm:block border border-white/10 px-8 py-3 font-technical text-[11px] uppercase tracking-[0.2em] hover:bg-white/5 transition-all text-white/60 hover:text-white" id="btn-assembly">
+                Project_Review
+            </button>
+            <button class="bg-primary-fixed text-on-primary-fixed px-10 py-3.5 font-display text-[12px] font-bold uppercase tracking-widest flex items-center gap-4 hover:brightness-110 active:scale-95 transition-all shadow-[0_0_30px_rgba(200,255,0,0.3)]" id="btn-generate">
+                <span data-lang-ar="بدء الإنتاج الذكي">Start Production</span>
+                <span class="material-symbols-outlined text-[20px]">bolt</span>
+            </button>
+        </div>
+    </footer>
+</main>
+
+<script>
+    // Language Toggle Interactivity
+    const langBtns = {
+        'en': document.getElementById('lang-en'),
+        'es': document.getElementById('lang-es'),
+        'ar': document.getElementById('lang-ar')
+    };
+    const globeBtn = document.getElementById('btn-lang-toggle');
+    const htmlTag = document.documentElement;
+
+    Object.keys(langBtns).forEach(key => {
+        if(langBtns[key]) {
+            langBtns[key].addEventListener('click', () => {
+                Object.values(langBtns).forEach(btn => {
+                    btn.classList.remove('text-primary-fixed', 'font-bold', 'text-white/40');
+                    btn.classList.add('text-white/40');
+                });
+                langBtns[key].classList.add('text-primary-fixed', 'font-bold');
+                langBtns[key].classList.remove('text-white/40');
+
+                if (key === 'ar') {
+                    htmlTag.setAttribute('dir', 'rtl');
+                    htmlTag.setAttribute('lang', 'ar');
+                    document.getElementById('btn-studio-nav').textContent = 'جلسة جديدة';
+                } else {
+                    htmlTag.setAttribute('dir', 'ltr');
+                    htmlTag.setAttribute('lang', key);
+                    document.getElementById('btn-studio-nav').textContent = 'New Session';
+                }
+            });
+        }
+    });
+
+    if(globeBtn) {
+        globeBtn.addEventListener('click', () => {
+            globeBtn.classList.toggle('text-primary-fixed');
+        });
+    }
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+            header.classList.add('h-16', 'bg-black/90');
+            header.classList.remove('h-20', 'bg-black/60');
+        } else {
+            header.classList.add('h-20', 'bg-black/60');
+            header.classList.remove('h-16', 'bg-black/90');
+        }
+    });
+
+    // Hero Video Cycler
+    const VIDS = ["/media/hero1.mp4", "/media/hero2.mp4", "/media/hero3.mp4"];
+    let cur = 0;
+    const vid = document.getElementById("hero-video");
+    const dots = document.querySelectorAll(".video-dot");
+
+    function updateDots(i) {
+        dots.forEach((d, j) => {
+            d.style.width = j === i ? "32px" : "8px";
+            d.style.background = j === i ? "#c8ff00" : "rgba(255,255,255,0.2)";
+        });
+    }
+
+    function next() {
+        if(vid) {
+            vid.style.opacity = "0";
+            setTimeout(() => {
+                cur = (cur + 1) % VIDS.length;
+                vid.src = VIDS[cur];
+                vid.load();
+                vid.play().catch(()=>{});
+                vid.style.opacity = "0.7";
+                updateDots(cur);
+            }, 800);
+        }
+    }
+    if(vid) {
+        vid.addEventListener("ended", next);
+        vid.addEventListener("error", () => setTimeout(next, 3000));
+        updateDots(0);
+        vid.play().catch(()=>{});
+    }
+
+    // --- INTEGRATED APP LOGIC (NO DUPLICATION & FIXED OVERRIDES) ---
+
+    // Global TopBar Balance Sync
+    var userCredits = parseInt(localStorage.getItem("md_credits") || "0");
+    var hc = document.getElementById("header-credits");
+    if(hc) { 
+        var sp = hc.querySelector("span"); 
+        if(sp) sp.textContent = userCredits.toLocaleString() + " CRD"; 
+    }
+
+    // Card Multi-Selection and Calculation Logic
+    const footerCounter = document.getElementById('footer-credits');
+    document.querySelectorAll(".service-card, .crew-card").forEach(function(card){
+        card.addEventListener("click", function(e){
+            // If user clicked an internal link/button context that shouldn't toggle selection (Optional control)
+            card.classList.toggle("active-item");
+            if(card.classList.contains("active-item")){
+                card.style.borderColor = "#c8ff00"; 
+                card.style.background = "#1a1f0a";
+            } else {
+                card.style.borderColor = "#2a2a2a"; 
+                card.style.background = "#131313";
+            }
+            
+            // Re-calculate Total
+            var total = 0;
+            document.querySelectorAll(".active-item").forEach(function(el){
+                var t = el.querySelector(".font-bold.text-secondary, .text-secondary"); 
+                if(t) total += parseInt(t.textContent) || 0;
+            });
+            
+            if(footerCounter) {
+                footerCounter.textContent = total;
+                footerCounter.classList.add('scale-110', 'text-white');
+                setTimeout(() => {
+                    footerCounter.classList.remove('scale-110', 'text-white');
+                }, 200);
+            }
+        });
+    });
+
+    // Navigation Buttons Logic
+    document.getElementById("btn-studio-nav").onclick = function(){ window.location.href="studio.html"; };
+    document.getElementById("btn-assembly").onclick = function(){ window.location.href="assembly.html"; };
+
+    document.getElementById("btn-generate").onclick = function(){
+        var selServices = document.querySelectorAll(".service-card.active-item");
+        var selCrew = document.querySelectorAll(".crew-card.active-item");
+        
+        if(selServices.length === 0 && selCrew.length === 0){ 
+            window.location.href="studio.html"; 
+            return; 
+        }
+        
+        var services = [];
+        var dirs = [];
+        var names = [];
+        
+        selServices.forEach(function(el){
+            services.push({name: el.querySelector("h3") ? el.querySelector("h3").textContent.trim() : ""});
+        });
+        
+        selCrew.forEach(function(el){
+            dirs.push("drama"); // Contextual layout designation
+            names.push(el.querySelector("h3") ? el.querySelector("h3").textContent.trim() : "");
+        });
+        
+        localStorage.setItem("md_selected_services", JSON.stringify(services));
+        localStorage.setItem("md_selected_directors", JSON.stringify(dirs)); 
+        localStorage.setItem("md_director_names", JSON.stringify(names));
+        
+        window.location.href="studio.html";
+    };
+</script>
+<script src="/js/navigation.js"></script>
+</body>
+</html>

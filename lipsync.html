@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | UNIVERSAL LIP SYNC</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500&amp;family=IBM+Plex+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#131313",
+                    "on-primary": "#273500",
+                    "outline": "#8e9479",
+                    "on-secondary-fixed-variant": "#604100",
+                    "silver-technical": "#a1a1a1",
+                    "tertiary-fixed-dim": "#b5c9d9",
+                    "on-surface-variant": "#c4caac",
+                    "primary-fixed-dim": "#a8d700",
+                    "surface-container": "#201f1f",
+                    "tertiary-fixed": "#d0e5f5",
+                    "background": "#131313",
+                    "surface-bright": "#3a3939",
+                    "on-primary-fixed": "#161f00",
+                    "secondary-fixed-dim": "#ffba3f",
+                    "surface-tint": "#a8d700",
+                    "tertiary-container": "#d0e5f5",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-surface": "#e5e2e1",
+                    "on-background": "#e5e2e1",
+                    "slate-data": "#242424",
+                    "primary-container": "#c0f500",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-container-high": "#2a2a2a",
+                    "surface-container-low": "#1c1b1b",
+                    "on-tertiary-fixed-variant": "#364956",
+                    "surface-container-highest": "#353534",
+                    "error-container": "#93000a",
+                    "cyber-gold": "#ffba3f",
+                    "inverse-primary": "#4f6600",
+                    "neon-acid": "#c8ff00",
+                    "inverse-on-surface": "#313030",
+                    "surface-variant": "#353534",
+                    "void-black": "#060606",
+                    "surface": "#131313",
+                    "outline-variant": "#434933",
+                    "on-tertiary-fixed": "#081e29",
+                    "secondary": "#ffba3f",
+                    "primary": "#ffffff",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "on-error": "#690005",
+                    "secondary-fixed": "#ffdeae",
+                    "on-tertiary": "#1f333f",
+                    "on-secondary": "#432c00",
+                    "secondary-container": "#c48800",
+                    "on-tertiary-container": "#536774",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed": "#281900",
+                    "on-primary-container": "#546d00",
+                    "tertiary": "#ffffff",
+                    "primary-fixed": "#c0f500",
+                    "on-secondary-container": "#3e2800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter": "16px",
+                    "module-padding": "12px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Sora"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Sora"],
+                    "label-technical": ["IBM Plex Mono"],
+                    "headline-xl": ["Sora"],
+                    "label-caps": ["IBM Plex Mono"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-technical": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-caps": ["10px", {"lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #060606;
+            color: #e5e2e1;
+            overflow-x: hidden;
+        }
+        .scanline-overlay {
+            background: linear-gradient(to bottom, transparent 50%, rgba(200, 255, 0, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        .micro-grid {
+            background-image: radial-gradient(circle, #242424 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 15px rgba(200, 255, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md micro-grid min-h-screen pb-32">
+<!-- Global Scanline Effect -->
+<div class="fixed inset-0 scanline-overlay z-50"></div>
+<!-- Header Section -->
+<header class="bg-void-black flex justify-between items-center w-full px-margin-desktop h-16 border-b border-outline-variant fixed top-0 z-50">
+<div class="flex items-center gap-gutter">
+<button class="active:scale-95 duration-150 transition-all text-neon-acid flex items-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="font-headline-lg text-headline-lg font-bold text-neon-acid tracking-tighter uppercase">
+                MERCADREAM <span class="text-silver-technical font-label-technical text-sm ml-2 opacity-50">| LIPSYNC</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="bg-surface-container-high px-4 py-1 border border-outline-variant font-label-technical text-neon-acid">
+                1.2K CREDITS
+            </div>
+<div class="flex items-center gap-4 text-silver-technical">
+<span class="material-symbols-outlined cursor-pointer hover:text-neon-acid transition-colors">account_circle</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-neon-acid transition-colors">settings</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-desktop max-w-7xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-12 border-l-4 border-neon-acid pl-6">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-2 uppercase">UNIVERSAL LIP SYNC</h1>
+<div class="flex justify-between items-end">
+<p class="text-silver-technical max-w-xl font-body-md">
+                    Match any audio to any video with neural precision. Our proprietary engine analyzes phonemes and facial landmarks to reconstruct natural mouth movements at 60FPS.
+                </p>
+<div class="text-right">
+<span class="font-label-caps text-label-caps text-silver-technical block mb-1">TRANSACTION COST</span>
+<span class="font-headline-lg text-headline-lg text-neon-acid">10 CREDITS</span>
+</div>
+</div>
+</section>
+<!-- Upload Modules -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-12">
+<!-- VIDEO UPLOAD MODULE -->
+<div class="bg-surface-dim border border-slate-data p-module-padding relative group overflow-hidden">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+<span class="font-label-caps text-label-caps text-neon-acid">MODULE_ID: VID_088</span>
+<span class="font-label-technical text-label-technical text-silver-technical uppercase">SOURCE VIDEO</span>
+</div>
+<div class="aspect-video border-2 border-dashed border-outline-variant hover:border-neon-acid transition-colors flex flex-col items-center justify-center bg-void-black relative cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-2 group-hover:text-neon-acid">movie</span>
+<p class="font-label-technical text-label-technical text-silver-technical">DRAG &amp; DROP MP4, MOV</p>
+<p class="font-label-caps text-[10px] text-outline mt-2">MAX FILE SIZE: 500MB</p>
+<!-- Decorative Corner Brackets -->
+<div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid/50"></div>
+<div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid/50"></div>
+<div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid/50"></div>
+<div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid/50"></div>
+</div>
+</div>
+<!-- AUDIO UPLOAD MODULE -->
+<div class="bg-surface-dim border border-slate-data p-module-padding relative group overflow-hidden">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
+<span class="font-label-caps text-label-caps text-neon-acid">MODULE_ID: AUD_441</span>
+<span class="font-label-technical text-label-technical text-silver-technical uppercase">TARGET AUDIO</span>
+</div>
+<div class="aspect-video border-2 border-dashed border-outline-variant hover:border-neon-acid transition-colors flex flex-col items-center justify-center bg-void-black relative cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-2 group-hover:text-neon-acid">mic</span>
+<p class="font-label-technical text-label-technical text-silver-technical">DRAG &amp; DROP MP3, WAV</p>
+<p class="font-label-caps text-[10px] text-outline mt-2">MAX DURATION: 180s</p>
+<!-- Decorative Corner Brackets -->
+<div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid/50"></div>
+<div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid/50"></div>
+<div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid/50"></div>
+<div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid/50"></div>
+</div>
+</div>
+</div>
+<!-- Settings Section -->
+<div class="bg-surface-dim border border-slate-data p-margin-mobile">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<!-- Language Selection -->
+<div class="flex flex-col gap-4">
+<label class="font-label-caps text-label-caps text-silver-technical">[LANGUAGE]</label>
+<div class="relative">
+<select class="w-full bg-void-black border border-outline-variant text-primary font-label-technical p-3 appearance-none focus:border-neon-acid focus:ring-0">
+<option>EN — ENGLISH (NEURAL)</option>
+<option>AR — ARABIC</option>
+<option>ES — SPANISH</option>
+<option>FR — FRENCH</option>
+<option>ZH — MANDARIN</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-silver-technical">expand_more</span>
+</div>
+</div>
+<!-- Sync Quality Slider -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-silver-technical">[SYNC QUALITY]</label>
+<span class="font-label-technical text-neon-acid">08 / 10</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest appearance-none cursor-pointer accent-neon-acid" max="10" min="1" type="range" value="8"/>
+<div class="flex justify-between text-[8px] font-label-caps text-outline uppercase">
+<span>Low Res</span>
+<span>High Precision</span>
+</div>
+</div>
+<!-- Enhance Mouth Toggle -->
+<div class="flex flex-col gap-4">
+<label class="font-label-caps text-label-caps text-silver-technical">[ENHANCE MOUTH]</label>
+<div class="flex items-center justify-between bg-void-black border border-outline-variant p-3 h-[50px]">
+<span class="font-label-technical text-silver-technical text-xs uppercase">NEURAL UPSCALING</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-silver-technical peer-checked:after:bg-neon-acid after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-acid/20 border border-outline-variant"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer System Telemetry -->
+<footer class="flex justify-between items-center w-full px-margin-desktop py-module-padding fixed bottom-0 z-50 bg-void-black/90 backdrop-blur-sm border-t border-outline-variant">
+<div class="flex gap-8 items-center">
+<span class="font-label-caps text-label-caps text-neon-acid">MERCADREAM // SYS_CORE</span>
+<div class="flex gap-4">
+<span class="font-label-technical text-[10px] text-silver-technical">GPU_LOAD: <span class="text-neon-acid">84.2%</span></span>
+<span class="font-label-technical text-[10px] text-silver-technical">VRAM: <span class="text-neon-acid">11.4GB / 24GB</span></span>
+<span class="font-label-technical text-[10px] text-silver-technical">LATENCY: <span class="text-neon-acid">14MS</span></span>
+</div>
+</div>
+<div class="flex gap-6 items-center">
+<div class="flex gap-4">
+<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase transition-all" href="#">Terminal</a>
+<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase transition-all" href="#">Docs</a>
+<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase transition-all" href="#">SLA</a>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<span class="font-label-technical text-[10px] text-silver-technical opacity-50">SYS_TELEMETRY: NOMINAL</span>
+</div>
+</footer>
+<!-- Fixed Generate Bar -->
+<div class="fixed bottom-16 left-0 w-full bg-void-black border-t border-outline-variant p-4 z-40">
+<div class="max-w-7xl mx-auto flex justify-center">
+<button class="bg-neon-acid text-void-black font-headline-lg text-headline-lg-mobile md:text-headline-lg w-full max-w-2xl py-4 flex items-center justify-center gap-4 hover:brightness-110 active:scale-95 transition-all neon-glow uppercase">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                [⚡ SYNC LIPS — 10 CREDITS]
+            </button>
+</div>
+</div>
+<script src="/js/navigation.js"></script><script>var vf=null,af=null,COST=6;function up(z,acc,cb){z.style.cursor="pointer";z.onclick=function(){var i=document.createElement("input");i.type="file";i.accept=acc;i.onchange=function(e){var f=e.target.files[0];if(f)cb(f,z);};i.click();};}function prev(f,z){z.innerHTML="<div style=\"background:#0d0d0d;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px\">"+f.name.substring(0,25)+"</div>";}function go(){if(!vf){alert("Upload video first");return;}if(!af){alert("Upload audio first");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits");return;}var btn=document.getElementById("bls");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=5;if(btn)btn.textContent="PROCESSING "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent="COMPLETE - SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}window.addEventListener("load",function(){var z=document.querySelectorAll(".aspect-video.border-2");if(z[0])up(z[0],"video/mp4",function(f,el){vf=f;prev(f,el);});if(z[1])up(z[1],"audio/mp3,audio/wav,audio/mpeg",function(f,el){af=f;prev(f,el);});var btn=document.querySelector(".fixed.bottom-16 button");if(btn){btn.id="bls";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+
+
+
