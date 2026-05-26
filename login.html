@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+﻿<!DOCTYPE html>
+<html lang="en"><head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM  Sign In</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
@@ -29,50 +28,42 @@ a:hover{color:#c8ff00}
 <body>
 <div class="bg"></div>
 <div style="width:100%;max-width:420px;padding:20px">
-  <div style="text-align:center;margin-bottom:32px">
-    <a href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
-    <div style="font-size:9px;color:#444;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
-  </div>
-
-  <div style="background:#0a0a0a;border:1px solid #1a1a1a;padding:32px">
-    <div style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
-    <div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account </a></div>
-
-    <button class="btn-google" onclick="signInGoogle()"> Continue with Google</button>
-    <div style="text-align:center;margin:16px 0;font-size:9px;color:#333;letter-spacing:3px">OR</div>
-
-    <div style="margin-bottom:12px">
-      <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
-      <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
-    </div>
-    <div style="margin-bottom:20px">
-      <div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
-      <input type="password" id="password" placeholder="" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/>
-    </div>
-
-    <button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN </button>
-    <div id="alert" class="alert"></div>
-
-    <div style="text-align:center;margin-top:16px">
-      <a href="#" onclick="forgotPw();return false" style="font-size:10px;color:#555">Forgot password?</a>
-    </div>
-  </div>
-
-  <div style="text-align:center;margin-top:16px;font-size:10px;color:#444">
-    <a href="index.html"> Back to Home</a>
-  </div>
+<div style="text-align:center;margin-bottom:32px">
+<a href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
+<div style="font-size:9px;color:#444;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
 </div>
-
+<div style="background:#0a0a0a;border:1px solid #1a1a1a;padding:32px">
+<div style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
+<div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account </a></div>
+<button class="btn-google" onclick="signInGoogle()"> Continue with Google</button>
+<div style="text-align:center;margin:16px 0;font-size:9px;color:#333;letter-spacing:3px">OR</div>
+<div style="margin-bottom:12px">
+<div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
+<input autocomplete="email" id="email" placeholder="your@email.com" type="email"/>
+</div>
+<div style="margin-bottom:20px">
+<div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
+<input autocomplete="current-password" id="password" onkeydown="if(event.key==='Enter')signIn()" placeholder="" type="password"/>
+</div>
+<button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN </button>
+<div class="alert" id="alert"></div>
+<div style="text-align:center;margin-top:16px">
+<a href="#" onclick="forgotPw();return false" style="font-size:10px;color:#555">Forgot password?</a>
+</div>
+</div>
+<div style="text-align:center;margin-top:16px;font-size:10px;color:#444">
+<a href="index.html"> Back to Home</a>
+</div>
+</div>
 <script>
 const SURL = 'https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
 const sb = supabase.createClient(SURL, SKEY);
 
-// ?????? ?? ?????? ???????
+// التحقق من الجلسة الحالية عند تحميل الصفحة
 sb.auth.getSession().then(function({data}) {
   if (data.session) {
-    // ?????? ???? ???? - ??? ???????? ????? ?????????
-    localStorage.setItem('sb_session', 'true'); localStorage.setItem('sb_session', 'true');
+    localStorage.setItem('sb_session', 'true');
     localStorage.setItem('md_email', data.session.user.email);
     localStorage.setItem('md_user', JSON.stringify(data.session.user));
     window.location.href = 'profile.html';
@@ -90,7 +81,6 @@ function hideAlert() {
   el.className = 'alert';
 }
 
-// ???? ????? ?????? ??????? - ????? 100%
 async function signIn() {
   var email = document.getElementById('email').value.trim();
   var pass = document.getElementById('password').value;
@@ -107,7 +97,6 @@ async function signIn() {
   hideAlert();
 
   try {
-    // 1. ????? ?????? ?? Supabase
     const { data, error } = await sb.auth.signInWithPassword({
       email: email,
       password: pass
@@ -127,16 +116,19 @@ async function signIn() {
       return;
     }
 
-    console.log('Login successful for:', email);
+    localStorage.setItem('sb_session', 'true');
+    
+    const metadata = data.user.user_metadata || {};
+    const firstName = metadata.first_name || '';
+    const lastName = metadata.last_name || '';
+    const fullName = (firstName + ' ' + lastName).trim() || email.split('@')[0];
 
-    // 2. ??? ???????? ???????? ????
-    localStorage.setItem('sb_session', 'true'); localStorage.setItem('sb_session', 'true');
     localStorage.setItem('md_email', email);
+    localStorage.setItem('md_name', fullName);
     localStorage.setItem('md_user', JSON.stringify(data.user));
     localStorage.setItem('md_user_id', data.user.id);
     localStorage.setItem('md_logged_in_at', Date.now().toString());
 
-    // 3. ?????? ??? ?????? (?? ????? ??? ??????)
     try {
       const crRes = await fetch('/api/credits', {
         method: 'POST',
@@ -144,7 +136,7 @@ async function signIn() {
         body: JSON.stringify({ 
           action: 'check', 
           email: email, 
-          name: email.split('@')[0] 
+          name: fullName 
         })
       });
       const crData = await crRes.json();
@@ -158,18 +150,12 @@ async function signIn() {
         localStorage.setItem('md_plan', 'free');
       }
     } catch (err) {
-      console.warn('Credits sync failed, using defaults:', err);
+      console.warn('Credits sync failed:', err);
       localStorage.setItem('md_credits', '0');
       localStorage.setItem('md_plan', 'free');
     }
 
-    // 4. ????? ?? ???????? ???? ?????
-    console.log('Session saved, redirecting to profile...');
-    console.log('sb_session:', localStorage.getItem('sb_session'));
-    console.log('md_email:', localStorage.getItem('md_email'));
-
-    // 5. ???????? ??? ?????????
-    window.location.replace('profile.html');
+    window.location.href = 'profile.html';
 
   } catch (err) {
     console.error('Unexpected login error:', err);
@@ -204,5 +190,4 @@ async function forgotPw() {
 }
 </script>
 <script src="/js/navigation.js"></script>
-</body>
-</html>
+</body></html>
