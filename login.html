@@ -89,6 +89,59 @@ async function signIn() {
   if (!email || !pass) { showAlert('Enter email and password.'); return; }
 
   var btn = document.getElementById('signInBtn');
+  btn.textContent = 'AUTHENTICATING...'; 
+  btn.disabled = true;
+
+  try {
+    var r = await sb.auth.signInWithPassword({email: email, password: pass});
+    
+    if (r.error) {
+      showAlert(r.error.message);
+      btn.textContent = 'SIGN IN ';
+      btn.disabled = false;
+      return;
+    }
+
+    // ?????? ??? ?????? ???? ?? ????? ???? ????????
+    try {
+      var crRes = await fetch('/api/credits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'check', email: email, name: r.data.user.email.split('@')[0] })
+      });
+      var crData = await crRes.json();
+      
+      localStorage.setItem('md_credits', crData?.balance ?? 0);
+      localStorage.setItem('md_plan', crData?.type ?? 'free');
+      localStorage.setItem('md_user_id', crData?.user_id || r.data.user.id);
+    } catch (err) {
+      console.log('Credits sync failed, continuing anyway');
+      localStorage.setItem('md_credits', '0');
+      localStorage.setItem('md_plan', 'free');
+      localStorage.setItem('md_user_id', r.data.user.id);
+    }
+    
+    // ??? ?????? ?????? - ??? ?? ?????
+    localStorage.setItem('sb_session', 'true');
+    localStorage.setItem('md_email', email);
+    localStorage.setItem('md_user', JSON.stringify(r.data.user));
+    localStorage.setItem('md_logged_in_at', Date.now().toString());
+    
+    // ????? ????? localStorage
+    console.log('Session saved, redirecting...');
+    
+    // ???????? ??????? ???? ????? ????
+    window.location.replace('profile.html');
+    
+  } catch (err) {
+    console.error('Login error:', err);
+    showAlert('An error occurred. Please try again.');
+    btn.textContent = 'SIGN IN ';
+    btn.disabled = false;
+  }
+}
+
+  var btn = document.getElementById('signInBtn');
   btn.textContent = 'AUTHENTICATING...'; btn.disabled = true;
 
   var r = await sb.auth.signInWithPassword({email: email, password: pass});
