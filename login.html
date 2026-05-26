@@ -75,7 +75,7 @@ sb.auth.getSession().then(function({data}) {
     localStorage.setItem('sb_session', 'true'); localStorage.setItem('sb_session', 'true');
     localStorage.setItem('md_email', data.session.user.email);
     localStorage.setItem('md_user', JSON.stringify(data.session.user));
-    window.location.href = 'profile-simple.html';
+    window.location.href = 'profile.html';
   }
 });
 
@@ -169,7 +169,7 @@ async function signIn() {
     console.log('md_email:', localStorage.getItem('md_email'));
 
     // 5. ???????? ??? ?????????
-    window.location.replace('profile-simple.html');
+    window.location.replace('profile.html');
 
   } catch (err) {
     console.error('Unexpected login error:', err);
@@ -182,7 +182,7 @@ async function signIn() {
 async function signInGoogle() {
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/profile-simple.html' }
+    options: { redirectTo: window.location.origin + '/profile.html' }
   });
   if (error) showAlert(error.message);
 }
