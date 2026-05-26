@@ -5,7 +5,7 @@
     var checkSession = setInterval(function() {
         if (document.readyState === "complete") {
             clearInterval(checkSession);
-            if (!localStorage.getItem("sb_session")) {
+            if (localStorage.getItem("sb_session") !== "true") {
                 window.location.href = "login.html";
             }
         }
@@ -16,8 +16,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM — PROFILE COMMAND CENTER</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
         body {
             background-color: #060606;
@@ -117,7 +117,6 @@
 <body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
 <div class="scanline-overlay"></div>
 <div class="flex h-screen overflow-hidden">
-
 <aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface w-64 z-20">
 <div class="p-6">
 <div class="flex items-center gap-2 mb-8">
@@ -126,7 +125,7 @@
 </div>
 <div class="mb-8 p-4 bg-surface-container-low border border-outline-variant">
 <div class="flex items-center gap-3 mb-2">
-<img id="sidebar-avatar" alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
+<img alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" id="sidebar-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
 <div>
 <p class="font-technical-sm text-label-xs text-primary-fixed" id="sidebar-tier-label">NO PLAN</p>
 <p class="font-technical-sm text-label-xs text-on-surface-variant" id="sidebar-tier-sub">Studio Tier 0</p>
@@ -134,7 +133,7 @@
 </div>
 </div>
 <nav class="space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="dashboard.html">
 <span class="material-symbols-outlined text-[20px]">dashboard</span>
 <span class="font-technical-sm text-technical-sm">Dashboard</span>
 </a>
@@ -171,15 +170,13 @@
 </a>
 </div>
 </aside>
-
 <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
-<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<a href="dashboard.html"><span class="material-symbols-outlined text-on-surface-variant">dashboard</span></a>
 <span class="material-symbols-outlined text-on-surface-variant">movie_filter</span>
 <span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span>
 <span class="material-symbols-outlined text-on-surface-variant">bolt</span>
 <span class="material-symbols-outlined text-on-surface-variant">settings</span>
 </nav>
-
 <main class="flex-1 overflow-y-auto bg-surface-container-lowest">
 <header class="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-outline-variant px-margin-desktop py-4 flex justify-between items-center max-w-container-max mx-auto w-full">
 <div class="flex items-center gap-8">
@@ -200,7 +197,6 @@
 <span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">notifications</span>
 </div>
 </header>
-
 <div class="max-w-container-max mx-auto px-margin-desktop py-8 space-y-gutter">
 <section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
 <div class="lg:col-span-5 bg-surface border border-outline-variant p-8 relative overflow-hidden group">
@@ -210,7 +206,7 @@
 <div class="flex flex-col items-center md:flex-row md:items-start gap-8 relative z-10">
 <div class="relative group/avatar">
 <div class="w-32 h-32 border-2 border-primary-fixed p-1">
-<img id="main-avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
+<img class="w-full h-full object-cover" id="main-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
 </div>
 <button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-technical-sm text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors">UPLOAD PHOTO</button>
 </div>
@@ -227,12 +223,11 @@
 </div>
 </div>
 <div class="pt-4">
-<button id="edit-profile-btn" class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow">EDIT PROFILE</button>
+<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow" id="edit-profile-btn">EDIT PROFILE</button>
 </div>
 </div>
 </div>
 </div>
-
 <div class="lg:col-span-7 grid grid-cols-2 gap-gutter">
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
@@ -278,10 +273,9 @@
 </div>
 </div>
 </section>
-
 <section class="bg-surface border border-outline-variant overflow-hidden">
 <div class="bg-surface-variant/20 px-6 py-3 border-b border-outline-variant flex justify-between items-center">
-<h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing & Transaction Log</h3>
+<h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
 <span class="font-technical-sm text-label-xs text-on-surface-variant" id="system-time-display">System Time: --:-- UTC</span>
 </div>
 <div class="overflow-x-auto">
@@ -300,23 +294,22 @@
 </table>
 </div>
 </section>
-
 <section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
 <div class="bg-surface border border-outline-variant p-8 flex flex-col">
 <div class="mb-6">
-<h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER & EARN</h3>
+<h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER &amp; EARN</h3>
 <p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
 </div>
 <div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
 <span class="font-technical-sm text-headline-lg tracking-widest text-on-surface" id="ref-code-display">FETCHING...</span>
 <div class="flex gap-2">
-<button id="copy-ref-btn" class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Copy Code">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="copy-ref-btn" title="Copy Code">
 <span class="material-symbols-outlined">content_copy</span>
 </button>
-<button id="whatsapp-ref-btn" class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share WhatsApp">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="whatsapp-ref-btn" title="Share WhatsApp">
 <span class="material-symbols-outlined">share</span>
 </button>
-<button id="twitter-ref-btn" class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share Twitter/X">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="twitter-ref-btn" title="Share Twitter/X">
 <span class="material-symbols-outlined">alternate_email</span>
 </button>
 </div>
@@ -349,7 +342,6 @@
 <span class="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
 </div>
 </div>
-
 <div class="bg-surface border border-outline-variant p-8 flex flex-col relative overflow-hidden">
 <div class="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary-fixed/20"></div>
 <div class="mb-8">
@@ -390,7 +382,6 @@
 </div>
 </section>
 </div>
-
 <footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
@@ -417,21 +408,23 @@
 </footer>
 </main>
 </div>
-
-<script src="/js/navigation.js"></script>
-
 <script>
-// ????? ????? ??????? ????? ???????
-const now = new Date();
-const timeString = now.getUTCFullYear() + "." + String(now.getUTCMonth()+1).padStart(2,'0') + "." + String(now.getUTCDate()).padStart(2,'0') + " // " + String(now.getUTCHours()).padStart(2,'0') + ":" + String(now.getUTCMinutes()).padStart(2,'0') + " UTC";
-const sysTimeEl = document.getElementById("system-time-display");
-if(sysTimeEl) sysTimeEl.textContent = "System Time: " + timeString;
+// System Time Update
+function updateTime() {
+    const now = new Date();
+    const timeString = now.getUTCFullYear() + "." + String(now.getUTCMonth()+1).padStart(2,'0') + "." + String(now.getUTCDate()).padStart(2,'0') + " // " + String(now.getUTCHours()).padStart(2,'0') + ":" + String(now.getUTCMinutes()).padStart(2,'0') + " UTC";
+    const sysTimeEl = document.getElementById("system-time-display");
+    if(sysTimeEl) sysTimeEl.textContent = "System Time: " + timeString;
+}
+setInterval(updateTime, 1000);
+updateTime();
 
-// ???? ????? ??? ???? ????? ??? ?? (?????? ?????????? ?????) ????? ??? ?????? ???????? ??? ??????
-function generateDeterministicCode(seed) {
+// Referral Code Generation
+function generateDeterministicCode(email) {
+    if(!email) return "MD-OFFLINE-NODE";
     let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-        hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+    for (let i = 0; i < email.length; i++) {
+        hash = email.charCodeAt(i) + ((hash << 5) - hash);
     }
     const part1 = Math.abs(hash).toString(36).substring(0, 4).toUpperCase();
     const part2 = Math.abs(hash * 31).toString(36).substring(0, 4).toUpperCase();
@@ -441,25 +434,30 @@ function generateDeterministicCode(seed) {
 function loadProfileData() {
     var credits = parseInt(localStorage.getItem("md_credits") || "0");
     var plan = localStorage.getItem("md_plan") || "free";
-    var username = localStorage.getItem("md_name") || "NEW_NODE_" + Math.floor(1000 + Math.random() * 9000);
     var email = localStorage.getItem("md_email") || "guest.ops@mercadream.tech";
+    
+    // Retrieve name with fallback
+    var username = localStorage.getItem("md_name");
+    if (!username) {
+        username = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '_');
+    }
+    
     var renders = parseInt(localStorage.getItem("md_renders") || "0");
     var recharges = parseInt(localStorage.getItem("md_recharges") || "0");
     var assets = parseFloat(localStorage.getItem("md_assets_size") || "0.0");
     var friendsCount = parseInt(localStorage.getItem("md_friends_referred") || "0");
     var friendsEarned = parseInt(localStorage.getItem("md_credits_earned") || "0");
     
-    // ??????? ?????? ??? ??????? ?????? ????? ??? ???? ???????? ?????? ????? ?????? ???????? ?????? ???????
+    // Generate and store referral code
     var currentRef = generateDeterministicCode(email);
     localStorage.setItem("md_ref_code", currentRef);
     
     var refCodeEl = document.getElementById("ref-code-display");
     if(refCodeEl) refCodeEl.textContent = currentRef;
 
-    // ??? ??????? ?????? ?????? ????????
     setupReferralActions(currentRef);
 
-    // ????? ?????? ?????????
+    // Update UI Elements
     var nameEl = document.getElementById("profile-name-display");
     if(nameEl) nameEl.textContent = username.toUpperCase();
     
@@ -489,7 +487,7 @@ function loadProfileData() {
     var assetsSub = document.getElementById("assets-sub");
     if(assetsSub) assetsSub.textContent = assets.toFixed(1) + " GB utilized";
 
-    // ???? ???? ???? ????????
+    // Subscription Status UI
     var shieldIcon = document.getElementById("subscription-status-icon");
     var shieldTitle = document.getElementById("subscription-status-title");
     var shieldSub = document.getElementById("subscription-status-sub");
@@ -522,7 +520,7 @@ function loadProfileData() {
         if(sidebarTierSub) sidebarTierSub.textContent = "Studio " + (plan === "pro" ? "Tier 1" : "Tier 2");
     }
 
-    // ???? ???? ????????? ????????? ???????
+    // Billing History
     var tableBody = document.getElementById("billing-history-body");
     var rawLogs = localStorage.getItem("md_billing_history"); 
     
@@ -551,14 +549,13 @@ function loadProfileData() {
         if(tableBody) tableBody.innerHTML = html;
     }
 
-    // ????? ????? ????????? ???????? ???????? ???????
+    // Referral Stats
     var friendsCountEl = document.getElementById("friends-count");
     if(friendsCountEl) friendsCountEl.textContent = friendsCount;
     var friendsEarnedEl = document.getElementById("friends-earned");
     if(friendsEarnedEl) friendsEarnedEl.innerHTML = friendsEarned + ` <span class="text-label-xs uppercase">CR</span>`;
 }
 
-// ???? ????? ??????? ????? ????? ?????? ?????? ???? ????? ???? ??????? ???????
 function setupReferralActions(refCode) {
     var copyBtn = document.getElementById("copy-ref-btn");
     if(copyBtn) {
@@ -588,21 +585,52 @@ function setupReferralActions(refCode) {
     }
 }
 
-// ?????? ??????? ?????? ??????? (????????)
-var savedAvatar = localStorage.getItem("md_avatar");
-if(savedAvatar){
-    var img1 = document.getElementById("sidebar-avatar");
-    var img2 = document.getElementById("main-avatar");
-    if(img1) img1.src = savedAvatar;
-    if(img2) img2.src = savedAvatar;
-}
+// Initial Load
+document.addEventListener('DOMContentLoaded', function() {
+    loadProfileData();
+    
+    // Avatar loading
+    var savedAvatar = localStorage.getItem("md_avatar");
+    if(savedAvatar){
+        var img1 = document.getElementById("sidebar-avatar");
+        var img2 = document.getElementById("main-avatar");
+        if(img1) img1.src = savedAvatar;
+        if(img2) img2.src = savedAvatar;
+    }
 
-var uploadBtn = document.querySelector("button.absolute.-bottom-2");
-if(uploadBtn) {
-    uploadBtn.onclick = function(){
-        var i = document.createElement("input");
-        i.type = "file"; i.accept = "image/*";
-        i.onchange = function(e){
-            var f = e.target.files[0]; if(!f) return;
-            var r = new FileReader();
-            r.onload = function(ev){
+    var uploadBtn = document.querySelector("button.absolute.-bottom-2");
+    if(uploadBtn) {
+        uploadBtn.onclick = function(){
+            var i = document.createElement("input");
+            i.type = "file"; i.accept = "image/*";
+            i.onchange = function(e){
+                var f = e.target.files[0]; if(!f) return;
+                var r = new FileReader();
+                r.onload = function(ev){
+                    var data = ev.target.result;
+                    localStorage.setItem("md_avatar", data);
+                    var img1 = document.getElementById("sidebar-avatar");
+                    var img2 = document.getElementById("main-avatar");
+                    if(img1) img1.src = data;
+                    if(img2) img2.src = data;
+                };
+                r.readAsDataURL(f);
+            };
+            i.click();
+        };
+    }
+
+    // Edit profile logic (Simple toggle)
+    var editBtn = document.getElementById("edit-profile-btn");
+    if(editBtn) {
+        editBtn.onclick = function() {
+            var newName = prompt("Enter new Director designation:", localStorage.getItem("md_name") || "");
+            if(newName) {
+                localStorage.setItem("md_name", newName);
+                loadProfileData();
+            }
+        }
+    }
+});
+</script>
+</body></html>

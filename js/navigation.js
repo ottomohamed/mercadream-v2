@@ -1,75 +1,38 @@
-﻿// MERCADREAM - navigation.js (CORRECTED)
-(function() {
-    console.log('Navigation.js loaded - checking auth status');
+﻿// navigation.js - DISABLED VERSION (no auto redirects)
+console.log("Navigation.js loaded - DISABLED MODE");
+
+// لا نقوم بأي إعادة توجيه تلقائية أبداً
+// فقط نحدث الأزرار إذا وجدت
+
+function updateButtonsOnly() {
+    var isLoggedIn = localStorage.getItem('sb_session') === 'true' || localStorage.getItem('sb_session') === '1';
     
-    function updateUIForAuth() {
-        var isLoggedIn = localStorage.getItem('sb_session') === 'true' || localStorage.getItem('sb_session') === '1';
-        var email = localStorage.getItem('md_email') || '';
-        var credits = localStorage.getItem('md_credits') || '0';
-        
-        console.log('Auth status - Logged in:', isLoggedIn);
-        
-        // 1. تحديث زر LOGIN/LOGOUT
-        var loginBtn = document.getElementById('btn-login');
-        if (loginBtn) {
-            if (isLoggedIn) {
-                loginBtn.textContent = 'LOG OUT';
-                loginBtn.onclick = function(e) {
-                    e.preventDefault();
-                    localStorage.clear();
-                    window.location.href = 'index.html';
-                };
-            } else {
-                loginBtn.textContent = 'LOG IN';
-                loginBtn.onclick = function(e) {
-                    e.preventDefault();
-                    window.location.href = 'login.html';
-                };
-            }
-        }
-        
-        // 2.  الزر الأصفر - يتحول إلى PROFILE وليس STUDIO
-        var registerBtn = document.getElementById('btn-register');
-        if (registerBtn) {
-            if (isLoggedIn) {
-                registerBtn.textContent = 'PROFILE';
-                registerBtn.onclick = function(e) {
-                    e.preventDefault();
-                    window.location.href = 'profile.html';
-                };
-            } else {
-                registerBtn.textContent = 'START FREE ';
-                registerBtn.onclick = function(e) {
-                    e.preventDefault();
-                    window.location.href = 'register.html';
-                };
-            }
-        }
-        
-        // 3. تحديث عرض الرصيد (للمستخدمين المسجلين فقط)
-        var creditsEl = document.getElementById('header-credits');
-        if (creditsEl) {
-            if (isLoggedIn) {
-                creditsEl.style.display = 'flex';
-                var creditsSpan = creditsEl.querySelector('[data-credits]');
-                if (creditsSpan) creditsSpan.textContent = credits + ' CR';
-            } else {
-                creditsEl.style.display = 'none';
-            }
+    var loginBtn = document.getElementById('btn-login');
+    if (loginBtn) {
+        if (isLoggedIn) {
+            loginBtn.textContent = 'LOG OUT';
+            loginBtn.onclick = function() { localStorage.clear(); window.location.href = 'index.html'; };
+        } else {
+            loginBtn.textContent = 'LOG IN';
+            loginBtn.onclick = function() { window.location.href = 'login.html'; };
         }
     }
     
-    // تشغيل التحديث فوراً
-    updateUIForAuth();
-    
-    // وبعد تحميل الصفحة بالكامل
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateUIForAuth);
+    var registerBtn = document.getElementById('btn-register');
+    if (registerBtn) {
+        if (isLoggedIn) {
+            registerBtn.textContent = 'PROFILE';
+            registerBtn.onclick = function() { window.location.href = 'profile.html'; };
+        } else {
+            registerBtn.textContent = 'START FREE ';
+            registerBtn.onclick = function() { window.location.href = 'register.html'; };
+        }
     }
-    
-    // مراقبة التغييرات في localStorage
-    window.addEventListener('storage', updateUIForAuth);
-    
-    // مراقبة التغييرات في session (للتحديث الفوري)
-    setInterval(updateUIForAuth, 1000);
-})();
+}
+
+// تحديث الأزرار فقط - بدون إعادة توجيه
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateButtonsOnly);
+} else {
+    updateButtonsOnly();
+}
