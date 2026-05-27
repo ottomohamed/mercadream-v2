@@ -1,54 +1,180 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MercaDream - Create Account</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#c0f500",
+                        "surface-variant": "#353534",
+                        "inverse-primary": "#4f6600",
+                        "secondary-fixed": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "secondary": "#c8c6c5",
+                        "inverse-on-surface": "#313030",
+                        "primary-container": "#c0f500",
+                        "secondary-container": "#474746",
+                        "surface-container": "#201f1f",
+                        "on-surface-variant": "#c4caac",
+                        "on-background": "#e5e2e1",
+                        "surface": "#131313",
+                        "on-primary-container": "#546d00",
+                        "primary": "#ffffff",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "inverse-surface": "#e5e2e1",
+                        "on-secondary-container": "#b7b5b4",
+                        "surface-container-high": "#2a2a2a",
+                        "on-primary": "#273500",
+                        "primary-fixed-dim": "#a8d700",
+                        "on-tertiary-container": "#656464",
+                        "tertiary-container": "#e4e2e1",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-highest": "#353534",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "tertiary-fixed": "#e4e2e1",
+                        "tertiary": "#ffffff",
+                        "surface-dim": "#131313",
+                        "outline": "#8e9479",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#434933",
+                        "on-secondary": "#313030",
+                        "surface-tint": "#a8d700",
+                        "on-primary-fixed": "#161f00",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-error": "#690005",
+                        "background": "#131313",
+                        "on-tertiary": "#303030",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "surface-bright": "#3a3939",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-cols": "12",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "body-lg": ["Geist"],
+                        "headline-md": ["Sora"],
+                        "technical-sm": ["JetBrains Mono"],
+                        "technical-xs": ["JetBrains Mono"],
+                        "body-md": ["Geist"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
         *{box-sizing:border-box;margin:0;padding:0}
-        body{background:#060606;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center}
-        .box{background:#0a0a0a;border:1px solid #1a1a1a;padding:32px;width:100%;max-width:420px;border-radius:8px}
-        input{width:100%;padding:12px;margin:10px 0;background:#1a1a1a;border:1px solid #333;color:white;border-radius:4px}
-        button{width:100%;padding:14px;background:#a8d700;border:none;color:#060606;font-weight:700;cursor:pointer;border-radius:4px;margin-top:10px}
-        button:hover{background:#c8ff00}
-        h1{text-align:center;color:#a8d700;margin-bottom:20px}
-        .field-label{font-size:12px;color:#888;margin-bottom:5px;display:block}
-        .alert{padding:10px;margin-top:10px;border-radius:4px;display:none}
+        body{background:#000;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        
+        /* Video Background Container */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+        .video-container video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+        .video-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(6,6,6,0.85) 0%, rgba(6,6,6,0.95) 100%);
+            z-index: -1;
+        }
+
+        input{width:100%;background:rgba(10,10,10,0.8);border:1px solid #2a2a2a;color:#e2e4d1;padding:12px 14px;font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
+        input:focus{border-color:#a8d700}
+        .btn-main{width:100%;padding:14px;background:linear-gradient(180deg, #d4ff2e 0%, #a8d700 100%);border:none;border-bottom:4px solid #7a9c00;border-radius:4px;color:#060606;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:3px;transition:transform 0.1s, box-shadow 0.1s;box-shadow: 0 4px 15px rgba(168, 215, 0, 0.3);text-shadow: 0 1px 0 rgba(255,255,255,0.4)}
+        .btn-main:hover{background:linear-gradient(180deg, #e1ff63 0%, #b8eb00 100%);box-shadow: 0 6px 20px rgba(168, 215, 0, 0.4)}
+        .btn-main:active{transform: translateY(2px);border-bottom-width: 2px;box-shadow: 0 2px 10px rgba(168, 215, 0, 0.3)}
+        .btn-main:disabled{opacity:.5;cursor:not-allowed}
+        .btn-google{width:100%;padding:12px;background:#ffffff;border:1px solid #ddd;border-bottom:3px solid #ccc;border-radius:4px;color:#333;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:1px;transition:all .1s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow: 0 2px 5px rgba(0,0,0,0.1)}
+        .btn-google:hover{background:#f8f8f8;border-color:#ccc;box-shadow: 0 4px 8px rgba(0,0,0,0.15)}
+        .btn-google:active{transform: translateY(1px);border-bottom-width: 1px;box-shadow: 0 1px 2px rgba(0,0,0,0.1)}
+        a{color:#a8d700;text-decoration:none}
+        a:hover{color:#c8ff00}
+        .alert{padding:10px;font-size:10px;letter-spacing:1px;display:none;margin-top:8px}
         .alert.show{display:block}
-        .alert.err{background:rgba(255,68,68,0.2);border:1px solid #ff4444;color:#ff4444}
-        .alert.ok{background:rgba(168,215,0,0.2);border:1px solid #a8d700;color:#a8d700}
+        .alert.err{background:rgba(255,70,70,0.1);border:1px solid rgba(255,70,70,0.3);color:#ff7070}
+        .alert.ok{background:rgba(168,215,0,0.1);border:1px solid rgba(168,215,0,0.3);color:#a8d700}
     </style>
 </head>
 <body>
-<div class="box">
-    <h1> MERCADREAM</h1>
-    <h3 style="text-align:center; margin-bottom:20px;">Create Account</h3>
-    
-    <div id="emailRegisterForm">
-        <label class="field-label">Email</label>
-        <input type="email" id="regEmail" placeholder="your@email.com">
-        
-        <label class="field-label">Password</label>
-        <input type="password" id="regPassword" placeholder="Min 6 characters">
-        
-        <button id="registerBtn">CREATE ACCOUNT</button>
-    </div>
-    
-    <div style="text-align:center; margin:15px 0; color:#444;">OR</div>
-    
-    <button id="googleRegisterBtn"> Sign up with Google</button>
-    
-    <div id="alert" class="alert"></div>
-    
-    <div style="text-align:center; margin-top:20px; font-size:12px;">
-        Already have an account? <a href="login.html" style="color:#a8d700;">Sign In</a>
-    </div>
+<div class="video-container">
+<video autoplay="" loop="" muted="" playsinline="">
+<source src="/media/hero4.mp4" type="video/mp4"/>
+</video>
 </div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+<div class="video-overlay"></div>
+<div style="width:100%;max-width:420px;padding:20px;position:relative;z-index:1">
+<div style="text-align:center;margin-bottom:32px">
+<a class="" href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
+<div class="" style="font-size:9px;color:#888;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
+</div>
+<div style="background:rgba(10,10,10,0.9);border:1px solid #1a1a1a;padding:32px;backdrop-filter:blur(10px)">
+<div class="" style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
+<div class="" style="font-size:10px;color:#888;margin-bottom:24px">New here? <a class="" href="register.html">Create account </a></div>
+<button class="btn-google" onclick="signInGoogle()"><svg height="18" viewbox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"></path><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"></path><path d="M3.964 10.706c-.18-.54-.282-1.117-.282-1.706s.102-1.166.282-1.706V4.962H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"></path><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.962l3.007 2.332C4.672 5.164 6.656 3.58 9 3.58z" fill="#EA4335"></path></svg> Continue with Google</button>
+<div class="" style="text-align:center;margin:16px 0;font-size:9px;color:#555;letter-spacing:3px">OR</div>
+<div style="margin-bottom:12px">
+<div class="" style="font-size:9px;color:#888;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
+<input autocomplete="email" id="email" placeholder="your@email.com" type="email"/>
+</div>
+<div style="margin-bottom:20px">
+<div class="" style="font-size:9px;color:#888;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
+<input autocomplete="current-password" id="password" onkeydown="if(event.key==='Enter')signIn()" placeholder="" type="password"/>
+</div>
+<button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN </button>
+<div class="alert" id="alert"></div>
+<div style="text-align:center;margin-top:16px">
+<a class="" href="#" onclick="forgotPw();return false" style="font-size:10px;color:#888">Forgot password?</a>
+</div>
+</div>
+<div style="text-align:center;margin-top:16px;font-size:10px;color:#666">
+<a class="" href="index.html"> Back to Home</a>
+</div>
+</div>
+<script>
+    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
         authDomain: "mercadream-4b4b3.firebaseapp.com",
@@ -59,68 +185,116 @@
         measurementId: "G-F0CLDJCV42"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const googleProvider = new GoogleAuthProvider();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Session Check
+    auth.onAuthStateChanged(function(user) {
+        if (user) {
+            console.log('User is signed in:', user.email);
+            saveSessionAndRedirect(user);
+        }
+    });
 
     function showAlert(msg, type) {
-        const alertDiv = document.getElementById('alert');
-        alertDiv.textContent = msg;
-        alertDiv.className = 'alert show ' + (type || 'err');
-        setTimeout(() => {
-            alertDiv.className = 'alert';
-        }, 3000);
+        var el = document.getElementById('alert');
+        el.textContent = msg;
+        el.className = 'alert show ' + (type || 'err');
     }
 
-    // تسجيل بالبريد الإلكتروني وكلمة المرور
-    document.getElementById('registerBtn').onclick = async () => {
-        const email = document.getElementById('regEmail').value;
-        const password = document.getElementById('regPassword').value;
-        
-        if (!email || !password) {
-            showAlert('Please enter email and password');
-            return;
-        }
-        
-        if (password.length < 6) {
-            showAlert('Password must be at least 6 characters');
-            return;
-        }
-        
+    function hideAlert() {
+        var el = document.getElementById('alert');
+        el.className = 'alert';
+    }
+
+    async function saveSessionAndRedirect(user) {
+        const email = user.email;
+        const fullName = user.displayName || email.split('@')[0];
+
+        localStorage.setItem('sb_session', 'true');
+        localStorage.setItem('md_email', email);
+        localStorage.setItem('md_name', fullName);
+        localStorage.setItem('md_user', JSON.stringify(user));
+        localStorage.setItem('md_user_id', user.uid);
+        localStorage.setItem('md_logged_in_at', Date.now().toString());
+
         try {
-            const result = await createUserWithEmailAndPassword(auth, email, password);
-            localStorage.setItem('sb_session', 'true');
-            localStorage.setItem('md_email', result.user.email);
-            localStorage.setItem('md_user_id', result.user.uid);
-            showAlert('Account created successfully! Redirecting...', 'ok');
-            setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 1500);
-        } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                showAlert('Email already exists. Please sign in instead.');
+            const crRes = await fetch('/api/credits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'check', 
+                    email: email, 
+                    name: fullName 
+                })
+            });
+            const crData = await crRes.json();
+            
+            if (crData && !crData.error) {
+                localStorage.setItem('md_credits', crData.balance !== undefined ? crData.balance : '0');
+                localStorage.setItem('md_plan', crData.type || 'free');
             } else {
-                showAlert(error.message);
+                localStorage.setItem('md_credits', '0');
+                localStorage.setItem('md_plan', 'free');
             }
+        } catch (err) {
+            console.warn('Credits sync failed:', err);
+            localStorage.setItem('md_credits', '0');
+            localStorage.setItem('md_plan', 'free');
         }
-    };
-    
-    // تسجيل بـ Google
-    document.getElementById('googleRegisterBtn').onclick = async () => {
+
+        window.location.href = 'profile.html';
+    }
+
+    async function signIn() {
+        var email = document.getElementById('email').value.trim();
+        var pass = document.getElementById('password').value;
+        
+        if (!email || !pass) {
+            showAlert('Enter email and password.');
+            return;
+        }
+
+        var btn = document.getElementById('signInBtn');
+        var originalText = btn.textContent;
+        btn.textContent = 'AUTHENTICATING...';
+        btn.disabled = true;
+        hideAlert();
+
         try {
-            const result = await signInWithPopup(auth, googleProvider);
-            localStorage.setItem('sb_session', 'true');
-            localStorage.setItem('md_email', result.user.email);
-            localStorage.setItem('md_user_id', result.user.uid);
-            localStorage.setItem('md_name', result.user.displayName);
-            showAlert('Account created successfully! Redirecting...', 'ok');
-            setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 1500);
+            const result = await auth.signInWithEmailAndPassword(email, pass);
+        } catch (error) {
+            console.error('Login error:', error);
+            showAlert(error.message);
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    async function signInGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            await auth.signInWithPopup(provider);
+        } catch (error) {
+            console.error('Google Sign-In Error:', error);
+            showAlert(error.message);
+        }
+    }
+
+    async function forgotPw() {
+        var email = document.getElementById('email').value.trim();
+        if (!email) {
+            showAlert('Enter your email first.');
+            return;
+        }
+        try {
+            await auth.sendPasswordResetEmail(email);
+            showAlert('Check your email for a reset link.', 'ok');
         } catch (error) {
             showAlert(error.message);
         }
-    };
+    }
 </script>
-</body>
-</html>
+<script src="/js/navigation.js"></script>
+</body></html>
