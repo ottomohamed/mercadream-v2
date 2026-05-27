@@ -1,256 +1,310 @@
 ﻿<!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MercaDream - Sign In</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-            authDomain: "mercadream-4b4b3.firebaseapp.com",
-            projectId: "mercadream-4b4b3",
-            storageBucket: "mercadream-4b4b3.firebasestorage.app",
-            messagingSenderId: "257560928442",
-            appId: "1:257560928442:web:06983f27629a13eeed6283",
-            measurementId: "G-F0CLDJCV42"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        window.firebaseAuth = auth;
-        window.firebaseProvider = provider;
-        window.signInWithGoogle = async function() {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                localStorage.setItem('sb_session', 'true');
-                localStorage.setItem('md_email', result.user.email);
-                localStorage.setItem('md_user', JSON.stringify(result.user));
-                window.location.href = 'profile.html';
-            } catch (error) {
-                alert('Login error: ' + error.message);
-            }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (user && window.location.pathname.includes('login')) {
-                window.location.href = 'profile.html';
-            }
-        });
-    </script>
-    <style>
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{background:#060606;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center}
-        .box{background:#0a0a0a;border:1px solid #1a1a1a;padding:32px;width:100%;max-width:420px;border-radius:8px}
-        button{width:100%;padding:14px;background:#a8d700;border:none;color:#060606;font-weight:700;cursor:pointer;border-radius:4px}
-        button:hover{background:#c8ff00}
-        h1{text-align:center;color:#a8d700;margin-bottom:20px}
-    </style>
-</head>
-<body>
-<div class="box">
-    <h1>MERCADREAM</h1>
-    <button onclick="signInWithGoogle()"> Sign in with Google</button>
-</div>
-</body>
-</html>
-=======
-<html lang="en"><head>
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM Sign In</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>MercaDream | Neural Access</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@400;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#303030",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-tint": "#a8d700",
+                        "outline-variant": "#434933",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#c0f500",
+                        "secondary-container": "#474746",
+                        "surface-dim": "#131313",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-primary-fixed": "#161f00",
+                        "outline": "#8e9479",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "on-surface-variant": "#c4caac",
+                        "inverse-on-surface": "#313030",
+                        "surface-bright": "#3a3939",
+                        "surface-variant": "#353534",
+                        "on-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#e4e2e1",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-tertiary-container": "#656464",
+                        "surface-container-highest": "#353534",
+                        "on-secondary": "#313030",
+                        "inverse-primary": "#4f6600",
+                        "primary-fixed-dim": "#a8d700",
+                        "background": "#131313",
+                        "primary": "#ffffff",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-container-low": "#1c1b1b",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "on-primary": "#273500",
+                        "on-primary-container": "#546d00",
+                        "surface-container-high": "#2a2a2a",
+                        "primary-fixed": "#c0f500",
+                        "surface": "#131313",
+                        "secondary": "#c8c6c5",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "on-background": "#e5e2e1",
+                        "tertiary": "#ffffff",
+                        "surface-container": "#201f1f",
+                        "on-secondary-container": "#b7b5b4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "grid-cols": "12",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "technical-sm": ["JetBrains Mono"],
+                        "headline-md": ["Sora"],
+                        "technical-xs": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Sora"],
+                        "body-md": ["Geist"],
+                        "headline-lg": ["Sora"],
+                        "body-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "technical-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "technical-xs": ["10px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#060606;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center}
-.bg{background-image:linear-gradient(rgba(168,215,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(168,215,0,0.03) 1px,transparent 1px);background-size:40px 40px;position:fixed;inset:0;pointer-events:none}
-input{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;color:#e2e4d1;padding:12px 14px;font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
-input:focus{border-color:#a8d700}
-.btn-main{width:100%;padding:14px;background:#a8d700;border:none;color:#060606;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:3px;transition:all .2s}
-.btn-main:hover{background:#c8ff00}
-.btn-main:disabled{opacity:.5;cursor:not-allowed}
-.btn-google{width:100%;padding:12px;background:transparent;border:1px solid #2a2a2a;color:#888;font-family:inherit;font-size:11px;cursor:pointer;letter-spacing:2px;transition:all .2s}
-.btn-google:hover{border-color:#a8d700;color:#a8d700}
-a{color:#a8d700;text-decoration:none}
-a:hover{color:#c8ff00}
-.alert{padding:10px;font-size:10px;letter-spacing:1px;display:none;margin-top:8px}
-.alert.show{display:block}
-.alert.err{background:rgba(255,70,70,0.1);border:1px solid rgba(255,70,70,0.3);color:#ff7070}
-.alert.ok{background:rgba(168,215,0,0.1);border:1px solid rgba(168,215,0,0.3);color:#a8d700}
-</style>
+        body {
+            background-color: #0e0e0e;
+            background-image: 
+                linear-gradient(rgba(192, 245, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(192, 245, 0, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .scanning-line {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #c0f500, transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.1;
+            animation: scan 4s linear infinite;
+            z-index: 5;
+        }
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        .surgical-border {
+            border: 1px solid #353534;
+            position: relative;
+        }
+        .surgical-border::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            right: 0px;
+            width: 20px;
+            height: 1px;
+            background: #c0f500;
+        }
+        .surgical-border::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0px;
+            width: 20px;
+            height: 1px;
+            background: #c0f500;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
-<body>
-<div class="bg"></div>
-<div style="width:100%;max-width:420px;padding:20px">
-<div style="text-align:center;margin-bottom:32px">
-<a href="index.html" style="font-family:Orbitron,monospace;font-size:22px;font-weight:900;color:#a8d700;letter-spacing:4px;text-decoration:none">MERCADREAM</a>
-<div style="font-size:9px;color:#444;letter-spacing:6px;margin-top:4px">AI FILM STUDIO</div>
+<body class="flex flex-col min-h-screen text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<div class="scanning-line"></div>
+<header class="bg-surface docked full-width top-0 border-b border-surface-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 z-50">
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-fixed dark:text-primary-fixed-dim">
+        MercaDream
+    </div>
+<div class="flex items-center gap-6">
+<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest opacity-60">System_V.04.1_Live</span>
 </div>
-<div style="background:#0a0a0a;border:1px solid #1a1a1a;padding:32px">
-<div style="font-family:Orbitron,monospace;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:4px">SIGN IN</div>
-<div style="font-size:10px;color:#555;margin-bottom:24px">New here? <a href="register.html">Create account </a></div>
-<button class="btn-google" onclick="signInGoogle()"> Continue with Google</button>
-<div style="text-align:center;margin:16px 0;font-size:9px;color:#333;letter-spacing:3px">OR</div>
-<div style="margin-bottom:12px">
-<div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">EMAIL</div>
-<input autocomplete="email" id="email" placeholder="your@email.com" type="email"/>
+</header>
+<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop relative">
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-fixed/5 rounded-full blur-[120px]" id="glowEffect"></div>
 </div>
-<div style="margin-bottom:20px">
-<div style="font-size:9px;color:#555;letter-spacing:2px;margin-bottom:6px">PASSWORD</div>
-<input autocomplete="current-password" id="password" onkeydown="if(event.key==='Enter')signIn()" placeholder="" type="password"/>
+<div class="w-full max-w-[420px] z-10">
+<div class="surgical-border bg-surface-container p-8 md:p-10 shadow-2xl">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h1 class="font-headline-md text-headline-md text-primary mb-1">Access Protocol</h1>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest">Authentication_Required</p>
 </div>
-<button class="btn-main" id="signInBtn" onclick="signIn()">SIGN IN </button>
-<div class="alert" id="alert"></div>
-<div style="text-align:center;margin-top:16px">
-<a href="#" onclick="forgotPw();return false" style="font-size:10px;color:#555">Forgot password?</a>
-</div>
-</div>
-<div style="text-align:center;margin-top:16px;font-size:10px;color:#444">
-<a href="index.html"> Back to Home</a>
+<div class="text-primary-fixed opacity-40">
+<span class="material-symbols-outlined" style="font-size: 32px;">fingerprint</span>
 </div>
 </div>
-<script>
-const SURL = 'https://xvkxogrmewnzwhtghuiz.supabase.co';
-const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
-const sb = supabase.createClient(SURL, SKEY);
+<form class="space-y-6" id="loginForm">
+<div class="group">
+<label class="font-technical-xs text-technical-xs text-on-surface-variant uppercase mb-2 block tracking-widest" for="email">User_Identifier</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant focus:border-primary-fixed text-on-surface font-technical-sm px-4 py-3 outline-none transition-all duration-300 placeholder:opacity-20" id="email" placeholder="name@domain.com" required="" type="email"/>
+</div>
+</div>
+<div class="group">
+<label class="font-technical-xs text-technical-xs text-on-surface-variant uppercase mb-2 block tracking-widest" for="password">Access_Cipher</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant focus:border-primary-fixed text-on-surface font-technical-sm px-4 py-3 outline-none transition-all duration-300 placeholder:opacity-20" id="password" placeholder="" required="" type="password"/>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 rounded-none border border-outline-variant bg-transparent checked:bg-primary-fixed checked:border-primary-fixed transition-all cursor-pointer" id="persistSession" type="checkbox"/>
+<span class="font-technical-xs text-technical-xs text-on-surface-variant group-hover:text-on-surface">Persist_Session</span>
+</label>
+<a class="font-technical-xs text-technical-xs text-on-surface-variant hover:text-primary-fixed underline transition-colors" href="#">Forgot_Cipher?</a>
+</div>
+<button class="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed font-technical-sm font-bold py-4 transition-all duration-200 active:scale-[0.98] group relative overflow-hidden uppercase tracking-widest" id="submitBtn" type="submit">
+<span class="relative z-10 flex items-center justify-center gap-2">
+                        Establish_Connection
+                        <span class="material-symbols-outlined text-[18px]">bolt</span>
+</span>
+</button>
+</form>
+<div class="relative my-8">
+<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-outline-variant/30"></div></div>
+<div class="relative flex justify-center text-xs uppercase font-technical-xs"><span class="bg-surface-container px-4 text-on-surface-variant">External_Bridge</span></div>
+</div>
+<button class="w-full border border-outline-variant hover:border-primary-fixed text-on-surface font-technical-sm py-4 flex items-center justify-center gap-3 transition-all duration-200 group uppercase tracking-widest" id="googleSignIn">
+<svg class="w-5 h-5 group-hover:scale-110 transition-transform" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                Continue_With_Google
+            </button>
+<div class="mt-8 text-center">
+<p class="font-technical-xs text-technical-xs text-on-surface-variant">
+                    New_Entity? <a class="text-primary-fixed hover:underline ml-2" href="register.html">Initialize_Account</a>
+</p>
+</div>
+</div>
+<div class="mt-4 flex justify-between font-technical-xs text-technical-xs text-on-surface-variant/40 px-2 uppercase">
+<span>Coord: [40.7128° N, 74.0060° W]</span>
+<span>Enc: AES-256-GCM</span>
+</div>
+</div>
+</main>
+<footer class="w-full px-margin-mobile md:px-margin-desktop py-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant">
+<div class="font-technical-sm text-technical-sm text-primary-fixed uppercase tracking-wider">
+         2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
+    </div>
+<div class="flex gap-6">
+<a class="font-technical-xs text-technical-xs text-on-surface-variant underline hover:text-primary-fixed hover:no-underline transition-colors uppercase" href="#">Neural_Engine</a>
+<a class="font-technical-xs text-technical-xs text-on-surface-variant underline hover:text-primary-fixed hover:no-underline transition-colors uppercase" href="#">Privacy_Protocol</a>
+<a class="font-technical-xs text-technical-xs text-on-surface-variant underline hover:text-primary-fixed hover:no-underline transition-colors uppercase" href="#">Terms_of_Service</a>
+</div>
+</footer>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// التحقق من الجلسة الحالية عند تحميل الصفحة
-sb.auth.getSession().then(function({data}) {
-  if (data.session) {
-    localStorage.setItem('sb_session', 'true');
-    localStorage.setItem('md_email', data.session.user.email);
-    localStorage.setItem('md_user', JSON.stringify(data.session.user));
-    window.location.href = 'profile.html';
-  }
-});
+    const firebaseConfig = {
+        apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+        authDomain: "mercadream-4b4b3.firebaseapp.com",
+        projectId: "mercadream-4b4b3",
+        storageBucket: "mercadream-4b4b3.firebasestorage.app",
+        messagingSenderId: "257560928442",
+        appId: "1:257560928442:web:06983f27629a13eeed6283",
+        measurementId: "G-F0CLDJCV42"
+    };
 
-function showAlert(msg, type) {
-  var el = document.getElementById('alert');
-  el.textContent = msg;
-  el.className = 'alert show ' + (type || 'err');
-}
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-function hideAlert() {
-  var el = document.getElementById('alert');
-  el.className = 'alert';
-}
+    const handleSuccess = (user) => {
+        localStorage.setItem('sb_session', 'true');
+        localStorage.setItem('md_email', user.email);
+        localStorage.setItem('md_user', JSON.stringify({
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email
+        }));
+        localStorage.setItem('md_user_id', user.uid);
+        localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
+        window.location.href = 'profile.html';
+    };
 
-async function signIn() {
-  var email = document.getElementById('email').value.trim();
-  var pass = document.getElementById('password').value;
-  
-  if (!email || !pass) {
-    showAlert('Enter email and password.');
-    return;
-  }
-
-  var btn = document.getElementById('signInBtn');
-  var originalText = btn.textContent;
-  btn.textContent = 'AUTHENTICATING...';
-  btn.disabled = true;
-  hideAlert();
-
-  try {
-    const { data, error } = await sb.auth.signInWithPassword({
-      email: email,
-      password: pass
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const btn = document.getElementById('submitBtn');
+        const originalContent = btn.innerHTML;
+        
+        btn.disabled = true;
+        btn.innerHTML = `<span class="flex items-center gap-2">VERIFYING_CREDENTIALS... <span class="animate-pulse">_</span></span>`;
+        
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            handleSuccess(userCredential.user);
+        } catch (error) {
+            alert(`ERROR: ${error.message}`);
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+        }
     });
 
-    if (error) {
-      showAlert(error.message);
-      btn.textContent = originalText;
-      btn.disabled = false;
-      return;
-    }
+    const googleBtn = document.getElementById('googleSignIn');
+    googleBtn.addEventListener('click', async () => {
+        googleBtn.classList.add('opacity-50');
+        googleBtn.disabled = true;
+        try {
+            const result = await signInWithPopup(auth, provider);
+            handleSuccess(result.user);
+        } catch (error) {
+            alert(`ERROR: ${error.message}`);
+            googleBtn.classList.remove('opacity-50');
+            googleBtn.disabled = false;
+        }
+    });
 
-    if (!data || !data.user) {
-      showAlert('Login failed. Please try again.');
-      btn.textContent = originalText;
-      btn.disabled = false;
-      return;
-    }
-
-    localStorage.setItem('sb_session', 'true');
-    
-    const metadata = data.user.user_metadata || {};
-    const firstName = metadata.first_name || '';
-    const lastName = metadata.last_name || '';
-    const fullName = (firstName + ' ' + lastName).trim() || email.split('@')[0];
-
-    localStorage.setItem('md_email', email);
-    localStorage.setItem('md_name', fullName);
-    localStorage.setItem('md_user', JSON.stringify(data.user));
-    localStorage.setItem('md_user_id', data.user.id);
-    localStorage.setItem('md_logged_in_at', Date.now().toString());
-
-    try {
-      const crRes = await fetch('/api/credits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          action: 'check', 
-          email: email, 
-          name: fullName 
-        })
-      });
-      const crData = await crRes.json();
-      
-      if (crData && !crData.error) {
-        localStorage.setItem('md_credits', crData.balance !== undefined ? crData.balance : '0');
-        localStorage.setItem('md_plan', crData.type || 'free');
-        if (crData.user_id) localStorage.setItem('md_user_id', crData.user_id);
-      } else {
-        localStorage.setItem('md_credits', '0');
-        localStorage.setItem('md_plan', 'free');
-      }
-    } catch (err) {
-      console.warn('Credits sync failed:', err);
-      localStorage.setItem('md_credits', '0');
-      localStorage.setItem('md_plan', 'free');
-    }
-
-    window.location.href = 'profile.html';
-
-  } catch (err) {
-    console.error('Unexpected login error:', err);
-    showAlert('An unexpected error occurred. Please try again.');
-    btn.textContent = originalText;
-    btn.disabled = false;
-  }
-}
-
-async function signInGoogle() {
-  const { error } = await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin + '/profile.html' }
-  });
-  if (error) showAlert(error.message);
-}
-
-async function forgotPw() {
-  var email = document.getElementById('email').value.trim();
-  if (!email) {
-    showAlert('Enter your email first.');
-    return;
-  }
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + '/register.html?reset=true'
-  });
-  if (error) {
-    showAlert(error.message);
-  } else {
-    showAlert('Check your email for a reset link.', 'ok');
-  }
-}
+    document.addEventListener('mousemove', (e) => {
+        const glow = document.getElementById('glowEffect');
+        if (glow) {
+            const moveX = (e.clientX - window.innerWidth / 2) / 40;
+            const moveY = (e.clientY - window.innerHeight / 2) / 40;
+            glow.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+        }
+    });
 </script>
-<script src="/js/navigation.js"></script>
 </body></html>
->>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
