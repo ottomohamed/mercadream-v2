@@ -1,10 +1,19 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 
 <html dir="ltr" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM — Create Account</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500&amp;family=Inter:wght@300;400;500;600;700&amp;family=Cairo:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+=======
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--acid:#c8ff00;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;}
@@ -82,17 +91,32 @@ input::placeholder{color:var(--text-dim)}
 .rp-dot{width:5px;height:5px;border-radius:50%;background:var(--acid);animation:blink 1.4s infinite;display:inline-block;margin-right:8px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
 .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+<<<<<<< HEAD
+=======
+.plan-card{border:1px solid var(--border);padding:14px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
+.plan-card:hover{border-color:rgba(200,255,0,0.2)}
+.plan-card.on{border-color:var(--border-b);background:rgba(200,255,0,0.03)}
+.plan-card.on::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--acid)}
+.plan-name{font-family:var(--display);font-size:9px;font-weight:700;color:var(--text-bright);margin-bottom:4px}
+.plan-price{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--acid)}
+.plan-sub{font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:2px}
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
 .feat-list{background:var(--s3);border:1px solid var(--border);padding:16px}
 .feat-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px}
 .feat-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(200,255,0,0.04);font-size:12px;color:var(--text)}
 .feat-item:last-child{border-bottom:none;padding-bottom:0}
 .feat-item::before{content:'✓';color:var(--acid);font-family:var(--mono);font-size:10px;flex-shrink:0}
 @media(max-width:900px){body{grid-template-columns:1fr}.right{display:none}.left{padding:24px 16px;min-height:100dvh}}
+<<<<<<< HEAD
 @media(max-width:480px){.field-row{grid-template-columns:1fr}}
+=======
+@media(max-width:480px){.field-row{grid-template-columns:1fr}.plan-grid{grid-template-columns:1fr}}
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
 </style>
 </head>
 <body class="lang-en">
 <div class="left">
+<<<<<<< HEAD
 <div class="left-inner">
 <a class="logo-wrap" href="index.html">
 <div class="logo-mark">MD</div>
@@ -184,6 +208,108 @@ input::placeholder{color:var(--text-dim)}
 </div>
 </div>
 </div>
+=======
+  <div class="left-inner">
+    <a href="index.html" class="logo-wrap">
+      <div class="logo-mark">MD</div>
+      <span class="logo-name">MERCA<span>DREAM</span></span>
+    </a>
+    <div class="lang-sw">
+      <button class="lb on" onclick="setLang('en')">EN</button>
+      <button class="lb" onclick="setLang('es')">ES</button>
+      <button class="lb" onclick="setLang('ar')">AR</button>
+    </div>
+
+    <!-- STEPS -->
+    <div class="steps">
+      <div class="step-item"><div class="step-circle on" id="s1c">1</div><div class="step-lbl on" id="s1l">ACCOUNT</div></div>
+      <div class="step-line" id="l1"></div>
+      <div class="step-item"><div class="step-circle" id="s2c">2</div><div class="step-lbl" id="s2l">TYPE</div></div>
+      <div class="step-line" id="l2"></div>
+      <div class="step-item"><div class="step-circle" id="s3c">3</div><div class="step-lbl" id="s3l">DONE</div></div>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <!-- STEP 1 -->
+    <div id="step1">
+      <div class="form-title" id="ttl1">CREATE ACCOUNT</div>
+      <div class="form-sub" id="sub1">Already have one? <a href="login.html">Sign in →</a></div>
+
+      <!-- Google -->
+      <button class="btn-google" onclick="signUpGoogle()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span id="gBtn">Sign up with Google</span>
+      </button>
+      <div class="divider"><div class="divider-line"></div><div class="divider-text" id="orTxt">OR</div><div class="divider-line"></div></div>
+
+      <div class="field-row">
+        <div class="field"><label class="field-label">FIRST NAME</label><div class="field-wrap"><span class="fi">👤</span><input type="text" id="fn" placeholder="Marco"/></div></div>
+        <div class="field"><label class="field-label">LAST NAME</label><div class="field-wrap"><span class="fi">👤</span><input type="text" id="ln" placeholder="Cielo"/></div></div>
+      </div>
+      <div class="field"><label class="field-label" id="emLbl">EMAIL</label><div class="field-wrap"><span class="fi">✉</span><input type="email" id="em" placeholder="you@mercadream.com"/></div></div>
+      <div class="field">
+        <label class="field-label" id="pwLbl">PASSWORD</label>
+        <div class="field-wrap"><span class="fi">🔒</span><input type="password" id="pw" placeholder="Min. 8 characters" oninput="checkPw(this.value)"/></div>
+        <div class="ps-bars"><div class="ps-bar" id="pb1"></div><div class="ps-bar" id="pb2"></div><div class="ps-bar" id="pb3"></div><div class="ps-bar" id="pb4"></div></div>
+        <div class="ps-lbl" id="pwStr">ENTER A PASSWORD</div>
+      </div>
+      <div class="terms-row">
+        <div class="chk" id="chk" onclick="this.classList.toggle('on')"></div>
+        <div class="terms-text">I agree to MercaDream's <a href="ethics.html">Terms</a> & <a href="ethics.html">Privacy Policy</a></div>
+      </div>
+      <button class="btn-submit" onclick="goStep2()" id="s1Btn">CONTINUE →</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step2" style="display:none">
+      <div class="form-title" id="ttl2">WHO ARE YOU?</div>
+      <div class="form-sub" id="sub2">This helps us personalize your experience.</div>
+      <div class="type-btns">
+        <button class="type-btn on" id="typeCreator" onclick="selType('creator',this)">
+          📱 CONTENT<br>CREATOR
+        </button>
+        <button class="type-btn" id="typePro" onclick="selType('professional',this)">
+          🎬 FILM<br>PROFESSIONAL
+        </button>
+      </div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:16px;line-height:1.7" id="typeDesc">
+        Quick generation — 3 questions, immediate film output.
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-back" onclick="goBack1()">← BACK</button>
+        <button class="btn-submit" style="flex:2;margin-bottom:0" onclick="goStep3()">CREATE ACCOUNT →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 SUCCESS -->
+    <div id="step3" style="display:none" class="success-wrap">
+      <div class="success-icon">✓</div>
+      <div class="form-title" style="margin-bottom:6px" id="ttl3">ACCOUNT CREATED</div>
+      <div class="form-sub" style="margin-bottom:20px" id="sub3">Check your email to confirm your account.</div>
+      <a href="studio.html" class="btn-submit" style="display:block;text-decoration:none;text-align:center" id="enterBtn">ENTER STUDIO →</a>
+    </div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="orb orb1"></div><div class="orb orb2"></div>
+  <div class="right-content">
+    <div><div class="rp-dot"></div><span style="font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--acid)">AI CINEMA STUDIO</span></div>
+    <div style="font-family:var(--display);font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--text-bright);line-height:1.1;margin:20px 0 12px">Start Creating<br><span style="color:var(--acid)">For Free.</span></div>
+    <p style="font-size:13px;color:var(--text);line-height:1.75;margin-bottom:24px;font-weight:300">Join creators turning their visions into cinematic reality. Dream Extractor™ PhD — the most cinematically intelligent AI on the internet.</p>
+    <div class="feat-list">
+      <div class="feat-title">WHAT YOU GET</div>
+      <div class="feat-item">Dream Extractor™ PhD Edition</div>
+      <div class="feat-item">6-scene cinematic screenplay</div>
+      <div class="feat-item">Professional AI director (Claude)</div>
+      <div class="feat-item">Assembly Room access</div>
+      <div class="feat-item">EN / ES / AR support</div>
+    </div>
+  </div>
+</div>
+
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
 <script>
 const SURL='https://xvkxogrmewnzwhtghuiz.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a3hvZ3JtZXduendodGdodWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzU3ODAsImV4cCI6MjA5Mzg1MTc4MH0.b9KW4aJyC4Ahs_Yui-Rn3HeJ8dwIEZdP_kDDSpp4jIk';
@@ -220,6 +346,10 @@ async function goStep2(){
   if(pw.length<8)return showAlert('Password must be at least 8 characters.');
   if(!agreed)return showAlert('Please agree to the terms.');
 
+<<<<<<< HEAD
+=======
+  // Move to step 2
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
   document.getElementById('s1c').className='step-circle done';document.getElementById('s1c').textContent='✓';
   document.getElementById('s1l').className='step-lbl done';document.getElementById('l1').className='step-line done';
   document.getElementById('s2c').className='step-circle on';document.getElementById('s2l').className='step-lbl on';
@@ -248,6 +378,7 @@ async function goStep3(){
 
   if(error){btn.disabled=false;btn.textContent='CREATE ACCOUNT →';return showAlert(error.message);}
 
+<<<<<<< HEAD
   // Session Management & Compatibility
   localStorage.setItem('sb_session', 'true');
   localStorage.setItem('md_email', em);
@@ -264,6 +395,9 @@ async function goStep3(){
   }
 
   // Handle credits via API if possible, else defaults are already set
+=======
+  // Register in credits system
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
   try {
     const crRes = await fetch('/api/credits',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -273,11 +407,35 @@ async function goStep3(){
     if (crData && !crData.error) {
       localStorage.setItem('md_credits', crData.balance !== undefined ? crData.balance : '0');
       localStorage.setItem('md_plan', crData.type || 'free');
+<<<<<<< HEAD
     }
   } catch (err) {
     console.error('Credits sync deferred');
   }
 
+=======
+      localStorage.setItem('md_user_id', crData.user_id || data.user.id);
+    } else {
+      localStorage.setItem('md_credits', '0');
+      localStorage.setItem('md_plan', 'free');
+      localStorage.setItem('md_user_id', data.user.id);
+    }
+  } catch (err) {
+    console.error('Failed to initialize credits on register:', err);
+    localStorage.setItem('md_credits', '0');
+    localStorage.setItem('md_plan', 'free');
+    localStorage.setItem('md_user_id', data.user.id);
+  }
+
+  // Save session details to localStorage
+  localStorage.setItem('sb_session', '1');
+  localStorage.setItem('md_email', em);
+  if (data.user) {
+    localStorage.setItem('md_user', JSON.stringify(data.user));
+  }
+  localStorage.setItem('md_user_type', selectedType);
+
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
   document.getElementById('s2c').className='step-circle done';document.getElementById('s2c').textContent='✓';
   document.getElementById('s2l').className='step-lbl done';document.getElementById('l2').className='step-line done';
   document.getElementById('s3c').className='step-circle done';document.getElementById('s3c').textContent='✓';
@@ -304,12 +462,27 @@ function setLang(l){
   document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));
   const tx=I18N[l];
   ['ttl1','sub1','ttl2','sub2','ttl3','sub3'].forEach(id=>{if(document.getElementById(id))document.getElementById(id).innerHTML=tx[id];});
+<<<<<<< HEAD
   if(document.getElementById('gBtn')) document.getElementById('gBtn').textContent=tx.gBtn;
   if(document.getElementById('orTxt')) document.getElementById('orTxt').textContent=tx.or;
   if(document.getElementById('enterBtn')) document.getElementById('enterBtn').textContent=tx.enter;
+=======
+  document.getElementById('gBtn').textContent=tx.gBtn;
+  document.getElementById('orTxt').textContent=tx.or;
+  document.getElementById('enterBtn').textContent=tx.enter;
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
   localStorage.setItem('md_lang',l);
 }
 window.onload=()=>setLang(localStorage.getItem('md_lang')||'en');
 </script>
 <script src="/js/navigation.js"></script>
+<<<<<<< HEAD
 </body></html>
+=======
+</body>
+</html>
+
+
+
+
+>>>>>>> bd456c52a8e948857fcd2c3508ceb2d8fdf00b68
