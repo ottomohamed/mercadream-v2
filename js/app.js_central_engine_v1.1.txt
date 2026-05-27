@@ -1,0 +1,128 @@
+/**
+ * MERCADREAM - Central Engine v1.1
+ * Unified State Management, Auth, and Security
+ */
+
+const MercaDream = {
+    state: {
+        credits: 0,
+        user: null,
+        plan: 'free',
+        lang: 'en',
+        isInitialized: false
+    },
+
+    init() {
+        if (this.state.isInitialized) return;
+        console.log("Initializing MercaDream Central Engine v1.1...");
+        this.loadState();
+        this.bindGlobalEvents();
+        this.checkAuth();
+        this.updateGlobalUI();
+        this.state.isInitialized = true;
+    },
+
+    loadState() {
+        this.state.credits = parseInt(localStorage.getItem('md_credits') || '0');
+        this.state.plan = localStorage.getItem('md_plan') || 'free';
+        this.state.lang = localStorage.getItem('md_lang') || 'en';
+        try {
+            const userData = localStorage.getItem('md_user');
+            this.state.user = userData ? JSON.parse(userData) : null;
+        } catch (e) {
+            console.error("Failed to parse user data", e);
+            this.state.user = null;
+        }
+    },
+
+    saveState() {
+        localStorage.setItem('md_credits', this.state.credits);
+        localStorage.setItem('md_plan', this.state.plan);
+        localStorage.setItem('md_lang', this.state.lang);
+    },
+
+    checkAuth() {
+        const session = localStorage.getItem('sb_session');
+        const path = window.location.pathname;
+        const isAuthPage = path.includes('login') || path.includes('register');
+        const isLandingPage = path.endsWith('index.html') || path === '/' || path.endsWith('/');
+        
+        if (!session && !isAuthPage && !isLandingPage) {
+            console.warn("Unauthorized access detected. Redirecting to login...");
+            window.location.href = 'login.html';
+        }
+    },
+
+    updateGlobalUI() {
+        // Update all credit displays with formatting
+        const formattedCredits = this.state.credits.toLocaleString();
+        document.querySelectorAll('[data-credits], .nav-credits-val, #header-credits-val, .credits-display').forEach(el => {
+            el.textContent = `${formattedCredits} CR`;
+        });
+
+        // Update user info safely (XSS prevention via textContent)
+        if (this.state.user) {
+            const displayName = this.state.user.displayName || this.state.user.email.split('@')[0] || 'User';
+            document.querySelectorAll('.user-name-display').forEach(el => {
+                el.textContent = displayName.toUpperCase();
+            });
+            document.querySelectorAll('.user-email-display').forEach(el => {
+                el.textContent = this.state.user.email;
+            });
+        }
+
+        // Language specific UI adjustments
+        document.documentElement.lang = this.state.lang;
+        document.documentElement.dir = this.state.lang === 'ar' ? 'rtl' : 'ltr';
+    },
+
+    setCredits(value) {
+        this.state.credits = Math.max(0, value);
+        this.saveState();
+        this.updateGlobalUI();
+        // Broadcast change for other tabs
+        window.dispatchEvent(new Event('storage'));
+    },
+
+    deductCredits(amount) {
+        if (this.state.credits >= amount) {
+            this.setCredits(this.state.credits - amount);
+            return true;
+        }
+        return false;
+    },
+
+    bindGlobalEvents() {
+        // Sync across tabs
+        window.addEventListener('storage', (e) => {
+            this.loadState();
+            this.updateGlobalUI();
+            if (e && e.key === 'sb_session' && !e.newValue) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Shared navigation handling
+        document.addEventListener('click', (e) => {
+            const navEl = e.target.closest('[data-nav]');
+            if (navEl) {
+                e.preventDefault();
+                const target = navEl.getAttribute('data-nav');
+                window.location.href = target.endsWith('.html') ? target : `${target}.html`;
+            }
+        });
+    },
+
+    logout() {
+        const keys = ['sb_session', 'md_user', 'md_email', 'md_credits', 'md_plan', 'md_user_id', 'md_name'];
+        keys.forEach(k => localStorage.removeItem(k));
+        window.location.href = 'index.html';
+    }
+};
+
+// Initialize
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => MercaDream.init());
+} else {
+    MercaDream.init();
+}

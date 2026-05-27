@@ -7,7 +7,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&amp;family=Sora:wght@700;800&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -147,42 +146,58 @@
       box-shadow: 0 0 10px rgba(200, 255, 0, 0.5);
     }
   </style>
-</head>
-<body class="text-on-background font-body-md min-h-screen pb-32">
+<style>
+  @keyframes scan-y {
+    0% { top: 0%; opacity: 0; }
+    50% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  .premium-scan-zone::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #c8ff00, transparent);
+    animation: scan-y 3s linear infinite;
+    pointer-events: none;
+    z-index: 5;
+  }
+</style></head>
+<body class="text-on-background font-body-md min-h-screen pb-48 md:pb-32">
 <div class="scanline top-0"></div>
 <!-- Top Navigation Shell -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
-<div class="flex items-center gap-4">
-<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-neon-acid tracking-tighter">MERCADREAM | FACESWAP</span>
+<div class="flex items-center gap-4 overflow-hidden">
+<span class="font-headline-lg-mobile text-lg md:text-headline-lg-mobile font-bold text-neon-acid tracking-tighter truncate">MERCADREAM | FACESWAP</span>
 </div>
-<div class="flex items-center gap-margin-gutter">
-<div class="hidden md:flex items-center gap-unit bg-surface-container px-3 py-1.5 rounded-sm border border-outline-variant">
-<span class="material-symbols-outlined text-neon-acid text-[18px]">account_balance_wallet</span>
-<span class="font-label-technical text-label-technical text-silver-technical">9,400 CREDITS</span>
+<div class="flex items-center gap-2 md:gap-margin-gutter">
+<div class="flex items-center gap-unit bg-surface-container px-2 md:px-3 py-1.5 rounded-sm border border-outline-variant">
+<span class="material-symbols-outlined text-neon-acid text-[16px] md:text-[18px]">account_balance_wallet</span>
+<span class="font-label-technical text-[10px] md:text-label-technical text-silver-technical" id="header-credits-display">0 CREDITS</span>
 </div>
-<button class="flex items-center gap-unit px-4 py-1.5 bg-surface-variant/20 hover:bg-neon-acid hover:text-void-black transition-all border border-outline-variant font-label-technical text-label-technical text-neon-acid">
-<span class="material-symbols-outlined text-[16px]">arrow_back</span>
-        BACK
-      </button>
+<button class="flex items-center gap-unit px-2 md:px-4 py-1.5 bg-surface-variant/20 hover:bg-neon-acid hover:text-void-black transition-all border border-outline-variant font-label-technical text-[10px] md:text-label-technical text-neon-acid" onclick="window.MD.navigate('directors')">
+<span class="material-symbols-outlined text-[14px] md:text-[16px]">arrow_back</span>
+<span class="hidden xs:inline">BACK</span>
+</button>
 </div>
 </header>
-<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-12">
+<main class="pt-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-8 md:space-y-12">
 <!-- Hero Section -->
-<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-2 border-neon-acid pl-6">
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-l-2 border-neon-acid pl-4 md:pl-6">
 <div class="space-y-2">
-<div class="flex items-center gap-2 font-label-caps text-label-caps text-neon-acid opacity-70">
+<div class="flex items-center gap-2 font-label-caps text-[10px] md:text-label-caps text-neon-acid opacity-70">
 <span class="material-symbols-outlined text-[12px]">neurology</span>
           NEURAL_SURGERY_V2.1
         </div>
-<h1 class="font-headline-xl text-headline-xl text-primary leading-none uppercase">REPLACE ANY FACE</h1>
-<p class="font-body-md text-silver-technical max-w-xl">
+<h1 class="font-headline-lg-mobile md:font-headline-xl text-headline-lg-mobile md:text-headline-xl text-primary leading-tight md:leading-none uppercase">REPLACE ANY FACE</h1>
+<p class="font-body-md text-silver-technical max-w-xl text-sm md:text-base">
           Advanced neural face transplantation. Surgical precision, seamless blending. Powered by MERCADREAM Core Engine.
         </p>
 </div>
-<div class="bg-surface-container p-4 border border-outline-variant flex flex-col items-center justify-center min-w-[120px]">
-<span class="font-label-caps text-label-caps text-silver-technical mb-1">TRANSACTION_COST</span>
-<span class="font-headline-lg text-headline-lg text-neon-acid">8</span>
-<span class="font-label-technical text-label-technical text-neon-acid">CREDITS</span>
+<div class="bg-surface-container p-3 md:p-4 border border-outline-variant flex flex-row md:flex-col items-center justify-between md:justify-center min-w-full md:min-w-[120px] gap-2">
+<span class="font-label-caps text-[10px] md:text-label-caps text-silver-technical uppercase md:mb-1">TRANSACTION_COST</span>
+<div class="flex items-baseline gap-1"><span class="font-headline-md md:font-headline-lg text-neon-acid">8</span><span class="font-label-technical text-[10px] md:text-label-technical text-neon-acid">CREDITS</span></div>
 </div>
 </section>
 <!-- Upload Zone -->
@@ -190,46 +205,46 @@
 <!-- Source Face -->
 <div class="bg-surface-container/40 p-module-padding border border-outline-variant flex flex-col gap-unit">
 <div class="flex justify-between items-center mb-2">
-<span class="font-label-technical text-label-technical text-neon-acid flex items-center gap-2">
+<span class="font-label-technical text-[10px] md:text-label-technical text-neon-acid flex items-center gap-2">
 <span class="w-1.5 h-1.5 bg-neon-acid rounded-full"></span>
             SOURCE FACE
           </span>
-<span class="font-label-caps text-label-caps text-silver-technical opacity-40">MDR_REF_001</span>
+<span class="font-label-caps text-[10px] text-silver-technical opacity-40">MDR_REF_001</span>
 </div>
-<div class="technical-border aspect-video flex flex-col items-center justify-center gap-4 bg-void-black/60 cursor-pointer hover:bg-surface-variant/10 transition-colors group">
+<div class="technical-border aspect-[4/3] md:aspect-video flex flex-col items-center justify-center gap-4 bg-void-black/60 cursor-pointer hover:bg-surface-variant/10 transition-colors group premium-scan-zone">
 <span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid transition-colors">face</span>
-<div class="text-center">
-<p class="font-label-technical text-label-technical text-primary">DRAG &amp; DROP / CLICK TO BROWSE</p>
-<p class="font-label-caps text-label-caps text-silver-technical mt-1">SUPPORTED: PNG, JPG, WEBP (UP TO 12MB)</p>
+<div class="text-center px-4">
+<p class="font-label-technical text-[10px] md:text-label-technical text-primary uppercase">DRAG &amp; DROP / CLICK TO BROWSE</p>
+<p class="font-label-caps text-[8px] md:text-label-caps text-silver-technical mt-1 uppercase">PNG, JPG, WEBP (UP TO 12MB)</p>
 </div>
 </div>
 </div>
 <!-- Target Media -->
 <div class="bg-surface-container/40 p-module-padding border border-outline-variant flex flex-col gap-unit">
 <div class="flex justify-between items-center mb-2">
-<span class="font-label-technical text-label-technical text-neon-acid flex items-center gap-2">
+<span class="font-label-technical text-[10px] md:text-label-technical text-neon-acid flex items-center gap-2">
 <span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-pulse"></span>
             TARGET MEDIA
           </span>
-<span class="font-label-caps text-label-caps text-silver-technical opacity-40">MDR_DST_204</span>
+<span class="font-label-caps text-[10px] text-silver-technical opacity-40">MDR_DST_204</span>
 </div>
-<div class="technical-border aspect-video flex flex-col items-center justify-center gap-4 bg-void-black/60 cursor-pointer hover:bg-surface-variant/10 transition-colors group">
+<div class="technical-border aspect-[4/3] md:aspect-video flex flex-col items-center justify-center gap-4 bg-void-black/60 cursor-pointer hover:bg-surface-variant/10 transition-colors group premium-scan-zone">
 <span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid transition-colors">movie</span>
-<div class="text-center">
-<p class="font-label-technical text-label-technical text-primary">DRAG &amp; DROP / CLICK TO BROWSE</p>
-<p class="font-label-caps text-label-caps text-silver-technical mt-1">SUPPORTED: MP4, MOV, PHOTO (UP TO 500MB)</p>
+<div class="text-center px-4">
+<p class="font-label-technical text-[10px] md:text-label-technical text-primary uppercase">DRAG &amp; DROP / CLICK TO BROWSE</p>
+<p class="font-label-caps text-[8px] md:text-label-caps text-silver-technical mt-1 uppercase">MP4, MOV, PHOTO (UP TO 500MB)</p>
 </div>
 </div>
 </div>
 </section>
 <!-- Settings Panel -->
-<section class="bg-surface-container border border-outline-variant p-margin-mobile md:p-8 space-y-8 relative overflow-hidden">
+<section class="bg-surface-container border border-outline-variant p-4 md:p-8 space-y-6 md:space-y-8 relative overflow-hidden">
 <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-neon-acid/30 to-transparent"></div>
 <div class="flex items-center gap-4">
-<h2 class="font-label-caps text-label-caps text-silver-technical tracking-widest uppercase">Configuration Parameters</h2>
+<h2 class="font-label-caps text-[10px] md:text-label-caps text-silver-technical tracking-widest uppercase">Configuration Parameters</h2>
 <div class="h-[1px] bg-outline-variant flex-grow"></div>
 </div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
 <!-- Blend Level Slider -->
 <div class="space-y-4">
 <div class="flex justify-between items-end">
@@ -240,17 +255,17 @@
 <span class="font-label-technical text-label-technical text-neon-acid bg-neon-acid/10 px-2 py-0.5 border border-neon-acid/20">07</span>
 </div>
 <input class="w-full appearance-none bg-transparent" max="10" min="1" step="1" type="range" value="7"/>
-<div class="flex justify-between font-label-caps text-label-caps text-silver-technical opacity-40">
-<span>SOFT_MATCH</span>
-<span>SURGICAL_FIX</span>
+<div class="flex justify-between font-label-caps text-[10px] text-silver-technical opacity-40">
+<span class="">SOFT_MATCH</span>
+<span class="">SURGICAL_FIX</span>
 </div>
 </div>
 <!-- Toggles -->
-<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
 <div class="flex items-center justify-between p-4 bg-void-black/40 border border-outline-variant">
 <div class="flex flex-col">
-<span class="font-label-technical text-label-technical text-primary uppercase">Skin Match</span>
-<span class="font-label-caps text-label-caps text-silver-technical">AUTO-SYNC MELANIN &amp; TEXTURE</span>
+<span class="font-label-technical text-[12px] md:text-label-technical text-primary uppercase">Skin Match</span>
+<span class="font-label-caps text-[9px] md:text-label-caps text-silver-technical">AUTO-SYNC MELANIN &amp; TEXTURE</span>
 </div>
 <label class="surgical-toggle relative inline-flex items-center cursor-pointer">
 <input checked="" class="sr-only" type="checkbox"/>
@@ -260,81 +275,215 @@
 </div>
 <div class="flex items-center justify-between p-4 bg-void-black/40 border border-outline-variant">
 <div class="flex flex-col">
-<span class="font-label-technical text-label-technical text-primary uppercase">Expression Preserve</span>
-<span class="font-label-caps text-label-caps text-silver-technical">MAINTAIN TARGET MICRO-GESTURES</span>
+<span class="font-label-technical text-[12px] md:text-label-technical text-primary uppercase">Expression Preserve</span>
+<span class="font-label-caps text-[9px] md:text-label-caps text-silver-technical">MAINTAIN TARGET MICRO-GESTURES</span>
 </div>
 <label class="surgical-toggle relative inline-flex items-center cursor-pointer">
 <input checked="" class="sr-only" type="checkbox"/>
 <div class="w-10 h-5 bg-surface-variant border border-outline-variant"></div>
 <div class="dot absolute left-1 top-1 bg-silver-technical w-3 h-3 transition-all duration-200"></div>
 </label>
+</div>
+</div>
+</div>
+</section><section class="space-y-6">
+<div class="flex items-center gap-4">
+<h2 class="font-label-caps text-[10px] md:text-label-caps text-silver-technical tracking-widest uppercase">NEURAL BENCHMARK // SURGICAL PRECISION</h2>
+<div class="h-[1px] bg-outline-variant flex-grow"></div>
+</div>
+<div class="bg-surface-container border border-outline-variant p-2 md:p-4 overflow-hidden relative">
+<div class="absolute top-0 right-0 px-3 py-1 bg-neon-acid text-void-black font-label-caps text-[9px] tracking-widest">BENCHMARK_STABLE_V2.1</div>
+<div class="grid grid-cols-1 gap-2">
+<img alt="Neural Benchmark Comparison" class="w-full h-auto transition-all duration-700 opacity-100" src="https://lh3.googleusercontent.com/aida/ADBb0uhsHzHuRGM7ijRt5wFSGKjJV7P7Skvc-Gq-Q5kaZdcMtTHRS0nIOdI80O_AWtOI4W6pMoIESD2cKSoVwd2YjXXm1m36RCVpaSZW98v_Vn5kVcCESiLQEASgW4ksf9_tsJmhaXDXQToEg3urOaNmAZ68bKmaPHZv8jVBaIpbTHEDGXoX4Q7yauEVl6BV1CCEbq4macSy8dhZq1rHVnqXuAZuk0XslXWbIapaC48MFKG6jN2NJqaDMrUtLR5A"/>
+<div class="flex justify-between px-4 py-2 font-label-caps text-[10px] text-silver-technical">
+<span class="">STANDARD DIFFUSION MODELS</span>
+<span class="text-neon-acid">MERCADREAM CORE ENGINE [SURGICAL]</span>
 </div>
 </div>
 </div>
 </section>
 <!-- Technical Specs Bento -->
-<section class="grid grid-cols-2 md:grid-cols-4 gap-gutter opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+<section class="grid grid-cols-2 md:grid-cols-4 gap-gutter opacity-60 md:grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
 <div class="bg-surface-container-low p-4 border border-outline-variant">
-<p class="font-label-caps text-label-caps text-silver-technical mb-1">FPS_SYNC</p>
-<p class="font-label-technical text-label-technical text-neon-acid">LOCKED // 24.000</p>
+<p class="font-label-caps text-[10px] text-silver-technical mb-1">FPS_SYNC</p>
+<p class="font-label-technical text-[11px] md:text-label-technical text-neon-acid">LOCKED // 24.000</p>
 </div>
 <div class="bg-surface-container-low p-4 border border-outline-variant">
-<p class="font-label-caps text-label-caps text-silver-technical mb-1">ENCODER</p>
-<p class="font-label-technical text-label-technical text-neon-acid">PRORES_422_HQ</p>
+<p class="font-label-caps text-[10px] text-silver-technical mb-1">ENCODER</p>
+<p class="font-label-technical text-[11px] md:text-label-technical text-neon-acid">PRORES_422_HQ</p>
 </div>
 <div class="bg-surface-container-low p-4 border border-outline-variant">
-<p class="font-label-caps text-label-caps text-silver-technical mb-1">LATENCY</p>
-<p class="font-label-technical text-label-technical text-neon-acid">140ms / SYNC</p>
+<p class="font-label-caps text-[10px] text-silver-technical mb-1">LATENCY</p>
+<p class="font-label-technical text-[11px] md:text-label-technical text-neon-acid">140ms / SYNC</p>
 </div>
 <div class="bg-surface-container-low p-4 border border-outline-variant">
-<p class="font-label-caps text-label-caps text-silver-technical mb-1">SECURITY</p>
-<p class="font-label-technical text-label-technical text-neon-acid">AES-256_ENC</p>
+<p class="font-label-caps text-[10px] text-silver-technical mb-1">SECURITY</p>
+<p class="font-label-technical text-[11px] md:text-label-technical text-neon-acid">AES-256_ENC</p>
 </div>
 </section>
 </main>
 <!-- Action Bar (Fixed Bottom) -->
 <footer class="fixed bottom-0 left-0 w-full z-50 bg-void-black/95 border-t border-outline-variant backdrop-blur-xl">
-<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop h-20 flex flex-col md:flex-row items-center justify-between gap-4 py-2">
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop min-h-[5rem] flex flex-col md:flex-row items-center justify-between gap-4 py-3">
 <!-- Telemetry Status -->
-<div class="flex items-center gap-6 font-label-caps text-label-caps text-silver-technical">
+<div class="flex items-center gap-4 md:gap-6 font-label-caps text-[10px] md:text-label-caps text-silver-technical order-2 md:order-1">
 <div class="flex items-center gap-2">
-<span class="w-1 h-1 bg-neon-acid rounded-full animate-ping"></span>
-          GPU_LOAD: <span class="text-neon-acid">84.2%</span>
+<span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-ping"></span>
+<span class="hidden xs:inline">GPU_LOAD:</span> <span class="text-neon-acid">84.2%</span>
 </div>
-<div class="flex items-center gap-2 hidden sm:flex">
-          THREAD_SYNC: <span class="text-neon-acid">OPTIMAL</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-neon-acid rounded-full"></span>
+<span class="hidden xs:inline">THREAD_SYNC:</span> <span class="text-neon-acid">OPTIMAL</span>
 </div>
 <div class="flex items-center gap-2 hidden lg:flex">
-          VRAM: <span class="text-neon-acid">16.4 / 24 GB</span>
+<span class="w-1.5 h-1.5 bg-neon-acid rounded-full"></span>
+<span class="hidden xs:inline">VRAM:</span> <span class="text-neon-acid">16.4 / 24 GB</span>
 </div>
 </div>
 <!-- Action Button -->
-<div class="flex items-center gap-4 w-full md:w-auto">
-<button class="flex-grow md:flex-none flex items-center justify-center gap-4 bg-neon-acid px-12 py-3 font-label-technical text-[14px] font-bold text-void-black hover:bg-white transition-all active:scale-95 glow-acid">
+<div class="flex items-center gap-4 w-full md:w-auto order-1 md:order-2"><div class="hidden lg:flex flex-col items-end mr-4">
+<span class="font-label-technical text-[10px] text-neon-acid">LOWEST LATENCY IN CLASS</span>
+<span class="font-label-caps text-[8px] text-silver-technical opacity-60">90% MARGIN EFFICIENCY</span>
+</div>
+<button class="w-full md:w-auto flex items-center justify-center gap-4 bg-neon-acid px-6 md:px-12 py-3 md:py-4 font-label-technical text-[13px] md:text-[14px] font-bold text-void-black hover:bg-white transition-all active:scale-95 glow-acid shadow-neon-acid/20" id="btn-faceswap">
 <span class="material-symbols-outlined text-[20px]">bolt</span>
-          SWAP FACE — 10 CREDITS
+          SWAP FACE — 8 CREDITS
         </button>
 </div>
 </div>
 <!-- Fine Print Footer -->
-<div class="bg-void-black border-t border-outline-variant/30 py-2 px-margin-mobile md:px-margin-desktop flex justify-between items-center">
-<span class="font-label-caps text-label-caps text-silver-technical opacity-50 uppercase">©2024 MERCADREAM OPERATING SYSTEM // CORE_V.2.0.4</span>
+<div class="bg-void-black border-t border-outline-variant/30 py-2 px-margin-mobile md:px-margin-desktop flex flex-wrap justify-between items-center gap-2">
+<span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical opacity-50 uppercase">©2024 MERCADREAM OS // CORE_V.2.0.4</span>
 <div class="flex gap-4">
-<span class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">TERMINAL</span>
-<span class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">DOCS</span>
-<span class="font-label-caps text-label-caps text-neon-acid">STATUS: OPTIMAL</span>
+<span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">TERMINAL</span>
+<span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">DOCS</span>
+<span class="font-label-caps text-[8px] md:text-label-caps text-neon-acid">STATUS: OPTIMAL</span>
 </div>
 </div>
 </footer>
 <script src="/js/navigation.js"></script>
 <script>
-var sourceFile=null,targetFile=null,COST=8;
-function setupUpload(zoneEl,accept,onFile){zoneEl.style.cursor='pointer';zoneEl.onclick=function(){var i=document.createElement('input');i.type='file';i.accept=accept;i.onchange=function(e){var f=e.target.files[0];if(f)onFile(f,zoneEl);};i.click();};zoneEl.ondragover=function(e){e.preventDefault();zoneEl.style.borderColor='#c8ff00';};zoneEl.ondragleave=function(){zoneEl.style.borderColor='';};zoneEl.ondrop=function(e){e.preventDefault();zoneEl.style.borderColor='';var f=e.dataTransfer.files[0];if(f)onFile(f,zoneEl);};}
-function showPreview(file,zone){var r=new FileReader();r.onload=function(e){zone.style.position='relative';zone.innerHTML=(file.type.startsWith('video/')?'<video src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" muted></video>':'<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9">')+'<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00"> READY</div>';};r.readAsDataURL(file);}
-function startFaceSwap(){if(!sourceFile){alert('Upload SOURCE face first.');return;}if(!targetFile){alert('Upload TARGET media first.');return;}var c=parseInt(localStorage.getItem('md_credits')||'0');if(c<COST){alert('Need '+COST+' credits.');window.location.href='pricing.html';return;}var btn=document.getElementById('btn-faceswap');if(btn){btn.disabled=true;btn.style.background='#8aad00';}var p=0,iv=setInterval(function(){p+=5;if(btn)btn.textContent='PROCESSING... '+p+'%';if(p>=100){clearInterval(iv);localStorage.setItem('md_credits',c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent=' COMPLETE  SEND TO ASSEMBLY';btn.onclick=function(){window.location.href='assembly.html';};}};},200);}
-var sl=document.querySelector('input[type="range"]');if(sl)sl.oninput=function(){var d=document.querySelector('.bg-neon-acid\\/10');if(d)d.textContent=String(this.value).padStart(2,'0');};
-window.addEventListener('load',function(){var zones=document.querySelectorAll('.technical-border');if(zones[0])setupUpload(zones[0],'image/jpeg,image/png,image/webp',function(f,z){sourceFile=f;showPreview(f,z);});if(zones[1])setupUpload(zones[1],'image/*,video/mp4',function(f,z){targetFile=f;showPreview(f,z);});var btn=document.querySelector('footer button.bg-neon-acid');if(btn){btn.id='btn-faceswap';btn.onclick=startFaceSwap;}var bb=document.querySelector('header button');if(bb)bb.onclick=function(){window.location.href='directors.html';};if(window.MD)window.MD.updateCredits();});
-</script><script src="/js/pipeline.js"></script></body></html>
+var sourceFile=null, targetFile=null, COST=8;
 
+function updateDisplayCredits() {
+    var c = localStorage.getItem('md_credits');
+    if(c === null) {
+        c = '0';
+        localStorage.setItem('md_credits', c);
+    }
+    var d = document.getElementById('header-credits-display');
+    if(d) d.textContent = Number(c).toLocaleString() + ' CREDITS';
+    if(window.MD && typeof window.MD.updateCredits === 'function') window.MD.updateCredits();
+}
 
+function setupUpload(zoneEl, accept, onFile) {
+    zoneEl.style.cursor = 'pointer';
+    zoneEl.onclick = function() {
+        var i = document.createElement('input');
+        i.type = 'file';
+        i.accept = accept;
+        i.onchange = function(e) {
+            var f = e.target.files[0];
+            if(f) onFile(f, zoneEl);
+        };
+        i.click();
+    };
+    zoneEl.ondragover = function(e) {
+        e.preventDefault();
+        zoneEl.style.borderColor = '#c8ff00';
+    };
+    zoneEl.ondragleave = function() {
+        zoneEl.style.borderColor = '';
+    };
+    zoneEl.ondrop = function(e) {
+        e.preventDefault();
+        zoneEl.style.borderColor = '';
+        var f = e.dataTransfer.files[0];
+        if(f) onFile(f, zoneEl);
+    };
+}
 
+function showPreview(file, zone) {
+    var r = new FileReader();
+    r.onload = function(e) {
+        zone.style.position = 'relative';
+        zone.innerHTML = (file.type.startsWith('video/') ? 
+            '<video src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" muted autoplay loop></video>' : 
+            '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9">') + 
+            '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00;z-index:20"> READY</div>';
+    };
+    r.readAsDataURL(file);
+}
+
+function startFaceSwap() {
+    if(!sourceFile) { alert('Upload SOURCE face first.'); return; }
+    if(!targetFile) { alert('Upload TARGET media first.'); return; }
+    
+    var c = parseInt(localStorage.getItem('md_credits') || '0');
+    if(c < COST) {
+        alert('Insufficient credits. Current balance: ' + c + '. Minimum 8 required.');
+        return;
+    }
+    
+    var btn = document.getElementById('btn-faceswap');
+    if(btn) {
+        btn.disabled = true;
+        btn.style.background = '#353534';
+        btn.style.color = '#a1a1a1';
+    }
+    
+    var p = 0;
+    var iv = setInterval(function() {
+        p += 5;
+        if(btn) btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING... ' + p + '%';
+        
+        if(p >= 100) {
+            clearInterval(iv);
+            
+            // Credit Logic
+            var newBalance = c - COST;
+            localStorage.setItem('md_credits', newBalance);
+            updateDisplayCredits();
+            
+            if(btn) {
+                btn.disabled = false;
+                btn.style.background = '#c8ff00';
+                btn.style.color = '#060606';
+                btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — 8 CREDITS';
+            }
+            
+            // Centralized pipeline completion
+            if(window.MD && typeof window.MD.showCompletionModal === 'function') {
+                window.MD.showCompletionModal('faceswap');
+            } else {
+                alert('FACESWAP COMPLETE');
+            }
+        }
+    }, 100);
+}
+
+var sl = document.querySelector('input[type="range"]');
+if(sl) sl.oninput = function() {
+    var d = document.querySelector('.bg-neon-acid\\/10');
+    if(d) d.textContent = String(this.value).padStart(2, '0');
+};
+
+window.addEventListener('load', function() {
+    updateDisplayCredits();
+    
+    var zones = document.querySelectorAll('.technical-border');
+    if(zones[0]) setupUpload(zones[0], 'image/jpeg,image/png,image/webp', function(f, z) {
+        sourceFile = f;
+        showPreview(f, z);
+    });
+    if(zones[1]) setupUpload(zones[1], 'image/*,video/mp4,video/quicktime', function(f, z) {
+        targetFile = f;
+        showPreview(f, z);
+    });
+    
+    var btn = document.getElementById('btn-faceswap');
+    if(btn) btn.onclick = startFaceSwap;
+});
+</script>
+<script src="/js/pipeline.js"></script>
+</body></html>

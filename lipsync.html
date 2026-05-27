@@ -1,13 +1,10 @@
-﻿<!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+﻿<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>MERCADREAM | UNIVERSAL LIP SYNC</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500&amp;family=IBM+Plex+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=Inter:wght@400;500&amp;family=IBM+Plex+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -118,10 +115,34 @@
             background-size: 20px 20px;
         }
         .neon-glow:hover {
-            box-shadow: 0 0 15px rgba(200, 255, 0, 0.3);
+            box-shadow: 0 0 20px rgba(200, 255, 0, 0.4);
+        }
+        @keyframes flash-reveal {
+            0% { filter: brightness(1) contrast(1); transform: scale(1); }
+            50% { filter: brightness(3) contrast(1.5); transform: scale(1.02); }
+            100% { filter: brightness(1) contrast(1); transform: scale(1); }
+        }
+        @keyframes success-pop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .flash-reveal { animation: flash-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .success-pop { animation: success-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        .upload-module.ready { border-color: #c8ff00; }
+        .upload-module.ready .bracket { border-color: #c8ff00 !important; opacity: 1 !important; }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            background: #c8ff00;
+            cursor: pointer;
+            border-radius: 0;
+            box-shadow: 0 0 10px rgba(200, 255, 0, 0.5);
         }
     </style>
-</head>
+<style>@media (max-height: 850px) { .font-headline-xl { font-size: 1.875rem !important; line-height: 2.25rem !important; } .font-headline-lg { font-size: 1.25rem !important; line-height: 1.75rem !important; } main { padding-top: 1rem !important; } .mb-6 { margin-bottom: 0.75rem !important; } .gap-12 { gap: 1.5rem !important; } }</style></head>
 <body class="font-body-md text-body-md micro-grid min-h-screen pb-32">
 <!-- Global Scanline Effect -->
 <div class="fixed inset-0 scanline-overlay z-50"></div>
@@ -131,14 +152,11 @@
 <button class="active:scale-95 duration-150 transition-all text-neon-acid flex items-center">
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
-<div class="font-headline-lg text-headline-lg font-bold text-neon-acid tracking-tighter uppercase">
-                MERCADREAM <span class="text-silver-technical font-label-technical text-sm ml-2 opacity-50">| LIPSYNC</span>
+<div class="font-headline-lg text-headline-lg font-bold text-neon-acid tracking-tighter uppercase">&nbsp;MERCADREAM <span class="text-silver-technical font-label-technical text-sm ml-2 opacity-50">| LIPSYNC</span>
 </div>
 </div>
 <div class="flex items-center gap-6">
-<div class="bg-surface-container-high px-4 py-1 border border-outline-variant font-label-technical text-neon-acid">
-                1.2K CREDITS
-            </div>
+<div class="bg-surface-container-high px-4 py-1 border border-outline-variant font-label-technical text-neon-acid" id="credit-display">0 CREDITS</div>
 <div class="flex items-center gap-4 text-silver-technical">
 <span class="material-symbols-outlined cursor-pointer hover:text-neon-acid transition-colors">account_circle</span>
 <span class="material-symbols-outlined cursor-pointer hover:text-neon-acid transition-colors">settings</span>
@@ -146,59 +164,64 @@
 </div>
 </header>
 <!-- Main Content Canvas -->
-<main class="pt-24 px-margin-desktop max-w-7xl mx-auto">
+<main class="px-margin-desktop max-w-7xl mx-auto pt-20 h-[calc(100vh-140px)] flex flex-col">
 <!-- Hero Section -->
-<section class="mb-12 border-l-4 border-neon-acid pl-6">
+<section class="border-l-4 border-neon-acid pl-6 mb-6">
 <h1 class="font-headline-xl text-headline-xl text-primary mb-2 uppercase">UNIVERSAL LIP SYNC</h1>
 <div class="flex justify-between items-end">
 <p class="text-silver-technical max-w-xl font-body-md">
-                    Match any audio to any video with neural precision. Our proprietary engine analyzes phonemes and facial landmarks to reconstruct natural mouth movements at 60FPS.
-                </p>
+                Match any audio to any video with neural precision. Our proprietary engine analyzes phonemes and facial landmarks to reconstruct natural mouth movements at 60FPS.
+            </p>
 <div class="text-right">
 <span class="font-label-caps text-label-caps text-silver-technical block mb-1">TRANSACTION COST</span>
-<span class="font-headline-lg text-headline-lg text-neon-acid">10 CREDITS</span>
+<span class="font-headline-lg text-headline-lg text-neon-acid block">10 CREDITS</span>
+<span class="font-label-technical text-[10px] text-silver-technical uppercase mt-1">Includes Neural Audio &amp; Phoneme Mapping</span>
 </div>
 </div>
 </section>
 <!-- Upload Modules -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-6">
 <!-- VIDEO UPLOAD MODULE -->
-<div class="bg-surface-dim border border-slate-data p-module-padding relative group overflow-hidden">
+<div class="upload-module bg-surface-dim border border-slate-data p-module-padding relative group overflow-hidden transition-all duration-300" id="vid-module">
 <div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
 <span class="font-label-caps text-label-caps text-neon-acid">MODULE_ID: VID_088</span>
 <span class="font-label-technical text-label-technical text-silver-technical uppercase">SOURCE VIDEO</span>
 </div>
-<div class="aspect-video border-2 border-dashed border-outline-variant hover:border-neon-acid transition-colors flex flex-col items-center justify-center bg-void-black relative cursor-pointer">
+<div class="border-2 border-dashed border-outline-variant hover:border-neon-acid/50 transition-colors flex flex-col items-center justify-center bg-void-black relative cursor-pointer min-h-[200px] max-h-[30vh]" id="vid-dropzone">
+<div class="flex flex-col items-center transition-all group-hover:scale-105">
 <span class="material-symbols-outlined text-4xl text-outline-variant mb-2 group-hover:text-neon-acid">movie</span>
 <p class="font-label-technical text-label-technical text-silver-technical">DRAG &amp; DROP MP4, MOV</p>
 <p class="font-label-caps text-[10px] text-outline mt-2">MAX FILE SIZE: 500MB</p>
+</div>
 <!-- Decorative Corner Brackets -->
-<div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid/50"></div>
-<div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid/50"></div>
-<div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid/50"></div>
-<div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid/50"></div>
+<div class="bracket absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid/50 transition-all"></div>
+<div class="bracket absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid/50 transition-all"></div>
+<div class="bracket absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid/50 transition-all"></div>
+<div class="bracket absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid/50 transition-all"></div>
 </div>
 </div>
 <!-- AUDIO UPLOAD MODULE -->
-<div class="bg-surface-dim border border-slate-data p-module-padding relative group overflow-hidden">
+<div class="upload-module bg-surface-dim border border-slate-data p-module-padding relative group overflow-hidden transition-all duration-300" id="aud-module">
 <div class="flex justify-between items-center mb-4 border-b border-outline-variant pb-2">
 <span class="font-label-caps text-label-caps text-neon-acid">MODULE_ID: AUD_441</span>
 <span class="font-label-technical text-label-technical text-silver-technical uppercase">TARGET AUDIO</span>
 </div>
-<div class="aspect-video border-2 border-dashed border-outline-variant hover:border-neon-acid transition-colors flex flex-col items-center justify-center bg-void-black relative cursor-pointer">
+<div class="border-2 border-dashed border-outline-variant hover:border-neon-acid/50 transition-colors flex flex-col items-center justify-center bg-void-black relative cursor-pointer min-h-[200px] max-h-[30vh]" id="aud-dropzone">
+<div class="flex flex-col items-center transition-all group-hover:scale-105">
 <span class="material-symbols-outlined text-4xl text-outline-variant mb-2 group-hover:text-neon-acid">mic</span>
 <p class="font-label-technical text-label-technical text-silver-technical">DRAG &amp; DROP MP3, WAV</p>
 <p class="font-label-caps text-[10px] text-outline mt-2">MAX DURATION: 180s</p>
+</div>
 <!-- Decorative Corner Brackets -->
-<div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid/50"></div>
-<div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid/50"></div>
-<div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid/50"></div>
-<div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid/50"></div>
+<div class="bracket absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid/50 transition-all"></div>
+<div class="bracket absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid/50 transition-all"></div>
+<div class="bracket absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid/50 transition-all"></div>
+<div class="bracket absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid/50 transition-all"></div>
 </div>
 </div>
 </div>
 <!-- Settings Section -->
-<div class="bg-surface-dim border border-slate-data p-margin-mobile">
+<div class="bg-surface-dim border border-slate-data p-4">
 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
 <!-- Language Selection -->
 <div class="flex flex-col gap-4">
@@ -220,10 +243,10 @@
 <label class="font-label-caps text-label-caps text-silver-technical">[SYNC QUALITY]</label>
 <span class="font-label-technical text-neon-acid">08 / 10</span>
 </div>
-<input class="w-full h-1 bg-surface-container-highest appearance-none cursor-pointer accent-neon-acid" max="10" min="1" type="range" value="8"/>
+<input class="w-full h-1 bg-surface-container-highest appearance-none cursor-pointer accent-neon-acid" max="10" min="1" type="range" value="8">
 <div class="flex justify-between text-[8px] font-label-caps text-outline uppercase">
-<span>Low Res</span>
-<span>High Precision</span>
+<span class="">Low Res</span>
+<span class="">High Precision</span>
 </div>
 </div>
 <!-- Enhance Mouth Toggle -->
@@ -232,7 +255,7 @@
 <div class="flex items-center justify-between bg-void-black border border-outline-variant p-3 h-[50px]">
 <span class="font-label-technical text-silver-technical text-xs uppercase">NEURAL UPSCALING</span>
 <div class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
+<input checked="" class="sr-only peer" type="checkbox">
 <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-silver-technical peer-checked:after:bg-neon-acid after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-acid/20 border border-outline-variant"></div>
 </div>
 </div>
@@ -241,35 +264,151 @@
 </div>
 </main>
 <!-- Footer System Telemetry -->
-<footer class="flex justify-between items-center w-full px-margin-desktop py-module-padding fixed bottom-0 z-50 bg-void-black/90 backdrop-blur-sm border-t border-outline-variant">
-<div class="flex gap-8 items-center">
+<footer class="flex justify-between items-center w-full px-margin-desktop py-module-padding fixed bottom-0 z-50 bg-void-black/90 backdrop-blur-sm border-t border-outline-variant"><div class="flex w-full items-center justify-between gap-8">
+<div class="flex items-center gap-6">
 <span class="font-label-caps text-label-caps text-neon-acid">MERCADREAM // SYS_CORE</span>
-<div class="flex gap-4">
-<span class="font-label-technical text-[10px] text-silver-technical">GPU_LOAD: <span class="text-neon-acid">84.2%</span></span>
-<span class="font-label-technical text-[10px] text-silver-technical">VRAM: <span class="text-neon-acid">11.4GB / 24GB</span></span>
-<span class="font-label-technical text-[10px] text-silver-technical">LATENCY: <span class="text-neon-acid">14MS</span></span>
+<div class="flex gap-4 border-l border-outline-variant pl-4">
+<span class="font-label-technical text-[10px] text-silver-technical">GPU: <span class="text-neon-acid" id="gpu-load">86.1%</span></span>
+<span class="font-label-technical text-[10px] text-silver-technical">VRAM: <span class="text-neon-acid" id="vram-load">14.7GB / 24GB</span></span>
+<span class="font-label-technical text-[10px] text-silver-technical">LAT: <span class="text-neon-acid" id="latency-val">21MS</span></span>
 </div>
 </div>
-<div class="flex gap-6 items-center">
-<div class="flex gap-4">
-<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase transition-all" href="#">Terminal</a>
-<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase transition-all" href="#">Docs</a>
-<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase transition-all" href="#">SLA</a>
+<div class="flex-1 max-w-xl">
+<button class="bg-neon-acid text-void-black font-label-caps text-sm w-full py-3 flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all neon-glow uppercase" id="bls">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span id="btn-text" class="">[SYNC LIPS — 0 CREDITS]</span>
+</button>
+</div>
+<div class="flex gap-4 items-center">
+<div class="flex gap-3">
+<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase" href="#">Docs</a>
+<a class="font-label-technical text-[10px] text-silver-technical hover:text-neon-acid uppercase" href="#">SLA</a>
 </div>
 <div class="h-4 w-[1px] bg-outline-variant"></div>
-<span class="font-label-technical text-[10px] text-silver-technical opacity-50">SYS_TELEMETRY: NOMINAL</span>
+<span class="font-label-technical text-[10px] text-silver-technical opacity-50">NOMINAL</span>
 </div>
-</footer>
+</div></footer>
 <!-- Fixed Generate Bar -->
-<div class="fixed bottom-16 left-0 w-full bg-void-black border-t border-outline-variant p-4 z-40">
-<div class="max-w-7xl mx-auto flex justify-center">
-<button class="bg-neon-acid text-void-black font-headline-lg text-headline-lg-mobile md:text-headline-lg w-full max-w-2xl py-4 flex items-center justify-center gap-4 hover:brightness-110 active:scale-95 transition-all neon-glow uppercase">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
-                [⚡ SYNC LIPS — 10 CREDITS]
-            </button>
-</div>
-</div>
-<script src="/js/navigation.js"></script><script>var vf=null,af=null,COST=6;function up(z,acc,cb){z.style.cursor="pointer";z.onclick=function(){var i=document.createElement("input");i.type="file";i.accept=acc;i.onchange=function(e){var f=e.target.files[0];if(f)cb(f,z);};i.click();};}function prev(f,z){z.innerHTML="<div style=\"background:#0d0d0d;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px\">"+f.name.substring(0,25)+"</div>";}function go(){if(!vf){alert("Upload video first");return;}if(!af){alert("Upload audio first");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits");return;}var btn=document.getElementById("bls");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=5;if(btn)btn.textContent="PROCESSING "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent="COMPLETE - SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}window.addEventListener("load",function(){var z=document.querySelectorAll(".aspect-video.border-2");if(z[0])up(z[0],"video/mp4",function(f,el){vf=f;prev(f,el);});if(z[1])up(z[1],"audio/mp3,audio/wav,audio/mpeg",function(f,el){af=f;prev(f,el);});var btn=document.querySelector(".fixed.bottom-16 button");if(btn){btn.id="bls";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+<script src="/js/navigation.js"></script>
+<script src="/js/pipeline.js"></script>
+<script>
+    var vf = null, af = null, COST = 10;
+
+    function initUploads() {
+        const vdz = document.getElementById("vid-dropzone");
+        const adz = document.getElementById("aud-dropzone");
+
+        if (vdz) setupModule(vdz, "video/mp4", (f) => { vf = f; prev(f, vdz, "vid-module"); });
+        if (adz) setupModule(adz, "audio/mp3,audio/wav,audio/mpeg", (f) => { af = f; prev(f, adz, "aud-module"); });
+    }
+
+    function setupModule(zone, acc, cb) {
+        zone.onclick = () => {
+            const i = document.createElement("input");
+            i.type = "file";
+            i.accept = acc;
+            i.onchange = (e) => {
+                const f = e.target.files[0];
+                if (f) cb(f);
+            };
+            i.click();
+        };
+    }
+
+    function prev(f, zone, moduleId) {
+        const mod = document.getElementById(moduleId);
+        mod.classList.add('ready');
+        
+        zone.innerHTML = `
+            <div class="success-pop flex flex-col items-center justify-center w-full h-full bg-neon-acid/5">
+                <span class="material-symbols-outlined text-neon-acid text-5xl mb-2">check_circle</span>
+                <p class="font-label-technical text-neon-acid text-xs uppercase tracking-widest">FILE_READY</p>
+                <p class="font-label-caps text-[10px] text-silver-technical mt-1 opacity-70">${f.name.substring(0, 20)}...</p>
+                <div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-neon-acid"></div>
+                <div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-neon-acid"></div>
+                <div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-neon-acid"></div>
+                <div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-neon-acid"></div>
+            </div>
+        `;
+    }
+
+    function go() {
+        if (!vf || !af) {
+            alert("REQUIRED: SOURCE_VIDEO AND TARGET_AUDIO MODULES NOT INITIALIZED.");
+            return;
+        }
+
+        const currentCredits = parseInt(localStorage.getItem("md_credits") || "1200");
+        if (currentCredits < COST) {
+            alert("INSUFFICIENT CREDITS. TRANSACTION HALTED.");
+            return;
+        }
+
+        const btn = document.getElementById("bls");
+        const btnText = document.getElementById("btn-text");
+        
+        btn.disabled = true;
+        btn.style.opacity = "0.8";
+        btn.classList.remove('neon-glow');
+
+        let p = 0;
+        const iv = setInterval(() => {
+            p += Math.floor(Math.random() * 8) + 2;
+            if (p >= 100) {
+                p = 100;
+                clearInterval(iv);
+                finalizeSync(btn, btnText, currentCredits);
+            }
+            btnText.textContent = `PROCESSING NEURAL_ENGINE... ${p}%`;
+            btn.style.background = `linear-gradient(90deg, #c8ff00 ${p}%, #a8d700 ${p}%)`;
+        }, 150);
+    }
+
+    function finalizeSync(btn, btnText, currentCredits) {
+        btn.classList.add('flash-reveal');
+        btn.style.background = "#c8ff00";
+        btn.style.opacity = "1";
+        btn.classList.add('neon-glow');
+        
+        btnText.innerHTML = `<span class="flex items-center gap-2">COMPLETE - SEND TO ASSEMBLY <span class="material-symbols-outlined">arrow_forward</span></span>`;
+        
+        localStorage.setItem("md_credits", currentCredits - COST);
+        if (window.MD && window.MD.updateCredits) {
+            window.MD.updateCredits();
+        } else {
+            const display = document.getElementById("credit-display");
+            if (display) display.textContent = `${(currentCredits - COST)/1000}K CREDITS`.replace('0.', '');
+        }
+
+        btn.disabled = false;
+        btn.onclick = () => {
+            window.location.href = "assembly.html";
+        };
+    }
+
+    // Telemetry Simulation
+    function updateTelemetry() {
+        const gpu = document.getElementById('gpu-load');
+        const vram = document.getElementById('vram-load');
+        const lat = document.getElementById('latency-val');
+        
+        if(gpu) gpu.textContent = (85 + Math.random() * 10).toFixed(1) + '%';
+        if(vram) vram.textContent = (14 + Math.random()).toFixed(1) + 'GB / 24GB';
+        if(lat) lat.textContent = Math.floor(15 + Math.random() * 10) + 'MS';
+    }
+
+    window.addEventListener("load", () => {
+        initUploads();
+        const btn = document.getElementById("bls");
+        if (btn) btn.onclick = go;
+        
+        setInterval(updateTelemetry, 3000);
+        
+        // Back button
+        const backBtn = document.querySelector("header button");
+        if (backBtn) backBtn.onclick = () => window.location.href = "directors.html";
+    });
+</script>
 
 
-
+</body></html>
