@@ -1,61 +1,593 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MercaDream - Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-            authDomain: "mercadream-4b4b3.firebaseapp.com",
-            projectId: "mercadream-4b4b3",
-            storageBucket: "mercadream-4b4b3.firebasestorage.app",
-            messagingSenderId: "257560928442",
-            appId: "1:257560928442:web:06983f27629a13eeed6283",
-            measurementId: "G-F0CLDJCV42"
-        };
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM — PROFILE COMMAND CENTER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Geist', sans-serif;
+        }
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(200, 255, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.01));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .surgical-border {
+            border: 1px solid #434933;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 12px #c8ff00;
+            border-color: #c8ff00;
+        }
+        .font-sora { font-family: 'Sora', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        [v-cloak] { display: none; }
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        window.logout = async function() {
-            await signOut(auth);
-            localStorage.clear();
-            window.location.href = 'login.html';
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-            } else {
-                document.getElementById('userEmail').innerText = user.email;
-                document.getElementById('userName').innerText = user.displayName || user.email.split('@')[0];
-                localStorage.setItem('md_email', user.email);
-                localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
-                localStorage.setItem('sb_session', 'true');
-            }
-        });
-    </script>
-    <style>
-        body{background:#060606;color:#e2e4d1;font-family:'IBM Plex Mono',monospace;padding:40px}
-        .container{max-width:500px;margin:auto;background:#0a0a0a;border:1px solid #a8d700;padding:32px;border-radius:8px}
-        button{padding:12px 24px;background:#a8d700;border:none;color:#060606;font-weight:700;cursor:pointer;margin:10px 0;border-radius:4px}
-        .logout-btn{background:transparent;border:1px solid #ff4444;color:#ff4444}
-        .logout-btn:hover{background:#ff4444;color:#000}
+        /* Smooth reveal for content */
+        #main-content { opacity: 0; transition: opacity 0.5s ease-in-out; }
+        #main-content.ready { opacity: 1; }
+        
+        /* Non-blocking loader overlay */
+        #auth-loader { 
+            position: fixed; 
+            inset: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #131313; 
+            z-index: 100;
+            transition: opacity 0.3s ease-out, visibility 0.3s;
+        }
+        #auth-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
     </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#131313",
+                    "on-secondary-fixed-variant": "#474746",
+                    "on-primary-fixed": "#161f00",
+                    "secondary-container": "#474746",
+                    "outline-variant": "#434933",
+                    "on-error-container": "#ffdad6",
+                    "primary-container": "#c0f500",
+                    "on-tertiary": "#303030",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "surface-tint": "#a8d700",
+                    "tertiary-container": "#e4e2e1",
+                    "inverse-surface": "#e5e2e1",
+                    "on-tertiary-container": "#656464",
+                    "secondary-fixed": "#e5e2e1",
+                    "surface-variant": "#353534",
+                    "on-surface": "#e5e2e1",
+                    "error": "#ffb4ab",
+                    "inverse-on-surface": "#313030",
+                    "surface-bright": "#3a3939",
+                    "on-surface-variant": "#c4caac",
+                    "outline": "#8e9479",
+                    "on-tertiary-fixed-variant": "#474747",
+                    "tertiary-fixed": "#e4e2e1",
+                    "error-container": "#93000a",
+                    "on-primary-container": "#546d00",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "on-primary": "#273500",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container-low": "#1c1b1b",
+                    "on-error": "#690005",
+                    "primary": "#ffffff",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "background": "#131313",
+                    "inverse-primary": "#4f6600",
+                    "surface-container-highest": "#353534",
+                    "on-secondary": "#313030",
+                    "primary-fixed-dim": "#a8d700",
+                    "surface-container": "#201f1f",
+                    "on-secondary-container": "#b7b5b4",
+                    "tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#c8c6c6",
+                    "on-background": "#e5e2e1",
+                    "surface-container-high": "#2a2a2a",
+                    "primary-fixed": "#c0f500",
+                    "surface": "#131313",
+                    "secondary": "#c8c6c5",
+                    "on-tertiary-fixed": "#1b1c1c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "margin-mobile": "20px",
+                    "gutter": "16px",
+                    "grid-cols": "12",
+                    "margin-desktop": "40px",
+                    "container-max": "1440px"
+            }
+          },
+        },
+      }
+    </script>
 </head>
-<body>
-<div class="container">
-    <h1 style="color:#a8d700; text-align:center;"> MERCADREAM</h1>
-    <div style="margin:20px 0">
-        <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
-        <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
-    </div>
-    <button onclick="location.href='studio.html'"> Go to Studio</button>
-    <button onclick="logout()" class="logout-btn"> Sign Out</button>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
+<!-- Initializing Overlay -->
+<div id="auth-loader">
+<div class="flex flex-col items-center gap-4">
+<div class="w-12 h-12 border-2 border-primary-fixed border-t-transparent animate-spin"></div>
+<p class="font-mono text-[10px] text-primary-fixed tracking-[0.3em] animate-pulse">CONNECTING TO NODE...</p>
 </div>
-</body>
-</html>
+</div>
+<div class="scanline-overlay"></div>
+<!-- Main Structure - Always Rendered but Hidden until Auth Resolved -->
+<div class="flex h-screen overflow-hidden" id="main-content">
+<!-- Sidebar -->
+<aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface w-64 z-20">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-2 h-2 bg-primary-fixed animate-pulse"></div>
+<span class="font-sora text-[20px] font-bold tracking-tighter text-primary-fixed">MERCADREAM</span>
+</div>
+<div class="mb-8 p-4 bg-surface-container-low border border-outline-variant">
+<div class="flex items-center gap-3 mb-2">
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-primary-fixed object-cover" id="sidebar-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
+<div>
+<p class="font-mono text-[10px] text-primary-fixed" id="sidebar-tier-label">INITIALIZING</p>
+<p class="font-mono text-[10px] text-on-surface-variant" id="sidebar-tier-sub">Node Active</p>
+</div>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="dashboard.html">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="studio.html">
+<span class="material-symbols-outlined text-[20px]">movie_filter</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Production</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="marketplace.html">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Marketplace</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="assets.html">
+<span class="material-symbols-outlined text-[20px]">folder_special</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-primary-fixed" href="profile.html">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Power Station</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-6 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container transition-colors" href="settings.html">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Settings</span>
+</a>
+<button class="w-full flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-red-400 hover:bg-surface-container transition-colors" onclick="handleLogout()">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span class="font-mono text-[12px] uppercase tracking-wider">Disconnect</span>
+</button>
+</div>
+</aside>
+<!-- Mobile Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
+<a href="dashboard.html"><span class="material-symbols-outlined text-on-surface-variant">dashboard</span></a>
+<a href="studio.html"><span class="material-symbols-outlined text-on-surface-variant">movie_filter</span></a>
+<a href="profile.html"><span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span></a>
+<a href="marketplace.html"><span class="material-symbols-outlined text-on-surface-variant">bolt</span></a>
+<button onclick="handleLogout()"><span class="material-symbols-outlined text-on-surface-variant">logout</span></button>
+</nav>
+<main class="flex-1 overflow-y-auto bg-surface-container-lowest">
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-outline-variant px-margin-desktop py-4 flex justify-between items-center max-w-container-max mx-auto w-full">
+<div class="flex items-center gap-8">
+<h1 class="font-sora text-[24px] lg:text-[32px] tracking-tighter text-primary-fixed">COMMAND CENTER</h1>
+<nav class="hidden lg:flex gap-6">
+<a class="font-mono text-[12px] uppercase tracking-widest text-on-surface-variant hover:text-primary-fixed transition-all" href="studio.html">Studio</a>
+<a class="font-mono text-[12px] uppercase tracking-widest text-on-surface-variant hover:text-primary-fixed transition-all" href="marketplace.html">Marketplace</a>
+<a class="font-mono text-[12px] uppercase tracking-widest text-primary-fixed border-b-2 border-primary-fixed pb-1" href="profile.html">Profile</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-surface-container border border-outline-variant px-3 py-1 items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed">account_balance_wallet</span>
+<span class="font-mono text-[12px] text-on-surface" id="top-wallet-credits">0 CR</span>
+</div>
+<a class="bg-primary-fixed text-on-primary-fixed font-mono text-[11px] px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8ff00] transition-all" href="pricing.html">Upgrade</a>
+</div>
+</header>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 space-y-gutter">
+<!-- Profile Summary -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="lg:col-span-5 bg-surface border border-outline-variant p-8 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary-fixed">person_pin</span>
+</div>
+<div class="flex flex-col items-center md:flex-row md:items-start gap-8 relative z-10">
+<div class="relative group/avatar">
+<div class="w-32 h-32 border-2 border-primary-fixed p-1 bg-surface-container">
+<img class="w-full h-full object-cover" id="main-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
+</div>
+<button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-mono text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors" id="upload-photo-trigger">UPLOAD PHOTO</button>
+</div>
+<div class="flex-1 space-y-4">
+<div>
+<h2 class="font-sora text-[32px] text-primary-fixed truncate" id="profile-name-display">INITIALIZING...</h2>
+<p class="font-mono text-[12px] text-on-surface-variant truncate" id="profile-email-display">Connecting to node...</p>
+</div>
+<div class="inline-flex items-center gap-2 bg-surface-container border border-outline-variant px-3 py-2" id="subscription-status-box">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div class="flex flex-col">
+<span class="font-mono text-[11px] text-on-surface font-bold uppercase" id="subscription-status-title">Standard Access</span>
+<span class="font-mono text-[9px] text-on-surface-variant uppercase">Terminal Operational</span>
+</div>
+</div>
+<div class="pt-2">
+<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-mono text-[12px] text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow" id="edit-profile-btn">EDIT DESIGNATION</button>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7 grid grid-cols-2 gap-gutter">
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Available Credits</span>
+<span class="material-symbols-outlined text-primary-fixed">token</span>
+</div>
+<div>
+<p class="font-sora text-[48px] text-primary-fixed leading-none" id="main-credits-val">0</p>
+<div class="h-1 bg-surface-container mt-4 w-full">
+<div class="h-full bg-primary-fixed w-[0%]" id="credits-progress-bar"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Renders Executed</span>
+<span class="material-symbols-outlined text-primary-fixed">movie_creation</span>
+</div>
+<div>
+<p class="font-sora text-[48px] text-on-surface leading-none" id="renders-val">0</p>
+<p class="font-mono text-[11px] text-on-surface-variant mt-2" id="renders-sub">+0 this month</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Recharge Cycles</span>
+<span class="material-symbols-outlined text-primary-fixed">history</span>
+</div>
+<div>
+<p class="font-sora text-[48px] text-on-surface leading-none" id="recharges-val">0</p>
+<p class="font-mono text-[11px] text-on-surface-variant mt-2">Lifetime total</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Saved Assets</span>
+<span class="material-symbols-outlined text-primary-fixed">folder_shared</span>
+</div>
+<div>
+<p class="font-sora text-[48px] text-on-surface leading-none" id="assets-val">0.0</p>
+<p class="font-mono text-[11px] text-on-surface-variant mt-2" id="assets-sub">0.0 GB utilized</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Billing -->
+<section class="bg-surface border border-outline-variant overflow-hidden">
+<div class="bg-surface-container px-6 py-3 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-mono text-[12px] text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
+<span class="font-mono text-[11px] text-on-surface-variant" id="system-time-display">System Time: --:-- UTC</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-mono text-[12px]">
+<thead class="bg-surface-container border-b border-outline-variant">
+<tr>
+<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Service Description</th>
+<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Credit Value</th>
+<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30" id="billing-history-body">
+<!-- Populated via script -->
+</tbody>
+</table>
+</div>
+</section>
+<!-- Referral & Guide -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="bg-surface border border-outline-variant p-8 flex flex-col">
+<div class="mb-6">
+<h3 class="font-sora text-[32px] text-primary-fixed mb-2 uppercase tracking-tighter">REFER &amp; EARN</h3>
+<p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
+</div>
+<div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<span class="font-mono text-[24px] font-bold tracking-widest text-on-surface" id="ref-code-display">FETCHING...</span>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="copy-ref-btn">
+<span class="material-symbols-outlined">content_copy</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between pt-6 border-t border-outline-variant">
+<div class="flex gap-8">
+<div>
+<p class="font-mono text-[11px] text-on-surface-variant uppercase">Friends</p>
+<p class="font-sora text-[32px] text-on-surface" id="friends-count">0</p>
+</div>
+<div>
+<p class="font-mono text-[11px] text-on-surface-variant uppercase">Earned</p>
+<p class="font-sora text-[32px] text-primary-fixed" id="friends-earned">0 <span class="text-[11px] uppercase font-mono">CR</span></p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-8 flex flex-col relative overflow-hidden">
+<div class="mb-8">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary-fixed">menu_book</span>
+<h3 class="font-sora text-[32px] text-primary-fixed uppercase tracking-tighter">Documentation</h3>
+</div>
+<p class="font-body-md text-on-surface-variant">Master the surgical precision of our cinematic engine. Access specialized training protocols.</p>
+</div>
+<div class="space-y-4">
+<a class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container group transition-all" href="docs.html">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary-fixed">play_circle</span>
+<span class="font-mono text-[12px] text-on-surface uppercase tracking-widest">Tutorial Feed</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+<a class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container group transition-all" href="docs.html">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed">description</span>
+<span class="font-mono text-[12px] text-on-surface uppercase tracking-widest">Logic Manual</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</a>
+</div>
+<div class="mt-auto pt-8 flex items-center gap-4 opacity-50">
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+<span class="font-mono text-[10px] text-on-surface-variant tracking-tighter">v.4.8.2 OPERATIONAL</span>
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+</div>
+</div>
+</section>
+</div>
+<footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col gap-2">
+<p class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">© 2026 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="font-mono text-[9px] text-on-surface-variant uppercase tracking-tighter">System Health</span>
+<div class="flex gap-1 mt-1">
+<div class="w-4 h-1 bg-primary-fixed"></div>
+<div class="w-4 h-1 bg-primary-fixed"></div>
+<div class="w-4 h-1 bg-primary-fixed"></div>
+<div class="w-4 h-1 bg-primary-fixed/30"></div>
+</div>
+</div>
+<div class="w-10 h-10 border border-primary-fixed flex items-center justify-center">
+<div class="w-4 h-4 bg-primary-fixed animate-pulse"></div>
+</div>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Firebase SDKs -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+        authDomain: "mercadream-4b4b3.firebaseapp.com",
+        projectId: "mercadream-4b4b3",
+        storageBucket: "mercadream-4b4b3.firebasestorage.app",
+        messagingSenderId: "257560928442",
+        appId: "1:257560928442:web:06983f27629a13eeed6283",
+        measurementId: "G-F0CLDJCV42"
+    };
+
+    // Initialize Firebase
+    let app, auth;
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+    } catch (e) {
+        console.error("Firebase init failed", e);
+    }
+
+    const navigate = (path) => { window.location.href = path; };
+
+    // Reveal UI Safety function
+    const revealUI = () => {
+        const loader = document.getElementById("auth-loader");
+        const content = document.getElementById("main-content");
+        if(loader) loader.classList.add('hidden');
+        if(content) content.classList.add('ready');
+    };
+
+    // Global logout handle
+    window.handleLogout = function() {
+        signOut(auth).then(() => {
+            localStorage.clear();
+            navigate("login.html");
+        }).catch((error) => {
+            console.error("Sign out error", error);
+            localStorage.clear();
+            navigate("login.html");
+        });
+    };
+
+    // System Time Update
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.getUTCFullYear() + "." + String(now.getUTCMonth()+1).padStart(2,'0') + "." + String(now.getUTCDate()).padStart(2,'0') + " // " + String(now.getUTCHours()).padStart(2,'0') + ":" + String(now.getUTCMinutes()).padStart(2,'0') + " UTC";
+        const sysTimeEl = document.getElementById("system-time-display");
+        if(sysTimeEl) sysTimeEl.textContent = "System Time: " + timeString;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function populateUI(user) {
+        if(!user) return;
+        const displayName = user.displayName || user.email.split('@')[0];
+        const email = user.email;
+
+        const nameDisplay = document.getElementById("profile-name-display");
+        const emailDisplay = document.getElementById("profile-email-display");
+        const tierLabel = document.getElementById("sidebar-tier-label");
+        
+        if(nameDisplay) nameDisplay.textContent = displayName.toUpperCase();
+        if(emailDisplay) emailDisplay.textContent = email;
+        if(tierLabel) tierLabel.textContent = "OPERATIONAL NODE";
+        
+        const generateDeterministicCode = (email) => {
+            let hash = 0;
+            for (let i = 0; i < email.length; i++) hash = email.charCodeAt(i) + ((hash << 5) - hash);
+            return "MD-" + Math.abs(hash).toString(36).substring(0, 4).toUpperCase() + "-" + Math.abs(hash * 31).toString(36).substring(0, 4).toUpperCase();
+        };
+
+        const refCode = generateDeterministicCode(email);
+        const refDisplay = document.getElementById("ref-code-display");
+        if(refDisplay) refDisplay.textContent = refCode;
+        
+        const copyBtn = document.getElementById("copy-ref-btn");
+        if(copyBtn) {
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(refCode);
+                const originalContent = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span class="material-symbols-outlined text-primary-fixed">check</span>';
+                setTimeout(() => { copyBtn.innerHTML = originalContent; }, 2000);
+            };
+        }
+
+        const credits = parseInt(localStorage.getItem("md_credits") || "450");
+        const creditsVal = document.getElementById("main-credits-val");
+        const topCredits = document.getElementById("top-wallet-credits");
+        const creditsBar = document.getElementById("credits-progress-bar");
+
+        if(creditsVal) creditsVal.textContent = credits.toLocaleString();
+        if(topCredits) topCredits.textContent = credits + " CR";
+        if(creditsBar) creditsBar.style.width = Math.min((credits / 2000) * 100, 100) + "%";
+
+        if(user.photoURL || localStorage.getItem("md_avatar")) {
+            const avatarSrc = user.photoURL || localStorage.getItem("md_avatar");
+            const sideAvatar = document.getElementById("sidebar-avatar");
+            const mainAvatar = document.getElementById("main-avatar");
+            if(sideAvatar) sideAvatar.src = avatarSrc;
+            if(mainAvatar) mainAvatar.src = avatarSrc;
+        }
+
+        const tableBody = document.getElementById("billing-history-body");
+        if(tableBody && tableBody.children.length === 0) {
+            tableBody.innerHTML = `
+                <tr class="hover:bg-surface-container transition-colors">
+                    <td class="px-6 py-4">2024.03.15</td>
+                    <td class="px-6 py-4">Initial Node Allocation</td>
+                    <td class="px-6 py-4 text-primary-fixed">+500</td>
+                    <td class="px-6 py-4 text-on-surface-variant">$0.00</td>
+                    <td class="px-6 py-4 text-right"><span class="inline-flex items-center px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[9px] font-bold">COMPLETED</span></td>
+                </tr>
+            `;
+        }
+
+        revealUI();
+    }
+
+    // AUTH STATE MONITORING
+    const authTimeout = setTimeout(() => {
+        if (!auth.currentUser) {
+            console.warn("Auth timeout. Forcing reveal or redirect.");
+            if(localStorage.getItem("md_email")) {
+                 // Try to fallback to local data if we have it
+                 populateUI({ email: localStorage.getItem("md_email"), displayName: localStorage.getItem("md_name") });
+            } else {
+                 navigate("login.html");
+            }
+        }
+    }, 4000);
+
+    onAuthStateChanged(auth, (user) => {
+        clearTimeout(authTimeout);
+        if (user) {
+            localStorage.setItem("md_email", user.email);
+            localStorage.setItem("md_name", user.displayName || user.email.split('@')[0]);
+            populateUI(user);
+        } else {
+            console.warn("No active session.");
+            localStorage.clear();
+            navigate("login.html");
+        }
+    });
+
+    // Interaction Handlers
+    const editBtn = document.getElementById("edit-profile-btn");
+    if(editBtn) {
+        editBtn.onclick = async () => {
+            const newName = prompt("Enter new Director designation:", auth.currentUser?.displayName || "");
+            if(newName && newName !== auth.currentUser?.displayName) {
+                try {
+                    await updateProfile(auth.currentUser, { displayName: newName });
+                    localStorage.setItem("md_name", newName);
+                    document.getElementById("profile-name-display").textContent = newName.toUpperCase();
+                } catch (e) { console.error("Update failed", e); }
+            }
+        };
+    }
+
+    const uploadBtn = document.getElementById("upload-photo-trigger");
+    if(uploadBtn) {
+        uploadBtn.onclick = () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const base64 = ev.target.result;
+                        localStorage.setItem("md_avatar", base64);
+                        const sideAvatar = document.getElementById("sidebar-avatar");
+                        const mainAvatar = document.getElementById("main-avatar");
+                        if(sideAvatar) sideAvatar.src = base64;
+                        if(mainAvatar) mainAvatar.src = base64;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        };
+    }
+</script>
+</body></html>
