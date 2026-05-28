@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en" style=""><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MercaDream | AI FILM STUDIO - Surgical Precision Portal</title>
@@ -90,23 +90,14 @@
         .scanning-line {
             width: 100%; height: 2px;
             background: linear-gradient(90deg, transparent, #c8ff00, transparent);
-            opacity: 0.3; position: absolute; top: 0; left: 0;
-            pointer-events: none; animation: scan 6s linear infinite;
+            opacity: 0.2; position: absolute; top: 0; left: 0;
+            pointer-events: none; animation: scan 8s linear infinite;
         }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
         .micro-grid {
             background-image: linear-gradient(rgba(200, 255, 0, 0.05) 1px, transparent 1px), 
                               linear-gradient(90deg, rgba(200, 255, 0, 0.05) 1px, transparent 1px);
             background-size: 30px 30px;
-        }
-        .glitch-text:hover { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 2px; height: 100vh;
-            background: #c8ff00;
-            cursor: ew-resize;
-            box-shadow: 0 0 15px #c8ff00;
         }
         .corner-accent { position: absolute; width: 10px; height: 10px; border-color: #c8ff00; }
         .ca-tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; }
@@ -141,50 +132,48 @@
 </div>
 </nav>
 <main class="pt-20">
-<!-- Dynamic Hero with Neural Viewport -->
-<section class="relative h-[90vh] w-full overflow-hidden flex flex-col items-center justify-center">
+<!-- Corner-Aligned Hero Section -->
+<section class="relative h-[calc(100vh-80px)] w-full overflow-hidden">
 <div class="absolute inset-0 z-0">
-<video autoplay="" class="w-full h-full object-cover opacity-40" loop="" muted="" playsinline="">
-<source src="/media/hero1.mp4" type="video/mp4"/>
+<video autoplay="" class="w-full h-full object-cover opacity-95" loop="" muted="" playsinline="">
+<source src="media/hero3.mp4" type="video/mp4"/>
 </video>
-<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/50"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/30"></div>
 <div class="scanning-line"></div>
 </div>
-<div class="relative z-20 text-center px-margin-mobile max-w-5xl">
-<h1 class="font-headline text-4xl md:text-7xl lg:text-8xl mb-4 tracking-tight leading-none text-white">
+<!-- Layout Container for UI elements -->
+<div class="relative z-20 h-full w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col justify-between">
+<!-- Top Left: Brand Title -->
+<div class="max-w-2xl">
+<h1 class="font-headline tracking-tight leading-none text-white text-3xl md:text-5xl lg:text-6xl flex flex-col gap-2">
 <span class="block">MERCADREAM</span>
-<span class="block text-neon-acid text-2xl md:text-4xl lg:text-5xl mt-2 tracking-[0.2em] opacity-80">AI FILM STUDIO</span>
+<span class="block text-neon-acid tracking-[0.2em] opacity-80 text-xl md:text-2xl lg:text-3xl">AI FILM STUDIO</span>
 </h1>
-<p class="font-technical text-sm md:text-base text-on-surface-variant max-w-2xl mx-auto mb-12 uppercase tracking-widest leading-relaxed">
-                Autonomous cinematic generation. Neural direction. <br class="hidden md:block"/> Real-time dream extraction via surgical AI precision.
+<div class="mt-6 flex items-center gap-4 text-neon-acid/40">
+<div class="w-12 h-px bg-neon-acid/40"></div>
+<span class="font-technical text-[10px] uppercase tracking-widest">System_Online // Terminal_v04</span>
+</div>
+</div>
+<!-- Bottom Row: Split between Left (Desc) and Right (CTA) -->
+<div class="flex flex-col md:flex-row items-end justify-between gap-8">
+<!-- Bottom Left: Description -->
+<div class="max-w-md">
+<p class="font-technical text-xs md:text-sm text-on-surface-variant uppercase tracking-[0.15em] leading-relaxed border-l-2 border-neon-acid/40 pl-6">
+                Autonomous cinematic generation.<br/>
+                Neural direction.<br/>
+                Real-time dream extraction via surgical AI precision.
             </p>
-<div class="flex flex-col md:flex-row gap-4 justify-center">
-<button class="px-12 py-5 bg-neon-acid text-black font-headline font-bold text-lg uppercase group relative overflow-hidden transition-all hover:scale-105 active:scale-95" id="hero-primary-cta">
+</div>
+<!-- Bottom Right: CTAs -->
+<div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+<button class="px-10 py-5 bg-neon-acid text-black font-headline font-bold text-base uppercase group relative overflow-hidden transition-all hover:pr-14" id="hero-primary-cta">
 <span class="relative z-10">INITIALIZE ACCESS</span>
-<div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">arrow_forward</span>
+<div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-0"></div>
 </button>
-<button class="px-12 py-5 border border-outline/50 text-white font-headline font-bold text-lg uppercase hover:border-neon-acid hover:text-neon-acid transition-all backdrop-blur-md">
-                    VIEW SYSTEM_INTEL
-                </button>
-</div>
-</div>
-<!-- Neural Viewport Overlay -->
-<div class="absolute inset-0 pointer-events-none flex items-center justify-center" id="neural-viewport">
-<div class="relative w-full h-full pointer-events-auto cursor-ew-resize">
-<!-- The Slider Logic -->
-<div class="absolute inset-0 flex">
-<div class="absolute inset-0 bg-cover bg-center grayscale opacity-60 pointer-events-none" id="after-layer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBriMflsQMSxC_3BF2R_h1vDp0iML5fLzd9DCM1MZS5kTEsitZZvfchHNvMUhYG7TPPZjtqXh1576OC_XlZFexG1d9G4VPmJnKsUvYZ5wmnCKl-jmP4ZDtGvLWejtD9BHrRMUPin4aXZaQjCKcGJKTTtQRomPEtCODChWIxLeMilFBHuvQtwnNmjbE9X4CljO4fDQAqVz5calJ_UsOl6kZMRA5mmsrQ2DPfirNt23q-jPKbfXfSkxp0bn8tAPfk8g4q8YewLo9KpLpb'); clip-path: inset(0 50% 0 0);"></div>
-<div class="absolute inset-0 bg-cover bg-center pointer-events-none" id="before-layer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2pON2R5Z2CEc-4Epd79OqTRyDjPygvRnzaSaSrLo_n1Eki1tWgib5vV-L2vwaxGRt8AQO5WrEBi-8tI48O1cR_phVqRfBZ99YuZ88RdADisvU1IHjGy9N-db4mXSM_Ts3y99D1e_LGpjy2c_KH0BQxuxt5D3wbk8vTaOAYxJJk8F-EC4wdeRd2DzD04uN6IdDZQGyDgTY99wCAF1IniWzKGme6r2S6Na8VA2f24Apid2KGtxOfdQ-ajb63tNR6Vp__yZ5IS2RdAcq');"></div>
-<input class="absolute inset-0 w-full opacity-0 cursor-ew-resize z-30" id="slider-control" max="100" min="0" type="range" value="50"/>
-<div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-neon-acid z-20 pointer-events-none shadow-[0_0_15px_#c8ff00]" id="slider-line">
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neon-acid text-black p-2 font-technical text-[10px] font-bold uppercase tracking-tighter rotate-90">VIEWPORT_LINK</div>
-</div>
-<!-- Telemetry Tags -->
-<div class="absolute top-24 left-8 p-4 border border-neon-acid/20 bg-black/40 backdrop-blur-md font-technical text-[10px] pointer-events-none hidden md:block">
-<div class="text-neon-acid mb-1">SCAN_MODE: ACTIVE</div>
-<div class="text-white opacity-60">F_STOP: 1.4 // ISO: 400</div>
-<div class="text-white opacity-60">FPS: 24.000_TRUE</div>
-</div>
+<button class="px-10 py-5 border border-outline/50 text-white font-headline font-bold text-base uppercase hover:border-neon-acid hover:text-neon-acid transition-all backdrop-blur-md bg-black/20">
+                VIEW SYSTEM_INTEL
+            </button>
 </div>
 </div>
 </div>
@@ -288,13 +277,13 @@
 </div>
 </section>
 <!-- Call to Action -->
-<section class="py-32 bg-black relative overflow-hidden text-center border-t border-outline-variant/30">
+<section class="py-32 bg-black relative overflow-hidden border-t border-outline-variant/30 flex items-center justify-center">
 <div class="absolute inset-0 opacity-10 grayscale mix-blend-screen pointer-events-none">
 <video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
-<source src="/media/hero1.mp4" type="video/mp4"/>
+<source src="media/hero3.mp4" type="video/mp4"/>
 </video>
 </div>
-<div class="relative z-10 px-margin-mobile">
+<div class="relative z-10 px-margin-mobile text-center">
 <h2 class="font-headline text-4xl md:text-6xl text-white mb-8">THE FUTURE IS COMPUTING</h2>
 <p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm opacity-60">Architect your dream. Frame by frame.</p>
 <button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform group relative" id="footer-cta">
@@ -319,12 +308,19 @@
 </div>
 </div>
 </footer>
-<!-- Core Integration Scripts -->
 <script src="js/app.js"></script>
 <script src="js/navigation.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. Session & Auth UI Sync
+        // Video Playback Enforcement
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            video.play().catch(error => {
+                console.warn("Autoplay prevented.", error);
+            });
+        });
+
+        // Session & Auth UI Sync
         const updateAuthUI = () => {
             const isLoggedIn = localStorage.getItem('sb_session');
             const navAuthBtn = document.getElementById('nav-auth-btn');
@@ -332,81 +328,47 @@
             const heroPrimaryCta = document.getElementById('hero-primary-cta');
             const footerCta = document.getElementById('footer-cta');
 
-            if (isLoggedIn) {
-                if (navAuthBtn) navAuthBtn.innerText = 'LOG OUT';
-                if (navActionBtn) {
-                    navActionBtn.innerText = 'ENTER COMMAND CENTER';
-                    navActionBtn.onclick = () => window.location.href = 'directors.html';
-                }
-                if (heroPrimaryCta) {
-                    heroPrimaryCta.innerText = 'ENTER COMMAND CENTER';
-                    heroPrimaryCta.onclick = () => window.location.href = 'directors.html';
-                }
-                if (footerCta) {
-                    footerCta.innerText = 'ENTER COMMAND CENTER';
-                    footerCta.onclick = () => window.location.href = 'directors.html';
-                }
-            } else {
-                if (navAuthBtn) navAuthBtn.innerText = 'LOG IN';
-                if (navActionBtn) {
-                    navActionBtn.innerText = 'INITIALIZE ACCESS';
-                    navActionBtn.onclick = () => window.location.href = 'register.html';
-                }
-                if (heroPrimaryCta) {
-                    heroPrimaryCta.innerText = 'INITIALIZE ACCESS';
-                    heroPrimaryCta.onclick = () => window.location.href = 'register.html';
-                }
-                if (footerCta) {
-                    footerCta.innerText = 'INITIALIZE ACCESS';
-                    footerCta.onclick = () => window.location.href = 'register.html';
-                }
-            }
+            const loginText = isLoggedIn ? 'LOG OUT' : 'LOG IN';
+            const actionText = isLoggedIn ? 'ENTER COMMAND CENTER' : 'INITIALIZE ACCESS';
+            const actionUrl = isLoggedIn ? 'directors.html' : 'register.html';
 
-            // Sync credits using Central Engine
-            if (window.MD && typeof window.MD.updateCredits === 'function') {
-                window.MD.updateCredits();
-            } else {
-                const credits = localStorage.getItem('md_credits') || '240.00';
-                document.getElementById('user-credits').innerText = credits + ' CRD';
-            }
+            if (navAuthBtn) navAuthBtn.innerText = loginText;
+            [navActionBtn, heroPrimaryCta, footerCta].forEach(btn => {
+                if (btn) {
+                    btn.innerText = actionText;
+                    btn.onclick = () => window.location.href = actionUrl;
+                }
+            });
+
+            const credits = localStorage.getItem('md_credits') || '240.00';
+            const userCreditsEl = document.getElementById('user-credits');
+            if (userCreditsEl) userCreditsEl.innerText = credits + ' CRD';
         };
 
-        // Handle Auth Button
-        document.getElementById('nav-auth-btn').onclick = function() {
-            if (localStorage.getItem('sb_session')) {
-                // Logout logic
-                ['sb_session','md_email','md_user_id','md_user','md_credits','md_plan','is_logged_in'].forEach(k => localStorage.removeItem(k));
-                location.reload();
-            } else {
-                window.location.href = 'login.html';
-            }
-        };
+        const navAuthBtn = document.getElementById('nav-auth-btn');
+        if (navAuthBtn) {
+            navAuthBtn.onclick = function() {
+                if (localStorage.getItem('sb_session')) {
+                    ['sb_session','md_email','md_user_id','md_user','md_credits','md_plan','is_logged_in'].forEach(k => localStorage.removeItem(k));
+                    location.reload();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            };
+        }
 
         updateAuthUI();
 
-        // 2. Neural Viewport Slider Logic
-        const slider = document.getElementById('slider-control');
-        const afterLayer = document.getElementById('after-layer');
-        const sliderLine = document.getElementById('slider-line');
-
-        if (slider) {
-            slider.addEventListener('input', (e) => {
-                const val = e.target.value;
-                afterLayer.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
-                sliderLine.style.left = `${val}%`;
-            });
-        }
-
-        // 3. Simulated Telemetry Animation
-        const gpuLoad = document.getElementById('gpu-load');
-        const activeClusters = document.getElementById('active-clusters');
-        const renderCount = document.getElementById('render-count');
-
+        // Simulated Telemetry Animation
         setInterval(() => {
+            const gpuLoad = document.getElementById('gpu-load');
+            const activeClusters = document.getElementById('active-clusters');
+            const renderCount = document.getElementById('render-count');
+            
             if (gpuLoad) gpuLoad.innerText = (80 + Math.random() * 5).toFixed(1);
             if (activeClusters) activeClusters.innerText = (1400 + Math.floor(Math.random() * 10)).toLocaleString();
             if (renderCount) {
-                const current = parseInt(renderCount.innerText.replace(',', ''));
+                const current = parseInt(renderCount.innerText.replace(/,/g, '')) || 48291;
                 renderCount.innerText = (current + Math.floor(Math.random() * 2)).toLocaleString();
             }
         }, 3000);

@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -99,9 +100,10 @@
         body {
             background-color: #0e0e0e;
             background-image: 
-                linear-gradient(rgba(192, 245, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(192, 245, 0, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(192, 245, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(192, 245, 0, 0.05) 1px, transparent 1px);
             background-size: 40px 40px;
+            overflow: hidden; /* Ensure single viewport */
         }
         .scanning-line {
             height: 1px;
@@ -145,22 +147,29 @@
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<body class="flex flex-col h-screen text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<div class="fixed inset-0 z-[-1] overflow-hidden">
+<!-- Increased opacity for better visibility as requested -->
+<video autoplay="" class="w-full h-full object-cover opacity-80" id="bgVideo" loop="" muted="" playsinline="">
+<source src="media/hero2.mp4" type="video/mp4"/>
+</video>
+</div>
 <div class="scanning-line"></div>
-<header class="bg-surface docked full-width top-0 border-b border-surface-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 z-50">
+<header class="bg-surface/80 backdrop-blur-sm top-0 border-b border-surface-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 z-50">
 <div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-fixed dark:text-primary-fixed-dim">
-        MercaDream
-    </div>
+            MercaDream
+        </div>
 <div class="flex items-center gap-6">
 <span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase tracking-widest opacity-60">System_V.04.1_Live</span>
 </div>
 </header>
-<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop relative">
+<main class="flex-grow flex items-center justify-center md:justify-end p-margin-mobile md:p-margin-desktop relative overflow-hidden">
 <div class="absolute inset-0 overflow-hidden pointer-events-none">
 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-fixed/5 rounded-full blur-[120px]" id="glowEffect"></div>
 </div>
-<div class="w-full max-w-[420px] z-10">
-<div class="surgical-border bg-surface-container p-8 md:p-10 shadow-2xl">
+<!-- Moved to center-right on desktop using justify-end and max-w/margin -->
+<div class="w-full max-w-[420px] z-10 md:mr-16 lg:mr-32">
+<div class="surgical-border bg-surface-container/90 backdrop-blur-md p-8 md:p-10 shadow-2xl">
 <div class="flex justify-between items-start mb-8">
 <div>
 <h1 class="font-headline-md text-headline-md text-primary mb-1">Access Protocol</h1>
@@ -192,8 +201,8 @@
 </div>
 <button class="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed font-technical-sm font-bold py-4 transition-all duration-200 active:scale-[0.98] group relative overflow-hidden uppercase tracking-widest" id="submitBtn" type="submit">
 <span class="relative z-10 flex items-center justify-center gap-2">
-                        Establish_Connection
-                        <span class="material-symbols-outlined text-[18px]">bolt</span>
+                            Establish_Connection
+                            <span class="material-symbols-outlined text-[18px]">bolt</span>
 </span>
 </button>
 </form>
@@ -208,24 +217,24 @@
 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
 </svg>
-                Continue_With_Google
-            </button>
+                    Continue_With_Google
+                </button>
 <div class="mt-8 text-center">
 <p class="font-technical-xs text-technical-xs text-on-surface-variant">
-                    New_Entity? <a class="text-primary-fixed hover:underline ml-2" href="register.html">Initialize_Account</a>
+                        New_Entity? <a class="text-primary-fixed hover:underline ml-2" href="register.html">Initialize_Account</a>
 </p>
 </div>
 </div>
-<div class="mt-4 flex justify-between font-technical-xs text-technical-xs text-on-surface-variant/40 px-2 uppercase">
+<div class="mt-4 flex justify-between font-technical-xs text-technical-xs text-on-surface-variant/60 px-2 uppercase">
 <span>Coord: [40.7128° N, 74.0060° W]</span>
 <span>Enc: AES-256-GCM</span>
 </div>
 </div>
 </main>
-<footer class="w-full px-margin-mobile md:px-margin-desktop py-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant">
+<footer class="w-full px-margin-mobile md:px-margin-desktop py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant z-10">
 <div class="font-technical-sm text-technical-sm text-primary-fixed uppercase tracking-wider">
-         2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
-    </div>
+             2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
+        </div>
 <div class="flex gap-6">
 <a class="font-technical-xs text-technical-xs text-on-surface-variant underline hover:text-primary-fixed hover:no-underline transition-colors uppercase" href="#">Neural_Engine</a>
 <a class="font-technical-xs text-technical-xs text-on-surface-variant underline hover:text-primary-fixed hover:no-underline transition-colors uppercase" href="#">Privacy_Protocol</a>
@@ -233,78 +242,88 @@
 </div>
 </footer>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-        authDomain: "mercadream-4b4b3.firebaseapp.com",
-        projectId: "mercadream-4b4b3",
-        storageBucket: "mercadream-4b4b3.firebasestorage.app",
-        messagingSenderId: "257560928442",
-        appId: "1:257560928442:web:06983f27629a13eeed6283",
-        measurementId: "G-F0CLDJCV42"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+            authDomain: "mercadream-4b4b3.firebaseapp.com",
+            projectId: "mercadream-4b4b3",
+            storageBucket: "mercadream-4b4b3.firebasestorage.app",
+            messagingSenderId: "257560928442",
+            appId: "1:257560928442:web:06983f27629a13eeed6283",
+            measurementId: "G-F0CLDJCV42"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-    const handleSuccess = (user) => {
-        localStorage.setItem('sb_session', 'true');
-        localStorage.setItem('md_email', user.email);
-        localStorage.setItem('md_user', JSON.stringify({
-            uid: user.uid,
-            displayName: user.displayName,
-            email: user.email
-        }));
-        localStorage.setItem('md_user_id', user.uid);
-        localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
-        window.location.href = 'profile.html';
-    };
+        const handleSuccess = (user) => {
+            localStorage.setItem('sb_session', 'true');
+            localStorage.setItem('md_email', user.email);
+            localStorage.setItem('md_user', JSON.stringify({
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email
+            }));
+            localStorage.setItem('md_user_id', user.uid);
+            localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
+            window.location.href = 'profile.html';
+        };
 
-    const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const btn = document.getElementById('submitBtn');
-        const originalContent = btn.innerHTML;
-        
-        btn.disabled = true;
-        btn.innerHTML = `<span class="flex items-center gap-2">VERIFYING_CREDENTIALS... <span class="animate-pulse">_</span></span>`;
-        
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            handleSuccess(userCredential.user);
-        } catch (error) {
-            alert(`ERROR: ${error.message}`);
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submitBtn');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = `<span class="flex items-center gap-2">VERIFYING_CREDENTIALS... <span class="animate-pulse">_</span></span>`;
+            
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                handleSuccess(userCredential.user);
+            } catch (error) {
+                alert(`ERROR: ${error.message}`);
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        });
+
+        const googleBtn = document.getElementById('googleSignIn');
+        googleBtn.addEventListener('click', async () => {
+            googleBtn.classList.add('opacity-50');
+            googleBtn.disabled = true;
+            try {
+                const result = await signInWithPopup(auth, provider);
+                handleSuccess(result.user);
+            } catch (error) {
+                alert(`ERROR: ${error.message}`);
+                googleBtn.classList.remove('opacity-50');
+                googleBtn.disabled = false;
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('glowEffect');
+            if (glow) {
+                const moveX = (e.clientX - window.innerWidth / 2) / 40;
+                const moveY = (e.clientY - window.innerHeight / 2) / 40;
+                glow.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+            }
+        });
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('bgVideo');
+        if (video) {
+            video.play().catch(error => {
+                console.log('Autoplay was prevented, or video failed to play:', error);
+            });
         }
     });
-
-    const googleBtn = document.getElementById('googleSignIn');
-    googleBtn.addEventListener('click', async () => {
-        googleBtn.classList.add('opacity-50');
-        googleBtn.disabled = true;
-        try {
-            const result = await signInWithPopup(auth, provider);
-            handleSuccess(result.user);
-        } catch (error) {
-            alert(`ERROR: ${error.message}`);
-            googleBtn.classList.remove('opacity-50');
-            googleBtn.disabled = false;
-        }
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        const glow = document.getElementById('glowEffect');
-        if (glow) {
-            const moveX = (e.clientX - window.innerWidth / 2) / 40;
-            const moveY = (e.clientY - window.innerHeight / 2) / 40;
-            glow.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
-        }
-    });
-</script>
+    </script>
 </body></html>
