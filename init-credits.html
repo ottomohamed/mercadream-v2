@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Init Credits</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+            authDomain: "mercadream-4b4b3.firebaseapp.com",
+            projectId: "mercadream-4b4b3",
+            storageBucket: "mercadream-4b4b3.firebasestorage.app",
+            messagingSenderId: "257560928442",
+            appId: "1:257560928442:web:06983f27629a13eeed6283",
+            measurementId: "G-F0CLDJCV42"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+                const uid = user.uid;
+                const userRef = db.collection("users").doc(uid);
+                const doc = await userRef.get();
+                
+                if (!doc.exists) {
+                    await userRef.set({
+                        credits: 100,
+                        email: user.email,
+                        createdAt: new Date().toISOString()
+                    });
+                    document.body.innerHTML = "<h2 style='color:green;'> Credits initialized: 100 credits for " + user.email + "</h2><a href='faceswap.html'>Go to FaceSwap</a>";
+                } else {
+                    document.body.innerHTML = "<h2> User already has " + doc.data().credits + " credits</h2><a href='faceswap.html'>Go to FaceSwap</a>";
+                }
+            } else {
+                document.body.innerHTML = "<h2> Please login first</h2><a href='login.html'>Go to Login</a>";
+            }
+        });
+    </script>
+</body>
+</html>

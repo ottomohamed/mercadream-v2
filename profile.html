@@ -5,13 +5,14 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM — PROFILE COMMAND CENTER</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
         body {
-            background-color: #131313;
+            background-color: #060606;
             color: #e5e2e1;
-            font-family: 'Geist', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
         .scanline-overlay {
             position: fixed;
@@ -19,42 +20,26 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(200, 255, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.01));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
             z-index: 50;
         }
         .surgical-border {
-            border: 1px solid #434933;
+            border: 1px solid #222222;
         }
         .neon-glow:hover {
-            box-shadow: 0 0 12px #c8ff00;
-            border-color: #c8ff00;
+            box-shadow: 0 0 12px #c8f500;
+            border-color: #c8f500;
         }
-        .font-sora { font-family: 'Sora', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        [v-cloak] { display: none; }
-
-        /* Smooth reveal for content */
-        #main-content { opacity: 0; transition: opacity 0.5s ease-in-out; }
-        #main-content.ready { opacity: 1; }
-        
-        /* Non-blocking loader overlay */
-        #auth-loader { 
-            position: fixed; 
-            inset: 0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: #131313; 
-            z-index: 100;
-            transition: opacity 0.3s ease-out, visibility 0.3s;
-        }
-        #auth-loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+        .technical-crosshair::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 1px;
+            height: 20px;
+            background: #434933;
         }
     </style>
 <script id="tailwind-config">
@@ -63,53 +48,53 @@
         theme: {
           extend: {
             "colors": {
-                    "surface-dim": "#131313",
-                    "on-secondary-fixed-variant": "#474746",
                     "on-primary-fixed": "#161f00",
-                    "secondary-container": "#474746",
-                    "outline-variant": "#434933",
-                    "on-error-container": "#ffdad6",
-                    "primary-container": "#c0f500",
-                    "on-tertiary": "#303030",
-                    "on-secondary-fixed": "#1c1b1b",
-                    "surface-tint": "#a8d700",
-                    "tertiary-container": "#e4e2e1",
-                    "inverse-surface": "#e5e2e1",
-                    "on-tertiary-container": "#656464",
-                    "secondary-fixed": "#e5e2e1",
-                    "surface-variant": "#353534",
-                    "on-surface": "#e5e2e1",
-                    "error": "#ffb4ab",
-                    "inverse-on-surface": "#313030",
-                    "surface-bright": "#3a3939",
-                    "on-surface-variant": "#c4caac",
-                    "outline": "#8e9479",
-                    "on-tertiary-fixed-variant": "#474747",
-                    "tertiary-fixed": "#e4e2e1",
-                    "error-container": "#93000a",
-                    "on-primary-container": "#546d00",
-                    "on-primary-fixed-variant": "#3b4d00",
-                    "on-primary": "#273500",
-                    "surface-container-lowest": "#0e0e0e",
-                    "surface-container-low": "#1c1b1b",
-                    "on-error": "#690005",
-                    "primary": "#ffffff",
-                    "secondary-fixed-dim": "#c8c6c5",
-                    "background": "#131313",
                     "inverse-primary": "#4f6600",
+                    "inverse-on-surface": "#313030",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "secondary": "#ffba3f",
+                    "on-surface": "#e5e2e1",
+                    "secondary-fixed-dim": "#ffba3f",
+                    "on-primary": "#273500",
+                    "on-secondary": "#432c00",
                     "surface-container-highest": "#353534",
-                    "on-secondary": "#313030",
+                    "on-error": "#690005",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "primary": "#ffffff",
+                    "surface-container-low": "#1c1b1b",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "surface": "#131313",
+                    "on-secondary-fixed-variant": "#604100",
+                    "primary-container": "#c0f500",
                     "primary-fixed-dim": "#a8d700",
                     "surface-container": "#201f1f",
-                    "on-secondary-container": "#b7b5b4",
+                    "on-surface-variant": "#c4caac",
+                    "surface-variant": "#353534",
+                    "error": "#ffb4ab",
+                    "surface-dim": "#131313",
+                    "tertiary-fixed": "#e5e2e1",
+                    "secondary-fixed": "#ffdeae",
+                    "secondary-container": "#c48800",
+                    "surface-tint": "#a8d700",
+                    "surface-container-lowest": "#0e0e0e",
                     "tertiary": "#ffffff",
-                    "tertiary-fixed-dim": "#c8c6c6",
+                    "surface-bright": "#3a3939",
+                    "outline": "#8e9479",
+                    "on-tertiary-container": "#656464",
+                    "tertiary-container": "#e5e2e1",
+                    "outline-variant": "#434933",
+                    "on-tertiary": "#303030",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed": "#c0f500",
+                    "background": "#131313",
+                    "on-secondary-container": "#3e2800",
+                    "on-secondary-fixed": "#281900",
                     "on-background": "#e5e2e1",
                     "surface-container-high": "#2a2a2a",
-                    "primary-fixed": "#c0f500",
-                    "surface": "#131313",
-                    "secondary": "#c8c6c5",
-                    "on-tertiary-fixed": "#1b1c1c"
+                    "on-primary-container": "#546d00"
             },
             "borderRadius": {
                     "DEFAULT": "0px",
@@ -118,12 +103,25 @@
                     "full": "9999px"
             },
             "spacing": {
-                    "unit": "8px",
-                    "margin-mobile": "20px",
-                    "gutter": "16px",
-                    "grid-cols": "12",
-                    "margin-desktop": "40px",
-                    "container-max": "1440px"
+                    "unit": "4px",
+                    "margin-desktop": "32px",
+                    "container-max": "1440px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Sora"],
+                    "technical-sm": ["IBM Plex Mono"],
+                    "headline-lg": ["Sora"],
+                    "body-md": ["Inter"],
+                    "label-xs": ["IBM Plex Mono"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}]
             }
           },
         },
@@ -131,262 +129,324 @@
     </script>
 </head>
 <body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
-<!-- Initializing Overlay -->
-<div id="auth-loader">
-<div class="flex flex-col items-center gap-4">
-<div class="w-12 h-12 border-2 border-primary-fixed border-t-transparent animate-spin"></div>
-<p class="font-mono text-[10px] text-primary-fixed tracking-[0.3em] animate-pulse">CONNECTING TO NODE...</p>
-</div>
-</div>
 <div class="scanline-overlay"></div>
-<!-- Main Structure - Always Rendered but Hidden until Auth Resolved -->
-<div class="flex h-screen overflow-hidden" id="main-content">
-<!-- Sidebar -->
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
 <aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface w-64 z-20">
 <div class="p-6">
 <div class="flex items-center gap-2 mb-8">
 <div class="w-2 h-2 bg-primary-fixed animate-pulse"></div>
-<span class="font-sora text-[20px] font-bold tracking-tighter text-primary-fixed">MERCADREAM</span>
+<span class="font-display-lg text-headline-lg tracking-tighter text-primary-fixed">MERCADREAM</span>
 </div>
 <div class="mb-8 p-4 bg-surface-container-low border border-outline-variant">
 <div class="flex items-center gap-3 mb-2">
-<img alt="User Avatar" class="w-8 h-8 rounded-full border border-primary-fixed object-cover" id="sidebar-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
+<img alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
 <div>
-<p class="font-mono text-[10px] text-primary-fixed" id="sidebar-tier-label">INITIALIZING</p>
-<p class="font-mono text-[10px] text-on-surface-variant" id="sidebar-tier-sub">Node Active</p>
+<p class="font-technical-sm text-label-xs text-primary-fixed">PRO MEMBER</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant">Studio Tier 1</p>
 </div>
 </div>
 </div>
 <nav class="space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="dashboard.html">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
 <span class="material-symbols-outlined text-[20px]">dashboard</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Dashboard</span>
+<span class="font-technical-sm text-technical-sm">Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="studio.html">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
 <span class="material-symbols-outlined text-[20px]">movie_filter</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Production</span>
+<span class="font-technical-sm text-technical-sm">Production</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="marketplace.html">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
 <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Marketplace</span>
+<span class="font-technical-sm text-technical-sm">Marketplace</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors group" href="assets.html">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span class="font-technical-sm text-technical-sm">Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
 <span class="material-symbols-outlined text-[20px]">folder_special</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Assets</span>
+<span class="font-technical-sm text-technical-sm">Assets</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-primary-fixed" href="profile.html">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-primary-fixed" href="#">
 <span class="material-symbols-outlined text-[20px]">bolt</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Power Station</span>
+<span class="font-technical-sm text-technical-sm">Power Station</span>
 </a>
 </nav>
 </div>
 <div class="mt-auto p-6 space-y-1">
-<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container transition-colors" href="settings.html">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
 <span class="material-symbols-outlined text-[18px]">settings</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Settings</span>
+<span class="font-technical-sm text-technical-sm">Settings</span>
 </a>
-<button class="w-full flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-red-400 hover:bg-surface-container transition-colors" onclick="handleLogout()">
-<span class="material-symbols-outlined text-[18px]">logout</span>
-<span class="font-mono text-[12px] uppercase tracking-wider">Disconnect</span>
-</button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span class="font-technical-sm text-technical-sm">Support</span>
+</a>
 </div>
 </aside>
-<!-- Mobile Nav -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
-<a href="dashboard.html"><span class="material-symbols-outlined text-on-surface-variant">dashboard</span></a>
-<a href="studio.html"><span class="material-symbols-outlined text-on-surface-variant">movie_filter</span></a>
-<a href="profile.html"><span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span></a>
-<a href="marketplace.html"><span class="material-symbols-outlined text-on-surface-variant">bolt</span></a>
-<button onclick="handleLogout()"><span class="material-symbols-outlined text-on-surface-variant">logout</span></button>
-</nav>
 <main class="flex-1 overflow-y-auto bg-surface-container-lowest">
-<!-- Header -->
+<!-- Top App Bar -->
 <header class="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-outline-variant px-margin-desktop py-4 flex justify-between items-center max-w-container-max mx-auto w-full">
 <div class="flex items-center gap-8">
-<h1 class="font-sora text-[24px] lg:text-[32px] tracking-tighter text-primary-fixed">COMMAND CENTER</h1>
+<h1 class="font-display-lg text-headline-lg tracking-tighter text-primary-fixed">COMMAND CENTER</h1>
 <nav class="hidden lg:flex gap-6">
-<a class="font-mono text-[12px] uppercase tracking-widest text-on-surface-variant hover:text-primary-fixed transition-all" href="studio.html">Studio</a>
-<a class="font-mono text-[12px] uppercase tracking-widest text-on-surface-variant hover:text-primary-fixed transition-all" href="marketplace.html">Marketplace</a>
-<a class="font-mono text-[12px] uppercase tracking-widest text-primary-fixed border-b-2 border-primary-fixed pb-1" href="profile.html">Profile</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-primary-fixed transition-all" href="#">Studio</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-primary-fixed transition-all" href="#">Assembly</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-primary-fixed transition-all" href="#">Marketplace</a>
+<a class="font-technical-sm text-technical-sm text-primary-fixed border-b-2 border-primary-fixed pb-1" href="#">Profile</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
-<div class="hidden md:flex bg-surface-container border border-outline-variant px-3 py-1 items-center gap-2">
+<div class="hidden md:flex bg-surface-variant/30 border border-outline-variant px-3 py-1 items-center gap-2">
 <span class="material-symbols-outlined text-[16px] text-primary-fixed">account_balance_wallet</span>
-<span class="font-mono text-[12px] text-on-surface" id="top-wallet-credits">0 CR</span>
+<span class="font-technical-sm text-label-xs text-on-surface">2.4k CR</span>
 </div>
-<a class="bg-primary-fixed text-on-primary-fixed font-mono text-[11px] px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8ff00] transition-all" href="pricing.html">Upgrade</a>
+<button class="bg-primary-fixed text-on-primary-fixed font-technical-sm text-label-xs px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8f500] transition-all">Upgrade</button>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">notifications</span>
 </div>
 </header>
 <div class="max-w-container-max mx-auto px-margin-desktop py-8 space-y-gutter">
-<!-- Profile Summary -->
+<!-- SECTION 1: Profile & Stats Split -->
 <section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Profile Card -->
 <div class="lg:col-span-5 bg-surface border border-outline-variant p-8 relative overflow-hidden group">
 <div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
 <span class="material-symbols-outlined text-[64px] text-primary-fixed">person_pin</span>
 </div>
 <div class="flex flex-col items-center md:flex-row md:items-start gap-8 relative z-10">
 <div class="relative group/avatar">
-<div class="w-32 h-32 border-2 border-primary-fixed p-1 bg-surface-container">
-<img class="w-full h-full object-cover" id="main-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
+<div class="w-32 h-32 border-2 border-primary-fixed p-1">
+<img class="w-full h-full object-cover" data-alt="High-fidelity cinematic portrait of a professional digital artist in a dark, tech-filled studio. The user has a focused expression, illuminated by the neon-acid glow of high-end monitors. The background features complex wiring and server racks, maintaining a surgical cyberpunk aesthetic with deep blacks and sharp yellow accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
 </div>
-<button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-mono text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors" id="upload-photo-trigger">UPLOAD PHOTO</button>
+<button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-technical-sm text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors">UPLOAD PHOTO</button>
 </div>
 <div class="flex-1 space-y-4">
 <div>
-<h2 class="font-sora text-[32px] text-primary-fixed truncate" id="profile-name-display">INITIALIZING...</h2>
-<p class="font-mono text-[12px] text-on-surface-variant truncate" id="profile-email-display">Connecting to node...</p>
+<h2 class="font-display-lg text-headline-lg text-primary-fixed">OTTO MERCADREAM</h2>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant">otto.ops@mercadream.tech</p>
 </div>
-<div class="inline-flex items-center gap-2 bg-surface-container border border-outline-variant px-3 py-2" id="subscription-status-box">
-<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div class="inline-flex items-center gap-2 bg-primary-container/10 border border-primary-fixed/30 px-3 py-2">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">shield</span>
 <div class="flex flex-col">
-<span class="font-mono text-[11px] text-on-surface font-bold uppercase" id="subscription-status-title">Standard Access</span>
-<span class="font-mono text-[9px] text-on-surface-variant uppercase">Terminal Operational</span>
+<span class="font-technical-sm text-label-xs text-primary-fixed font-bold">SUBSCRIPTION ACTIVE</span>
+<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase">Director Tier 1 • Resets in 14d</span>
 </div>
 </div>
-<div class="pt-2">
-<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-mono text-[12px] text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow" id="edit-profile-btn">EDIT DESIGNATION</button>
+<div class="pt-4">
+<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow">EDIT PROFILE</button>
 </div>
 </div>
 </div>
 </div>
+<!-- Stats Dashboard -->
 <div class="lg:col-span-7 grid grid-cols-2 gap-gutter">
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
-<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Available Credits</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Available Credits</span>
 <span class="material-symbols-outlined text-primary-fixed">token</span>
 </div>
 <div>
-<p class="font-sora text-[48px] text-primary-fixed leading-none" id="main-credits-val">0</p>
-<div class="h-1 bg-surface-container mt-4 w-full">
-<div class="h-full bg-primary-fixed w-[0%]" id="credits-progress-bar"></div>
+<p class="font-display-lg text-[48px] text-primary-fixed leading-none">1,250</p>
+<div class="h-1 bg-surface-variant mt-4 w-full">
+<div class="h-full bg-primary-fixed w-[65%]"></div>
 </div>
 </div>
 </div>
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
-<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Renders Executed</span>
-<span class="material-symbols-outlined text-primary-fixed">movie_creation</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Renders Executed</span>
+<span class="material-symbols-outlined text-secondary">movie_creation</span>
 </div>
 <div>
-<p class="font-sora text-[48px] text-on-surface leading-none" id="renders-val">0</p>
-<p class="font-mono text-[11px] text-on-surface-variant mt-2" id="renders-sub">+0 this month</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none">47</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">+12 this month</p>
 </div>
 </div>
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
-<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Recharge Cycles</span>
-<span class="material-symbols-outlined text-primary-fixed">history</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Recharge Cycles</span>
+<span class="material-symbols-outlined text-tertiary-fixed-dim">history</span>
 </div>
 <div>
-<p class="font-sora text-[48px] text-on-surface leading-none" id="recharges-val">0</p>
-<p class="font-mono text-[11px] text-on-surface-variant mt-2">Lifetime total</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none">12</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">Lifetime total</p>
 </div>
 </div>
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
-<span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Saved Assets</span>
-<span class="material-symbols-outlined text-primary-fixed">folder_shared</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Saved Assets</span>
+<span class="material-symbols-outlined text-primary-fixed-dim">folder_shared</span>
 </div>
 <div>
-<p class="font-sora text-[48px] text-on-surface leading-none" id="assets-val">0.0</p>
-<p class="font-mono text-[11px] text-on-surface-variant mt-2" id="assets-sub">0.0 GB utilized</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none">08</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">1.2 GB utilized</p>
 </div>
 </div>
 </div>
 </section>
-<!-- Billing -->
+<!-- SECTION 2: Billing History Table -->
 <section class="bg-surface border border-outline-variant overflow-hidden">
-<div class="bg-surface-container px-6 py-3 border-b border-outline-variant flex justify-between items-center">
-<h3 class="font-mono text-[12px] text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
-<span class="font-mono text-[11px] text-on-surface-variant" id="system-time-display">System Time: --:-- UTC</span>
+<div class="bg-surface-variant/20 px-6 py-3 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
+<span class="font-technical-sm text-label-xs text-on-surface-variant">System Time: 2024.05.24 // 14:02 UTC</span>
 </div>
 <div class="overflow-x-auto">
-<table class="w-full text-left font-mono text-[12px]">
+<table class="w-full text-left font-technical-sm text-technical-sm">
 <thead class="bg-surface-container border-b border-outline-variant">
 <tr>
-<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Date</th>
-<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Service Description</th>
-<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Credit Value</th>
-<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider">Amount</th>
-<th class="px-6 py-4 text-[11px] text-on-surface-variant uppercase tracking-wider text-right">Status</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Service Description</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Credit Value</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider text-right">Status</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/30" id="billing-history-body">
-<!-- Populated via script -->
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-variant/10 transition-colors">
+<td class="px-6 py-4 text-on-surface">2024.05.20</td>
+<td class="px-6 py-4 text-on-surface">Premium Render Pack (L)</td>
+<td class="px-6 py-4 text-primary-fixed">+500 CR</td>
+<td class="px-6 py-4 text-on-surface-variant">$49.99</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
+<span class="w-1 h-1 bg-primary-fixed rounded-full animate-ping"></span>
+                                            COMPLETED
+                                        </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-variant/10 transition-colors">
+<td class="px-6 py-4 text-on-surface">2024.05.12</td>
+<td class="px-6 py-4 text-on-surface">Director Monthly Sub</td>
+<td class="px-6 py-4 text-primary-fixed">+1000 CR</td>
+<td class="px-6 py-4 text-on-surface-variant">$99.00</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
+                                            COMPLETED
+                                        </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-variant/10 transition-colors">
+<td class="px-6 py-4 text-on-surface">2024.04.15</td>
+<td class="px-6 py-4 text-on-surface">Asset Storage Upgrade</td>
+<td class="px-6 py-4 text-on-surface-variant">--</td>
+<td class="px-6 py-4 text-on-surface-variant">$15.00</td>
+<td class="px-6 py-4 text-right">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
+                                            COMPLETED
+                                        </span>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
 </section>
-<!-- Referral & Guide -->
+<!-- SECTION 3: Bottom Widgets -->
 <section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- REFER & EARN BOX -->
 <div class="bg-surface border border-outline-variant p-8 flex flex-col">
 <div class="mb-6">
-<h3 class="font-sora text-[32px] text-primary-fixed mb-2 uppercase tracking-tighter">REFER &amp; EARN</h3>
+<h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER &amp; EARN</h3>
 <p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
 </div>
 <div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-<span class="font-mono text-[24px] font-bold tracking-widest text-on-surface" id="ref-code-display">FETCHING...</span>
+<span class="font-technical-sm text-headline-lg tracking-widest text-on-surface">MERCADREAM-OTTO-4829</span>
 <div class="flex gap-2">
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="copy-ref-btn">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Copy Code">
 <span class="material-symbols-outlined">content_copy</span>
 </button>
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share WhatsApp">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share Twitter/X">
+<span class="material-symbols-outlined">alternate_email</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="text-center">
+<span class="font-technical-sm text-label-xs text-on-surface-variant block uppercase">Step 1</span>
+<span class="font-technical-sm text-technical-sm text-on-surface">Share Code</span>
+</div>
+<div class="text-center border-x border-outline-variant/30">
+<span class="font-technical-sm text-label-xs text-on-surface-variant block uppercase">Step 2</span>
+<span class="font-technical-sm text-technical-sm text-on-surface">Friend Recharges</span>
+</div>
+<div class="text-center">
+<span class="font-technical-sm text-label-xs text-on-surface-variant block uppercase">Step 3</span>
+<span class="font-technical-sm text-technical-sm text-primary-fixed">10% Bonus</span>
 </div>
 </div>
 <div class="mt-auto flex items-center justify-between pt-6 border-t border-outline-variant">
 <div class="flex gap-8">
 <div>
-<p class="font-mono text-[11px] text-on-surface-variant uppercase">Friends</p>
-<p class="font-sora text-[32px] text-on-surface" id="friends-count">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Friends</p>
+<p class="font-display-lg text-headline-lg text-on-surface">3</p>
 </div>
 <div>
-<p class="font-mono text-[11px] text-on-surface-variant uppercase">Earned</p>
-<p class="font-sora text-[32px] text-primary-fixed" id="friends-earned">0 <span class="text-[11px] uppercase font-mono">CR</span></p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Earned</p>
+<p class="font-display-lg text-headline-lg text-primary-fixed">45 <span class="text-label-xs uppercase">CR</span></p>
 </div>
 </div>
 <span class="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
 </div>
 </div>
+<!-- HOW TO USE BOX -->
 <div class="bg-surface border border-outline-variant p-8 flex flex-col relative overflow-hidden">
+<!-- Technical Crosshair Decor -->
+<div class="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary-fixed/20"></div>
 <div class="mb-8">
 <div class="flex items-center gap-3 mb-4">
 <span class="material-symbols-outlined text-primary-fixed">menu_book</span>
-<h3 class="font-sora text-[32px] text-primary-fixed uppercase tracking-tighter">Documentation</h3>
+<h3 class="font-display-lg text-headline-lg text-primary-fixed">MERCADREAM GUIDE</h3>
 </div>
-<p class="font-body-md text-on-surface-variant">Master the surgical precision of our cinematic engine. Access specialized training protocols.</p>
+<p class="font-body-md text-on-surface-variant">Master the surgical precision of our cinematic engine. Access specialized training protocols and community uplink.</p>
 </div>
 <div class="space-y-4">
-<a class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container group transition-all" href="docs.html">
+<button class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container/50 group transition-all">
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary-fixed">play_circle</span>
-<span class="font-mono text-[12px] text-on-surface uppercase tracking-widest">Tutorial Feed</span>
+<span class="material-symbols-outlined text-primary-fixed group-hover:scale-110 transition-transform">play_circle</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Watch Tutorial</span>
 </div>
 <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
-</a>
-<a class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container group transition-all" href="docs.html">
+</button>
+<button class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container/50 group transition-all">
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed">description</span>
-<span class="font-mono text-[12px] text-on-surface uppercase tracking-widest">Logic Manual</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">description</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Read Documentation</span>
 </div>
 <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
-</a>
+</button>
+<button class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container/50 group transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">forum</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Join Community</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
 </div>
 <div class="mt-auto pt-8 flex items-center gap-4 opacity-50">
 <div class="flex-1 h-[1px] bg-outline-variant"></div>
-<span class="font-mono text-[10px] text-on-surface-variant tracking-tighter">v.4.8.2 OPERATIONAL</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant">v.4.8.2 OPERATIONAL</span>
 <div class="flex-1 h-[1px] bg-outline-variant"></div>
 </div>
 </div>
 </section>
 </div>
+<!-- Footer -->
 <footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
-<p class="font-mono text-[10px] text-on-surface-variant uppercase tracking-widest">© 2026 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant">© 2024 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
+<div class="flex gap-4">
+<a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Privacy Protocol</a>
+<a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Service Terms</a>
+<a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">API Docs</a>
+</div>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex flex-col items-end">
-<span class="font-mono text-[9px] text-on-surface-variant uppercase tracking-tighter">System Health</span>
+<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase tracking-tighter">System Health</span>
 <div class="flex gap-1 mt-1">
 <div class="w-4 h-1 bg-primary-fixed"></div>
 <div class="w-4 h-1 bg-primary-fixed"></div>
@@ -394,200 +454,167 @@
 <div class="w-4 h-1 bg-primary-fixed/30"></div>
 </div>
 </div>
-<div class="w-10 h-10 border border-primary-fixed flex items-center justify-center">
-<div class="w-4 h-4 bg-primary-fixed animate-pulse"></div>
-</div>
+<img alt="Mercadream Logo" class="w-10 h-10 border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGYPkBfzOUtpOUuwVhXZ-HMCNYXktC91uCmHP88hgErgYGpB3aoq-cA_K5FscLf9bv8Mi3dNQ3I4QxSxosdEPjBgUvBBDrFnMtYGP-x02XM56uU0rcT4HRdlTEvy0Qe6po5Z8jOE5bP6anMq14_w_qw7DLn_BjUnY830SLT1ADD5KELOqlgHLJM1Y7NWO1DPYU17GS05hEN58GniYEiVVv_K5SeAj8eyMrjMaI8hXdZhdCkJ1LLq5vsV1S2k79wSFEQE19Bi6MEsE"/>
 </div>
 </div>
 </footer>
 </main>
 </div>
-<!-- Firebase SDKs -->
+<!-- Mobile Navigation Bottom Bar -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
+<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<span class="material-symbols-outlined text-on-surface-variant">movie_filter</span>
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="material-symbols-outlined text-on-surface-variant">bolt</span>
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</div>
+<script src="/js/navigation.js"></script>
+
+<!-- =====================================================
+     كود موحد: Firebase (Firestore) + وظائف الصفحة
+     Firebase يتحكم بالبيانات، loadProfile لا تكتب فوقها
+     ===================================================== -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-        authDomain: "mercadream-4b4b3.firebaseapp.com",
-        projectId: "mercadream-4b4b3",
-        storageBucket: "mercadream-4b4b3.firebasestorage.app",
-        messagingSenderId: "257560928442",
-        appId: "1:257560928442:web:06983f27629a13eeed6283",
-        measurementId: "G-F0CLDJCV42"
-    };
+  // ============================================================
+  // ⚠️ ضع هنا إعدادات مشروعك من Firebase Console > Project Settings
+  // ============================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+  };
 
-    // Initialize Firebase
-    let app, auth;
-    try {
-        app = initializeApp(firebaseConfig);
-        auth = getAuth(app);
-    } catch (e) {
-        console.error("Firebase init failed", e);
-    }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const userDocId = "A9zcxb1YpgTl7fTxIf2z";
 
-    const navigate = (path) => { window.location.href = path; };
-
-    // Reveal UI Safety function
-    const revealUI = () => {
-        const loader = document.getElementById("auth-loader");
-        const content = document.getElementById("main-content");
-        if(loader) loader.classList.add('hidden');
-        if(content) content.classList.add('ready');
-    };
-
-    // Global logout handle
-    window.handleLogout = function() {
-        signOut(auth).then(() => {
-            localStorage.clear();
-            navigate("login.html");
-        }).catch((error) => {
-            console.error("Sign out error", error);
-            localStorage.clear();
-            navigate("login.html");
-        });
-    };
-
-    // System Time Update
-    function updateTime() {
-        const now = new Date();
-        const timeString = now.getUTCFullYear() + "." + String(now.getUTCMonth()+1).padStart(2,'0') + "." + String(now.getUTCDate()).padStart(2,'0') + " // " + String(now.getUTCHours()).padStart(2,'0') + ":" + String(now.getUTCMinutes()).padStart(2,'0') + " UTC";
-        const sysTimeEl = document.getElementById("system-time-display");
-        if(sysTimeEl) sysTimeEl.textContent = "System Time: " + timeString;
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    function populateUI(user) {
-        if(!user) return;
-        const displayName = user.displayName || user.email.split('@')[0];
-        const email = user.email;
-
-        const nameDisplay = document.getElementById("profile-name-display");
-        const emailDisplay = document.getElementById("profile-email-display");
-        const tierLabel = document.getElementById("sidebar-tier-label");
-        
-        if(nameDisplay) nameDisplay.textContent = displayName.toUpperCase();
-        if(emailDisplay) emailDisplay.textContent = email;
-        if(tierLabel) tierLabel.textContent = "OPERATIONAL NODE";
-        
-        const generateDeterministicCode = (email) => {
-            let hash = 0;
-            for (let i = 0; i < email.length; i++) hash = email.charCodeAt(i) + ((hash << 5) - hash);
-            return "MD-" + Math.abs(hash).toString(36).substring(0, 4).toUpperCase() + "-" + Math.abs(hash * 31).toString(36).substring(0, 4).toUpperCase();
-        };
-
-        const refCode = generateDeterministicCode(email);
-        const refDisplay = document.getElementById("ref-code-display");
-        if(refDisplay) refDisplay.textContent = refCode;
-        
-        const copyBtn = document.getElementById("copy-ref-btn");
-        if(copyBtn) {
-            copyBtn.onclick = () => {
-                navigator.clipboard.writeText(refCode);
-                const originalContent = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<span class="material-symbols-outlined text-primary-fixed">check</span>';
-                setTimeout(() => { copyBtn.innerHTML = originalContent; }, 2000);
-            };
-        }
-
-        const credits = parseInt(localStorage.getItem("md_credits") || "450");
-        const creditsVal = document.getElementById("main-credits-val");
-        const topCredits = document.getElementById("top-wallet-credits");
-        const creditsBar = document.getElementById("credits-progress-bar");
-
-        if(creditsVal) creditsVal.textContent = credits.toLocaleString();
-        if(topCredits) topCredits.textContent = credits + " CR";
-        if(creditsBar) creditsBar.style.width = Math.min((credits / 2000) * 100, 100) + "%";
-
-        if(user.photoURL || localStorage.getItem("md_avatar")) {
-            const avatarSrc = user.photoURL || localStorage.getItem("md_avatar");
-            const sideAvatar = document.getElementById("sidebar-avatar");
-            const mainAvatar = document.getElementById("main-avatar");
-            if(sideAvatar) sideAvatar.src = avatarSrc;
-            if(mainAvatar) mainAvatar.src = avatarSrc;
-        }
-
-        const tableBody = document.getElementById("billing-history-body");
-        if(tableBody && tableBody.children.length === 0) {
-            tableBody.innerHTML = `
-                <tr class="hover:bg-surface-container transition-colors">
-                    <td class="px-6 py-4">2024.03.15</td>
-                    <td class="px-6 py-4">Initial Node Allocation</td>
-                    <td class="px-6 py-4 text-primary-fixed">+500</td>
-                    <td class="px-6 py-4 text-on-surface-variant">$0.00</td>
-                    <td class="px-6 py-4 text-right"><span class="inline-flex items-center px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[9px] font-bold">COMPLETED</span></td>
-                </tr>
-            `;
-        }
-
-        revealUI();
-    }
-
-    // AUTH STATE MONITORING
-    const authTimeout = setTimeout(() => {
-        if (!auth.currentUser) {
-            console.warn("Auth timeout. Forcing reveal or redirect.");
-            if(localStorage.getItem("md_email")) {
-                 // Try to fallback to local data if we have it
-                 populateUI({ email: localStorage.getItem("md_email"), displayName: localStorage.getItem("md_name") });
-            } else {
-                 navigate("login.html");
-            }
-        }
-    }, 4000);
-
-    onAuthStateChanged(auth, (user) => {
-        clearTimeout(authTimeout);
-        if (user) {
-            localStorage.setItem("md_email", user.email);
-            localStorage.setItem("md_name", user.displayName || user.email.split('@')[0]);
-            populateUI(user);
-        } else {
-            console.warn("No active session.");
-            localStorage.clear();
-            navigate("login.html");
-        }
+  // ── دالة تحديث الواجهة من بيانات Firestore ──────────────────
+  function applyFirestoreData(userData) {
+    // 1. Available Credits — الرقم الكبير (نص أخضر text-primary-fixed)
+    const allBigNums = document.querySelectorAll('p.text-\\[48px\\], p[class*="text-[48px]"]');
+    allBigNums.forEach(el => {
+      if (el.classList.contains('text-primary-fixed')) {
+        el.textContent = Number(userData.credits ?? 0).toLocaleString();
+      }
     });
 
-    // Interaction Handlers
-    const editBtn = document.getElementById("edit-profile-btn");
-    if(editBtn) {
-        editBtn.onclick = async () => {
-            const newName = prompt("Enter new Director designation:", auth.currentUser?.displayName || "");
-            if(newName && newName !== auth.currentUser?.displayName) {
-                try {
-                    await updateProfile(auth.currentUser, { displayName: newName });
-                    localStorage.setItem("md_name", newName);
-                    document.getElementById("profile-name-display").textContent = newName.toUpperCase();
-                } catch (e) { console.error("Update failed", e); }
-            }
-        };
+    // 2. Navbar Credits (أعلى اليمين)
+    document.querySelectorAll('span').forEach(el => {
+      if (el.textContent.trim().match(/[\d,]+\s*CR/)) {
+        el.textContent = `${Number(userData.credits ?? 0).toLocaleString()} CR`;
+      }
+    });
+
+    // 3. الإحصائيات الثلاثة (text-on-surface) بالترتيب: renders / recharges / assets
+    const statBoxes = document.querySelectorAll('p[class*="text-[48px]"]');
+    statBoxes.forEach(el => {
+      if (el.classList.contains('text-on-surface')) {
+        const label = el.closest('.bg-surface')?.querySelector('[class*="text-label-xs"]')?.textContent?.toLowerCase() ?? '';
+        if (label.includes('render'))   el.textContent = userData.renders_executed ?? 0;
+        if (label.includes('recharge')) el.textContent = userData.recharge_cycles   ?? 0;
+        if (label.includes('asset'))    el.textContent = userData.saved_assets      ?? 0;
+      }
+    });
+
+    // 4. اسم المستخدم وإيميله
+    if (userData.name) {
+      const nameEl = document.querySelector('h2.text-primary-fixed');
+      if (nameEl) nameEl.textContent = userData.name;
+    }
+    if (userData.email) {
+      const emailEl = document.querySelector('p.text-on-surface-variant');
+      if (emailEl && emailEl.textContent.includes('@')) emailEl.textContent = userData.email;
     }
 
-    const uploadBtn = document.getElementById("upload-photo-trigger");
-    if(uploadBtn) {
-        uploadBtn.onclick = () => {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/*";
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if(file) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const base64 = ev.target.result;
-                        localStorage.setItem("md_avatar", base64);
-                        const sideAvatar = document.getElementById("sidebar-avatar");
-                        const mainAvatar = document.getElementById("main-avatar");
-                        if(sideAvatar) sideAvatar.src = base64;
-                        if(mainAvatar) mainAvatar.src = base64;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        };
+    // 5. خطة الاشتراك (shield label)
+    if (userData.plan) {
+      const shields = { free: "NO PLAN", creator: "CREATOR SHIELD", pro: "PRO SHIELD", studio: "STUDIO SHIELD" };
+      const shieldEl = document.querySelector('.text-primary-fixed.font-bold');
+      if (shieldEl) shieldEl.textContent = shields[userData.plan] ?? "NO PLAN";
     }
+
+    console.log("✅ Firestore sync — credits:", userData.credits ?? 0);
+  }
+
+  // ── تشغيل المستمع الحي ───────────────────────────────────────
+  onSnapshot(doc(db, "users", userDocId), (docSnap) => {
+    if (docSnap.exists()) {
+      applyFirestoreData(docSnap.data());
+    } else {
+      console.error("❌ المستند غير موجود في Firestore: users/" + userDocId);
+    }
+  }, (error) => {
+    console.error("❌ خطأ في الاتصال بـ Firestore:", error.message);
+  });
+
+  // ── وظائف الصفحة الأخرى (avatar, referral, nav) ─────────────
+  // صورة الأفاتار
+  var savedAvatar = localStorage.getItem("md_avatar");
+  if (savedAvatar) {
+    var img = document.querySelector(".w-32.h-32 img");
+    if (img) img.src = savedAvatar;
+  }
+  var uploadBtn = document.querySelector("button.absolute.-bottom-2");
+  if (uploadBtn) uploadBtn.onclick = function() {
+    var i = document.createElement("input"); i.type = "file"; i.accept = "image/*";
+    i.onchange = function(e) {
+      var f = e.target.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function(ev) {
+        var img = document.querySelector(".w-32.h-32 img");
+        if (img) img.src = ev.target.result;
+        localStorage.setItem("md_avatar", ev.target.result);
+      };
+      r.readAsDataURL(f);
+    };
+    i.click();
+  };
+
+  // كود الإحالة
+  var refCode = localStorage.getItem("md_ref_code") || ("MERCADREAM-" + Math.random().toString(36).substring(2,6).toUpperCase() + "-" + Math.floor(1000+Math.random()*9000));
+  localStorage.setItem("md_ref_code", refCode);
+  var codeEl = document.querySelector(".tracking-widest.text-on-surface");
+  if (codeEl) codeEl.textContent = refCode;
+
+  var copyBtn = document.querySelector("button[title='Copy Code']");
+  if (copyBtn) copyBtn.onclick = function() {
+    navigator.clipboard.writeText(refCode).then(function() {
+      copyBtn.querySelector(".material-symbols-outlined").textContent = "check";
+      setTimeout(function() { copyBtn.querySelector(".material-symbols-outlined").textContent = "content_copy"; }, 2000);
+    });
+  };
+  var waBtn = document.querySelector("button[title='Share WhatsApp']");
+  if (waBtn) waBtn.onclick = function() { window.open("https://wa.me/?text=Join MercaDream with my code " + refCode + "! https://mercadream-v2.vercel.app"); };
+  var twBtn = document.querySelector("button[title='Share Twitter/X']");
+  if (twBtn) twBtn.onclick = function() { window.open("https://twitter.com/intent/tweet?text=Join MercaDream " + refCode + " mercadream-v2.vercel.app"); };
+
+  // روابط الـ Navigation
+  document.querySelectorAll("nav a,aside nav a").forEach(function(a) {
+    var t = a.textContent.trim().toLowerCase();
+    if (t.includes("studio") || t.includes("production")) a.href = "studio.html";
+    else if (t.includes("assembly")) a.href = "assembly.html";
+    else if (t.includes("marketplace")) a.href = "directors.html";
+    else if (t.includes("power") || t.includes("bolt")) a.href = "pricing.html";
+    else if (t.includes("dashboard")) a.href = "directors.html";
+  });
+
+  var bb = document.querySelector("header button");
+  if (bb) bb.onclick = function() { window.location.href = "directors.html"; };
+  var upgBtn = document.querySelector("button.bg-primary-fixed.text-on-primary-fixed");
+  if (upgBtn) upgBtn.onclick = function() { window.location.href = "pricing.html"; };
+  var editBtn = document.querySelector("button.border.border-primary-fixed");
+  if (editBtn) editBtn.onclick = function() {
+    var n = prompt("Enter your name:", localStorage.getItem("md_name") || "");
+    if (n) localStorage.setItem("md_name", n);
+  };
 </script>
 </body></html>
+
+

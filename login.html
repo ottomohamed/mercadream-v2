@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -146,8 +146,28 @@
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
     </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="flex flex-col h-screen text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<body class="flex flex-col h-screen text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed"><script src="md-engine.js"></script>
 <div class="fixed inset-0 z-[-1] overflow-hidden">
 <!-- Increased opacity for better visibility as requested -->
 <video autoplay="" class="w-full h-full object-cover opacity-80" id="bgVideo" loop="" muted="" playsinline="">
@@ -226,7 +246,7 @@
 </div>
 </div>
 <div class="mt-4 flex justify-between font-technical-xs text-technical-xs text-on-surface-variant/60 px-2 uppercase">
-<span>Coord: [40.7128Â° N, 74.0060Â° W]</span>
+<span>Coord: [40.7128° N, 74.0060° W]</span>
 <span>Enc: AES-256-GCM</span>
 </div>
 </div>
@@ -327,3 +347,8 @@
     });
     </script>
 </body></html>
+
+
+
+
+

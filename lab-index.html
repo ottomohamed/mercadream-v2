@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -11,8 +11,28 @@ body{background:#020202;color:#e5e2e1;font-family:IBM Plex Mono,monospace;height
 .card:hover{border-color:#c8ff00;box-shadow:0 0 25px rgba(200,255,0,0.15);transform:translateY(-2px)}
 input{width:100%;background:#000;border:1px solid #434933;color:#c8ff00;padding:10px 14px;font-family:inherit;font-size:13px;outline:none;margin-bottom:12px}
 </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body>
+<body><script src="md-engine.js"></script>
 <div class="bg"></div>
 
 <div id="gate" style="text-align:center">
@@ -88,4 +108,10 @@ window.addEventListener("load",function(){
 </script>
 </body>
 </html>
+
+
+
+
+
+
 

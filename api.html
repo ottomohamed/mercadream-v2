@@ -1,9 +1,9 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM â€” API Documentation</title>
+<title>MERCADREAM — API Documentation</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{--acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif;}
@@ -122,8 +122,28 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
 @media(max-width:900px){main{grid-template-columns:1fr}.doc-nav{display:none}.doc-content{padding:24px 20px}}
 @media(max-width:768px){header{padding:0 20px}.hdr-nav{display:none}.bottom-nav{display:flex}body{padding-bottom:62px}footer{padding:24px 20px}}
 </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body>
+<body><script src="md-engine.js"></script>
 
 <header id="hdr">
   <a href="index.html" class="logo">
@@ -175,19 +195,19 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
   <div class="doc-content">
 
     <div class="api-hero">
-      <div class="api-hero-tag">REST API Â· VERSION 2.0</div>
+      <div class="api-hero-tag">REST API · VERSION 2.0</div>
       <h1>MercaDream <span>API.</span></h1>
-      <p>Programmatic access to the full MercaDream generation stack. Generate cinematic video, synthesize speech, compose music, and manage your Vault â€” all through a clean REST interface.</p>
+      <p>Programmatic access to the full MercaDream generation stack. Generate cinematic video, synthesize speech, compose music, and manage your Vault — all through a clean REST interface.</p>
     </div>
 
     <!-- B2B BANNER -->
     <div style="background:linear-gradient(135deg,rgba(200,255,0,0.04),rgba(0,0,0,0));border:1px solid rgba(200,255,0,0.2);padding:20px 24px;margin-bottom:28px;position:relative;overflow:hidden">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acid),transparent)"></div>
-      <div style="font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:8px;opacity:.7">DREAM EXTRACTORâ„¢ API â€” BUILD ON TOP OF US</div>
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--acid);margin-bottom:8px;opacity:.7">DREAM EXTRACTOR™ API — BUILD ON TOP OF US</div>
       <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--text-bright);margin-bottom:6px">The Most Cinematically Intelligent <span style="color:var(--acid)">AI API</span> on the Internet</div>
-      <div style="font-size:13px;color:var(--text);font-weight:300;line-height:1.65;margin-bottom:14px">Our Dream Extractorâ„¢ PhD Edition â€” trained with 6 doctoral disciplines in cinema â€” is available as an API. Build video production tools, creative platforms, or enterprise pipelines on top of our intelligence.</div>
+      <div style="font-size:13px;color:var(--text);font-weight:300;line-height:1.65;margin-bottom:14px">Our Dream Extractor™ PhD Edition — trained with 6 doctoral disciplines in cinema — is available as an API. Build video production tools, creative platforms, or enterprise pipelines on top of our intelligence.</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <a href="register.html" style="font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:8px 18px;background:var(--acid);color:#000;font-weight:700;text-decoration:none;transition:all .2s">GET API KEY â†’</a>
+        <a href="register.html" style="font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:8px 18px;background:var(--acid);color:#000;font-weight:700;text-decoration:none;transition:all .2s">GET API KEY ?</a>
         <a href="pricing.html" style="font-family:var(--mono);font-size:9px;letter-spacing:2px;padding:8px 18px;border:1px solid var(--border-b);color:var(--acid);text-decoration:none">VIEW PRICING</a>
       </div>
     </div>
@@ -211,8 +231,8 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
       <div class="sct-title">AUTHENTICATION</div>
       <div class="sct-sub">All API requests require authentication via Bearer token. Include your API key in the Authorization header.</div>
       <div class="sct-div"></div>
-      <div class="auth-card"><div class="badge">LIVE KEY</div><div class="key-val">mk_live_â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢x9pq7</div></div>
-      <div class="auth-card" style="border-color:rgba(255,186,63,0.2)"><div class="badge" style="color:var(--gold);border-color:rgba(255,186,63,0.3)">TEST KEY</div><div class="key-val">mk_test_â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢k3j8</div></div>
+      <div class="auth-card"><div class="badge">LIVE KEY</div><div class="key-val">mk_live_•••••••••••••••••x9pq7</div></div>
+      <div class="auth-card" style="border-color:rgba(255,186,63,0.2)"><div class="badge" style="color:var(--gold);border-color:rgba(255,186,63,0.3)">TEST KEY</div><div class="key-val">mk_test_•••••••••••••••••k3j8</div></div>
       <div class="ep-section-title">EXAMPLE REQUEST</div>
       <div class="code-block">
         <button class="copy-btn" onclick="copyCode(this)">COPY</button>
@@ -270,7 +290,7 @@ result = client.jobs.wait(job.id)
           <span class="method post">POST</span>
           <span class="ep-path">/v2/generate</span>
           <span class="ep-desc-short">Create generation job</span>
-          <span class="ep-chevron">â†’</span>
+          <span class="ep-chevron">?</span>
         </div>
         <div class="ep-body">
           <div class="ep-section-title">REQUEST BODY</div>
@@ -278,10 +298,10 @@ result = client.jobs.wait(job.id)
             <thead><tr><th>PARAMETER</th><th>TYPE</th><th>REQUIRED</th><th>DESCRIPTION</th></tr></thead>
             <tbody>
               <tr><td><span class="param-name">prompt</span></td><td><span class="param-type">string</span></td><td><span class="param-req">required</span></td><td>Cinematic description (max 1000 chars)</td></tr>
-              <tr><td><span class="param-name">resolution</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"720p" | "1080p" | "4k" | "8k" â€” default: "4k"</td></tr>
-              <tr><td><span class="param-name">duration</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Seconds: 15 | 30 | 60 | 120 â€” default: 30</td></tr>
-              <tr><td><span class="param-name">style</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Visual style preset â€” default: "cinematic"</td></tr>
-              <tr><td><span class="param-name">fps</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>24 | 30 | 60 â€” default: 24</td></tr>
+              <tr><td><span class="param-name">resolution</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"720p" | "1080p" | "4k" | "8k" — default: "4k"</td></tr>
+              <tr><td><span class="param-name">duration</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Seconds: 15 | 30 | 60 | 120 — default: 30</td></tr>
+              <tr><td><span class="param-name">style</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Visual style preset — default: "cinematic"</td></tr>
+              <tr><td><span class="param-name">fps</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>24 | 30 | 60 — default: 24</td></tr>
               <tr><td><span class="param-name">voice_id</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Voice model ID for narration</td></tr>
               <tr><td><span class="param-name">webhook_url</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>URL to receive completion event</td></tr>
             </tbody>
@@ -314,7 +334,7 @@ result = client.jobs.wait(job.id)
           <span class="method get">GET</span>
           <span class="ep-path">/v2/jobs/{job_id}</span>
           <span class="ep-desc-short">Get job status</span>
-          <span class="ep-chevron">â†’</span>
+          <span class="ep-chevron">?</span>
         </div>
         <div class="ep-body">
           <div class="ep-section-title">EXAMPLE RESPONSE (COMPLETED)</div>
@@ -339,14 +359,14 @@ result = client.jobs.wait(job.id)
           <span class="method get">GET</span>
           <span class="ep-path">/v2/jobs</span>
           <span class="ep-desc-short">List all jobs</span>
-          <span class="ep-chevron">â†’</span>
+          <span class="ep-chevron">?</span>
         </div>
         <div class="ep-body">
           <div class="ep-section-title">QUERY PARAMETERS</div>
           <table class="params-table">
             <tbody>
               <tr><td><span class="param-name">status</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Filter: "queued" | "processing" | "completed" | "failed"</td></tr>
-              <tr><td><span class="param-name">limit</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Max results (1â€“100, default: 20)</td></tr>
+              <tr><td><span class="param-name">limit</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Max results (1–100, default: 20)</td></tr>
               <tr><td><span class="param-name">before</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>ISO 8601 cursor for pagination</td></tr>
             </tbody>
           </table>
@@ -364,15 +384,15 @@ result = client.jobs.wait(job.id)
           <span class="method post">POST</span>
           <span class="ep-path">/v2/speech</span>
           <span class="ep-desc-short">Synthesize speech</span>
-          <span class="ep-chevron">â†’</span>
+          <span class="ep-chevron">?</span>
         </div>
         <div class="ep-body">
           <table class="params-table">
             <tbody>
               <tr><td><span class="param-name">text</span></td><td><span class="param-type">string</span></td><td><span class="param-req">required</span></td><td>Text to synthesize (max 5000 chars)</td></tr>
-              <tr><td><span class="param-name">voice_id</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Voice model ID â€” default: "neural-narrator-m"</td></tr>
-              <tr><td><span class="param-name">format</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"mp3" | "wav" | "flac" â€” default: "mp3"</td></tr>
-              <tr><td><span class="param-name">speed</span></td><td><span class="param-type">float</span></td><td><span class="param-opt">optional</span></td><td>0.5â€“2.0 â€” default: 1.0</td></tr>
+              <tr><td><span class="param-name">voice_id</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>Voice model ID — default: "neural-narrator-m"</td></tr>
+              <tr><td><span class="param-name">format</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"mp3" | "wav" | "flac" — default: "mp3"</td></tr>
+              <tr><td><span class="param-name">speed</span></td><td><span class="param-type">float</span></td><td><span class="param-opt">optional</span></td><td>0.5–2.0 — default: 1.0</td></tr>
             </tbody>
           </table>
         </div>
@@ -389,15 +409,15 @@ result = client.jobs.wait(job.id)
           <span class="method post">POST</span>
           <span class="ep-path">/v2/music</span>
           <span class="ep-desc-short">Compose music</span>
-          <span class="ep-chevron">â†’</span>
+          <span class="ep-chevron">?</span>
         </div>
         <div class="ep-body">
           <table class="params-table">
             <tbody>
               <tr><td><span class="param-name">prompt</span></td><td><span class="param-type">string</span></td><td><span class="param-req">required</span></td><td>Music description (genre, mood, instruments)</td></tr>
-              <tr><td><span class="param-name">duration</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Seconds: 15â€“300 â€” default: 60</td></tr>
-              <tr><td><span class="param-name">format</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"mp3" | "wav" | "flac" â€” default: "mp3"</td></tr>
-              <tr><td><span class="param-name">bpm</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>60â€“200 â€” auto-detected if omitted</td></tr>
+              <tr><td><span class="param-name">duration</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>Seconds: 15–300 — default: 60</td></tr>
+              <tr><td><span class="param-name">format</span></td><td><span class="param-type">string</span></td><td><span class="param-opt">optional</span></td><td>"mp3" | "wav" | "flac" — default: "mp3"</td></tr>
+              <tr><td><span class="param-name">bpm</span></td><td><span class="param-type">integer</span></td><td><span class="param-opt">optional</span></td><td>60–200 — auto-detected if omitted</td></tr>
             </tbody>
           </table>
         </div>
@@ -410,14 +430,14 @@ result = client.jobs.wait(job.id)
       <div class="sct-sub">All errors follow a consistent JSON structure with a code and human-readable message.</div>
       <div class="sct-div"></div>
       <div class="resp-codes">
-        <div class="resp-code ok"><div class="rc-code ok">200</div><div class="rc-desc">OK â€” Request successful</div></div>
-        <div class="resp-code ok"><div class="rc-code ok">201</div><div class="rc-desc">Created â€” Job successfully submitted</div></div>
-        <div class="resp-code info"><div class="rc-code info">400</div><div class="rc-desc">Bad Request â€” Invalid parameters or malformed JSON</div></div>
-        <div class="resp-code info"><div class="rc-code info">401</div><div class="rc-desc">Unauthorized â€” Missing or invalid API key</div></div>
-        <div class="resp-code info"><div class="rc-code info">403</div><div class="rc-desc">Forbidden â€” Feature not available on your plan</div></div>
-        <div class="resp-code info"><div class="rc-code info">404</div><div class="rc-desc">Not Found â€” Job or resource does not exist</div></div>
-        <div class="resp-code err"><div class="rc-code err">429</div><div class="rc-desc">Too Many Requests â€” Rate limit exceeded</div></div>
-        <div class="resp-code err"><div class="rc-code err">500</div><div class="rc-desc">Internal Server Error â€” Please contact support</div></div>
+        <div class="resp-code ok"><div class="rc-code ok">200</div><div class="rc-desc">OK — Request successful</div></div>
+        <div class="resp-code ok"><div class="rc-code ok">201</div><div class="rc-desc">Created — Job successfully submitted</div></div>
+        <div class="resp-code info"><div class="rc-code info">400</div><div class="rc-desc">Bad Request — Invalid parameters or malformed JSON</div></div>
+        <div class="resp-code info"><div class="rc-code info">401</div><div class="rc-desc">Unauthorized — Missing or invalid API key</div></div>
+        <div class="resp-code info"><div class="rc-code info">403</div><div class="rc-desc">Forbidden — Feature not available on your plan</div></div>
+        <div class="resp-code info"><div class="rc-code info">404</div><div class="rc-desc">Not Found — Job or resource does not exist</div></div>
+        <div class="resp-code err"><div class="rc-code err">429</div><div class="rc-desc">Too Many Requests — Rate limit exceeded</div></div>
+        <div class="resp-code err"><div class="rc-code err">500</div><div class="rc-desc">Internal Server Error — Please contact support</div></div>
       </div>
     </div>
 
@@ -469,20 +489,20 @@ result = client.jobs.wait(job.id)
     <a href="api.html" class="active-link">API</a>
     <a href="ethics.html">Ethics</a>
   </div>
-  <div class="foot-copy">Â© 2025 MERCADREAM</div>
+  <div class="foot-copy">© 2025 MERCADREAM</div>
 </footer>
 
 <nav class="bottom-nav">
-  <a href="index.html" class="bn-item"><span class="bi">âŒ‚</span><span>HOME</span></a>
-  <a href="studio.html" class="bn-item"><span class="bi">âš¡</span><span>STUDIO</span></a>
-  <a href="assembly.html" class="bn-item"><span class="bi">ðŸ—„</span><span>VAULT</span></a>
-  <a href="pricing.html" class="bn-item"><span class="bi">ðŸ’Ž</span><span>PLANS</span></a>
+  <a href="index.html" class="bn-item"><span class="bi">¦</span><span>HOME</span></a>
+  <a href="studio.html" class="bn-item"><span class="bi">?</span><span>STUDIO</span></a>
+  <a href="assembly.html" class="bn-item"><span class="bi">??</span><span>VAULT</span></a>
+  <a href="pricing.html" class="bn-item"><span class="bi">??</span><span>PLANS</span></a>
 </nav>
 
 <script>
 function scrollSec(id,el){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.dn-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
 function copyText(t){navigator.clipboard.writeText(t).then(()=>{});} 
-function copyCode(btn){const code=btn.parentElement.textContent.replace('COPY','').trim();navigator.clipboard.writeText(code).then(()=>{btn.textContent='âœ“ COPIED';setTimeout(()=>btn.textContent='COPY',1500);});}
+function copyCode(btn){const code=btn.parentElement.textContent.replace('COPY','').trim();navigator.clipboard.writeText(code).then(()=>{btn.textContent='? COPIED';setTimeout(()=>btn.textContent='COPY',1500);});}
 const sdkCodes={python:`<span class="c"># Install</span>\n<span class="k">pip install</span> mercadream\n\n<span class="k">from</span> mercadream <span class="k">import</span> MercaClient\nclient = MercaClient(<span class="s">"mk_live_your_key"</span>)\njob = client.generate(prompt=<span class="s">"Neon rain on Tokyo"</span>, resolution=<span class="s">"4k"</span>)\nresult = client.jobs.wait(job.id)\n<span class="k">print</span>(result.download_url)`,js:`<span class="c">// Install: npm install mercadream</span>\n<span class="k">import</span> { MercaClient } <span class="k">from</span> <span class="s">'mercadream'</span>;\n<span class="k">const</span> client = <span class="k">new</span> MercaClient(<span class="s">'mk_live_your_key'</span>);\n<span class="k">const</span> job = <span class="k">await</span> client.generate({ prompt: <span class="s">'Neon rain on Tokyo'</span>, resolution: <span class="s">'4k'</span> });\n<span class="k">const</span> result = <span class="k">await</span> client.jobs.wait(job.id);\nconsole.log(result.downloadUrl);`,rust:`<span class="c">// Cargo.toml: mercadream = "2.0"</span>\n<span class="k">use</span> mercadream::MercaClient;\n\n<span class="k">let</span> client = MercaClient::new(<span class="s">"mk_live_your_key"</span>);\n<span class="k">let</span> job = client.generate(GenerateRequest {\n    prompt: <span class="s">"Neon rain on Tokyo"</span>.into(),\n    resolution: Some(<span class="s">"4k"</span>.into()),\n    ..Default::default()\n}).await?;`,go:`<span class="c">// go get github.com/mercadream/go-sdk</span>\n<span class="k">import</span> merca <span class="s">"github.com/mercadream/go-sdk"</span>\n\nclient := merca.New(<span class="s">"mk_live_your_key"</span>)\njob, _ := client.Generate(merca.GenerateRequest{\n    Prompt: <span class="s">"Neon rain on Tokyo"</span>,\n    Resolution: <span class="s">"4k"</span>,\n})`};
 function showSdk(el,lang){document.querySelectorAll('.sdk-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');document.getElementById('sdkCode').innerHTML=`<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">COPY</button>${sdkCodes[lang]}</div>`;}
 function setLang(l){document.documentElement.lang=l;document.querySelectorAll('.lb').forEach(b=>b.classList.toggle('on',b.textContent.toLowerCase()===l));localStorage.setItem('md_lang',l);}
@@ -491,4 +511,10 @@ window.onload=()=>{const s=localStorage.getItem('md_lang')||'en';setLang(s);};
 </script>
 </body>
 </html>
+
+
+
+
+
+
 

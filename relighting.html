@@ -1,4 +1,24 @@
-ï»¿<html class="dark" lang="en"><head></head><body class="bg-void-black text-on-background font-body-md overflow-x-hidden min-h-screen">```html
+<html class="dark" lang="en"><head><script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+</head><body class="bg-void-black text-on-background font-body-md overflow-x-hidden min-h-screen"><script src="md-engine.js"></script>```html
 
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -310,7 +330,7 @@
 <div class="absolute inset-0 transition-transform duration-75 pointer-events-none" id="dial-pointer-axis" style="transform: rotate(0deg);">
 <div class="w-4 h-4 bg-neon-acid absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-void-black shadow-[0_0_15px_rgba(200,255,0,0.6)]"></div>
 </div>
-<span class="font-label-technical text-[14px] text-neon-acid relative z-10 pointer-events-none drop-shadow-sm" id="angle-readout">0Â°</span>
+<span class="font-label-technical text-[14px] text-neon-acid relative z-10 pointer-events-none drop-shadow-sm" id="angle-readout">0°</span>
 </div>
 </div>
 <div class="space-y-3">
@@ -474,7 +494,7 @@ const MD_Core = {
             if (a < 0) a += 360;
             this.state.angle = a % 360;
             this.els.dialAxis.style.transform = `rotate(${this.state.angle}deg)`;
-            this.els.angleReadout.textContent = `${this.state.angle}Â°`;
+            this.els.angleReadout.textContent = `${this.state.angle}°`;
         };
 
         this.els.dial.onmousedown = (e) => { dragging = true; update(e); };
@@ -555,3 +575,8 @@ const MD_Core = {
 window.addEventListener("load", () => MD_Core.init());
 </script>
 ```</body></html>
+
+
+
+
+

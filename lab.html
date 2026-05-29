@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -38,8 +38,28 @@
           }
         }
     </script>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="h-screen flex flex-col bg-void-black selection:bg-acid-green selection:text-black">
+<body class="h-screen flex flex-col bg-void-black selection:bg-acid-green selection:text-black"><script src="md-engine.js"></script>
 
 <header class="bg-panel-glass backdrop-blur-md border-b border-grid-line/10 shadow-[0_0_15px_rgba(200,255,0,0.15)] flex justify-between items-center w-full px-margin h-16 shrink-0 z-50">
     <div class="flex items-center gap-4">
@@ -171,13 +191,13 @@ var ANALYSTS = [
     prompt:"Analyze this content. Extract: dominant RGB triplets, color temperature (Kelvin), luminance 0-255, saturation coefficient, contrast ratio, color entropy. Format: PARAM: value [unit]" },
   { id:"motion",   name:"MOTION_VECTORIZER",  icon:"speed",        color:"#00f0ff", specialty:"Motion Dynamics & Vector Fields",
     system:"You are a PhD physicist in kinematics with 25 years experience. Output ONLY equations and vectors.",
-    prompt:"Analyze motion. Extract: velocity v(x,y,z) m/s, acceleration m/sÂ², trajectory equation, angular velocity rad/s, momentum kg*m/s, kinetic energy Joules. Format: PARAM: value [unit]" },
+    prompt:"Analyze motion. Extract: velocity v(x,y,z) m/s, acceleration m/s², trajectory equation, angular velocity rad/s, momentum kg*m/s, kinetic energy Joules. Format: PARAM: value [unit]" },
   { id:"geometry", name:"GEOMETRY_MASTER",    icon:"architecture", color:"#a300ff", specialty:"Spatial Mathematics & 3D Geometry",
     system:"You are a PhD mathematician in computational geometry with 28 years experience. Output ONLY geometric data.",
-    prompt:"Analyze geometry. Extract: dimensions (W x H x D) meters, aspect ratio, bounding box coords, surface area mÂ², symmetry axes, vanishing points (x,y). Format: PARAM: value [unit]" },
+    prompt:"Analyze geometry. Extract: dimensions (W x H x D) meters, aspect ratio, bounding box coords, surface area m², symmetry axes, vanishing points (x,y). Format: PARAM: value [unit]" },
   { id:"physics",  name:"PHYSICS_CALCULATOR", icon:"science",      color:"#FFD700", specialty:"Classical Physics",
     system:"You are a PhD physicist with 35 years experience. Output ONLY physical equations and values.",
-    prompt:"Calculate physics. Extract: F=mg Newtons, mass kg, center of mass (x,y,z), friction coefficient Î¼, Reynolds number, pressure Pa, temperature K. Format: PARAM: equation = value [unit]" },
+    prompt:"Calculate physics. Extract: F=mg Newtons, mass kg, center of mass (x,y,z), friction coefficient µ, Reynolds number, pressure Pa, temperature K. Format: PARAM: equation = value [unit]" },
   { id:"pattern",  name:"PATTERN_RECOGNIZER", icon:"hub",          color:"#ff44aa", specialty:"Signal Processing & Pattern Mathematics",
     system:"You are a PhD data scientist in Fourier analysis with 22 years experience. Output ONLY mathematical patterns.",
     prompt:"Analyze patterns. Extract: dominant frequencies Hz, fractal dimension D, periodicity seconds, entropy H=-sum(p*log(p)), variance, kurtosis, noise-to-signal dB. Format: PARAM: value [unit]" },
@@ -352,3 +372,9 @@ window.addEventListener("load", function() {
 </script>
 </body>
 </html>
+
+
+
+
+
+

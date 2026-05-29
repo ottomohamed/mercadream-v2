@@ -149,8 +149,28 @@
           },
         }
       </script>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container h-screen w-screen overflow-hidden flex flex-col">
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container h-screen w-screen overflow-hidden flex flex-col"><script src="md-engine.js"></script>
 <div class="scanline-overlay"></div>
 <header class="h-16 flex items-center justify-between px-md border-b border-outline-variant bg-surface-container-lowest z-50 shadow-[0_0_12px_rgba(168,215,0,0.2)]">
 <div class="flex items-center gap-md">
@@ -406,7 +426,7 @@ OPEN ASSEMBLY →
 </div>
 </footer>
 <script>
-        let credits = parseInt(localStorage.getItem('md_credits') || '0');
+        let credits = parseInt(localStorage.getItem('md_credits') || '0'); // سيُحدَّث من Firebase تلقائياً
         let baseCost = 12;
 
         const costTable = { 'Drama': 12, 'Action': 25, 'Comedy': 15, 'Documentary': 8 };
@@ -483,8 +503,8 @@ OPEN ASSEMBLY →
                 addLogLine('JOB SUBMITTED: ' + jobId);
 
                 credits -= cost;
-                localStorage.setItem('md_credits', credits);
                 updateCredits();
+                if(window.__deductCredits) window.__deductCredits(cost);
 
                 let attempts = 0;
                 const poll = setInterval(async () => {
@@ -809,8 +829,8 @@ OPEN ASSEMBLY →
 
                 // خصم الرصيد
                 credits -= cost;
-                localStorage.setItem('md_credits', credits);
                 updateCredits();
+                if(window.__deductCredits) window.__deductCredits(cost);
                 if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...';
 
                 // polling
@@ -890,5 +910,31 @@ OPEN ASSEMBLY →
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }
     </script>
+
+<script type="module">
+  import { deductCredits, getCurrentCredits } from "/js/firebase-credits.js";
+
+  // اجعل deductCredits متاحة للسكريبت الداخلي
+  window.__deductCredits = deductCredits;
+
+  // عند كل تحديث من Firestore — حدّث متغير credits ودالة updateCredits
+  window.addEventListener('creditsUpdated', (e) => {
+    // وصول لـ credits داخل الـ IIFE عبر localStorage المُحدَّث
+    const newVal = e.detail.credits;
+    localStorage.setItem('md_credits', newVal);
+    // تحديث العناصر مباشرة بدون انتظار
+    const fmt = Number(newVal).toLocaleString();
+    const topEl = document.getElementById('top-credits');
+    const footEl = document.getElementById('footer-credits');
+    if (topEl) topEl.innerText = fmt + ' CR';
+    if (footEl) footEl.innerText = fmt + ' CR';
+  });
+</script>
 </body></html>
+
+
+
+
+
+
 

@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -125,8 +125,28 @@
             background-image: radial-gradient(circle, #ffffff05 1px, transparent 1px);
         }
     </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="bg-void-black text-on-surface font-body-md overflow-x-hidden">
+<body class="bg-void-black text-on-surface font-body-md overflow-x-hidden"><script src="md-engine.js"></script>
 <!-- TopAppBar -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
 <div class="flex items-center gap-4">
@@ -243,7 +263,7 @@
 </div>
 <button class="flex-1 max-w-2xl bg-neon-acid text-on-primary py-5 px-8 font-label-technical text-label-technical font-bold text-center flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span class="text-lg">CONVERT â€” 3 CREDITS</span>
+<span class="text-lg">CONVERT — 3 CREDITS</span>
 </button>
 <div class="hidden md:flex flex-col items-end">
 <span class="font-label-caps text-label-caps text-outline uppercase">Est. Time</span>
@@ -256,7 +276,7 @@
 <div class="flex items-center gap-6">
 <span class="font-label-caps text-label-caps text-silver-technical">GPU_LOAD: 84%</span>
 <span class="font-label-caps text-label-caps text-silver-technical">THREAD_SYNC: OPTIMAL</span>
-<span class="hidden md:block font-label-caps text-label-caps text-neon-acid font-bold uppercase">Â©2024 MERCADREAM OPERATING SYSTEM // CORE_V.2.0.4</span>
+<span class="hidden md:block font-label-caps text-label-caps text-neon-acid font-bold uppercase">©2024 MERCADREAM OPERATING SYSTEM // CORE_V.2.0.4</span>
 </div>
 <div class="flex gap-4">
 <a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors cursor-pointer" href="#">TERMINAL</a>
@@ -284,7 +304,15 @@
 <span class="font-label-caps text-[8px] text-outline-variant uppercase">Telemetry Signal Strong</span>
 </div>
 </div>
-<script src="/js/navigation.js"></script><script>var sf=null,fmt="MP4",COST=3;var uz=document.querySelector(".technical-grid.technical-border");if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="video/*,audio/*";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;uz.innerHTML="<div style=\"padding:24px;text-align:center\"><div style=\"color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:12px;margin-bottom:8px\"> FILE LOADED</div><div style=\"color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:10px\">"+f.name.substring(0,40)+"</div><div style=\"color:#434933;font-family:IBM Plex Mono,monospace;font-size:9px;margin-top:4px\">"+(f.size/1024/1024).toFixed(1)+" MB</div></div>";};i.click();};}document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(btn){btn.onclick=function(){fmt=btn.textContent.trim();document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(b){b.style.background="";b.style.color="";b.style.borderColor="";});btn.style.background="#c8ff00";btn.style.color="#060606";btn.style.borderColor="#c8ff00";};});var ql=document.querySelector("input[type=range]");var qd=document.querySelector(".text-neon-acid.font-label-technical");var qlabels=["LOW","MEDIUM","HIGH","ULTRA 4K"];if(ql)ql.oninput=function(){if(qd)qd.textContent=qlabels[this.value-1]||"ULTRA 4K";};function log(msg){var t=document.getElementById("terminal-log");if(t){t.innerHTML+="<div style=\"color:#c8ff00;margin:2px 0\">$ "+msg+"</div>";t.scrollTop=t.scrollHeight;}}function go(){if(!sf){alert("Upload a file first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-convert");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var terminal=document.createElement("div");terminal.id="terminal-log";terminal.style.cssText="position:fixed;bottom:80px;left:0;right:0;max-width:896px;margin:0 auto;background:#0a0a0a;border:1px solid #434933;padding:12px;font-family:IBM Plex Mono,monospace;font-size:10px;color:#c8ff00;height:100px;overflow-y:auto;z-index:100";document.body.appendChild(terminal);var steps=["ffmpeg -i input."+sf.name.split(".").pop()+" -c:v libx264","analyzing bitstream...","remuxing to "+fmt+"...","applying codec H.265...","optimizing output bitrate...","finalizing output file...","conversion complete!"];var si=0;var iv=setInterval(function(){if(si<steps.length){log(steps[si]);si++;}else{clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  DOWNLOAD";}log("OUTPUT: mercadream_converted."+fmt.toLowerCase());}},600);}window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button");if(btn){btn.id="btn-convert";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+<script src="/js/navigation.js"></script><script>var sf=null,fmt="MP4",COST=3;var uz=document.querySelector(".technical-grid.technical-border");if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="video/*,audio/*";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;uz.innerHTML="<div style=\"padding:24px;text-align:center\"><div style=\"color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:12px;margin-bottom:8px\"> FILE LOADED</div><div style=\"color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:10px\">"+f.name.substring(0,40)+"</div><div style=\"color:#434933;font-family:IBM Plex Mono,monospace;font-size:9px;margin-top:4px\">"+(f.size/1024/1024).toFixed(1)+" MB</div></div>";};i.click();};}document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(btn){btn.onclick=function(){fmt=btn.textContent.trim();document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(b){b.style.background="";b.style.color="";b.style.borderColor="";});btn.style.background="#c8ff00";btn.style.color="#060606";btn.style.borderColor="#c8ff00";};});var ql=document.querySelector("input[type=range]");var qd=document.querySelector(".text-neon-acid.font-label-technical");var qlabels=["LOW","MEDIUM","HIGH","ULTRA 4K"];if(ql)ql.oninput=function(){if(qd)qd.textContent=qlabels[this.value-1]||"ULTRA 4K";};function log(msg){var t=document.getElementById("terminal-log");if(t){t.innerHTML+="<div style=\"color:#c8ff00;margin:2px 0\">$ "+msg+"</div>";t.scrollTop=t.scrollHeight;}}async function go(){if(!sf){alert("Upload a file first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-convert");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var terminal=document.createElement("div");terminal.id="terminal-log";terminal.style.cssText="position:fixed;bottom:80px;left:0;right:0;max-width:896px;margin:0 auto;background:#0a0a0a;border:1px solid #434933;padding:12px;font-family:IBM Plex Mono,monospace;font-size:10px;color:#c8ff00;height:100px;overflow-y:auto;z-index:100";document.body.appendChild(terminal);var steps=["ffmpeg -i input."+sf.name.split(".").pop()+" -c:v libx264","analyzing bitstream...","remuxing to "+fmt+"...","applying codec H.265...","optimizing output bitrate...","finalizing output file...","conversion complete!"];var si=0;var iv=setInterval(function(){if(si<steps.length){log(steps[si]);si++;}else{clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  DOWNLOAD";}log("OUTPUT: mercadream_converted."+fmt.toLowerCase());}},600);}window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button");if(btn){btn.id="btn-convert";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+
+
+
+
+
+
+
+
 
 
 

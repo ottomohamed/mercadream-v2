@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -144,8 +144,28 @@
             box-shadow: 0 0 10px rgba(200, 255, 0, 0.4);
         }
     </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="micro-grid">
+<body class="micro-grid"><script src="md-engine.js"></script>
 <!-- TopNavBar -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-14 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
 <div class="flex items-center gap-4">
@@ -333,12 +353,12 @@
 </div>
 <button class="bg-neon-acid hover:bg-neon-acid/90 text-void-black px-12 py-3 font-label-technical font-bold text-lg flex items-center gap-3 transition-all active:scale-95 group">
 <span class="material-symbols-outlined group-hover:animate-pulse" data-icon="bolt" data-weight="fill">bolt</span>
-            [ GENERATE CROWD â€” 110 CREDITS ]
+            [ GENERATE CROWD — 110 CREDITS ]
         </button>
 </div>
 <!-- Footer -->
 <footer class="fixed bottom-0 w-full hidden md:flex justify-between items-center px-gutter py-1 bg-void-black/90 text-[8px] pointer-events-none opacity-50 z-40">
-<span class="font-label-caps text-silver-technical uppercase">Â©2024 MERCADREAM CORE. ALL SYSTEMS OPERATIONAL.</span>
+<span class="font-label-caps text-silver-technical uppercase">©2024 MERCADREAM CORE. ALL SYSTEMS OPERATIONAL.</span>
 <div class="flex gap-4">
 <span class="font-label-caps text-neon-acid">SYSTEM_LOGS</span>
 <span class="font-label-caps text-neon-acid">TELEMETRY</span>
@@ -354,9 +374,17 @@ if(sl&&sizeDisplay)sl.oninput=function(){sizeDisplay.textContent=parseInt(this.v
 document.querySelectorAll(".grid-cols-3 button").forEach(function(btn){btn.onclick=function(){density=btn.textContent.trim();document.querySelectorAll(".grid-cols-3 button").forEach(function(b){b.style.background="";b.style.color="";b.style.borderColor="";});btn.style.background="rgba(200,255,0,0.2)";btn.style.color="#c8ff00";btn.style.borderColor="#c8ff00";};});
 document.querySelectorAll(".grid-cols-2 .technical-border,.grid-cols-2 .bg-neon-acid").forEach(function(btn){btn.onclick=function(){behavior=btn.querySelector(".font-label-technical").textContent.trim();document.querySelectorAll(".grid-cols-2 .technical-border,.grid-cols-2 .bg-neon-acid").forEach(function(b){b.style.background="";b.style.color="";});btn.style.background="#c8ff00";btn.querySelector(".material-symbols-outlined").style.color="#000";btn.querySelector(".font-label-technical").style.color="#000";};});
 document.querySelectorAll(".flex.border.border-outline-variant button").forEach(function(btn){btn.onclick=function(){lighting=btn.textContent.trim();document.querySelectorAll(".flex.border.border-outline-variant button").forEach(function(b){b.style.background="";b.style.color="";});btn.style.background="rgba(200,255,0,0.2)";btn.style.color="#c8ff00";};});
-function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(localStorage.getItem("md_credits")||"0");if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);localStorage.setItem("md_credits",c-COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
+async function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
 window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button.bg-neon-acid");if(btn){btn.id="btn-crowd";btn.onclick=go;}var bb=document.querySelector("header .material-symbols-outlined");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
 </script><script src="/js/pipeline.js"></script></body></html>
+
+
+
+
+
+
+
+
 
 
 

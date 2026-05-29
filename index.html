@@ -105,8 +105,28 @@
         .ca-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
         .ca-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
     </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden">
+<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden"><script src="md-engine.js"></script>
 <nav class="fixed top-0 w-full z-[100] bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/30 h-20 flex items-center px-margin-mobile md:px-margin-desktop justify-between" id="main-nav">
 <div class="flex items-center gap-4">
 <div class="font-headline text-xl md:text-2xl tracking-[0.2em] text-white font-black uppercase">MercaDream</div>
@@ -375,3 +395,8 @@
     });
 </script>
 </body></html>
+
+
+
+
+

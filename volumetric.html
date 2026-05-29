@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -122,8 +122,28 @@
             }
         }
     </script>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="selection:bg-neon-acid selection:text-void-black">
+<body class="selection:bg-neon-acid selection:text-void-black"><script src="md-engine.js"></script>
 <!-- Standard MercaDream Header -->
 <header class="flex justify-between items-center w-full px-10 py-4 fixed top-0 z-50 bg-void-black border-b border-surface-variant">
 <div class="flex items-center gap-6">
@@ -329,7 +349,7 @@
 <!-- Execute Button -->
 <button class="h-12 bg-neon-acid px-10 flex items-center gap-4 hover:brightness-110 active:scale-95 transition-all neon-glow" id="btn-faceswap">
 <span class="material-symbols-outlined text-void-black font-bold">bolt</span>
-<span class="font-label-technical text-sm font-bold text-void-black uppercase tracking-widest">Execute Face Swap — 8 CR</span>
+<span class="font-label-technical text-sm font-bold text-void-black uppercase tracking-widest">Execute Face Swap � 8 CR</span>
 </button>
 <!-- System Meta -->
 <div class="flex flex-col items-end">
@@ -502,3 +522,8 @@
     });
 </script>
 </body></html>
+
+
+
+
+

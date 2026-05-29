@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -163,8 +163,28 @@
     pointer-events: none;
     z-index: 5;
   }
-</style></head>
-<body class="text-on-background font-body-md min-h-screen pb-48 md:pb-32">
+</style><script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+</head>
+<body class="text-on-background font-body-md min-h-screen pb-48 md:pb-32"><script src="md-engine.js"></script>
 <div class="scanline top-0"></div>
 <!-- Top Navigation Shell -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
@@ -347,13 +367,13 @@
 </div>
 <button class="w-full md:w-auto flex items-center justify-center gap-4 bg-neon-acid px-6 md:px-12 py-3 md:py-4 font-label-technical text-[13px] md:text-[14px] font-bold text-void-black hover:bg-white transition-all active:scale-95 glow-acid shadow-neon-acid/20" id="btn-faceswap">
 <span class="material-symbols-outlined text-[20px]">bolt</span>
-          SWAP FACE â€” 8 CREDITS
+          SWAP FACE — 8 CREDITS
         </button>
 </div>
 </div>
 <!-- Fine Print Footer -->
 <div class="bg-void-black border-t border-outline-variant/30 py-2 px-margin-mobile md:px-margin-desktop flex flex-wrap justify-between items-center gap-2">
-<span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical opacity-50 uppercase">Â©2024 MERCADREAM OS // CORE_V.2.0.4</span>
+<span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical opacity-50 uppercase">©2024 MERCADREAM OS // CORE_V.2.0.4</span>
 <div class="flex gap-4">
 <span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">TERMINAL</span>
 <span class="font-label-caps text-[8px] md:text-label-caps text-silver-technical hover:text-neon-acid cursor-pointer transition-colors">DOCS</span>
@@ -449,7 +469,7 @@ function startFaceSwap() {
                 btn.disabled = false;
                 btn.style.background = '#c8ff00';
                 btn.style.color = '#060606';
-                btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE â€” 8 CREDITS';
+                btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — 8 CREDITS';
             }
             
             // Centralized pipeline completion
@@ -487,3 +507,8 @@ window.addEventListener('load', function() {
 </script>
 <script src="/js/pipeline.js"></script>
 </body></html>
+
+
+
+
+

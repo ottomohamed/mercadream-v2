@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -116,8 +116,28 @@
         }
       }
     </script>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black">
+<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black"><script src="md-engine.js"></script>
 <!-- TOP APP BAR -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
 <div class="flex items-center gap-4">
@@ -162,7 +182,7 @@
 <div class="absolute top-2 left-2 font-label-caps text-label-caps text-outline-variant group-hover:text-neon-acid transition-colors">MODULE_ID: UPL_01</div>
 <span class="material-symbols-outlined text-4xl text-silver-technical mb-4 group-hover:text-neon-acid transition-colors" data-icon="upload_file">upload_file</span>
 <h3 class="font-label-technical text-body-md text-primary mb-1">Drag &amp; drop your photo here or click to browse</h3>
-<p class="font-label-caps text-label-caps text-silver-technical uppercase">JPG, PNG, WEBP — Max 10MB</p>
+<p class="font-label-caps text-label-caps text-silver-technical uppercase">JPG, PNG, WEBP � Max 10MB</p>
 <!-- SCANNING LINE EFFECT (Decorative) -->
 <div class="absolute inset-0 scanline pointer-events-none opacity-20"></div>
 </div>
@@ -243,7 +263,7 @@
 </div>
 <button class="w-full md:w-auto px-12 py-4 bg-neon-acid text-void-black font-headline-lg-mobile md:font-label-technical font-bold flex items-center justify-center gap-3 hover:shadow-[0_0_20px_rgba(200,255,0,0.4)] transition-all active:scale-95 group">
 <span class="material-symbols-outlined" data-icon="bolt" data-weight="fill">bolt</span>
-            [⚡ ANIMATE — 10 CREDITS]
+            [? ANIMATE � 10 CREDITS]
             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
 </button>
 <div class="hidden md:flex gap-6">
@@ -271,7 +291,7 @@ function triggerUpload(){
       var z=document.getElementById('upload-zone');
       if(z){
         z.innerHTML='<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9">'+
-          '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00">✓ PHOTO READY</div>';
+          '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00">? PHOTO READY</div>';
       }
     };
     r.readAsDataURL(f);
@@ -292,7 +312,7 @@ function selectStyle(s){
 
 function startAnimate(){
   if(!uploadedFile){alert('Please upload a photo first.');return;}
-  var c=parseInt(localStorage.getItem('md_credits')||'0');
+  var c=parseInt(await MDEngine.deduct(COST);
   if(c<COST){alert('Need '+COST+' credits. You have: '+c);window.location.href='pricing.html';return;}
   var btn=document.getElementById('btn-animate');
   if(btn){btn.disabled=true;btn.style.background='#8aad00';}
@@ -302,9 +322,9 @@ function startAnimate(){
     if(btn)btn.textContent='PROCESSING... '+p+'%';
     if(p>=100){
       clearInterval(iv);
-      localStorage.setItem('md_credits',c-COST);
+      await MDEngine.deduct(COST);
       if(window.MD)window.MD.updateCredits();
-      if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent='✓ COMPLETE — DOWNLOAD OR SEND TO ASSEMBLY';}
+      if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent='? COMPLETE � DOWNLOAD OR SEND TO ASSEMBLY';}
       var d=document.getElementById('btn-download');
       var a=document.getElementById('btn-to-assembly');
       if(d){d.style.opacity='1';d.style.cursor='pointer';d.onclick=function(){alert('In production this downloads your animated video!');};}
@@ -325,6 +345,14 @@ window.addEventListener('load',function(){
 });
 </script>
 <script src="/js/pipeline.js"></script></body></html>
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -42,20 +42,13 @@
             background: #c8ff00;
         }
         .main-container-calc {
-            height: calc(100vh - 64px - 64px); /* Header 64px + Footer 64px */
+            height: calc(100vh - 64px - 64px);
         }
 
-        /* Typography Responsiveness */
         @media (max-width: 768px) {
-            .font-display-lg {
-                font-size: 24px !important;
-            }
-            .font-headline-lg {
-                font-size: 20px !important;
-            }
-            h1.font-headline-lg {
-                font-size: 18px !important;
-            }
+            .font-display-lg { font-size: 24px !important; }
+            .font-headline-lg { font-size: 20px !important; }
+            h1.font-headline-lg { font-size: 18px !important; }
         }
     </style>
 <script id="tailwind-config">
@@ -108,8 +101,28 @@
             },
         }
     </script>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black min-h-screen overflow-hidden flex flex-col">
+<body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black min-h-screen overflow-hidden flex flex-col"><script src="md-engine.js"></script>
 <!-- TopAppBar -->
 <header class="bg-void-black text-neon-acid font-label-technical border-b border-slate-data flex justify-between items-center h-16 px-margin-desktop w-full shrink-0">
 <div class="flex items-center gap-6">
@@ -127,7 +140,7 @@
 </div>
 <div class="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 border border-slate-data">
 <span class="material-symbols-outlined text-cyber-gold text-[16px]">account_balance_wallet</span>
-<span class="font-label-technical text-cyber-gold">15 CREDITS</span>
+<span class="font-label-technical text-cyber-gold"><span id="credit-display">15</span> CREDITS</span>
 </div>
 <button class="p-2 hover:bg-surface-container-high transition-colors active:scale-95 duration-100">
 <span class="material-symbols-outlined text-[20px]">settings_input_component</span>
@@ -142,8 +155,8 @@
 <div>
 <h2 class="font-display-lg text-display-lg uppercase tracking-tighter text-primary">Neural Physics</h2>
 <p class="font-technical-sm text-silver-technical mt-0.5 max-w-xl">
-                        Real-time volumetric solving via AI precision kernels.
-                    </p>
+                    Real-time volumetric solving via AI precision kernels. Powered by Wavespeed v1.
+                </p>
 </div>
 <div class="flex flex-col items-end">
 <span class="font-label-xs text-silver-technical">UNIT_COST</span>
@@ -154,27 +167,27 @@
 <!-- Left Column: Upload & Preview -->
 <div class="col-span-12 lg:col-span-8 flex flex-col gap-gutter h-full">
 <!-- Upload Zone -->
-<div class="bg-surface-container-low border border-slate-data p-4 flex flex-col items-center justify-center min-h-[140px] max-h-[25vh] group cursor-pointer glow-hover transition-all relative overflow-hidden shrink-0">
+<div class="bg-surface-container-low border border-slate-data p-4 flex flex-col items-center justify-center min-h-[140px] max-h-[25vh] group cursor-pointer glow-hover transition-all relative overflow-hidden shrink-0" id="upload-zone">
 <div class="absolute top-2 left-2 font-label-xs text-silver-technical uppercase tracking-widest">INPUT_SOURCE</div>
 <span class="material-symbols-outlined text-neon-acid text-4xl mb-2 group-hover:scale-110 transition-transform">cloud_upload</span>
 <h3 class="font-headline-lg text-[18px] text-primary mb-1">VIDEO OR 3D MODEL</h3>
 <p class="font-technical-sm text-silver-technical text-center text-[11px]">
-                    DRAG &amp; DROP [MP4, MOV, OBJ, FBX] | MAX 2GB
-                </p>
+                DRAG &amp; DROP [MP4, MOV, OBJ, FBX] | MAX 2GB
+            </p>
 </div>
 <!-- Preview Area -->
 <div class="bg-void-black border border-slate-data relative aspect-video max-h-[45vh] scanlines overflow-hidden shrink-0">
 <div class="absolute top-0 left-0 w-full p-3 flex justify-between items-start z-20 pointer-events-none">
 <div class="bg-void-black/80 backdrop-blur-md border border-slate-data px-2 py-0.5 font-label-technical text-neon-acid flex items-center gap-1.5 text-[10px]">
-<div class="w-1.5 h-1.5 rounded-full bg-neon-acid animate-ping"></div>
-                        LIVE_VIEWPORT_01
-                    </div>
+<div class="w-1.5 h-1.5 rounded-full bg-neon-acid animate-ping" id="viewport-ping"></div>
+                    LIVE_VIEWPORT_01
+                </div>
 <div class="bg-void-black/80 backdrop-blur-md border border-slate-data px-2 py-0.5 font-label-technical text-silver-technical text-[10px]">
-                        60.0 FPS | 1080p
-                    </div>
+<span id="fps-counter">60.0</span> FPS | 1080p
+                </div>
 </div>
-<div class="absolute inset-0 flex items-center justify-center">
-<img class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-700" data-alt="Technical viewport of golden fluid splash" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB033hv5uBZ93b9oqkmHNfr2ZNqEFVMWI40dePMiNKNsPCWs5joAdA3SS1CEJaPvXivFzfRC4nra95gVyvEGQwxHr5e0DpXiUyPDzfouFk-qbTwklc6CJ7q2ueNvfk71Jts6ZXjaxWghKCUDSQhwqEoFCeJH4GWwPoTmUjmd3DxD_jz8hW49Doh3djFYglyJr8y4XZH1BLVko3i0mHZEBjg832_35M4tQu-gx5b6KIgTHR3twO-soIegcqx7megtIFgGsn_n87Gt4"/>
+<div class="absolute inset-0 flex items-center justify-center" id="viewport-container">
+<img class="w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition-all duration-700" data-alt="Technical viewport of golden fluid splash" id="preview-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB033hv5uBZ93b9oqkmHNfr2ZNqEFVMWI40dePMiNKNsPCWs5joAdA3SS1CEJaPvXivFzfRC4nra95gVyvEGQwxHr5e0DpXiUyPDzfouFk-qbTwklc6CJ7q2ueNvfk71Jts6ZXjaxWghKCUDSQhwqEoFCeJH4GWwPoTmUjmd3DxD_jz8hW49Doh3djFYglyJr8y4XZH1BLVko3i0mHZEBjg832_35M4tQu-gx5b6KIgTHR3twO-soIegcqx7megtIFgGsn_n87Gt4"/>
 <div class="absolute inset-0 border-[0.5px] border-neon-acid/10 pointer-events-none">
 <div class="absolute top-1/2 left-0 w-full h-[1px] bg-neon-acid/5"></div>
 <div class="absolute top-0 left-1/2 h-full w-[1px] bg-neon-acid/5"></div>
@@ -196,31 +209,25 @@
 <!-- Simulation Type Selector -->
 <div>
 <h4 class="font-label-caps text-primary mb-3 border-l-2 border-neon-acid pl-2 uppercase">Type</h4>
-<div class="grid grid-cols-3 gap-1.5">
-<button class="bg-surface-container-highest text-neon-acid border border-neon-acid p-2 font-label-caps flex flex-col items-center gap-1 glow-hover text-[9px]">
-<span class="material-symbols-outlined text-[18px]">face</span>
-                            HAIR
-                        </button>
-<button class="bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]">
-<span class="material-symbols-outlined text-[18px]">checkroom</span>
-                            CLOTH
-                        </button>
-<button class="bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]">
-<span class="material-symbols-outlined text-[18px]">opacity</span>
-                            FLUID
-                        </button>
-<button class="bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]">
-<span class="material-symbols-outlined text-[18px]">air</span>
-                            SMOKE
-                        </button>
-<button class="bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]">
-<span class="material-symbols-outlined text-[18px]">local_fire_department</span>
-                            FIRE
-                        </button>
-<button class="bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]">
-<span class="material-symbols-outlined text-[18px]">grain</span>
-                            PARTICLES
-                        </button>
+<div class="grid grid-cols-3 gap-1.5" id="type-selector">
+<button class="type-btn bg-surface-container-highest text-neon-acid border border-neon-acid p-2 font-label-caps flex flex-col items-center gap-1 glow-hover text-[9px]" data-type="HAIR">
+<span class="material-symbols-outlined text-[18px]">face</span> HAIR
+                    </button>
+<button class="type-btn bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]" data-type="CLOTH">
+<span class="material-symbols-outlined text-[18px]">checkroom</span> CLOTH
+                    </button>
+<button class="type-btn bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]" data-type="FLUID">
+<span class="material-symbols-outlined text-[18px]">opacity</span> FLUID
+                    </button>
+<button class="type-btn bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]" data-type="SMOKE">
+<span class="material-symbols-outlined text-[18px]">air</span> SMOKE
+                    </button>
+<button class="type-btn bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]" data-type="FIRE">
+<span class="material-symbols-outlined text-[18px]">local_fire_department</span> FIRE
+                    </button>
+<button class="type-btn bg-surface-container-low text-silver-technical border border-slate-data p-2 font-label-caps flex flex-col items-center gap-1 hover:border-silver-technical transition-colors text-[9px]" data-type="PARTICLES">
+<span class="material-symbols-outlined text-[18px]">grain</span> PARTICLES
+                    </button>
 </div>
 </div>
 <!-- Physics Sliders -->
@@ -229,32 +236,32 @@
 <div class="flex flex-col gap-1">
 <div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
 <span>Gravity</span>
-<span class="text-neon-acid">-9.81 m/sÂ²</span>
+<span class="text-neon-acid" id="gravity-val">-9.81 m/s²</span>
 </div>
-<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" max="10" min="-10" step="0.1" type="range" value="-9.8"/>
+<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" id="gravity-slider" max="10" min="-10" step="0.1" type="range" value="-9.8"/>
 </div>
 <div class="flex flex-col gap-1">
 <div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
 <span>Wind</span>
-<span class="text-neon-acid">2.4</span>
+<span class="text-neon-acid" id="wind-val">2.4</span>
 </div>
-<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" max="10" min="0" step="0.1" type="range" value="2.4"/>
+<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" id="wind-slider" max="10" min="0" step="0.1" type="range" value="2.4"/>
 </div>
 <div class="flex flex-col gap-1">
 <div class="flex justify-between items-center font-technical-sm text-label-xs uppercase text-silver-technical">
-<span>Viscosity</span>
-<span class="text-silver-technical">N/A</span>
+<span>Complexity</span>
+<span class="text-neon-acid" id="viscosity-val">4</span>
 </div>
-<input class="w-full h-1 bg-void-black opacity-30 cursor-not-allowed" disabled="" type="range"/>
+<input class="w-full h-1 bg-slate-data appearance-none cursor-pointer accent-neon-acid" id="viscosity-slider" max="10" min="1" step="1" type="range" value="4"/>
 </div>
 </div>
 <!-- Resolution Toggle -->
 <div class="mt-auto pt-4 border-t border-slate-data">
 <h4 class="font-label-caps text-primary mb-2 uppercase">Solver Res</h4>
-<div class="flex border border-slate-data p-1 bg-surface-container-low">
-<button class="flex-1 py-1.5 font-label-caps text-silver-technical hover:text-primary transition-colors">LOW</button>
-<button class="flex-1 py-1.5 font-label-caps text-void-black bg-neon-acid">MED</button>
-<button class="flex-1 py-1.5 font-label-caps text-silver-technical hover:text-primary transition-colors">HIGH</button>
+<div class="flex border border-slate-data p-1 bg-surface-container-low" id="res-selector">
+<button class="res-btn flex-1 py-1.5 font-label-caps text-silver-technical hover:text-primary transition-colors">LOW</button>
+<button class="res-btn flex-1 py-1.5 font-label-caps text-void-black bg-neon-acid">MED</button>
+<button class="res-btn flex-1 py-1.5 font-label-caps text-silver-technical hover:text-primary transition-colors">HIGH</button>
 </div>
 </div>
 </div>
@@ -262,111 +269,264 @@
 </main>
 <!-- High-Efficiency Bottom Bar -->
 <footer class="fixed bottom-0 left-0 w-full h-16 bg-void-black border-t border-slate-data px-margin-desktop flex items-center justify-between z-50">
-<!-- System Telemetry (Left) -->
 <div class="flex flex-col gap-0.5 min-w-[200px]">
 <div class="flex items-center gap-3 text-silver-technical font-label-technical">
-<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-pulse"></span> GPU 84%</span>
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-pulse" id="gpu-dot"></span> GPU <span id="gpu-val">84</span>%</span>
 <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-cyber-gold rounded-full"></span> 12ms</span>
 </div>
-<div class="font-label-caps text-[9px] text-silver-technical/40 uppercase tracking-widest">NEURAL_ORBIT_04 | ACTIVE</div>
+<div class="font-label-caps text-[9px] text-silver-technical/40 uppercase tracking-widest">WAVESPEED_ORBIT_V1 | <span id="status-tag">ACTIVE</span></div>
 </div>
-<!-- Centralized Action (Center) -->
 <div class="flex-1 flex justify-center">
-<button class="bg-neon-acid text-void-black px-12 h-12 flex items-center gap-4 group hover:shadow-[0_0_20px_rgba(200,255,0,0.5)] transition-all active:scale-95" id="btn-physics">
+<button class="bg-neon-acid text-void-black px-12 h-12 flex items-center gap-4 group hover:shadow-[0_0_20px_rgba(200,255,0,0.5)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" id="btn-simulate">
 <span class="material-symbols-outlined group-hover:rotate-12 transition-transform text-[22px]">bolt</span>
-<span class="font-headline-lg text-[20px] font-black tracking-tighter uppercase">SIMULATE â€” 15 CREDITS</span>
+<span class="font-headline-lg text-[20px] font-black tracking-tighter uppercase" id="btn-text">SIMULATE — 60 CREDITS</span>
 </button>
 </div>
-<!-- Status Data (Right) -->
 <div class="flex flex-col items-end min-w-[200px]">
-<div class="font-label-technical text-silver-technical text-[10px]">EST_TIME: <span class="text-primary">00:04:12</span></div>
+<div class="font-label-technical text-silver-technical text-[10px]">EST_TIME: <span class="text-primary" id="est-time">00:04:12</span></div>
 <div class="font-label-technical text-neon-acid text-[10px]">QUEUE_POS: <span class="font-bold underline">02</span></div>
 </div>
 </footer>
 <script>
-        var sf=null,simType="HAIR",COST=60;
-        var uz=document.querySelector(".bg-surface-container-low.border.border-slate-data.p-4");
-
-        if(uz){
-            uz.onclick=function(){
-                var i=document.createElement("input");
-                i.type="file";
-                i.accept="video/mp4,video/mov,.obj,.fbx";
-                i.onchange=function(e){
-                    var f=e.target.files[0];
-                    if(!f)return;
-                    sf=f;
-                    uz.querySelector("h3").textContent=" "+f.name.substring(0,20);
-                    uz.style.borderColor="#c8ff00";
-                };
-                i.click();
-            };
-        }
-
-        document.querySelectorAll(".grid-cols-3 button").forEach(function(btn){
-            btn.onclick=function(){
-                simType=btn.textContent.replace(/[\[\]\s]/g,"").trim();
-                document.querySelectorAll(".grid-cols-3 button").forEach(function(b){
-                    b.classList.remove("bg-neon-acid", "text-neon-acid", "border-neon-acid");
-                    b.classList.add("bg-surface-container-low", "text-silver-technical", "border-slate-data");
+    // --- MercaServices & Wavespeed API Integration ---
+    const MercaServices = {
+        async call(endpoint, body) {
+            // Simulated registry call - normally fetches from service discovery
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
                 });
-                btn.classList.add("bg-surface-container-highest", "text-neon-acid", "border-neon-acid");
-                btn.classList.remove("bg-surface-container-low", "text-silver-technical", "border-slate-data");
-            };
-        });
-
-        document.querySelectorAll(".flex.border.border-slate-data.p-1 button").forEach(function(btn){
-            btn.onclick=function(){
-                document.querySelectorAll(".flex.border.border-slate-data.p-1 button").forEach(function(b){
-                    b.classList.remove("bg-neon-acid", "text-void-black");
-                    b.classList.add("text-silver-technical");
-                });
-                btn.classList.add("bg-neon-acid", "text-void-black");
-                btn.classList.remove("text-silver-technical");
-            };
-        });
-
-        var sliders=document.querySelectorAll("input[type=range]:not([disabled])");
-        var displays=document.querySelectorAll(".text-neon-acid");
-        if(sliders[0]&&displays[0])sliders[0].oninput=function(){displays[0].textContent=parseFloat(this.value).toFixed(2)+" m/sÂ²";};
-        if(sliders[1]&&displays[1])sliders[1].oninput=function(){displays[1].textContent=parseFloat(this.value).toFixed(1);};
-
-        function go(){
-            if(!sf){alert("Upload a file first.");return;}
-            var c=parseInt(localStorage.getItem("md_credits")||"15"); // Mocked for functional shell
-            // Respecting the flow while maintaining the UI logic.
-            // Requirement 4: Ensure credit cost remains 60 credits as per UI but ensure the button click handler respects the flow.
-            if(c < 15){ alert("Need 15 credits."); return; }
-            
-            var btn=document.getElementById("btn-physics");
-            if(btn){
-                // Loading State Logic with pointer-events protection
-                btn.disabled=true;
-                btn.style.pointerEvents = "none";
-                btn.style.background="#8aad00";
-                var p=0;
-                var iv=setInterval(function(){
-                    p+=5;
-                    btn.querySelector("span:last-child").textContent="COMPUTING "+simType+"... "+p+"%";
-                    if(p>=100){
-                        clearInterval(iv);
-                        localStorage.setItem("md_credits", c-15);
-                        if(window.MD && window.MD.updateCredits) window.MD.updateCredits();
-                        btn.disabled=false;
-                        btn.style.pointerEvents = "auto";
-                        btn.style.background="#c8ff00";
-                        btn.querySelector("span:last-child").textContent="COMPLETE - SEND TO ASSEMBLY";
-                        btn.onclick=function(){ alert("Sending to assembly..."); };
-                    }
-                },100);
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || 'API Error');
+                }
+                return await response.json();
+            } catch (e) {
+                console.error("MercaServices Call Failed:", e);
+                throw e;
             }
         }
+    };
 
-        window.addEventListener("load",function(){
-            var btn=document.getElementById("btn-physics");
-            if(btn) btn.onclick=go;
+    let selectedFile = null;
+    let simulationType = "HAIR";
+    let isProcessing = false;
+    let credits = parseInt(localStorage.getItem("md_credits") || "500");
+    const SIM_COST = 60;
+
+    const btnSim = document.getElementById("btn-simulate");
+    const btnText = document.getElementById("btn-text");
+    const creditDisplay = document.getElementById("credit-display");
+    const viewportContainer = document.getElementById("viewport-container");
+    const uploadZone = document.getElementById("upload-zone");
+    const statusTag = document.getElementById("status-tag");
+
+    function updateCreditUI() {
+        creditDisplay.textContent = credits;
+        localStorage.setItem("md_credits", credits);
+    }
+    updateCreditUI();
+
+    // File Upload Handler
+    uploadZone.onclick = function() {
+        if (isProcessing) return;
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "video/mp4,video/mov,.obj,.fbx";
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            selectedFile = file;
+            uploadZone.querySelector("h3").textContent = file.name.length > 20 ? file.name.substring(0, 17) + "..." : file.name;
+            uploadZone.style.borderColor = "#c8ff00";
+        };
+        input.click();
+    };
+
+    // UI Interactive Logic
+    document.querySelectorAll(".type-btn").forEach(btn => {
+        btn.onclick = () => {
+            if (isProcessing) return;
+            simulationType = btn.getAttribute("data-type");
+            document.querySelectorAll(".type-btn").forEach(b => {
+                b.classList.remove("bg-surface-container-highest", "text-neon-acid", "border-neon-acid", "glow-hover");
+                b.classList.add("bg-surface-container-low", "text-silver-technical", "border-slate-data");
+            });
+            btn.classList.add("bg-surface-container-highest", "text-neon-acid", "border-neon-acid", "glow-hover");
+            btn.classList.remove("bg-surface-container-low", "text-silver-technical", "border-slate-data");
+        };
+    });
+
+    document.querySelectorAll(".res-btn").forEach(btn => {
+        btn.onclick = () => {
+            if (isProcessing) return;
+            document.querySelectorAll(".res-btn").forEach(b => {
+                b.classList.remove("bg-neon-acid", "text-void-black");
+                b.classList.add("text-silver-technical");
+            });
+            btn.classList.add("bg-neon-acid", "text-void-black");
+            btn.classList.remove("text-silver-technical");
+        };
+    });
+
+    // Range Sliders
+    const gravitySlider = document.getElementById("gravity-slider");
+    const gravityVal = document.getElementById("gravity-val");
+    gravitySlider.oninput = () => gravityVal.textContent = parseFloat(gravitySlider.value).toFixed(2) + " m/s²";
+
+    const windSlider = document.getElementById("wind-slider");
+    const windVal = document.getElementById("wind-val");
+    windSlider.oninput = () => windVal.textContent = parseFloat(windSlider.value).toFixed(1);
+
+    // Main API Orchestration
+    async function startSimulation() {
+        if (!selectedFile) {
+            alert("UPLOAD SOURCE DATA REQUIRED");
+            return;
+        }
+
+        if (credits < SIM_COST) {
+            alert("INSUFFICIENT CREDITS: " + SIM_COST + " REQUIRED");
+            return;
+        }
+
+        setUIState("initializing");
+
+        try {
+            // Step 1: Initialize (Transaction Protocol Step 1: Verification passed)
+            // Construct prompt based on simulation parameters
+            const complexity = document.getElementById("viscosity-slider").value;
+            const prompt = `Extreme high resolution neural physics simulation of ${simulationType}, gravity ${gravitySlider.value}, wind ${windSlider.value}, complexity index ${complexity}, cinematic lighting, macro technical lens`;
+
+            // Step 2: Call Wavespeed Generate API
+            const initResponse = await MercaServices.call('/api/wavespeed', {
+                prompt: prompt,
+                duration: 5
+            });
+
+            const jobId = initResponse.id;
+            const pollUrl = initResponse.pollUrl;
+
+            if (!jobId) throw new Error("Job creation failed");
+
+            // Step 3: Polling Loop
+            pollStatus(jobId, pollUrl);
+
+        } catch (e) {
+            console.error(e);
+            alert("SIMULATION ERROR: " + e.message);
+            resetUIState();
+        }
+    }
+
+    async function pollStatus(id, pollUrl) {
+        let attempts = 0;
+        const maxAttempts = 120; // 2 minutes approx
+        
+        const interval = setInterval(async () => {
+            try {
+                attempts++;
+                const statusData = await MercaServices.call('/api/wavespeed', {
+                    action: 'poll',
+                    id: id,
+                    pollUrl: pollUrl
+                });
+
+                if (statusData.status === 'completed' || statusData.status === 'succeeded') {
+                    clearInterval(interval);
+                    completeSimulation(statusData.url);
+                } else if (statusData.status === 'failed') {
+                    clearInterval(interval);
+                    alert("WAVESPEED ENGINE FAILURE");
+                    resetUIState();
+                } else {
+                    // Update Progress UI
+                    const progress = Math.min(Math.round((attempts / 40) * 100), 98);
+                    btnText.textContent = `PROCESSING ${simulationType}... ${progress}%`;
+                    statusTag.textContent = `PROCESSING [JOB_${id.substring(0,4)}]`;
+                }
+
+                if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    alert("CONNECTION TIMEOUT");
+                    resetUIState();
+                }
+            } catch (e) {
+                console.error("Polling error", e);
+            }
+        }, 3000);
+    }
+
+    function completeSimulation(videoUrl) {
+        // Step 4: Transaction Protocol - Finalize Deduction
+        credits -= SIM_COST;
+        updateCreditUI();
+
+        setUIState("complete", videoUrl);
+    }
+
+    function setUIState(state, data = null) {
+        isProcessing = true;
+        btnSim.disabled = true;
+
+        if (state === "initializing") {
+            btnText.textContent = "INITIALIZING KERNEL...";
+            btnSim.style.background = "#8aad00";
+            statusTag.textContent = "ORCHESTRATING";
+        } else if (state === "complete") {
+            btnSim.disabled = false;
+            btnSim.style.background = "#c8ff00";
+            btnText.textContent = "COMPLETE - RE-SIMULATE";
+            statusTag.textContent = "STANDBY";
+            isProcessing = false;
+
+            // Display result in viewport
+            viewportContainer.innerHTML = `
+                <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+                    <source src="${data}" type="video/mp4">
+                </video>
+                <div class="absolute inset-0 border-[0.5px] border-neon-acid/20 pointer-events-none">
+                    <div class="absolute top-1/2 left-0 w-full h-[1px] bg-neon-acid/10"></div>
+                    <div class="absolute top-0 left-1/2 h-full w-[1px] bg-neon-acid/10"></div>
+                </div>
+            `;
             
-            if(window.MD && window.MD.updateCredits) window.MD.updateCredits();
-        });
-    </script>
+            // Add download button if available
+            const downloadBtn = document.createElement('a');
+            downloadBtn.href = data;
+            downloadBtn.download = `simulation_${simulationType}.mp4`;
+            downloadBtn.className = "absolute top-12 left-3 bg-neon-acid text-void-black px-2 py-1 font-label-technical text-[10px] z-30 hover:scale-105 transition-transform";
+            downloadBtn.textContent = "DOWNLOAD_DATA";
+            viewportContainer.parentElement.appendChild(downloadBtn);
+        }
+    }
+
+    function resetUIState() {
+        isProcessing = false;
+        btnSim.disabled = false;
+        btnSim.style.background = "#c8ff00";
+        btnText.textContent = `SIMULATE — ${SIM_COST} CREDITS`;
+        statusTag.textContent = "ACTIVE";
+    }
+
+    btnSim.onclick = startSimulation;
+
+    // Subtle GPU jitter for realism
+    setInterval(() => {
+        const gpu = document.getElementById("gpu-val");
+        const base = 84;
+        const jitter = Math.floor(Math.random() * 6) - 3;
+        gpu.textContent = base + jitter;
+        
+        const fps = document.getElementById("fps-counter");
+        fps.textContent = (60 + (Math.random() * 0.4 - 0.2)).toFixed(1);
+    }, 2000);
+</script>
 </body></html>
+
+
+
+
+

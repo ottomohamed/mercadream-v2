@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MercaDream | AI FILM STUDIO - Surgical Precision Portal</title>
+<meta content="MercaDream is the world's first AI-powered film production platform. Create professional cinematic videos using AI directors." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "primary-container": "#c0f500",
+                "on-secondary-fixed": "#1c1b1b",
+                "surface-container-highest": "#353534",
+                "on-tertiary": "#303030",
+                "secondary": "#c8c6c5",
+                "on-surface-variant": "#c4caac",
+                "on-secondary-fixed-variant": "#474746",
+                "inverse-surface": "#e5e2e1",
+                "error": "#ffb4ab",
+                "primary-fixed-dim": "#a8d700",
+                "on-tertiary-fixed-variant": "#474747",
+                "on-background": "#e5e2e1",
+                "on-tertiary-fixed": "#1b1c1c",
+                "tertiary-container": "#e4e2e1",
+                "secondary-container": "#474746",
+                "on-surface": "#e5e2e1",
+                "inverse-on-surface": "#313030",
+                "surface-container-lowest": "#0e0e0e",
+                "on-tertiary-container": "#656464",
+                "on-primary-fixed": "#161f00",
+                "surface-tint": "#a8d700",
+                "inverse-primary": "#4f6600",
+                "tertiary-fixed-dim": "#c8c6c6",
+                "surface-dim": "#131313",
+                "on-error-container": "#ffdad6",
+                "on-secondary": "#313030",
+                "surface-container-high": "#2a2a2a",
+                "surface-bright": "#3a3939",
+                "background": "#131313",
+                "surface": "#131313",
+                "on-primary-container": "#546d00",
+                "on-error": "#690005",
+                "surface-container": "#201f1f",
+                "on-primary": "#273500",
+                "error-container": "#93000a",
+                "tertiary": "#ffffff",
+                "on-secondary-container": "#b7b5b4",
+                "outline": "#8e9479",
+                "secondary-fixed": "#e5e2e1",
+                "on-primary-fixed-variant": "#3b4d00",
+                "surface-variant": "#353534",
+                "tertiary-fixed": "#e4e2e1",
+                "secondary-fixed-dim": "#c8c6c5",
+                "surface-container-low": "#1c1b1b",
+                "outline-variant": "#434933",
+                "primary-fixed": "#c0f500",
+                "primary": "#ffffff",
+                "neon-acid": "#c8ff00"
+            },
+            "borderRadius": {
+                "DEFAULT": "0px",
+                "lg": "0px",
+                "xl": "0px",
+                "full": "9999px"
+            },
+            "spacing": {
+                "margin-mobile": "20px",
+                "margin-desktop": "40px",
+                "unit": "8px",
+                "grid-cols": "12",
+                "gutter": "16px"
+            },
+            "fontFamily": {
+                "technical": ["JetBrains Mono"],
+                "headline": ["Orbitron"],
+                "body": ["Sora"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .scanning-line {
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #c8ff00, transparent);
+            opacity: 0.3; position: absolute; top: 0; left: 0;
+            pointer-events: none; animation: scan 6s linear infinite;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .micro-grid {
+            background-image: linear-gradient(rgba(200, 255, 0, 0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(200, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .glitch-text:hover { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 2px; height: 100vh;
+            background: #c8ff00;
+            cursor: ew-resize;
+            box-shadow: 0 0 15px #c8ff00;
+        }
+        .corner-accent { position: absolute; width: 10px; height: 10px; border-color: #c8ff00; }
+        .ca-tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; }
+        .ca-tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; }
+        .ca-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
+        .ca-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
+    </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden"><script src="md-engine.js"></script>
+<nav class="fixed top-0 w-full z-[100] bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/30 h-20 flex items-center px-margin-mobile md:px-margin-desktop justify-between" id="main-nav">
+<div class="flex items-center gap-4">
+<div class="font-headline text-xl md:text-2xl tracking-[0.2em] text-white font-black uppercase">MercaDream</div>
+<div class="hidden lg:block h-6 w-px bg-outline-variant/30 mx-2"></div>
+<div class="hidden lg:block font-technical text-[10px] text-neon-acid tracking-widest opacity-70 uppercase">AI Film Studio // v1.0.4</div>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-technical text-xs uppercase tracking-widest text-neon-acid" href="index.html">01_Portal</a>
+<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="directors.html">02_Directors</a>
+<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">03_Studio</a>
+<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="assembly.html">04_Assembly</a>
+<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="pricing.html">05_Energy</a>
+</div>
+<div class="flex items-center gap-4 md:gap-6">
+<div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5 group hover:border-neon-acid transition-colors" id="credit-display">
+<span class="material-symbols-outlined text-sm text-neon-acid">bolt</span>
+<span class="text-neon-acid font-bold" id="user-credits">0.00 CRD</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-5 py-2 border border-white text-[10px] font-technical uppercase tracking-tighter hover:bg-white hover:text-black transition-all" id="nav-auth-btn">LOG IN</button>
+<button class="px-5 py-2 bg-neon-acid text-black text-[10px] font-technical font-bold uppercase tracking-tighter hover:bg-white transition-all" id="nav-action-btn">INITIALIZE ACCESS</button>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Dynamic Hero with Neural Viewport -->
+<section class="relative h-[90vh] w-full overflow-hidden flex flex-col items-center justify-center">
+<div class="absolute inset-0 z-0">
+<video autoplay="" class="w-full h-full object-cover opacity-40" loop="" muted="" playsinline="">
+<source src="/media/hero1.mp4" type="video/mp4"/>
+</video>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/50"></div>
+<div class="scanning-line"></div>
+</div>
+<div class="relative z-20 text-center px-margin-mobile max-w-5xl">
+<h1 class="font-headline text-4xl md:text-7xl lg:text-8xl mb-4 tracking-tight leading-none text-white">
+<span class="block">MERCADREAM</span>
+<span class="block text-neon-acid text-2xl md:text-4xl lg:text-5xl mt-2 tracking-[0.2em] opacity-80">AI FILM STUDIO</span>
+</h1>
+<p class="font-technical text-sm md:text-base text-on-surface-variant max-w-2xl mx-auto mb-12 uppercase tracking-widest leading-relaxed">
+                Autonomous cinematic generation. Neural direction. <br class="hidden md:block"/> Real-time dream extraction via surgical AI precision.
+            </p>
+<div class="flex flex-col md:flex-row gap-4 justify-center">
+<button class="px-12 py-5 bg-neon-acid text-black font-headline font-bold text-lg uppercase group relative overflow-hidden transition-all hover:scale-105 active:scale-95" id="hero-primary-cta">
+<span class="relative z-10">INITIALIZE ACCESS</span>
+<div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+</button>
+<button class="px-12 py-5 border border-outline/50 text-white font-headline font-bold text-lg uppercase hover:border-neon-acid hover:text-neon-acid transition-all backdrop-blur-md">
+                    VIEW SYSTEM_INTEL
+                </button>
+</div>
+</div>
+<!-- Neural Viewport Overlay -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center" id="neural-viewport">
+<div class="relative w-full h-full pointer-events-auto cursor-ew-resize">
+<!-- The Slider Logic -->
+<div class="absolute inset-0 flex">
+<div class="absolute inset-0 bg-cover bg-center grayscale opacity-60 pointer-events-none" id="after-layer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBriMflsQMSxC_3BF2R_h1vDp0iML5fLzd9DCM1MZS5kTEsitZZvfchHNvMUhYG7TPPZjtqXh1576OC_XlZFexG1d9G4VPmJnKsUvYZ5wmnCKl-jmP4ZDtGvLWejtD9BHrRMUPin4aXZaQjCKcGJKTTtQRomPEtCODChWIxLeMilFBHuvQtwnNmjbE9X4CljO4fDQAqVz5calJ_UsOl6kZMRA5mmsrQ2DPfirNt23q-jPKbfXfSkxp0bn8tAPfk8g4q8YewLo9KpLpb'); clip-path: inset(0 50% 0 0);"></div>
+<div class="absolute inset-0 bg-cover bg-center pointer-events-none" id="before-layer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2pON2R5Z2CEc-4Epd79OqTRyDjPygvRnzaSaSrLo_n1Eki1tWgib5vV-L2vwaxGRt8AQO5WrEBi-8tI48O1cR_phVqRfBZ99YuZ88RdADisvU1IHjGy9N-db4mXSM_Ts3y99D1e_LGpjy2c_KH0BQxuxt5D3wbk8vTaOAYxJJk8F-EC4wdeRd2DzD04uN6IdDZQGyDgTY99wCAF1IniWzKGme6r2S6Na8VA2f24Apid2KGtxOfdQ-ajb63tNR6Vp__yZ5IS2RdAcq');"></div>
+<input class="absolute inset-0 w-full opacity-0 cursor-ew-resize z-30" id="slider-control" max="100" min="0" type="range" value="50"/>
+<div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-neon-acid z-20 pointer-events-none shadow-[0_0_15px_#c8ff00]" id="slider-line">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neon-acid text-black p-2 font-technical text-[10px] font-bold uppercase tracking-tighter rotate-90">VIEWPORT_LINK</div>
+</div>
+<!-- Telemetry Tags -->
+<div class="absolute top-24 left-8 p-4 border border-neon-acid/20 bg-black/40 backdrop-blur-md font-technical text-[10px] pointer-events-none hidden md:block">
+<div class="text-neon-acid mb-1">SCAN_MODE: ACTIVE</div>
+<div class="text-white opacity-60">F_STOP: 1.4 // ISO: 400</div>
+<div class="text-white opacity-60">FPS: 24.000_TRUE</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Platform Status Dashboard -->
+<section class="py-12 border-y border-outline-variant/20 bg-surface-container-low micro-grid px-margin-mobile">
+<div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-gutter">
+<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="corner-accent ca-tl"></div>
+<div class="font-technical text-[10px] text-on-surface-variant uppercase">Global GPU Load</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-2xl text-neon-acid" id="gpu-load">82.4</span>
+<span class="font-technical text-xs">%</span>
+</div>
+<div class="w-full bg-white/5 h-1 mt-2">
+<div class="bg-neon-acid h-full transition-all duration-500" style="width: 82%"></div>
+</div>
+</div>
+<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="corner-accent ca-tl"></div>
+<div class="font-technical text-[10px] text-on-surface-variant uppercase">Active Clusters</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-2xl text-white" id="active-clusters">1,402</span>
+</div>
+<div class="font-technical text-[9px] text-neon-acid">REGION_STATUS: NOMINAL</div>
+</div>
+<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="corner-accent ca-tl"></div>
+<div class="font-technical text-[10px] text-on-surface-variant uppercase">Successful Renders</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-2xl text-white" id="render-count">48,291</span>
+</div>
+<div class="font-technical text-[9px] text-on-surface-variant">+24 IN LAST 60S</div>
+</div>
+<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="corner-accent ca-tl"></div>
+<div class="font-technical text-[10px] text-on-surface-variant uppercase">Network Latency</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline text-2xl text-neon-acid">0.04</span>
+<span class="font-technical text-xs">ms</span>
+</div>
+<div class="font-technical text-[9px] text-white/40 uppercase">Hyper-Link Active</div>
+</div>
+</div>
+</section>
+<!-- Integrated Cinematic Services -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div>
+<h2 class="font-headline text-3xl md:text-5xl text-white uppercase tracking-tighter">Cinematic Services</h2>
+<p class="font-technical text-xs text-on-surface-variant uppercase mt-2 tracking-widest">Select process to initialize node</p>
+</div>
+<div class="h-px flex-1 bg-outline-variant/20 mx-8 mb-4 hidden md:block"></div>
+<a class="font-technical text-xs text-neon-acid border-b border-neon-acid pb-1 hover:text-white hover:border-white transition-all uppercase" href="directors.html">Browse Catalogue</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-outline-variant/20 border border-outline-variant/20">
+<!-- Faceswap Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: NF-001</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">face</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Faceswap</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+                        Frame-accurate cranial mapping and facial expression synthesis at native resolution.
+                    </p>
+<button class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all" onclick="window.location.href='faceswap.html'">
+                        Launch Node
+                    </button>
+</div>
+<!-- Relighting Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: RL-024</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">light_mode</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Dynamic Relighting</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+                        Real-time recalculation of light paths and global illumination for synthetic actors.
+                    </p>
+<button class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all" onclick="window.location.href='relighting.html'">
+                        Launch Node
+                    </button>
+</div>
+<!-- Upscaling Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: UP-888</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">hd</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">8K Ultra-Scan</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+                        Sub-pixel detail reconstruction using deep neural textures for large-format projection.
+                    </p>
+<button class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all" onclick="window.location.href='upscaling.html'">
+                        Launch Node
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action -->
+<section class="py-32 bg-black relative overflow-hidden text-center border-t border-outline-variant/30">
+<div class="absolute inset-0 opacity-10 grayscale mix-blend-screen pointer-events-none">
+<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
+<source src="/media/hero1.mp4" type="video/mp4"/>
+</video>
+</div>
+<div class="relative z-10 px-margin-mobile">
+<h2 class="font-headline text-4xl md:text-6xl text-white mb-8">THE FUTURE IS COMPUTING</h2>
+<p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm opacity-60">Architect your dream. Frame by frame.</p>
+<button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform group relative" id="footer-cta">
+                INITIALIZE ACCESS
+                <span class="absolute -right-2 -bottom-2 w-4 h-4 border-r-2 border-b-2 border-neon-acid"></span>
+<span class="absolute -left-2 -top-2 w-4 h-4 border-l-2 border-t-2 border-neon-acid"></span>
+</button>
+</div>
+</section>
+</main>
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-margin-mobile md:px-margin-desktop">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="text-center md:text-left">
+<div class="font-headline text-xl text-white tracking-widest mb-2">MERCADREAM</div>
+<div class="font-technical text-[10px] text-on-surface-variant uppercase">© 2026 AI CINEMA STUDIO. ALL RIGHTS RESERVED.</div>
+</div>
+<div class="flex flex-wrap justify-center gap-8 font-technical text-[10px] uppercase tracking-widest text-on-surface-variant">
+<a class="hover:text-neon-acid transition-colors" href="privacy.html">Privacy</a>
+<a class="hover:text-neon-acid transition-colors" href="terms.html">Terms</a>
+<a class="hover:text-neon-acid transition-colors" href="api.html">API Docs</a>
+<a class="hover:text-neon-acid transition-colors" href="status.html">System Status</a>
+</div>
+</div>
+</footer>
+<!-- Core Integration Scripts -->
+<script src="js/app.js"></script>
+<script src="js/navigation.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Session & Auth UI Sync
+        const updateAuthUI = () => {
+            const isLoggedIn = localStorage.getItem('sb_session');
+            const navAuthBtn = document.getElementById('nav-auth-btn');
+            const navActionBtn = document.getElementById('nav-action-btn');
+            const heroPrimaryCta = document.getElementById('hero-primary-cta');
+            const footerCta = document.getElementById('footer-cta');
+
+            if (isLoggedIn) {
+                if (navAuthBtn) navAuthBtn.innerText = 'LOG OUT';
+                if (navActionBtn) {
+                    navActionBtn.innerText = 'ENTER COMMAND CENTER';
+                    navActionBtn.onclick = () => window.location.href = 'directors.html';
+                }
+                if (heroPrimaryCta) {
+                    heroPrimaryCta.innerText = 'ENTER COMMAND CENTER';
+                    heroPrimaryCta.onclick = () => window.location.href = 'directors.html';
+                }
+                if (footerCta) {
+                    footerCta.innerText = 'ENTER COMMAND CENTER';
+                    footerCta.onclick = () => window.location.href = 'directors.html';
+                }
+            } else {
+                if (navAuthBtn) navAuthBtn.innerText = 'LOG IN';
+                if (navActionBtn) {
+                    navActionBtn.innerText = 'INITIALIZE ACCESS';
+                    navActionBtn.onclick = () => window.location.href = 'register.html';
+                }
+                if (heroPrimaryCta) {
+                    heroPrimaryCta.innerText = 'INITIALIZE ACCESS';
+                    heroPrimaryCta.onclick = () => window.location.href = 'register.html';
+                }
+                if (footerCta) {
+                    footerCta.innerText = 'INITIALIZE ACCESS';
+                    footerCta.onclick = () => window.location.href = 'register.html';
+                }
+            }
+
+            // Sync credits using Central Engine
+            if (window.MD && typeof window.MD.updateCredits === 'function') {
+                window.MD.updateCredits();
+            } else {
+                const credits = localStorage.getItem('md_credits') || '240.00';
+                document.getElementById('user-credits').innerText = credits + ' CRD';
+            }
+        };
+
+        // Handle Auth Button
+        document.getElementById('nav-auth-btn').onclick = function() {
+            if (localStorage.getItem('sb_session')) {
+                // Logout logic
+                ['sb_session','md_email','md_user_id','md_user','md_credits','md_plan','is_logged_in'].forEach(k => localStorage.removeItem(k));
+                location.reload();
+            } else {
+                window.location.href = 'login.html';
+            }
+        };
+
+        updateAuthUI();
+
+        // 2. Neural Viewport Slider Logic
+        const slider = document.getElementById('slider-control');
+        const afterLayer = document.getElementById('after-layer');
+        const sliderLine = document.getElementById('slider-line');
+
+        if (slider) {
+            slider.addEventListener('input', (e) => {
+                const val = e.target.value;
+                afterLayer.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
+                sliderLine.style.left = `${val}%`;
+            });
+        }
+
+        // 3. Simulated Telemetry Animation
+        const gpuLoad = document.getElementById('gpu-load');
+        const activeClusters = document.getElementById('active-clusters');
+        const renderCount = document.getElementById('render-count');
+
+        setInterval(() => {
+            if (gpuLoad) gpuLoad.innerText = (80 + Math.random() * 5).toFixed(1);
+            if (activeClusters) activeClusters.innerText = (1400 + Math.floor(Math.random() * 10)).toLocaleString();
+            if (renderCount) {
+                const current = parseInt(renderCount.innerText.replace(',', ''));
+                renderCount.innerText = (current + Math.floor(Math.random() * 2)).toLocaleString();
+            }
+        }, 3000);
+    });
+</script>
+</body></html>
+
+
+
+
+

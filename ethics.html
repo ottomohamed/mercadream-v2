@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Ethics & Privacy</title>
+<title>MERCADREAM � Ethics & Privacy</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{--acid:#c8ff00;--acid-dim:#8aad00;--gold:#ffba3f;--surface:#060606;--s2:#0d0d0d;--s3:#161616;--s4:#1e1e1e;--border:rgba(200,255,0,0.07);--border-b:rgba(200,255,0,0.35);--text:#b0b0b0;--text-dim:#444;--text-bright:#f0f0f0;--mono:'IBM Plex Mono',monospace;--display:'Orbitron',monospace;--body:'Inter',sans-serif;}
@@ -77,14 +77,14 @@ main{position:relative;z-index:1;padding-top:60px;display:grid;grid-template-col
 .prohib-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:#ff5050;margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase}
 .prohib-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,80,80,0.06);font-size:13px;color:var(--text)}
 .prohib-item:last-child{border-bottom:none;padding-bottom:0}
-.prohib-item::before{content:'✗';color:#ff5050;font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px}
+.prohib-item::before{content:'?';color:#ff5050;font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px}
 
 /* ALLOWED LIST */
 .allow-list{background:rgba(200,255,0,0.02);border:1px solid rgba(200,255,0,0.12);padding:16px 18px;margin:16px 0}
 .allow-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--acid);margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase}
 .allow-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(200,255,0,0.05);font-size:13px;color:var(--text)}
 .allow-item:last-child{border-bottom:none;padding-bottom:0}
-.allow-item::before{content:'✓';color:var(--acid);font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px}
+.allow-item::before{content:'?';color:var(--acid);font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px}
 
 /* DATA TABLE */
 .data-table{width:100%;border-collapse:collapse;font-size:12px;margin:14px 0;background:var(--s2);border:1px solid var(--border)}
@@ -123,8 +123,28 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
 @media(max-width:900px){main{grid-template-columns:1fr}.toc-nav{display:none}.ethics-content{padding:28px 20px}}
 @media(max-width:768px){header{padding:0 20px}.hdr-nav{display:none}.bottom-nav{display:flex}body{padding-bottom:62px}footer{padding:24px 20px}.commit-grid{grid-template-columns:1fr}}
 </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="lang-en">
+<body class="lang-en"><script src="md-engine.js"></script>
 <div class="orb orb-1"></div>
 
 <header id="hdr">
@@ -173,27 +193,27 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
       <div class="eth-tag"><div class="tag-dot"></div>ETHICS & PRIVACY</div>
       <h1>Creating Without <span>Compromising.</span></h1>
       <p>MercaDream believes creative freedom and ethical responsibility are inseparable. This document outlines our commitments to you, to creators everywhere, and to the world our technology shapes.</p>
-      <div class="last-updated">⟳ LAST UPDATED: JUNE 2025 · VERSION 3.1</div>
+      <div class="last-updated">? LAST UPDATED: JUNE 2025 � VERSION 3.1</div>
     </div>
 
     <!-- MISSION -->
     <div class="eth-sct reveal" id="mission">
       <div class="eth-sct-title">OUR MISSION</div>
       <p>MercaDream was built on a single conviction: every person deserves the ability to bring their imagination to life in cinematic form, regardless of budget, technical skill, or access to production resources.</p>
-      <p>We believe AI-powered creation should expand human creativity — not replace it, not homogenize it, and never weaponize it. Our technology is designed to serve the creator's vision, not redirect it.</p>
-      <p>This mission requires discipline. Not every use of our technology is one we will support. The commitments below are not aspirations — they are enforced policies that shape every product decision we make.</p>
+      <p>We believe AI-powered creation should expand human creativity � not replace it, not homogenize it, and never weaponize it. Our technology is designed to serve the creator's vision, not redirect it.</p>
+      <p>This mission requires discipline. Not every use of our technology is one we will support. The commitments below are not aspirations � they are enforced policies that shape every product decision we make.</p>
     </div>
 
     <!-- COMMITMENTS -->
     <div class="eth-sct reveal" id="commitments">
       <div class="eth-sct-title">OUR COMMITMENTS</div>
       <div class="commit-grid">
-        <div class="commit-card"><div class="cc-icon">🔒</div><div class="cc-title">YOUR DATA IS YOURS</div><div class="cc-desc">Your creative content, voice data, and prompts are never used to train shared models. What you create belongs entirely to you.</div></div>
-        <div class="commit-card"><div class="cc-icon">🌐</div><div class="cc-title">CULTURAL RESPECT</div><div class="cc-desc">MercaDream is natively trilingual and designed with cultural sensitivity. We do not produce content that degrades, stereotypes, or misrepresents any culture or community.</div></div>
-        <div class="commit-card"><div class="cc-icon">💎</div><div class="cc-title">TRANSPARENT PRICING</div><div class="cc-desc">No hidden fees, no surprise charges. You know exactly what you pay for and what you get. Our billing is public and auditable.</div></div>
-        <div class="commit-card"><div class="cc-icon">🛡</div><div class="cc-title">SAFETY BY DEFAULT</div><div class="cc-desc">Safety filters are always active. They cannot be disabled by users, API callers, or operators. No exceptions, no workarounds.</div></div>
-        <div class="commit-card"><div class="cc-icon">🔏</div><div class="cc-title">AES-256 ENCRYPTION</div><div class="cc-desc">All content is encrypted at rest and in transit. Multi-region replication with zero-knowledge architecture.</div></div>
-        <div class="commit-card"><div class="cc-icon">⚖</div><div class="cc-title">CREATOR SOVEREIGNTY</div><div class="cc-desc">We will never claim ownership of your creations, license them to third parties, or display them publicly without your explicit consent.</div></div>
+        <div class="commit-card"><div class="cc-icon">??</div><div class="cc-title">YOUR DATA IS YOURS</div><div class="cc-desc">Your creative content, voice data, and prompts are never used to train shared models. What you create belongs entirely to you.</div></div>
+        <div class="commit-card"><div class="cc-icon">??</div><div class="cc-title">CULTURAL RESPECT</div><div class="cc-desc">MercaDream is natively trilingual and designed with cultural sensitivity. We do not produce content that degrades, stereotypes, or misrepresents any culture or community.</div></div>
+        <div class="commit-card"><div class="cc-icon">??</div><div class="cc-title">TRANSPARENT PRICING</div><div class="cc-desc">No hidden fees, no surprise charges. You know exactly what you pay for and what you get. Our billing is public and auditable.</div></div>
+        <div class="commit-card"><div class="cc-icon">??</div><div class="cc-title">SAFETY BY DEFAULT</div><div class="cc-desc">Safety filters are always active. They cannot be disabled by users, API callers, or operators. No exceptions, no workarounds.</div></div>
+        <div class="commit-card"><div class="cc-icon">??</div><div class="cc-title">AES-256 ENCRYPTION</div><div class="cc-desc">All content is encrypted at rest and in transit. Multi-region replication with zero-knowledge architecture.</div></div>
+        <div class="commit-card"><div class="cc-icon">?</div><div class="cc-title">CREATOR SOVEREIGNTY</div><div class="cc-desc">We will never claim ownership of your creations, license them to third parties, or display them publicly without your explicit consent.</div></div>
       </div>
     </div>
 
@@ -203,8 +223,8 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
       <p>MercaDream operates under a strict content policy enforced at the model, API, and platform levels simultaneously. Our Dream Extractor model is fine-tuned to refuse harmful requests regardless of how they are phrased.</p>
 
       <div class="prohib-list">
-        <div class="prohib-title">⚠ STRICTLY PROHIBITED</div>
-        <div class="prohib-item">Sexual content involving minors (CSAM) — zero tolerance, always reported to NCMEC</div>
+        <div class="prohib-title">? STRICTLY PROHIBITED</div>
+        <div class="prohib-item">Sexual content involving minors (CSAM) � zero tolerance, always reported to NCMEC</div>
         <div class="prohib-item">Non-consensual deepfakes or synthetic media depicting real individuals without documented consent</div>
         <div class="prohib-item">Content designed to incite violence, terrorism, or hatred against protected groups</div>
         <div class="prohib-item">Disinformation, electoral manipulation, or synthetic propaganda</div>
@@ -213,7 +233,7 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
       </div>
 
       <div class="allow-list">
-        <div class="allow-title">✓ SUPPORTED USE CASES</div>
+        <div class="allow-title">? SUPPORTED USE CASES</div>
         <div class="allow-item">Fiction, storytelling, and cinematic art of all genres and themes</div>
         <div class="allow-item">Commercial video production, advertising, and brand content</div>
         <div class="allow-item">Educational and documentary-style content</div>
@@ -234,12 +254,12 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
           <tr><td class="category">ACCOUNT DATA</td><td>Email, name, payment method</td><td>Account lifetime + 90 days</td><td>Payment processor only</td></tr>
           <tr><td class="category">GENERATION PROMPTS</td><td>Text prompts you submit</td><td>90 days (user-deletable)</td><td>Nobody</td></tr>
           <tr><td class="category">GENERATED CONTENT</td><td>Video, audio, outputs</td><td>Until deleted by user</td><td>Nobody</td></tr>
-          <tr><td class="category">VOICE DATA</td><td>Only if voice cloning used</td><td>Until deleted by user</td><td>Nobody — never for training</td></tr>
+          <tr><td class="category">VOICE DATA</td><td>Only if voice cloning used</td><td>Until deleted by user</td><td>Nobody � never for training</td></tr>
           <tr><td class="category">USAGE ANALYTICS</td><td>Anonymized performance data</td><td>24 months aggregated</td><td>Nobody (internal only)</td></tr>
         </tbody>
       </table>
 
-      <p>You may request export or deletion of all your data at any time via Settings → Privacy or by contacting privacy@mercadream.com. Deletion requests are processed within 30 days.</p>
+      <p>You may request export or deletion of all your data at any time via Settings ? Privacy or by contacting privacy@mercadream.com. Deletion requests are processed within 30 days.</p>
     </div>
 
     <!-- IP -->
@@ -275,10 +295,10 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
         <h3>GET IN TOUCH</h3>
         <p>We take all reports seriously. Policy violations are reviewed within 24 hours. Data requests are processed within 30 days.</p>
         <div class="contact-links">
-          <a href="mailto:ethics@mercadream.com" class="contact-link">ETHICS REPORT →</a>
-          <a href="mailto:privacy@mercadream.com" class="contact-link">PRIVACY REQUEST →</a>
-          <a href="mailto:security@mercadream.com" class="contact-link">SECURITY ISSUE →</a>
-          <a href="mailto:legal@mercadream.com" class="contact-link">LEGAL INQUIRY →</a>
+          <a href="mailto:ethics@mercadream.com" class="contact-link">ETHICS REPORT ?</a>
+          <a href="mailto:privacy@mercadream.com" class="contact-link">PRIVACY REQUEST ?</a>
+          <a href="mailto:security@mercadream.com" class="contact-link">SECURITY ISSUE ?</a>
+          <a href="mailto:legal@mercadream.com" class="contact-link">LEGAL INQUIRY ?</a>
         </div>
       </div>
     </div>
@@ -296,14 +316,14 @@ footer{padding:36px 32px;border-top:1px solid var(--border);display:flex;align-i
     <a href="api.html">API</a>
     <a href="ethics.html" class="active-link">Ethics</a>
   </div>
-  <div class="foot-copy">© 2025 MERCADREAM — AI CINEMA STUDIO</div>
+  <div class="foot-copy">� 2025 MERCADREAM � AI CINEMA STUDIO</div>
 </footer>
 
 <nav class="bottom-nav">
-  <a href="index.html" class="bn-item"><span class="bi">⌂</span><span>HOME</span></a>
-  <a href="studio.html" class="bn-item"><span class="bi">⚡</span><span>STUDIO</span></a>
-  <a href="assembly.html" class="bn-item"><span class="bi">🗄</span><span>VAULT</span></a>
-  <a href="pricing.html" class="bn-item"><span class="bi">💎</span><span>PLANS</span></a>
+  <a href="index.html" class="bn-item"><span class="bi">�</span><span>HOME</span></a>
+  <a href="studio.html" class="bn-item"><span class="bi">?</span><span>STUDIO</span></a>
+  <a href="assembly.html" class="bn-item"><span class="bi">??</span><span>VAULT</span></a>
+  <a href="pricing.html" class="bn-item"><span class="bi">??</span><span>PLANS</span></a>
 </nav>
 
 <script>
@@ -316,4 +336,10 @@ window.onload=()=>{const s=localStorage.getItem('md_lang')||'en';setLang(s);};
 </script>
 </body>
 </html>
+
+
+
+
+
+
 

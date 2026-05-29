@@ -51,8 +51,28 @@
         @keyframes blink { 50% { opacity: 0.4; } }
         #customContextMenu { z-index: 1000; display: none; }
     </style>
+<script>
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="h-screen w-screen flex flex-col select-none overflow-hidden">
+<body class="h-screen w-screen flex flex-col select-none overflow-hidden"><script src="md-engine.js"></script>
 
 <div id="customContextMenu" class="absolute bg-surface-container-high border border-outline-variant/60 shadow-2xl rounded p-1 w-44 text-xs font-code-data">
     <button onclick="executeContextAction('delete')" class="w-full text-left px-3 py-1.5 hover:bg-red-900/40 hover:text-red-400 rounded flex items-center gap-2">
@@ -1003,3 +1023,8 @@
 </script>
 </body>
 </html>
+
+
+
+
+

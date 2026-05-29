@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -97,8 +97,9 @@
             transform: translateY(1px);
         }
     </style>
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="flex flex-col text-on-surface font-technical">
+<body class="flex flex-col text-on-surface font-technical"><script src="md-engine.js"></script>
     <video autoplay muted loop playsinline class="video-background" id="heroVideo">
         <source src="media/hero4.mp4" type="video/mp4"/>
     </video>
@@ -172,7 +173,7 @@
                 </div>
             </div>
             <div class="mt-4 flex justify-between text-[9px] text-on-surface-variant/40 px-2 uppercase tracking-widest">
-                <span>Coord: [40.7128Â° N, 74.0060Â° W]</span>
+                <span>Coord: [40.7128° N, 74.0060° W]</span>
                 <span>Security: AES-256-GCM</span>
             </div>
         </div>
@@ -180,7 +181,7 @@
 
     <footer class="fixed bottom-0 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant">
         <div class="text-[10px] text-primary-fixed uppercase tracking-[0.2em]">
-            Â© 2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
+            © 2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
         </div>
         <div class="flex gap-6 text-[9px] text-on-surface-variant uppercase tracking-widest">
             <a class="hover:text-primary-fixed transition-colors underline" href="#">Neural_Engine</a>
@@ -200,55 +201,18 @@
             measurementId: "G-F0CLDJCV42"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        const handleSuccess = (user, isNew = false) => {
-            localStorage.setItem('sb_session', 'true');
-            localStorage.setItem('md_email', user.email);
-            localStorage.setItem('md_user', JSON.stringify(user));
-            localStorage.setItem('md_user_id', user.uid);
-            localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
-            window.location.href = 'profile.html';
-        };
-
-        document.getElementById('registerForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const btn = document.getElementById('submitBtn');
-            const original = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = 'SYNCING_NEURAL_DATA...';
-            
-            try {
-                const result = await auth.createUserWithEmailAndPassword(email, password);
-                await result.user.updateProfile({
-                    displayName: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value
-                });
-                handleSuccess(result.user, true);
-            } catch (error) {
-                alert('ERROR: ' + error.message);
-                btn.disabled = false;
-                btn.innerHTML = original;
-            }
-        };
-
-        document.getElementById('googleSignUp').onclick = async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            try {
-                const result = await auth.signInWithPopup(provider);
-                handleSuccess(result.user);
-            } catch (error) {
-                alert('ERROR: ' + error.message);
-            }
-        };
-
-        window.onload = () => {
-            const vid = document.getElementById('heroVideo');
-            if(vid) vid.play().catch(() => {});
-        };
-    </script>
+        const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();</script>
 </body>
 </html>
+
+
