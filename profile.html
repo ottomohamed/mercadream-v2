@@ -1,9 +1,8 @@
 ﻿<!DOCTYPE html>
-
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM — PROFILE COMMAND CENTER</title>
+<title>MERCADREAM  PROFILE COMMAND CENTER</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -140,10 +139,10 @@
 </div>
 <div class="mb-8 p-4 bg-surface-container-low border border-outline-variant">
 <div class="flex items-center gap-3 mb-2">
-<img alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZ2o0NtMcvwJWYEkSColM6WbA6Dt_JToQuo2DYoYZ8njeqIDhNerBA0O00wdhewfkByLUbC_O0HyPFcLxZGpiRtBrp60sU_xFlgs-PNt8MaLPQyDIAidq6nEUMbr8-aFp6ow_PVEoI1OHcmezRqmfZqRrjjAkWOVUwIEk3AiuHWxrPXt9FpHsECNMg5aAY_YonR-R5cMRbYcZoXAC0CrMvlki2BWI3EGy7MgZz5I-NdSYfhkbQBKb-P0ngX11QGYZJqtitCfMQGM"/>
+<img id="sidebar-avatar" alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://www.gravatar.com/avatar/000?d=mp"/>
 <div>
-<p class="font-technical-sm text-label-xs text-primary-fixed">PRO MEMBER</p>
-<p class="font-technical-sm text-label-xs text-on-surface-variant">Studio Tier 1</p>
+<p class="font-technical-sm text-label-xs text-primary-fixed" id="sidebar-plan">LOADING...</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant" id="sidebar-tier">Studio Tier</p>
 </div>
 </div>
 </div>
@@ -200,7 +199,7 @@
 <div class="flex items-center gap-4">
 <div class="hidden md:flex bg-surface-variant/30 border border-outline-variant px-3 py-1 items-center gap-2">
 <span class="material-symbols-outlined text-[16px] text-primary-fixed">account_balance_wallet</span>
-<span class="font-technical-sm text-label-xs text-on-surface">2.4k CR</span>
+<span class="font-technical-sm text-label-xs text-on-surface" id="top-credits">0 CR</span>
 </div>
 <button class="bg-primary-fixed text-on-primary-fixed font-technical-sm text-label-xs px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8f500] transition-all">Upgrade</button>
 <span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">notifications</span>
@@ -217,24 +216,24 @@
 <div class="flex flex-col items-center md:flex-row md:items-start gap-8 relative z-10">
 <div class="relative group/avatar">
 <div class="w-32 h-32 border-2 border-primary-fixed p-1">
-<img class="w-full h-full object-cover" data-alt="High-fidelity cinematic portrait of a professional digital artist in a dark, tech-filled studio. The user has a focused expression, illuminated by the neon-acid glow of high-end monitors. The background features complex wiring and server racks, maintaining a surgical cyberpunk aesthetic with deep blacks and sharp yellow accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbTLLfq_EcK94ehonusiAoLoYDXpVzGGBnl6WBs1TDGCA4FyMECwZnWSbO7DMhbrfdiRII1E-mTgr_557EnTz8s_UPyOw4j1cyzSqZER6guL5EMFJBcBVTARyzJtaiE7fPnsxw5rPyrMrdWcH8Wm3uJ7gZ0hMtrtTLVg3ru41PzysG4za-mA_5azwm5_Pl3vkfTESVpXiXHJxeVg7WyZu06S4K2Cc1RrnlqZa7fmOB1t-UivflvjNcaKIa_0Qq_8jUFKm-tFc8bk8"/>
+<img id="profile-avatar" class="w-full h-full object-cover" src="https://www.gravatar.com/avatar/000?d=mp"/>
 </div>
 <button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-technical-sm text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors">UPLOAD PHOTO</button>
 </div>
 <div class="flex-1 space-y-4">
 <div>
-<h2 class="font-display-lg text-headline-lg text-primary-fixed">OTTO MERCADREAM</h2>
-<p class="font-technical-sm text-technical-sm text-on-surface-variant">otto.ops@mercadream.tech</p>
+<h2 class="font-display-lg text-headline-lg text-primary-fixed" id="profile-name">LOADING...</h2>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="profile-email">...</p>
 </div>
 <div class="inline-flex items-center gap-2 bg-primary-container/10 border border-primary-fixed/30 px-3 py-2">
 <span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">shield</span>
 <div class="flex flex-col">
-<span class="font-technical-sm text-label-xs text-primary-fixed font-bold">SUBSCRIPTION ACTIVE</span>
-<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase">Director Tier 1 • Resets in 14d</span>
+<span class="font-technical-sm text-label-xs text-primary-fixed font-bold" id="plan-title">LOADING...</span>
+<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase" id="plan-sub">...</span>
 </div>
 </div>
 <div class="pt-4">
-<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow">EDIT PROFILE</button>
+<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow" id="edit-profile-btn">EDIT PROFILE</button>
 </div>
 </div>
 </div>
@@ -247,9 +246,9 @@
 <span class="material-symbols-outlined text-primary-fixed">token</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-primary-fixed leading-none">1,250</p>
+<p class="font-display-lg text-[48px] text-primary-fixed leading-none" id="credits-value">0</p>
 <div class="h-1 bg-surface-variant mt-4 w-full">
-<div class="h-full bg-primary-fixed w-[65%]"></div>
+<div class="h-full bg-primary-fixed w-[0%]" id="credits-bar"></div>
 </div>
 </div>
 </div>
@@ -259,8 +258,8 @@
 <span class="material-symbols-outlined text-secondary">movie_creation</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-on-surface leading-none">47</p>
-<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">+12 this month</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="renders-value">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2" id="renders-sub">+0 this month</p>
 </div>
 </div>
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
@@ -269,7 +268,7 @@
 <span class="material-symbols-outlined text-tertiary-fixed-dim">history</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-on-surface leading-none">12</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="recharges-value">0</p>
 <p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">Lifetime total</p>
 </div>
 </div>
@@ -279,8 +278,8 @@
 <span class="material-symbols-outlined text-primary-fixed-dim">folder_shared</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-on-surface leading-none">08</p>
-<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">1.2 GB utilized</p>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="assets-value">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2" id="assets-sub">0 GB utilized</p>
 </div>
 </div>
 </div>
@@ -289,7 +288,7 @@
 <section class="bg-surface border border-outline-variant overflow-hidden">
 <div class="bg-surface-variant/20 px-6 py-3 border-b border-outline-variant flex justify-between items-center">
 <h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
-<span class="font-technical-sm text-label-xs text-on-surface-variant">System Time: 2024.05.24 // 14:02 UTC</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant" id="system-time">System Time: --:-- UTC</span>
 </div>
 <div class="overflow-x-auto">
 <table class="w-full text-left font-technical-sm text-technical-sm">
@@ -302,40 +301,9 @@
 <th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider text-right">Status</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-outline-variant/30">
-<tr class="hover:bg-surface-variant/10 transition-colors">
-<td class="px-6 py-4 text-on-surface">2024.05.20</td>
-<td class="px-6 py-4 text-on-surface">Premium Render Pack (L)</td>
-<td class="px-6 py-4 text-primary-fixed">+500 CR</td>
-<td class="px-6 py-4 text-on-surface-variant">$49.99</td>
-<td class="px-6 py-4 text-right">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
-<span class="w-1 h-1 bg-primary-fixed rounded-full animate-ping"></span>
-                                            COMPLETED
-                                        </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-variant/10 transition-colors">
-<td class="px-6 py-4 text-on-surface">2024.05.12</td>
-<td class="px-6 py-4 text-on-surface">Director Monthly Sub</td>
-<td class="px-6 py-4 text-primary-fixed">+1000 CR</td>
-<td class="px-6 py-4 text-on-surface-variant">$99.00</td>
-<td class="px-6 py-4 text-right">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
-                                            COMPLETED
-                                        </span>
-</td>
-</tr>
-<tr class="hover:bg-surface-variant/10 transition-colors">
-<td class="px-6 py-4 text-on-surface">2024.04.15</td>
-<td class="px-6 py-4 text-on-surface">Asset Storage Upgrade</td>
-<td class="px-6 py-4 text-on-surface-variant">--</td>
-<td class="px-6 py-4 text-on-surface-variant">$15.00</td>
-<td class="px-6 py-4 text-right">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 border border-primary-fixed text-primary-fixed text-[10px] font-bold">
-                                            COMPLETED
-                                        </span>
-</td>
+<tbody id="billing-table-body" class="divide-y divide-outline-variant/30">
+<tr>
+<td colspan="5" class="px-6 py-12 text-center text-on-surface-variant opacity-60">-- No Transaction History --</td>
 </tr>
 </tbody>
 </table>
@@ -350,15 +318,15 @@
 <p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
 </div>
 <div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-<span class="font-technical-sm text-headline-lg tracking-widest text-on-surface">MERCADREAM-OTTO-4829</span>
+<span class="font-technical-sm text-headline-lg tracking-widest text-on-surface" id="ref-code">GENERATING...</span>
 <div class="flex gap-2">
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Copy Code">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="copy-ref-btn" title="Copy Code">
 <span class="material-symbols-outlined">content_copy</span>
 </button>
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share WhatsApp">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="wa-ref-btn" title="Share WhatsApp">
 <span class="material-symbols-outlined">share</span>
 </button>
-<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" title="Share Twitter/X">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="twitter-ref-btn" title="Share Twitter/X">
 <span class="material-symbols-outlined">alternate_email</span>
 </button>
 </div>
@@ -381,11 +349,11 @@
 <div class="flex gap-8">
 <div>
 <p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Friends</p>
-<p class="font-display-lg text-headline-lg text-on-surface">3</p>
+<p class="font-display-lg text-headline-lg text-on-surface" id="friends-count">0</p>
 </div>
 <div>
 <p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Earned</p>
-<p class="font-display-lg text-headline-lg text-primary-fixed">45 <span class="text-label-xs uppercase">CR</span></p>
+<p class="font-display-lg text-headline-lg text-primary-fixed" id="friends-earned">0 <span class="text-label-xs uppercase">CR</span></p>
 </div>
 </div>
 <span class="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
@@ -393,7 +361,6 @@
 </div>
 <!-- HOW TO USE BOX -->
 <div class="bg-surface border border-outline-variant p-8 flex flex-col relative overflow-hidden">
-<!-- Technical Crosshair Decor -->
 <div class="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary-fixed/20"></div>
 <div class="mb-8">
 <div class="flex items-center gap-3 mb-4">
@@ -437,7 +404,7 @@
 <footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
-<p class="font-technical-sm text-label-xs text-on-surface-variant">© 2024 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant"> 2024 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
 <div class="flex gap-4">
 <a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Privacy Protocol</a>
 <a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Service Terms</a>
@@ -470,17 +437,11 @@
 </div>
 <script src="/js/navigation.js"></script>
 
-<!-- =====================================================
-     كود موحد: Firebase (Firestore) + وظائف الصفحة
-     Firebase يتحكم بالبيانات، loadProfile لا تكتب فوقها
-     ===================================================== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ============================================================
-  // ⚠️ ضع هنا إعدادات مشروعك من Firebase Console > Project Settings
-  // ============================================================
   const firebaseConfig = {
     apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
     authDomain: "mercadream-4b4b3.firebaseapp.com",
@@ -492,129 +453,181 @@
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
-  const userDocId = "A9zcxb1YpgTl7fTxIf2z";
 
-  // ── دالة تحديث الواجهة من بيانات Firestore ──────────────────
-  function applyFirestoreData(userData) {
-    // 1. Available Credits — الرقم الكبير (نص أخضر text-primary-fixed)
-    const allBigNums = document.querySelectorAll('p.text-\\[48px\\], p[class*="text-[48px]"]');
-    allBigNums.forEach(el => {
-      if (el.classList.contains('text-primary-fixed')) {
-        el.textContent = Number(userData.credits ?? 0).toLocaleString();
-      }
-    });
+  let currentUserData = { credits: 0, plan: "free", name: "", email: "", renders: 0, recharges: 0, assets: 0 };
 
-    // 2. Navbar Credits (أعلى اليمين)
-    document.querySelectorAll('span').forEach(el => {
-      if (el.textContent.trim().match(/[\d,]+\s*CR/)) {
-        el.textContent = `${Number(userData.credits ?? 0).toLocaleString()} CR`;
-      }
-    });
-
-    // 3. الإحصائيات الثلاثة (text-on-surface) بالترتيب: renders / recharges / assets
-    const statBoxes = document.querySelectorAll('p[class*="text-[48px]"]');
-    statBoxes.forEach(el => {
-      if (el.classList.contains('text-on-surface')) {
-        const label = el.closest('.bg-surface')?.querySelector('[class*="text-label-xs"]')?.textContent?.toLowerCase() ?? '';
-        if (label.includes('render'))   el.textContent = userData.renders_executed ?? 0;
-        if (label.includes('recharge')) el.textContent = userData.recharge_cycles   ?? 0;
-        if (label.includes('asset'))    el.textContent = userData.saved_assets      ?? 0;
-      }
-    });
-
-    // 4. اسم المستخدم وإيميله
-    if (userData.name) {
-      const nameEl = document.querySelector('h2.text-primary-fixed');
-      if (nameEl) nameEl.textContent = userData.name;
-    }
-    if (userData.email) {
-      const emailEl = document.querySelector('p.text-on-surface-variant');
-      if (emailEl && emailEl.textContent.includes('@')) emailEl.textContent = userData.email;
-    }
-
-    // 5. خطة الاشتراك (shield label)
-    if (userData.plan) {
-      const shields = { free: "NO PLAN", creator: "CREATOR SHIELD", pro: "PRO SHIELD", studio: "STUDIO SHIELD" };
-      const shieldEl = document.querySelector('.text-primary-fixed.font-bold');
-      if (shieldEl) shieldEl.textContent = shields[userData.plan] ?? "NO PLAN";
-    }
-
-    console.log("✅ Firestore sync — credits:", userData.credits ?? 0);
+  // توليد كود إحالة فريد من UID
+  function generateReferralCode(uid) {
+    return "MD-" + uid.substring(0, 8).toUpperCase();
   }
 
-  // ── تشغيل المستمع الحي ───────────────────────────────────────
-  onSnapshot(doc(db, "users", userDocId), (docSnap) => {
-    if (docSnap.exists()) {
-      applyFirestoreData(docSnap.data());
-    } else {
-      console.error("❌ المستند غير موجود في Firestore: users/" + userDocId);
+  // تحديث واجهة المستخدم بالكامل
+  function updateUI(user, userData) {
+    // الاسم والإيميل
+    const displayName = userData?.name || user.displayName || user.email.split('@')[0];
+    document.getElementById('profile-name').textContent = displayName;
+    document.getElementById('profile-email').textContent = user.email;
+    
+    // الرصيد
+    const credits = userData?.credits || 0;
+    document.getElementById('credits-value').textContent = credits.toLocaleString();
+    document.getElementById('top-credits').textContent = credits + ' CR';
+    
+    // نسبة الشريط (مثال: 65% إذا كان الرصيد 1250)
+    const percent = Math.min((credits / 2000) * 100, 100);
+    document.getElementById('credits-bar').style.width = percent + '%';
+    
+    // الإحصائيات
+    document.getElementById('renders-value').textContent = userData?.renders || 0;
+    document.getElementById('recharges-value').textContent = userData?.recharges || 0;
+    document.getElementById('assets-value').textContent = userData?.assets || 0;
+    document.getElementById('renders-sub').textContent = '+' + (userData?.renders || 0) + ' this month';
+    document.getElementById('assets-sub').textContent = ((userData?.assets || 0) / 1024).toFixed(1) + ' GB utilized';
+    
+    // الخطة
+    const plan = userData?.plan || 'free';
+    const planNames = { free: 'NO PLAN', creator: 'CREATOR SHIELD', pro: 'PRO SHIELD', studio: 'STUDIO SHIELD' };
+    const planSubs = { free: 'Initialize subscription', creator: 'Creator Node Active', pro: 'Pro Node Active', studio: 'Studio Node Active' };
+    document.getElementById('plan-title').textContent = planNames[plan] || 'NO PLAN';
+    document.getElementById('plan-sub').textContent = planSubs[plan] || 'Premium Node Enabled';
+    document.getElementById('sidebar-plan').textContent = plan === 'free' ? 'NO PLAN' : plan.toUpperCase() + ' MEMBER';
+    document.getElementById('sidebar-tier').textContent = plan === 'free' ? 'Studio Tier 0' : (plan === 'creator' ? 'Studio Tier 1' : 'Studio Tier 2');
+    
+    // كود الإحالة
+    const refCode = generateReferralCode(user.uid);
+    document.getElementById('ref-code').textContent = refCode;
+    localStorage.setItem('md_ref_code', refCode);
+    
+    // حفظ في localStorage
+    localStorage.setItem('md_name', displayName);
+    localStorage.setItem('md_email', user.email);
+    localStorage.setItem('md_credits', credits);
+    localStorage.setItem('md_plan', plan);
+    localStorage.setItem('md_user_id', user.uid);
+    
+    // صورة الأفاتار من localStorage إن وجدت
+    const savedAvatar = localStorage.getItem('md_avatar');
+    if (savedAvatar) {
+      document.getElementById('sidebar-avatar').src = savedAvatar;
+      document.getElementById('profile-avatar').src = savedAvatar;
     }
-  }, (error) => {
-    console.error("❌ خطأ في الاتصال بـ Firestore:", error.message);
-  });
-
-  // ── وظائف الصفحة الأخرى (avatar, referral, nav) ─────────────
-  // صورة الأفاتار
-  var savedAvatar = localStorage.getItem("md_avatar");
-  if (savedAvatar) {
-    var img = document.querySelector(".w-32.h-32 img");
-    if (img) img.src = savedAvatar;
   }
-  var uploadBtn = document.querySelector("button.absolute.-bottom-2");
-  if (uploadBtn) uploadBtn.onclick = function() {
-    var i = document.createElement("input"); i.type = "file"; i.accept = "image/*";
-    i.onchange = function(e) {
-      var f = e.target.files[0]; if (!f) return;
-      var r = new FileReader();
-      r.onload = function(ev) {
-        var img = document.querySelector(".w-32.h-32 img");
-        if (img) img.src = ev.target.result;
-        localStorage.setItem("md_avatar", ev.target.result);
+
+  // رفع صورة الأفاتار
+  const uploadBtn = document.querySelector('button.absolute.-bottom-2');
+  if (uploadBtn) {
+    uploadBtn.onclick = function() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          const imgData = ev.target.result;
+          document.getElementById('sidebar-avatar').src = imgData;
+          document.getElementById('profile-avatar').src = imgData;
+          localStorage.setItem('md_avatar', imgData);
+        };
+        reader.readAsDataURL(file);
       };
-      r.readAsDataURL(f);
+      input.click();
     };
-    i.click();
-  };
+  }
 
-  // كود الإحالة
-  var refCode = localStorage.getItem("md_ref_code") || ("MERCADREAM-" + Math.random().toString(36).substring(2,6).toUpperCase() + "-" + Math.floor(1000+Math.random()*9000));
-  localStorage.setItem("md_ref_code", refCode);
-  var codeEl = document.querySelector(".tracking-widest.text-on-surface");
-  if (codeEl) codeEl.textContent = refCode;
-
-  var copyBtn = document.querySelector("button[title='Copy Code']");
-  if (copyBtn) copyBtn.onclick = function() {
-    navigator.clipboard.writeText(refCode).then(function() {
-      copyBtn.querySelector(".material-symbols-outlined").textContent = "check";
-      setTimeout(function() { copyBtn.querySelector(".material-symbols-outlined").textContent = "content_copy"; }, 2000);
-    });
-  };
-  var waBtn = document.querySelector("button[title='Share WhatsApp']");
-  if (waBtn) waBtn.onclick = function() { window.open("https://wa.me/?text=Join MercaDream with my code " + refCode + "! https://mercadream-v2.vercel.app"); };
-  var twBtn = document.querySelector("button[title='Share Twitter/X']");
-  if (twBtn) twBtn.onclick = function() { window.open("https://twitter.com/intent/tweet?text=Join MercaDream " + refCode + " mercadream-v2.vercel.app"); };
-
-  // روابط الـ Navigation
-  document.querySelectorAll("nav a,aside nav a").forEach(function(a) {
-    var t = a.textContent.trim().toLowerCase();
-    if (t.includes("studio") || t.includes("production")) a.href = "studio.html";
-    else if (t.includes("assembly")) a.href = "assembly.html";
-    else if (t.includes("marketplace")) a.href = "directors.html";
-    else if (t.includes("power") || t.includes("bolt")) a.href = "pricing.html";
-    else if (t.includes("dashboard")) a.href = "directors.html";
+  // نسخ كود الإحالة
+  document.getElementById('copy-ref-btn')?.addEventListener('click', () => {
+    const refCode = document.getElementById('ref-code').textContent;
+    if (refCode) {
+      navigator.clipboard.writeText(refCode);
+      const icon = document.querySelector('#copy-ref-btn .material-symbols-outlined');
+      if (icon) {
+        icon.textContent = 'check';
+        setTimeout(() => { icon.textContent = 'content_copy'; }, 2000);
+      }
+    }
   });
 
-  var bb = document.querySelector("header button");
-  if (bb) bb.onclick = function() { window.location.href = "directors.html"; };
-  var upgBtn = document.querySelector("button.bg-primary-fixed.text-on-primary-fixed");
-  if (upgBtn) upgBtn.onclick = function() { window.location.href = "pricing.html"; };
-  var editBtn = document.querySelector("button.border.border-primary-fixed");
-  if (editBtn) editBtn.onclick = function() {
-    var n = prompt("Enter your name:", localStorage.getItem("md_name") || "");
-    if (n) localStorage.setItem("md_name", n);
-  };
+  // مشاركة واتساب
+  document.getElementById('wa-ref-btn')?.addEventListener('click', () => {
+    const refCode = document.getElementById('ref-code').textContent;
+    window.open("https://wa.me/?text=Join MercaDream with my code " + refCode + "! https://mercadream-v2.vercel.app");
+  });
+
+  // مشاركة تويتر
+  document.getElementById('twitter-ref-btn')?.addEventListener('click', () => {
+    const refCode = document.getElementById('ref-code').textContent;
+    window.open("https://twitter.com/intent/tweet?text=Join MercaDream " + refCode + " mercadream-v2.vercel.app");
+  });
+
+  // زر تسجيل الخروج
+  const logoutBtn = document.querySelector('a[href="#"] .material-symbols-outlined');
+  if (logoutBtn && logoutBtn.textContent === 'logout') {
+    logoutBtn.closest('a').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await signOut(auth);
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+  }
+
+  // زر تحرير الملف الشخصي
+  document.getElementById('edit-profile-btn')?.addEventListener('click', () => {
+    const newName = prompt('Enter your name:', document.getElementById('profile-name').textContent);
+    if (newName && newName.trim()) {
+      const user = auth.currentUser;
+      if (user) {
+        updateDoc(doc(db, "users", user.uid), { name: newName.trim() }).then(() => {
+          localStorage.setItem('md_name', newName.trim());
+          document.getElementById('profile-name').textContent = newName.trim();
+        }).catch(console.error);
+      }
+    }
+  });
+
+  // زر الترقية
+  document.querySelector('button.bg-primary-fixed.text-on-primary-fixed')?.addEventListener('click', () => {
+    window.location.href = 'pricing.html';
+  });
+
+  // تحديث وقت النظام
+  function updateSystemTime() {
+    const now = new Date();
+    const timeString = now.toISOString().replace('T', ' // ').slice(0, 19) + ' UTC';
+    const timeEl = document.getElementById('system-time');
+    if (timeEl) timeEl.textContent = 'System Time: ' + timeString;
+  }
+  updateSystemTime();
+  setInterval(updateSystemTime, 1000);
+
+  //  مراقبة حالة تسجيل الدخول وجلب البيانات من Firestore 
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    
+    console.log('Logged in as:', user.email);
+    
+    // الاستماع المباشر لبيانات المستخدم من Firestore باستخدام user.uid
+    const userRef = doc(db, "users", user.uid);
+    onSnapshot(userRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        console.log(' Firestore data loaded:', userData);
+        updateUI(user, userData);
+      } else {
+        console.warn(' No Firestore document found for user:', user.uid);
+        // استخدام البيانات الافتراضية
+        updateUI(user, { credits: 0, plan: "free", renders: 0, recharges: 0, assets: 0 });
+      }
+    }, (error) => {
+      console.error(' Firestore error:', error.message);
+    });
+  });
 </script>
-</body></html>
-
-
+</body>
+</html>
