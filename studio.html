@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -168,7 +168,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container h-screen w-screen overflow-hidden flex flex-col"><script src="md-engine.js"></script>
 <div class="scanline-overlay"></div>
@@ -285,7 +285,7 @@ const db = firebase.firestore();
 <div class="flex gap-md self-end max-w-[80%]">
 <div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
 <p class="text-body-md text-on-surface">Initiate screenplay structure for 'CYBERPUNK NEON' series. Focus on Act 1 sequence 4 - The meeting at the rain-soaked docks.</p>
-<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 — USER_MAIN</span>
+<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 â€” USER_MAIN</span>
 </div>
 <div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center rounded-none border border-on-surface shrink-0">
 <span class="material-symbols-outlined">person</span>
@@ -309,7 +309,7 @@ const db = firebase.firestore();
 <span class="text-primary-fixed-dim">>></span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
 <span class="text-primary-fixed-dim">>></span> Screenplay protocol engaged. Ready for Act 1 details.
                         </p>
-<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 — GEMINI-9</span>
+<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 â€” GEMINI-9</span>
 </div>
 </div>
 <div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
@@ -329,7 +329,7 @@ const db = firebase.firestore();
 <footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
 <div class="flex gap-md items-end">
 <div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
-<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="اكتب فكرتك هنا... (بأي لغة)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="Ø§ÙƒØªØ¨ ÙÙƒØ±ØªÙƒ Ù‡Ù†Ø§... (Ø¨Ø£ÙŠ Ù„ØºØ©)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
 <div class="absolute bottom-2 right-2 flex gap-sm">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
 <button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#a8d700] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
@@ -421,12 +421,12 @@ const db = firebase.firestore();
             </button>
 <a href="assembly.html" class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97]">
 <span class="material-symbols-outlined text-[18px]">movie_edit</span>
-OPEN ASSEMBLY →
+OPEN ASSEMBLY â†’
 </a>
 </div>
 </footer>
 <script>
-        let credits = parseInt(localStorage.getItem('md_credits') || '0'); // سيُحدَّث من Firebase تلقائياً
+        let credits = parseInt(localStorage.getItem('md_credits') || '0'); // Ø³ÙŠÙØ­Ø¯ÙŽÙ‘Ø« Ù…Ù† Firebase ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹
         let baseCost = 12;
 
         const costTable = { 'Drama': 12, 'Action': 25, 'Comedy': 15, 'Documentary': 8 };
@@ -473,7 +473,7 @@ OPEN ASSEMBLY →
             log.scrollTop = log.scrollHeight;
         }
 
-        // ── تعديل دالة الاستوديو المحدثة لإرسال البث لغرفة المونتاج ──
+        // â”€â”€ ØªØ¹Ø¯ÙŠÙ„ Ø¯Ø§Ù„Ø© Ø§Ù„Ø§Ø³ØªÙˆØ¯ÙŠÙˆ Ø§Ù„Ù…Ø­Ø¯Ø«Ø© Ù„Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¨Ø« Ù„ØºØ±ÙØ© Ø§Ù„Ù…ÙˆÙ†ØªØ§Ø¬ â”€â”€
         async function handleSceneGenerated(scene, director) {
             const cost = costTable[director] || 12;
             if (credits < cost) {
@@ -578,7 +578,7 @@ OPEN ASSEMBLY →
                 return;
             }
 
-            addLogLine('GENERATE pressed — requesting scene from ' + director);
+            addLogLine('GENERATE pressed â€” requesting scene from ' + director);
             animatePipeline();
             const typingId = showTyping();
 
@@ -643,8 +643,8 @@ OPEN ASSEMBLY →
             process();
         }
 
-        // ── STATE ─────────────────────────────────────
-        let activeGenerations = {}; // تتبع التوليدات الجارية
+        // â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        let activeGenerations = {}; // ØªØªØ¨Ø¹ Ø§Ù„ØªÙˆÙ„ÙŠØ¯Ø§Øª Ø§Ù„Ø¬Ø§Ø±ÙŠØ©
 
         function appendBubble(text, role, label) {
             const chat = document.getElementById('chat-messages');
@@ -655,7 +655,7 @@ OPEN ASSEMBLY →
             if (role === 'user') {
                 const msgWrap = document.createElement('div');
                 msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
-                msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} — USER_MAIN</span>`;
+                msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} â€” USER_MAIN</span>`;
                 div.appendChild(msgWrap);
                 const icon = document.createElement('div');
                 icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
@@ -665,7 +665,7 @@ OPEN ASSEMBLY →
                 div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
                 const bubble = document.createElement('div');
                 bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
-                bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
+                bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' â€” ' + (label || 'GEMINI-9') + '</span>';
                 div.appendChild(bubble);
             }
             chat.insertBefore(div, voiceOverlay);
@@ -688,7 +688,7 @@ OPEN ASSEMBLY →
 
         function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
-        // ── SEND MESSAGE: فكرة واحدة → script كامل ──────
+        // â”€â”€ SEND MESSAGE: ÙÙƒØ±Ø© ÙˆØ§Ø­Ø¯Ø© â†’ script ÙƒØ§Ù…Ù„ â”€â”€â”€â”€â”€â”€
         async function sendMessage() {
             const textarea = document.getElementById('chat-input');
             const text = textarea ? textarea.value.trim() : '';
@@ -706,7 +706,7 @@ OPEN ASSEMBLY →
             appendBubble('>> Generating your script... please wait.', 'bot', 'SYSTEM');
 
             try {
-                // استدعاء /api/director مباشرة لتوليد 6 مشاهد
+                // Ø§Ø³ØªØ¯Ø¹Ø§Ø¡ /api/director Ù…Ø¨Ø§Ø´Ø±Ø© Ù„ØªÙˆÙ„ÙŠØ¯ 6 Ù…Ø´Ø§Ù‡Ø¯
                 const response = await fetch('/api/director', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -739,7 +739,7 @@ OPEN ASSEMBLY →
             }
         }
 
-        // ── RENDER SCRIPT CARDS ───────────────────────────
+        // â”€â”€ RENDER SCRIPT CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         function renderScriptCards(scenes, director, directorName) {
             const chat = document.getElementById('chat-messages');
             const voiceOverlay = document.getElementById('voice-overlay');
@@ -751,10 +751,10 @@ OPEN ASSEMBLY →
             header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
                 + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
                 + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: ' + (directorName || director) + '</p>'
-                + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' CR each. Click GENERATE.</p></div>';
+                + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes â€” ' + cost + ' CR each. Click GENERATE.</p></div>';
             chat.insertBefore(header, voiceOverlay);
 
-            // مشهد واحد في كل مرة
+            // Ù…Ø´Ù‡Ø¯ ÙˆØ§Ø­Ø¯ ÙÙŠ ÙƒÙ„ Ù…Ø±Ø©
             scenes.forEach((scene, idx) => {
                 const card = document.createElement('div');
                 card.className = 'w-full bg-surface-container border border-outline-variant p-md space-y-sm';
@@ -775,7 +775,7 @@ OPEN ASSEMBLY →
             chat.scrollTop = chat.scrollHeight;
         }
 
-        // ── GENERATE SCENE VIDEO ──────────────────────────
+        // â”€â”€ GENERATE SCENE VIDEO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         async function generateSceneVideo(idx) {
             const scene = generatedScenes[idx];
             if (!scene) return;
@@ -787,16 +787,16 @@ OPEN ASSEMBLY →
                 return;
             }
 
-            if (activeGenerations[idx]) return; // منع الضغط المزدوج
+            if (activeGenerations[idx]) return; // Ù…Ù†Ø¹ Ø§Ù„Ø¶ØºØ· Ø§Ù„Ù…Ø²Ø¯ÙˆØ¬
             activeGenerations[idx] = true;
 
             const btn = document.getElementById('gen-btn-' + idx);
             const resultDiv = document.getElementById('video-result-' + idx);
             if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> GENERATING...'; }
 
-            // ترجمة الـ prompt إذا كان عربياً
+            // ØªØ±Ø¬Ù…Ø© Ø§Ù„Ù€ prompt Ø¥Ø°Ø§ ÙƒØ§Ù† Ø¹Ø±Ø¨ÙŠØ§Ù‹
             let prompt = scene.prompt || scene.title || 'Cinematic scene';
-            const hasArabic = /[؀-ۿ]/.test(prompt);
+            const hasArabic = /[Ø€-Û¿]/.test(prompt);
             if (hasArabic) {
                 try {
                     const tr = await fetch('/api/chat', {
@@ -812,7 +812,7 @@ OPEN ASSEMBLY →
             addLogLine('GENERATING SCENE ' + (idx+1) + ': ' + prompt.substring(0, 60));
 
             try {
-                // إرسال لـ WaveSpeed
+                // Ø¥Ø±Ø³Ø§Ù„ Ù„Ù€ WaveSpeed
                 const genRes = await fetch('/api/wavespeed', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -827,7 +827,7 @@ OPEN ASSEMBLY →
                     return;
                 }
 
-                // خصم الرصيد
+                // Ø®ØµÙ… Ø§Ù„Ø±ØµÙŠØ¯
                 credits -= cost;
                 updateCredits();
                 if(window.__deductCredits) window.__deductCredits(cost);
@@ -842,7 +842,7 @@ OPEN ASSEMBLY →
                     attempts++;
                     if (attempts > 60) {
                         clearInterval(poll);
-                        if (btn) { btn.disabled = false; btn.innerHTML = 'TIMEOUT — RETRY'; }
+                        if (btn) { btn.disabled = false; btn.innerHTML = 'TIMEOUT â€” RETRY'; }
                         activeGenerations[idx] = false;
                         return;
                     }
@@ -863,16 +863,16 @@ OPEN ASSEMBLY →
                             clearInterval(poll);
                             activeGenerations[idx] = false;
 
-                            // عرض الفيديو في الكارد
+                            // Ø¹Ø±Ø¶ Ø§Ù„ÙÙŠØ¯ÙŠÙˆ ÙÙŠ Ø§Ù„ÙƒØ§Ø±Ø¯
                             if (resultDiv) {
                                 resultDiv.className = 'mt-sm';
                                 resultDiv.className = 'mt-sm';
-                                resultDiv.innerHTML = '<video src="' + url + '" controls autoplay muted loop playsinline class="w-full max-h-48 object-cover border border-primary-fixed-dim"></video><p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">✓ VIDEO READY</p>';
+                                resultDiv.innerHTML = '<video src="' + url + '" controls autoplay muted loop playsinline class="w-full max-h-48 object-cover border border-primary-fixed-dim"></video><p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">âœ“ VIDEO READY</p>';
                             }
 
-                            if (btn) { btn.disabled = false; btn.innerHTML = '✓ DONE — REGENERATE'; }
+                            if (btn) { btn.disabled = false; btn.innerHTML = 'âœ“ DONE â€” REGENERATE'; }
 
-                            // حفظ في md_6scenes
+                            // Ø­ÙØ¸ ÙÙŠ md_6scenes
                             const sceneObj = {
                                 id: 'scene-' + Date.now() + '-' + idx,
                                 sceneNumber: idx + 1,
@@ -887,19 +887,19 @@ OPEN ASSEMBLY →
                             const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
                             existing.push(sceneObj);
                             localStorage.setItem('md_6scenes', JSON.stringify(existing));
-                            addLogLine('VIDEO READY — SCENE ' + (idx+1) + ': ' + url.substring(0,50));
+                            addLogLine('VIDEO READY â€” SCENE ' + (idx+1) + ': ' + url.substring(0,50));
                             animatePipeline();
 
                         } else if (status === 'failed') {
                             clearInterval(poll);
                             activeGenerations[idx] = false;
-                            if (btn) { btn.disabled = false; btn.innerHTML = 'FAILED — RETRY'; }
+                            if (btn) { btn.disabled = false; btn.innerHTML = 'FAILED â€” RETRY'; }
                         }
                     } catch(e) { addLogLine('POLL ERROR: ' + e.message); }
                 }, 3000);
 
             } catch (err) {
-                if (btn) { btn.disabled = false; btn.innerHTML = 'ERROR — RETRY'; }
+                if (btn) { btn.disabled = false; btn.innerHTML = 'ERROR â€” RETRY'; }
                 activeGenerations[idx] = false;
                 addLogLine('NETWORK ERROR: ' + err.message);
             }
@@ -914,15 +914,15 @@ OPEN ASSEMBLY →
 <script type="module">
   import { deductCredits, getCurrentCredits } from "/js/firebase-credits.js";
 
-  // اجعل deductCredits متاحة للسكريبت الداخلي
+  // Ø§Ø¬Ø¹Ù„ deductCredits Ù…ØªØ§Ø­Ø© Ù„Ù„Ø³ÙƒØ±ÙŠØ¨Øª Ø§Ù„Ø¯Ø§Ø®Ù„ÙŠ
   window.__deductCredits = deductCredits;
 
-  // عند كل تحديث من Firestore — حدّث متغير credits ودالة updateCredits
+  // Ø¹Ù†Ø¯ ÙƒÙ„ ØªØ­Ø¯ÙŠØ« Ù…Ù† Firestore â€” Ø­Ø¯Ù‘Ø« Ù…ØªØºÙŠØ± credits ÙˆØ¯Ø§Ù„Ø© updateCredits
   window.addEventListener('creditsUpdated', (e) => {
-    // وصول لـ credits داخل الـ IIFE عبر localStorage المُحدَّث
+    // ÙˆØµÙˆÙ„ Ù„Ù€ credits Ø¯Ø§Ø®Ù„ Ø§Ù„Ù€ IIFE Ø¹Ø¨Ø± localStorage Ø§Ù„Ù…ÙØ­Ø¯ÙŽÙ‘Ø«
     const newVal = e.detail.credits;
     localStorage.setItem('md_credits', newVal);
-    // تحديث العناصر مباشرة بدون انتظار
+    // ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¹Ù†Ø§ØµØ± Ù…Ø¨Ø§Ø´Ø±Ø© Ø¨Ø¯ÙˆÙ† Ø§Ù†ØªØ¸Ø§Ø±
     const fmt = Number(newVal).toLocaleString();
     const topEl = document.getElementById('top-credits');
     const footEl = document.getElementById('footer-credits');
