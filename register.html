@@ -179,7 +179,7 @@
         </div>
     </main>
 
- <footer class="fixed bottom-0 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant">
+<footer class="fixed bottom-0 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant">
         <div class="text-[10px] text-primary-fixed uppercase tracking-[0.2em]">
             © 2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
         </div>
@@ -191,12 +191,29 @@
     </footer>
 
     <script>
-        // ??? ????? ???????
+        // 1. ????? ??? Firebase ?????? ???????? ?????? ????? ???? ??????? db
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", 
+            authDomain: "mercadream-4b4b3.firebaseapp.com", 
+            projectId: "mercadream-4b4b3", 
+            storageBucket: "mercadream-4b4b3.firebasestorage.app", 
+            messagingSenderId: "257560928442", 
+            appId: "1:257560928442:web:06983f27629a13eeed6283", 
+            measurementId: "G-F0CLDJCV42" 
+        }; 
+
+        // ?????? ?? ??? ????? ????? ????????? ?????? ???? ???? ?????
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // 2. ??? ????? ??????? ??????????
         const registerForm = document.getElementById('registerForm');
         const googleSignUpBtn = document.getElementById('googleSignUp');
         const submitBtn = document.getElementById('submitBtn');
 
-        // ???????? ??????? ?????? (Email & Password)
+        // ???????? ??????? ?????? (?????? ????? ??????)
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -209,11 +226,11 @@
             submitBtn.innerText = "PROCESSING...";
 
             try {
-                // ????? ?????? ?? Firebase Auth
+                // ????? ??????
                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // ??? ?????? ???????? ?? Firestore
+                // ??? ???????? ?? Firestore
                 await db.collection('users').doc(user.uid).set({
                     firstName: firstName,
                     lastName: lastName,
@@ -232,7 +249,7 @@
             }
         });
 
-        // ???????? ??????? ??? Google
+        // ???????? ??????? ??? ???? Google
         googleSignUpBtn.addEventListener('click', async () => {
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
@@ -244,6 +261,7 @@
                 const firstName = names[0] || "Unknown";
                 const lastName = names.slice(1).join(" ") || "Entity";
 
+                // ??? ?????? ???????? ?? Firestore
                 await db.collection('users').doc(user.uid).set({
                     firstName: firstName,
                     lastName: lastName,
@@ -262,4 +280,3 @@
     </script>
 </body>
 </html>
-
