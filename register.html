@@ -1,3 +1,7 @@
+ï»¿cd C:\Users\DEV\desktop\mercadream-v2
+
+# ????? register.html ???? ?????
+@'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,32 +9,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>MERCADREAM | Neural Registration</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary-fixed": "#c0f500",
-                        "surface-dim": "#131313",
-                        "surface-container": "#201f1f",
-                        "on-surface": "#e5e2e1",
-                        "on-surface-variant": "#c4caac",
-                        "outline-variant": "#434933",
-                        "neon-acid": "#c8ff00"
-                    },
-                    "fontFamily": {
-                        "technical": ["JetBrains Mono", "IBM Plex Mono", "monospace"],
-                        "headline": ["Sora", "sans-serif"],
-                        "display": ["Orbitron", "sans-serif"]
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         body {
             background-color: #0e0e0e;
@@ -97,10 +78,10 @@
             transform: translateY(1px);
         }
     </style>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="flex flex-col text-on-surface font-technical"><script src="md-engine.js"></script>
-    <video autoplay muted loop playsinline class="video-background" id="heroVideo">
+<body class="flex flex-col text-on-surface">
+
+    <video autoplay muted loop playsinline class="video-background">
         <source src="media/hero4.mp4" type="video/mp4"/>
     </video>
     <div class="video-overlay"></div>
@@ -156,10 +137,10 @@
                         </div>
                         <div>
                             <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">Access_Cipher</label>
-                            <input class="w-full px-4 py-3 text-xs" id="password" placeholder="Min. 8 characters" required type="password"/>
+                            <input class="w-full px-4 py-3 text-xs" id="password" placeholder="Min. 6 characters" required type="password"/>
                         </div>
                         
-                        <button class="w-full btn-main text-black font-bold py-4 text-xs uppercase tracking-[0.2em] mt-2 flex items-center justify-center gap-2" id="submitBtn" type="submit">
+                        <button class="w-full btn-main text-black font-bold py-4 text-xs uppercase tracking-[0.2em] mt-2 flex items-center justify-center gap-2" type="submit">
                             Authorize_Creation
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                         </button>
@@ -173,15 +154,15 @@
                 </div>
             </div>
             <div class="mt-4 flex justify-between text-[9px] text-on-surface-variant/40 px-2 uppercase tracking-widest">
-                <span>Coord: [40.7128° N, 74.0060° W]</span>
+                <span>Coord: [40.7128Â° N, 74.0060Â° W]</span>
                 <span>Security: AES-256-GCM</span>
             </div>
         </div>
     </main>
 
-<footer class="fixed bottom-0 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant">
+    <footer class="fixed bottom-0 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant">
         <div class="text-[10px] text-primary-fixed uppercase tracking-[0.2em]">
-            © 2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
+            Â© 2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
         </div>
         <div class="flex gap-6 text-[9px] text-on-surface-variant uppercase tracking-widest">
             <a class="hover:text-primary-fixed transition-colors underline" href="#">Neural_Engine</a>
@@ -190,93 +171,95 @@
         </div>
     </footer>
 
-    <script>
-        // 1. ????? ??? Firebase ?????? ???????? ?????? ????? ???? ??????? db
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", 
-            authDomain: "mercadream-4b4b3.firebaseapp.com", 
-            projectId: "mercadream-4b4b3", 
-            storageBucket: "mercadream-4b4b3.firebasestorage.app", 
-            messagingSenderId: "257560928442", 
-            appId: "1:257560928442:web:06983f27629a13eeed6283", 
-            measurementId: "G-F0CLDJCV42" 
-        }; 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // ?????? ?? ??? ????? ????? ????????? ?????? ???? ???? ?????
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+            authDomain: "mercadream-4b4b3.firebaseapp.com",
+            projectId: "mercadream-4b4b3",
+            storageBucket: "mercadream-4b4b3.firebasestorage.app",
+            messagingSenderId: "257560928442",
+            appId: "1:257560928442:web:06983f27629a13eeed6283",
+            measurementId: "G-F0CLDJCV42"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        function showAlert(message, isError = true) {
+            const alertDiv = document.createElement('div');
+            alertDiv.textContent = message;
+            alertDiv.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+                background: ${isError ? '#ff4444' : '#00ff88'}; color: black;
+                padding: 12px 24px; border-radius: 4px; font-size: 12px;
+                font-family: monospace; animation: fadeOut 3s forwards;
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
         }
-        const db = firebase.firestore();
 
-        // 2. ??? ????? ??????? ??????????
-        const registerForm = document.getElementById('registerForm');
-        const googleSignUpBtn = document.getElementById('googleSignUp');
-        const submitBtn = document.getElementById('submitBtn');
+        // Google Sign Up
+        document.getElementById('googleSignUp').onclick = async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                localStorage.setItem('sb_session', 'true');
+                localStorage.setItem('md_email', user.email);
+                localStorage.setItem('md_user_id', user.uid);
+                localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
+                showAlert('? Account created successfully! Redirecting...', false);
+                setTimeout(() => window.location.href = 'profile.html', 1500);
+            } catch (error) {
+                showAlert('? ' + error.message);
+            }
+        };
 
-        // ???????? ??????? ?????? (?????? ????? ??????)
-        registerForm.addEventListener('submit', async (e) => {
+        // Email/Password Registration
+        document.getElementById('registerForm').onsubmit = async (e) => {
             e.preventDefault();
-            
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const submitBtn = e.target.querySelector('button');
+            const originalText = submitBtn.innerHTML;
+            
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters');
+                return;
+            }
+            
             submitBtn.disabled = true;
-            submitBtn.innerText = "PROCESSING...";
-
+            submitBtn.innerHTML = 'CREATING...';
+            
             try {
-                // ????? ??????
-                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-
-                // ??? ???????? ?? Firestore
-                await db.collection('users').doc(user.uid).set({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                alert('Entity Registered Successfully!');
-                window.location.href = 'login.html';
-
-            } catch (error) {
-                console.error("Registration Error: ", error);
-                alert('Registration Failed: ' + error.message);
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Authorize_Creation";
-            }
-        });
-
-        // ???????? ??????? ??? ???? Google
-        googleSignUpBtn.addEventListener('click', async () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            try {
-                const result = await firebase.auth().signInWithPopup(provider);
-                const user = result.user;
                 
-                const displayName = user.displayName || "";
-                const names = displayName.split(" ");
-                const firstName = names[0] || "Unknown";
-                const lastName = names.slice(1).join(" ") || "Entity";
-
-                // ??? ?????? ???????? ?? Firestore
-                await db.collection('users').doc(user.uid).set({
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: user.email,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                alert('Google Authentication Successful!');
-                window.location.href = 'dashboard.html';
-
+                localStorage.setItem('sb_session', 'true');
+                localStorage.setItem('md_email', user.email);
+                localStorage.setItem('md_user_id', user.uid);
+                localStorage.setItem('md_name', `${firstName} ${lastName}`);
+                
+                showAlert('? Account created! Redirecting...', false);
+                setTimeout(() => window.location.href = 'profile.html', 1500);
             } catch (error) {
-                console.error("Google Sign-In Error: ", error);
-                alert('Google Sign-In Failed: ' + error.message);
+                if (error.code === 'auth/email-already-in-use') {
+                    showAlert('Email already exists. Please sign in instead.');
+                } else {
+                    showAlert('? ' + error.message);
+                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
-        });
+        };
     </script>
 </body>
 </html>
+'@ | Out-File -FilePath "register.html" -Encoding UTF8 -Force
+
+Write-Host "? ?? ????? register.html - ????? ??????? ?????? Firebase Auth ??????" -ForegroundColor Green
