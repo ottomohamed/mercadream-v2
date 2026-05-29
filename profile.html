@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -319,6 +319,10 @@
 </div>
 <div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
 <span class="font-technical-sm text-headline-lg tracking-widest text-on-surface" id="ref-code">GENERATING...</span>
+<div style="margin-top: 8px; font-size: 10px; color: #888;">
+    <span id="ref-link"></span>
+    <button id="copy-link-btn" style="background: transparent; border: 1px solid #c8ff00; color: #c8ff00; padding: 4px 8px; margin-left: 8px; cursor: pointer; border-radius: 4px;">Copy Link</button>
+</div>
 <div class="flex gap-2">
 <button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="copy-ref-btn" title="Copy Code">
 <span class="material-symbols-outlined">content_copy</span>
@@ -458,35 +462,35 @@
 
   let currentUserData = { credits: 0, plan: "free", name: "", email: "", renders: 0, recharges: 0, assets: 0 };
 
-  // توليد كود إحالة فريد من UID
+  // ????? ??? ????? ???? ?? UID
   function generateReferralCode(uid) {
     return "MD-" + uid.substring(0, 8).toUpperCase();
   }
 
-  // تحديث واجهة المستخدم بالكامل
+  // ????? ????? ???????? ???????
   function updateUI(user, userData) {
-    // الاسم والإيميل
+    // ????? ????????
     const displayName = userData?.name || user.displayName || user.email.split('@')[0];
     document.getElementById('profile-name').textContent = displayName;
     document.getElementById('profile-email').textContent = user.email;
     
-    // الرصيد
+    // ??????
     const credits = userData?.credits || 0;
     document.getElementById('credits-value').textContent = credits.toLocaleString();
     document.getElementById('top-credits').textContent = credits + ' CR';
     
-    // نسبة الشريط (مثال: 65% إذا كان الرصيد 1250)
+    // ???? ?????? (????: 65% ??? ??? ?????? 1250)
     const percent = Math.min((credits / 2000) * 100, 100);
     document.getElementById('credits-bar').style.width = percent + '%';
     
-    // الإحصائيات
+    // ??????????
     document.getElementById('renders-value').textContent = userData?.renders || 0;
     document.getElementById('recharges-value').textContent = userData?.recharges || 0;
     document.getElementById('assets-value').textContent = userData?.assets || 0;
     document.getElementById('renders-sub').textContent = '+' + (userData?.renders || 0) + ' this month';
     document.getElementById('assets-sub').textContent = ((userData?.assets || 0) / 1024).toFixed(1) + ' GB utilized';
     
-    // الخطة
+    // ?????
     const plan = userData?.plan || 'free';
     const planNames = { free: 'NO PLAN', creator: 'CREATOR SHIELD', pro: 'PRO SHIELD', studio: 'STUDIO SHIELD' };
     const planSubs = { free: 'Initialize subscription', creator: 'Creator Node Active', pro: 'Pro Node Active', studio: 'Studio Node Active' };
@@ -495,19 +499,19 @@
     document.getElementById('sidebar-plan').textContent = plan === 'free' ? 'NO PLAN' : plan.toUpperCase() + ' MEMBER';
     document.getElementById('sidebar-tier').textContent = plan === 'free' ? 'Studio Tier 0' : (plan === 'creator' ? 'Studio Tier 1' : 'Studio Tier 2');
     
-    // كود الإحالة
+    // ??? ???????
     const refCode = generateReferralCode(user.uid);
     document.getElementById('ref-code').textContent = refCode;
     localStorage.setItem('md_ref_code', refCode);
     
-    // حفظ في localStorage
+    // ??? ?? localStorage
     localStorage.setItem('md_name', displayName);
     localStorage.setItem('md_email', user.email);
     localStorage.setItem('md_credits', credits);
     localStorage.setItem('md_plan', plan);
     localStorage.setItem('md_user_id', user.uid);
     
-    // صورة الأفاتار من localStorage إن وجدت
+    // ???? ???????? ?? localStorage ?? ????
     const savedAvatar = localStorage.getItem('md_avatar');
     if (savedAvatar) {
       document.getElementById('sidebar-avatar').src = savedAvatar;
@@ -515,7 +519,7 @@
     }
   }
 
-  // رفع صورة الأفاتار
+  // ??? ???? ????????
   const uploadBtn = document.querySelector('button.absolute.-bottom-2');
   if (uploadBtn) {
     uploadBtn.onclick = function() {
@@ -538,7 +542,7 @@
     };
   }
 
-  // نسخ كود الإحالة
+  // ??? ??? ???????
   document.getElementById('copy-ref-btn')?.addEventListener('click', () => {
     const refCode = document.getElementById('ref-code').textContent;
     if (refCode) {
@@ -551,19 +555,19 @@
     }
   });
 
-  // مشاركة واتساب
+  // ?????? ??????
   document.getElementById('wa-ref-btn')?.addEventListener('click', () => {
     const refCode = document.getElementById('ref-code').textContent;
     window.open("https://wa.me/?text=Join MercaDream with my code " + refCode + "! https://mercadream-v2.vercel.app");
   });
 
-  // مشاركة تويتر
+  // ?????? ?????
   document.getElementById('twitter-ref-btn')?.addEventListener('click', () => {
     const refCode = document.getElementById('ref-code').textContent;
     window.open("https://twitter.com/intent/tweet?text=Join MercaDream " + refCode + " mercadream-v2.vercel.app");
   });
 
-  // زر تسجيل الخروج
+  // ?? ????? ??????
   const logoutBtn = document.querySelector('a[href="#"] .material-symbols-outlined');
   if (logoutBtn && logoutBtn.textContent === 'logout') {
     logoutBtn.closest('a').addEventListener('click', async (e) => {
@@ -574,7 +578,7 @@
     });
   }
 
-  // زر تحرير الملف الشخصي
+  // ?? ????? ????? ??????
   document.getElementById('edit-profile-btn')?.addEventListener('click', () => {
     const newName = prompt('Enter your name:', document.getElementById('profile-name').textContent);
     if (newName && newName.trim()) {
@@ -588,12 +592,12 @@
     }
   });
 
-  // زر الترقية
+  // ?? ???????
   document.querySelector('button.bg-primary-fixed.text-on-primary-fixed')?.addEventListener('click', () => {
     window.location.href = 'pricing.html';
   });
 
-  // تحديث وقت النظام
+  // ????? ??? ??????
   function updateSystemTime() {
     const now = new Date();
     const timeString = now.toISOString().replace('T', ' // ').slice(0, 19) + ' UTC';
@@ -603,7 +607,7 @@
   updateSystemTime();
   setInterval(updateSystemTime, 1000);
 
-  //  مراقبة حالة تسجيل الدخول وجلب البيانات من Firestore 
+  //  ?????? ???? ????? ?????? ???? ???????? ?? Firestore 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       window.location.href = 'login.html';
@@ -612,7 +616,7 @@
     
     console.log('Logged in as:', user.email);
     
-    // الاستماع المباشر لبيانات المستخدم من Firestore باستخدام user.uid
+    // ???????? ??????? ??????? ???????? ?? Firestore ???????? user.uid
     const userRef = doc(db, "users", user.uid);
     onSnapshot(userRef, (docSnap) => {
       if (docSnap.exists()) {
@@ -621,7 +625,7 @@
         updateUI(user, userData);
       } else {
         console.warn(' No Firestore document found for user:', user.uid);
-        // استخدام البيانات الافتراضية
+        // ??????? ???????? ??????????
         updateUI(user, { credits: 0, plan: "free", renders: 0, recharges: 0, assets: 0 });
       }
     }, (error) => {
