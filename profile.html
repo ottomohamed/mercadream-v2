@@ -1,9 +1,42 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM  PROFILE COMMAND CENTER</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">    // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -125,7 +158,40 @@
           },
         },
       }
-    </script>
+        // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
 </head>
 <body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
 <div class="scanline-overlay"></div>
@@ -404,7 +470,90 @@
 </div>
 </section>
 </div>
-<!-- Footer -->
+                <!-- MARKETING SECTION - WHY REFER -->
+                <div class="mt-8 bg-gradient-to-r from-surface-container to-surface-container-low border border-primary-fixed/20 p-8">
+                    <div class="text-center mb-6">
+                        <h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2"> WORK WITH US</h3>
+                        <p class="text-on-surface-variant text-sm max-w-2xl mx-auto">Two ways to earn with MercaDream  choose what fits you!</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- Option 1: Content Creator -->
+                        <div class="bg-surface-container-high p-6 border-l-4 border-primary-fixed">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-3xl"></span>
+                                <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest">Content Creator</h4>
+                            </div>
+                            <p class="text-on-surface-variant text-sm mb-4">Create videos, generate AI films, build your portfolio. Use credits to produce unlimited content.</p>
+                            <div class="bg-surface p-3 rounded">
+                                <p class="text-xs text-on-surface-variant"> You get <span class="text-primary-fixed font-bold">credits</span> for every friend who joins and recharges</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Option 2: Money Maker -->
+                        <div class="bg-surface-container-high p-6 border-l-4 border-primary-fixed">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-3xl"></span>
+                                <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest">Money Maker</h4>
+                            </div>
+                            <p class="text-on-surface-variant text-sm mb-4">Don't need credits? Sell them back to us. Turn your referrals into real cash.</p>
+                            <div class="bg-surface p-3 rounded">
+                                <p class="text-xs text-on-surface-variant"> We buy your credits at <span class="text-primary-fixed font-bold">$50 per 1,000 credits</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Examples Table -->
+                    <div class="bg-surface-container-high p-6">
+                        <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest mb-4 text-center"> WHAT YOUR REFERRALS ARE WORTH</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center">
+                                <thead>
+                                    <tr class="border-b border-outline-variant">
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Friends Referred</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Credits Earned</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Sell Value</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase"> You Get</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm">
+                                    <tr class="border-b border-outline-variant/30">
+                                        <td class="py-3 text-primary-fixed font-bold">5 friends</td>
+                                        <td class="py-3">1,000 credits</td>
+                                        <td class="py-3">$50 USD</td>
+                                        <td class="py-3 text-green-400">+$50 cash</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/30">
+                                        <td class="py-3 text-primary-fixed font-bold">50 friends</td>
+                                        <td class="py-3">10,000 credits</td>
+                                        <td class="py-3">$500 USD</td>
+                                        <td class="py-3 text-green-400">+$500 cash</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-primary-fixed font-bold">500 friends</td>
+                                        <td class="py-3">100,000 credits</td>
+                                        <td class="py-3">$5,000 USD</td>
+                                        <td class="py-3 text-green-400 font-bold">+$5,000 cash</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-on-surface-variant/60 text-center mt-4">
+                             Each friend needs to recharge at least once for you to earn credits.<br>
+                            The more they recharge, the more you earn!
+                        </p>
+                    </div>
+                    
+                    <!-- Call to Action -->
+                    <div class="text-center mt-6">
+                        <button onclick="window.location.href='directors.html'" class="bg-primary-fixed text-black px-8 py-3 font-technical-sm text-label-xs uppercase tracking-widest hover:shadow-lg transition-all">
+                             START CREATING NOW
+                        </button>
+                        <p class="text-xs text-on-surface-variant/60 mt-3">Share your referral link and start earning today!</p>
+                    </div>
+                </div>
+
+
 <footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
 <div class="flex flex-col gap-2">
@@ -439,7 +588,40 @@
 <span class="material-symbols-outlined text-on-surface-variant">bolt</span>
 <span class="material-symbols-outlined text-on-surface-variant">settings</span>
 </div>
-<script src="/js/navigation.js"></script>
+<script src="/js/navigation.js">    // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -632,6 +814,39 @@
       console.error(' Firestore error:', error.message);
     });
   });
-</script>
+    // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
 </body>
 </html>
