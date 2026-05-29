@@ -125,40 +125,7 @@
           },
         },
       }
-        // ???? ??? ???????? ???????
-    async function loadReferralStats(userId) {
-        try {
-            // 1. ??? ?????? ???????? (????? ??? totalReferred)
-            const userRef = doc(db, "users", userId);
-            const userSnap = await getDoc(userRef);
-            const totalReferred = userSnap.data()?.totalReferred || 0;
-            
-            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
-            const referralsQuery = query(collection(db, "referrals"), 
-                where("referrerId", "==", userId),
-                where("status", "==", "completed"));
-            const querySnapshot = await getDocs(referralsQuery);
-            const converted = querySnapshot.size;
-            
-            // 3. ???? ???? ???????
-            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
-            
-            // 4. ????? ???????
-            document.getElementById('stat-total-referred').textContent = totalReferred;
-            document.getElementById('stat-converted').textContent = converted;
-            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
-            document.getElementById('conversion-bar').style.width = conversionRate + '%';
-            
-            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
-        } catch (error) {
-            console.error('Error loading referral stats:', error);
-        }
-    }
-    
-    // ??????? ?????? ??? ????? ?????? ????????
-    if (userData) {
-        loadReferralStats(user.uid);
-    }</script>
+</script>
 </head>
 <body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
 <div class="scanline-overlay"></div>
@@ -754,7 +721,9 @@
         await setDoc(userRef, newUser);
         updateUI(user, newUser);
       }
-            </script>
+    });
+  });
+</script>
 </body>
 </html>
 
