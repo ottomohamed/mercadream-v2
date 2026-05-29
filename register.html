@@ -1,8 +1,4 @@
-﻿cd C:\Users\DEV\desktop\mercadream-v2
-
-# ????? register.html ???? ?????
-@'
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -123,25 +119,25 @@
                     <form class="space-y-4" id="registerForm">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">First_Name</label>
+                                <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">First Name</label>
                                 <input class="w-full px-4 py-3 text-xs" id="firstName" placeholder="Marco" required type="text"/>
                             </div>
                             <div>
-                                <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">Last_Name</label>
+                                <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">Last Name</label>
                                 <input class="w-full px-4 py-3 text-xs" id="lastName" placeholder="Cielo" required type="text"/>
                             </div>
                         </div>
                         <div>
-                            <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">User_Identifier</label>
+                            <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">Email</label>
                             <input class="w-full px-4 py-3 text-xs" id="email" placeholder="name@domain.com" required type="email"/>
                         </div>
                         <div>
-                            <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">Access_Cipher</label>
+                            <label class="text-[9px] text-on-surface-variant uppercase tracking-widest mb-1.5 block">Password</label>
                             <input class="w-full px-4 py-3 text-xs" id="password" placeholder="Min. 6 characters" required type="password"/>
                         </div>
                         
                         <button class="w-full btn-main text-black font-bold py-4 text-xs uppercase tracking-[0.2em] mt-2 flex items-center justify-center gap-2" type="submit">
-                            Authorize_Creation
+                            Authorize Creation
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                         </button>
                     </form>
@@ -149,7 +145,7 @@
 
                 <div class="mt-8 text-center border-t border-outline-variant/20 pt-6">
                     <p class="text-[10px] text-on-surface-variant uppercase tracking-widest">
-                        Existing_Entity? <a class="text-primary-fixed hover:underline ml-2" href="login.html">Access_Portal</a>
+                        Existing Account? <a class="text-primary-fixed hover:underline ml-2" href="login.html">Sign In</a>
                     </p>
                 </div>
             </div>
@@ -162,12 +158,12 @@
 
     <footer class="fixed bottom-0 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md border-t border-outline-variant">
         <div class="text-[10px] text-primary-fixed uppercase tracking-[0.2em]">
-            © 2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
+             2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
         </div>
         <div class="flex gap-6 text-[9px] text-on-surface-variant uppercase tracking-widest">
-            <a class="hover:text-primary-fixed transition-colors underline" href="#">Neural_Engine</a>
-            <a class="hover:text-primary-fixed transition-colors underline" href="#">Privacy_Protocol</a>
-            <a class="hover:text-primary-fixed transition-colors underline" href="#">Terms_of_Service</a>
+            <a class="hover:text-primary-fixed transition-colors underline" href="#">Neural Engine</a>
+            <a class="hover:text-primary-fixed transition-colors underline" href="#">Privacy Protocol</a>
+            <a class="hover:text-primary-fixed transition-colors underline" href="#">Terms of Service</a>
         </div>
     </footer>
 
@@ -196,7 +192,7 @@
                 position: fixed; bottom: 20px; right: 20px; z-index: 1000;
                 background: ${isError ? '#ff4444' : '#00ff88'}; color: black;
                 padding: 12px 24px; border-radius: 4px; font-size: 12px;
-                font-family: monospace; animation: fadeOut 3s forwards;
+                font-family: monospace;
             `;
             document.body.appendChild(alertDiv);
             setTimeout(() => alertDiv.remove(), 3000);
@@ -211,10 +207,10 @@
                 localStorage.setItem('md_email', user.email);
                 localStorage.setItem('md_user_id', user.uid);
                 localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
-                showAlert('? Account created successfully! Redirecting...', false);
+                showAlert('Account created successfully! Redirecting...', false);
                 setTimeout(() => window.location.href = 'profile.html', 1500);
             } catch (error) {
-                showAlert('? ' + error.message);
+                showAlert(error.message);
             }
         };
 
@@ -243,15 +239,15 @@
                 localStorage.setItem('sb_session', 'true');
                 localStorage.setItem('md_email', user.email);
                 localStorage.setItem('md_user_id', user.uid);
-                localStorage.setItem('md_name', `${firstName} ${lastName}`);
+                localStorage.setItem('md_name', firstName + ' ' + lastName);
                 
-                showAlert('? Account created! Redirecting...', false);
+                showAlert('Account created! Redirecting...', false);
                 setTimeout(() => window.location.href = 'profile.html', 1500);
             } catch (error) {
                 if (error.code === 'auth/email-already-in-use') {
                     showAlert('Email already exists. Please sign in instead.');
                 } else {
-                    showAlert('? ' + error.message);
+                    showAlert(error.message);
                 }
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
@@ -260,6 +256,3 @@
     </script>
 </body>
 </html>
-'@ | Out-File -FilePath "register.html" -Encoding UTF8 -Force
-
-Write-Host "? ?? ????? register.html - ????? ??????? ?????? Firebase Auth ??????" -ForegroundColor Green
