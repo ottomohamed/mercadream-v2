@@ -3,40 +3,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM  PROFILE COMMAND CENTER</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">    // ???? ??? ???????? ???????
-    async function loadReferralStats(userId) {
-        try {
-            // 1. ??? ?????? ???????? (????? ??? totalReferred)
-            const userRef = doc(db, "users", userId);
-            const userSnap = await getDoc(userRef);
-            const totalReferred = userSnap.data()?.totalReferred || 0;
-            
-            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
-            const referralsQuery = query(collection(db, "referrals"), 
-                where("referrerId", "==", userId),
-                where("status", "==", "completed"));
-            const querySnapshot = await getDocs(referralsQuery);
-            const converted = querySnapshot.size;
-            
-            // 3. ???? ???? ???????
-            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
-            
-            // 4. ????? ???????
-            document.getElementById('stat-total-referred').textContent = totalReferred;
-            document.getElementById('stat-converted').textContent = converted;
-            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
-            document.getElementById('conversion-bar').style.width = conversionRate + '%';
-            
-            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
-        } catch (error) {
-            console.error('Error loading referral stats:', error);
-        }
-    }
-    
-    // ??????? ?????? ??? ????? ?????? ????????
-    if (userData) {
-        loadReferralStats(user.uid);
-    }</script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -588,40 +555,7 @@
 <span class="material-symbols-outlined text-on-surface-variant">bolt</span>
 <span class="material-symbols-outlined text-on-surface-variant">settings</span>
 </div>
-<script src="/js/navigation.js">    // ???? ??? ???????? ???????
-    async function loadReferralStats(userId) {
-        try {
-            // 1. ??? ?????? ???????? (????? ??? totalReferred)
-            const userRef = doc(db, "users", userId);
-            const userSnap = await getDoc(userRef);
-            const totalReferred = userSnap.data()?.totalReferred || 0;
-            
-            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
-            const referralsQuery = query(collection(db, "referrals"), 
-                where("referrerId", "==", userId),
-                where("status", "==", "completed"));
-            const querySnapshot = await getDocs(referralsQuery);
-            const converted = querySnapshot.size;
-            
-            // 3. ???? ???? ???????
-            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
-            
-            // 4. ????? ???????
-            document.getElementById('stat-total-referred').textContent = totalReferred;
-            document.getElementById('stat-converted').textContent = converted;
-            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
-            document.getElementById('conversion-bar').style.width = conversionRate + '%';
-            
-            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
-        } catch (error) {
-            console.error('Error loading referral stats:', error);
-        }
-    }
-    
-    // ??????? ?????? ??? ????? ?????? ????????
-    if (userData) {
-        loadReferralStats(user.uid);
-    }</script>
+<script src="/js/navigation.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -800,7 +734,7 @@
     
     // ???????? ??????? ??????? ???????? ?? Firestore ???????? user.uid
     const userRef = doc(db, "users", user.uid);
-    onSnapshot(userRef, (docSnap) => {
+    onSnapshot(userRef, async (docSnap) => {
       if (docSnap.exists()) {
         const userData = docSnap.data();
         console.log(' Firestore data loaded:', userData);
@@ -820,34 +754,7 @@
         await setDoc(userRef, newUser);
         updateUI(user, newUser);
       }
-            const totalReferred = userSnap.data()?.totalReferred || 0;
-            
-            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
-            const referralsQuery = query(collection(db, "referrals"), 
-                where("referrerId", "==", userId),
-                where("status", "==", "completed"));
-            const querySnapshot = await getDocs(referralsQuery);
-            const converted = querySnapshot.size;
-            
-            // 3. ???? ???? ???????
-            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
-            
-            // 4. ????? ???????
-            document.getElementById('stat-total-referred').textContent = totalReferred;
-            document.getElementById('stat-converted').textContent = converted;
-            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
-            document.getElementById('conversion-bar').style.width = conversionRate + '%';
-            
-            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
-        } catch (error) {
-            console.error('Error loading referral stats:', error);
-        }
-    }
-    
-    // ??????? ?????? ??? ????? ?????? ????????
-    if (userData) {
-        loadReferralStats(user.uid);
-    }</script>
+            </script>
 </body>
 </html>
 
