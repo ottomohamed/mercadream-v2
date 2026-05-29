@@ -170,6 +170,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
@@ -183,6 +184,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
         function showAlert(message, isError = true) {
@@ -198,15 +200,40 @@
             setTimeout(() => alertDiv.remove(), 3000);
         }
 
+        // إنشاء مستند جديد في Firestore للمستخدم
+        async function createUserDocument(user, firstName, lastName) {
+            const userRef = doc(db, "users", user.uid);
+            await setDoc(userRef, {
+                name: firstName + " " + lastName,
+                email: user.email,
+                credits: 0,
+                plan: "free",
+                renders: 0,
+                recharges: 0,
+                assets: 0,
+                createdAt: new Date().toISOString()
+            });
+            console.log(" Firestore document created for:", user.uid);
+        }
+
         // Google Sign Up
         document.getElementById('googleSignUp').onclick = async () => {
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
+                
+                // إنشاء وثيقة في Firestore للمستخدم الجديد
+                const firstName = user.displayName?.split(' ')[0] || user.email.split('@')[0];
+                const lastName = user.displayName?.split(' ')[1] || "";
+                await createUserDocument(user, firstName, lastName);
+                
                 localStorage.setItem('sb_session', 'true');
                 localStorage.setItem('md_email', user.email);
                 localStorage.setItem('md_user_id', user.uid);
                 localStorage.setItem('md_name', user.displayName || user.email.split('@')[0]);
+                localStorage.setItem('md_credits', '0');
+                localStorage.setItem('md_plan', 'free');
+                
                 showAlert('Account created successfully! Redirecting...', false);
                 setTimeout(() => window.location.href = 'profile.html', 1500);
             } catch (error) {
@@ -236,10 +263,15 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 
+                // إنشاء وثيقة في Firestore للمستخدم الجديد
+                await createUserDocument(user, firstName, lastName);
+                
                 localStorage.setItem('sb_session', 'true');
                 localStorage.setItem('md_email', user.email);
                 localStorage.setItem('md_user_id', user.uid);
                 localStorage.setItem('md_name', firstName + ' ' + lastName);
+                localStorage.setItem('md_credits', '0');
+                localStorage.setItem('md_plan', 'free');
                 
                 showAlert('Account created! Redirecting...', false);
                 setTimeout(() => window.location.href = 'profile.html', 1500);
