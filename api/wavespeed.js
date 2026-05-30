@@ -67,7 +67,9 @@ module.exports = async function handler(req, res) {
           duration: duration,
           aspect_ratio: '16:9',
           resolution: '480p'
-        }
+        },
+        page: 1,
+        page_size: 10
       })
     });
 
