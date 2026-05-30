@@ -141,7 +141,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen font-body-md relative overflow-x-hidden"><script src="md-engine.js"></script>
 <div class="fixed inset-0 scanline-overlay z-[100] opacity-30 pointer-events-none"></div>
@@ -493,7 +493,7 @@ if(input)input.oninput=calcTotal;
 //  Quick amounts 
 document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
   btn.onclick=function(){
-    var map={"100":100,"500":500,"1K":1000,"5K":5000};
+    var map={"100":100,"250":250,"500":500,"1000":1000};
     var v=map[btn.textContent.trim()]||parseInt(btn.textContent)||0;
     if(input){input.value=v;calcTotal();}
     document.querySelectorAll(".grid-cols-4 button").forEach(function(b){b.style.background="";b.style.color="";});
@@ -523,7 +523,8 @@ if(buyBtn)buyBtn.onclick=async function(){
 //  Subscription upgrade 
 document.querySelectorAll(".grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 button").forEach(function(btn){
   var txt=btn.textContent.trim().toUpperCase();
-  if(!txt.includes("UPGRADE") && !txt.includes("NOW"))return;
+  return; // Subscriptions coming soon
+    if(!txt.includes("UPGRADE") && !txt.includes("NOW"))return;
   btn.onclick=function(){
     var card=btn.closest(".surgical-border,.bg-surface-container-low");
     var planName=card&&card.querySelector('h3')?card.querySelector('h3').textContent.trim().toLowerCase():'creator';
@@ -543,18 +544,14 @@ document.querySelectorAll(".grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 button
 
 //  Back button 
 var bb=document.querySelector("header button");
-if(bb)bb.onclick=function(){window.location.href="directors.html";};
+if(bb)bb.onclick=function(){window.location.href="profile.html";};
 
 //  Monthly/Yearly toggle 
 var toggleBtns=document.querySelectorAll(".flex.items-center.gap-4.p-1 button");
 if(toggleBtns[1])toggleBtns[1].onclick=function(){
   toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
   this.style.background="#c8ff00";this.style.color="#060606";
-  // Apply 20% discount
-  document.querySelectorAll(".font-display-lg.text-\\[32px\\]").forEach(function(el){
-    var base={"$49":39,"$199":159,"$499":399};
-    if(base[el.textContent])el.textContent="$"+base[el.textContent];
-  });
+  // Subscriptions coming soon
 };
 if(toggleBtns[0])toggleBtns[0].onclick=function(){
   toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
@@ -575,10 +572,18 @@ window.addEventListener("load",function(){
     var pp=localStorage.getItem("md_pending_plan")||"";
     if(pc>0){
       var cur=parseInt(localStorage.getItem("md_credits")||"0");
-      localStorage.setItem("md_credits",cur+pc);
+      var newTotal=cur+pc;
+      localStorage.setItem("md_credits",newTotal);
       localStorage.removeItem("md_pending_credits");
+      // Also update Firestore if user is logged in
+      var uid=localStorage.getItem("md_user_id");
+      if(uid && window.firebase){
+        try{
+          firebase.firestore().collection("users").doc(uid).update({credits: newTotal});
+        }catch(e){console.warn("Firestore update failed:",e);}
+      }
       updateBalance();
-      alert("✅ "+pc+" credits added!");
+      alert("✅ "+pc+" credits added! New balance: "+newTotal.toLocaleString()+" CR");
     }
     if(pp){localStorage.setItem("md_plan",pp);localStorage.removeItem("md_pending_plan");currentPlan=pp;updateBalance();alert("✅ Upgraded to "+pp.toUpperCase()+"!");}
     window.history.replaceState({},"","/pricing.html");
