@@ -227,7 +227,7 @@ const db = firebase.firestore();
 <label class="font-technical-xs text-on-surface-variant block mb-2 uppercase">OR PASTE VIDEO URL</label>
 <div class="flex gap-2">
 <input class="w-full bg-surface border border-outline-variant text-primary-fixed font-technical-sm focus:ring-1 focus:ring-primary-fixed outline-none px-4 py-3 placeholder:text-surface-variant" placeholder="HTTPS://STORAGE.NEURAL.MD/V/1092-ALPHA..." type="text"/>
-<button class="bg-primary-fixed text-on-primary px-8 font-technical-sm font-bold uppercase hover:bg-primary-fixed-dim transition-colors">CONNECT</button>
+<button class="bg-primary-fixed text-on-primary px-8 font-technical-sm font-bold uppercase hover:bg-primary-fixed-dim transition-colors" onclick="setInputUrl()">CONNECT</button>
 </div>
 </div>
 </div>
@@ -336,12 +336,8 @@ const db = firebase.firestore();
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<button class="bg-surface-container-highest border border-outline-variant py-4 font-technical-sm text-on-surface hover:text-primary-fixed transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-sm">share</span> EXPORT_TO_CDN
-                    </button>
-<button class="bg-surface-container-highest border border-outline-variant py-4 font-technical-sm text-on-surface hover:text-primary-fixed transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-sm">cloud_sync</span> ARCHIVE_TO_ASSETS
-                    </button>
+<button class="bg-surface-container-highest border border-outline-variant py-4 font-technical-sm text-on-surface hover:text-primary-fixed transition-colors flex items-center justify-center gap-2" onclick="copyResultUrl()"><span class="material-symbols-outlined text-sm">share</span> COPY URL</button>
+<button class="bg-surface-container-highest border border-outline-variant py-4 font-technical-sm text-on-surface hover:text-primary-fixed transition-colors flex items-center justify-center gap-2" onclick="window.location.href='assembly.html'"><span class="material-symbols-outlined text-sm">movie_edit</span> OPEN IN ASSEMBLY</button>
 <button class="bg-surface-container-highest border border-outline-variant py-4 font-technical-sm text-on-surface hover:text-primary-fixed transition-colors flex items-center justify-center gap-2" onclick="location.reload()">
 <span class="material-symbols-outlined text-sm">refresh</span> NEW_UPSCALE
                     </button>
