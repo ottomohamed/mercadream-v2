@@ -97,7 +97,7 @@ const db = firebase.firestore();
             </div>
             <div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded border border-outline-variant/30 text-xs font-code-data">
                 <span class="material-symbols-outlined text-sm text-amber-400">toll</span>
-                <span id="editorCreditsDisplay">0</span> <span class="text-[9px] text-on-surface-variant">CRS</span>
+                <span id="editorGenesisDisplay">0</span> <span class="text-[9px] text-on-surface-variant">CRS</span>
             </div>
         </div>
     </div>
@@ -242,7 +242,7 @@ const db = firebase.firestore();
     const mainAudioTrack2 = document.getElementById('mainAudioTrack2');
     const videoSubtitle = document.getElementById('videoSubtitle');
     const connectionStatus = document.getElementById('connectionStatus');
-    const editorCreditsDisplay = document.getElementById('editorCreditsDisplay');
+    const editorGenesisDisplay = document.getElementById('editorGenesisDisplay');
     const playBtn = document.getElementById('playBtn');
     const playhead = document.getElementById('playhead');
     const timecodeDisplay = document.getElementById('timecodeDisplay');
@@ -272,10 +272,10 @@ const db = firebase.firestore();
     // ==========================================
     // ⚙️ نظام مزامنة الرصيد
     // ==========================================
-    function syncUserCredits() {
-        let currentCredits = parseInt(localStorage.getItem('md_credits')) || 1000;
-        editorCreditsDisplay.textContent = currentCredits.toLocaleString();
-        return currentCredits;
+    function syncUserGenesis() {
+        let currentGenesis = parseInt(localStorage.getItem('md_genesis')) || 1000;
+        editorGenesisDisplay.textContent = currentGenesis.toLocaleString();
+        return currentGenesis;
     }
 
     // ==========================================
@@ -292,10 +292,10 @@ const db = firebase.firestore();
                     lastTrackedTimestamp = streamData.timestamp;
                     
                     // الخصم الحقيقي يتم التحقق منه ومزامنته هنا فور استقبال البث
-                    syncUserCredits();
+                    syncUserGenesis();
                     handleMediaImport(streamData.url, 'video', streamData.name, true);
                     
-                    connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce"></span> AI CLIP INGESTED! CREDITS SYNCED`;
+                    connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce"></span> AI CLIP INGESTED! GENESIS SYNCED`;
                     setTimeout(() => {
                         connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE`;
                     }, 4000);
@@ -332,14 +332,14 @@ const db = firebase.firestore();
     }
 
     window.addEventListener('load', () => {
-        syncUserCredits();
+        syncUserGenesis();
         loadScenesFromStudio();
         checkActiveStudioStream();
         setupExportButton();
         setupVolumeControls();
         window.addEventListener('storage', (e) => {
             if (e.key === 'NEURA_ACTIVE_STREAM') checkActiveStudioStream();
-            if (e.key === 'md_credits') syncUserCredits();
+            if (e.key === 'md_genesis') syncUserGenesis();
             if (e.key === 'md_6scenes') loadScenesFromStudio();
         });
     });

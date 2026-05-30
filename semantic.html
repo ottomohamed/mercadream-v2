@@ -193,7 +193,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2 bg-surface-container px-3 py-1 surgical-border rounded-none">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
-<span class="font-label-technical text-technical-sm text-neon-acid" id="header-credits-val">0 CR</span>
+<span class="font-label-technical text-technical-sm text-neon-acid" id="header-genesis-val">0 GNS</span>
 </div>
 <div class="flex items-center gap-4">
 <span class="material-symbols-outlined text-on-surface-variant hover:text-neon-acid cursor-pointer transition-colors rounded-none" data-nav="profile">account_circle</span>
@@ -373,11 +373,11 @@ const db = firebase.firestore();
 </div>
 <button class="h-14 bg-neon-acid px-12 flex items-center gap-4 group hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all neon-glow rounded-none" id="btn-semantic">
 <span class="material-symbols-outlined text-void-black font-bold text-2xl group-hover:rotate-12 transition-transform">bolt</span>
-<span class="btn-text font-headline-md text-headline-md text-void-black font-bold tracking-tight uppercase">ANALYZE � 8 CREDITS</span>
+<span class="btn-text font-headline-md text-headline-md text-void-black font-bold tracking-tight uppercase">ANALYZE � 8 GENESIS</span>
 </button>
 <div class="flex flex-col items-end">
 <span class="font-label-technical text-technical-xs text-on-surface-variant uppercase">REMAINING_BALANCE</span>
-<span class="font-label-technical text-technical-sm text-neon-acid uppercase" id="predicted-balance">9,418 CR AFTER USE</span>
+<span class="font-label-technical text-technical-sm text-neon-acid uppercase" id="predicted-balance">9,418 GNS AFTER USE</span>
 </div>
 </div>
 </footer>
@@ -418,10 +418,10 @@ const db = firebase.firestore();
             if (this.analyzeBtn) {
                 this.analyzeBtn.addEventListener('click', () => this.runAnalysis());
             }
-            window.addEventListener('creditsUpdated', (e) => {
-                const fmt = Number(e.detail.credits).toLocaleString();
-                document.querySelectorAll('[id="top-credits"]').forEach(el => {
-                    el.textContent = fmt + ' CR';
+            window.addEventListener('genesisUpdated', (e) => {
+                const fmt = Number(e.detail.genesis).toLocaleString();
+                document.querySelectorAll('[id="top-genesis"]').forEach(el => {
+                    el.textContent = fmt + ' GNS';
                 });
             });
         },
@@ -464,10 +464,10 @@ const db = firebase.firestore();
                 return;
             }
 
-            // Check credits
-            const credits = parseInt(localStorage.getItem('md_credits') || '0');
-            if (credits < this.config.cost) {
-                this.notify('INSUFFICIENT CREDITS — REDIRECTING TO RECHARGE', 'err');
+            // Check genesis
+            const genesis = parseInt(localStorage.getItem('md_genesis') || '0');
+            if (genesis < this.config.cost) {
+                this.notify('INSUFFICIENT GENESIS — REDIRECTING TO RECHARGE', 'err');
                 setTimeout(() => window.location.href = 'pricing.html', 1500);
                 return;
             }
@@ -494,17 +494,17 @@ const db = firebase.firestore();
                     return;
                 }
 
-                // Deduct credits
-                const newCredits = credits - this.config.cost;
-                localStorage.setItem('md_credits', newCredits);
-                if (window.__deductCredits) window.__deductCredits(this.config.cost);
+                // Deduct genesis
+                const newGenesis = genesis - this.config.cost;
+                localStorage.setItem('md_genesis', newGenesis);
+                if (window.__deductGenesis) window.__deductGenesis(this.config.cost);
 
                 this.renderResults(data.scores || data);
                 this.notify('ANALYSIS COMPLETE', 'ok');
 
             } catch (err) {
                 console.error('Semantic error:', err);
-                this.notify('CONNECTION ERROR — CREDITS PRESERVED', 'err');
+                this.notify('CONNECTION ERROR — GENESIS PRESERVED', 'err');
             } finally {
                 this.setLoading(false);
             }
@@ -559,7 +559,7 @@ const db = firebase.firestore();
             if (btnText) {
                 btnText.textContent = active
                     ? 'COMPUTING NEURAL PATHS...'
-                    : `ANALYZE — ${this.config.cost} CR`;
+                    : `ANALYZE — ${this.config.cost} GNS`;
             }
         },
 

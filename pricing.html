@@ -157,8 +157,8 @@ const db = firebase.firestore();
 </div>
 <div class="flex items-center gap-8">
 <div class="flex flex-col items-end">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Active Credits</span>
-<span class="font-technical-sm text-technical-sm text-primary-container">2,450 CREDITS</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Active Genesis</span>
+<span class="font-technical-sm text-technical-sm text-primary-container">2,450 GENESIS</span>
 </div>
 <a href="profile.html" title="My Profile" class="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-all"><span class="material-symbols-outlined text-primary text-3xl">account_circle</span></a>
 </div>
@@ -171,11 +171,11 @@ const db = firebase.firestore();
 <div>
 <div class="flex items-center gap-2 mb-6">
 <div class="w-1 h-4 bg-primary-container"></div>
-<h2 class="font-technical-sm text-technical-sm uppercase text-on-surface-variant">Credit Acquisition Protocol</h2>
+<h2 class="font-technical-sm text-technical-sm uppercase text-on-surface-variant">Genesis Acquisition Protocol</h2>
 </div>
 <div class="space-y-6">
 <div class="space-y-2">
-<label class="font-label-xs text-label-xs text-on-surface-variant uppercase">How many credits?</label>
+<label class="font-label-xs text-label-xs text-on-surface-variant uppercase">How many genesis?</label>
 <div class="relative">
 <input class="w-full bg-surface border border-outline-variant focus:border-primary-container focus:ring-0 text-primary-container font-technical-sm p-4 text-xl outline-none transition-colors" type="number" value="1000"/>
 <span class="absolute right-4 top-1/2 -translate-y-1/2 font-technical-sm text-on-surface-variant text-sm">CRDS</span>
@@ -193,7 +193,7 @@ const db = firebase.firestore();
 <div class="flex justify-between items-end mb-6">
 <div>
 <span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Unit Cost</span>
-<span class="font-technical-sm text-technical-sm text-primary">$0.10/CREDIT</span>
+<span class="font-technical-sm text-technical-sm text-primary">$0.10/GNS</span>
 </div>
 <div class="text-right">
 <span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Total Cost</span>
@@ -202,7 +202,7 @@ const db = firebase.firestore();
 </div>
 <button class="w-full bg-primary-container text-on-primary-container py-4 font-headline-lg text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all neon-glow">
 <span class="material-symbols-outlined" data-weight="fill">bolt</span>
-                        BUY CREDITS
+                        BUY GENESIS
                     </button>
 </div>
 </div>
@@ -226,7 +226,7 @@ const db = firebase.firestore();
 <span class="font-label-xs text-label-xs text-on-surface-variant uppercase block mb-2">Available Processing Power</span>
 <div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">2,450</div>
 <div class="flex justify-center">
-<span id="credits-label" class="text-primary-container text-xs font-technical-sm tracking-widest">CREDITS</span>
+<span id="genesis-label" class="text-primary-container text-xs font-technical-sm tracking-widest">GENESIS</span>
 </div>
 </div>
 </div>
@@ -277,7 +277,7 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">?</span> 100 Credits / mo
+<span class="text-primary-container text-[10px]">?</span> 100 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
 <span class="text-primary-container text-[10px]">?</span> Standard 1080p
@@ -307,7 +307,7 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 1,200 Credits / mo
+<span class="text-primary-container text-[10px]">?</span> 1,200 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
 <span class="text-primary-container text-[10px]">?</span> 4K Ultra Rendering
@@ -341,7 +341,7 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 5,500 Credits / mo
+<span class="text-primary-container text-[10px]">?</span> 5,500 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
 <span class="text-primary-container text-[10px]">?</span> 8K Production Grade
@@ -374,7 +374,7 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 15,000 Credits / mo
+<span class="text-primary-container text-[10px]">?</span> 15,000 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
 <span class="text-primary-container text-[10px]">?</span> Enterprise API Access
@@ -456,11 +456,11 @@ var RATE=0.10,currentPlan=localStorage.getItem("md_plan")||"free";
 
 //  Update balance display 
 function updateBalance(){
-  var c=parseInt(localStorage.getItem("md_credits")||"0");
+  var c=parseInt(localStorage.getItem("md_genesis")||"0");
   var el=document.querySelector(".font-display-lg.text-primary-container.text-\\[64px\\]");
   if(el)el.textContent=c.toLocaleString();
   var hel=document.querySelector(".font-technical-sm.text-technical-sm.text-primary-container");
-  if(hel)hel.textContent=c.toLocaleString()+" CREDITS";
+  if(hel)hel.textContent=c.toLocaleString()+" GENESIS";
   updateShield();
 }
 
@@ -485,7 +485,7 @@ function calcTotal(){
   var amt=parseInt(input.value)||0;
   var total=(amt*RATE).toFixed(2);
   if(totalEl)totalEl.textContent="$"+total;
-  if(buyBtn){var span=buyBtn.querySelector("span:last-child")||buyBtn;buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" CREDITS  $"+total;}
+  if(buyBtn){var span=buyBtn.querySelector("span:last-child")||buyBtn;buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" GENESIS  $"+total;}
 }
 
 if(input)input.oninput=calcTotal;
@@ -502,23 +502,23 @@ document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
   };
 });
 
-//  Buy credits via Stripe
+//  Buy genesis via Stripe
 if(buyBtn)buyBtn.onclick=async function(){
   var amt=parseInt(input?input.value:0)||0;
   if(amt<1){alert("Enter amount.");return;}
   var cost=(amt*RATE).toFixed(2);
-  if(!confirm("Buy "+amt+" credits for $"+cost+"?"))return;
+  if(!confirm("Buy "+amt+" genesis for $"+cost+"?"))return;
   buyBtn.disabled=true;buyBtn.textContent="REDIRECTING TO STRIPE...";
   var userId=localStorage.getItem("md_user_id")||("guest_"+Date.now());
   localStorage.setItem("md_user_id",userId);
-  localStorage.setItem("md_pending_credits",amt);
+  localStorage.setItem("md_pending_genesis",amt);
   try{
     var r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({type:"credits",amount:amt,userId:userId})});
+      body:JSON.stringify({type:"genesis",amount:amt,userId:userId})});
     var d=await r.json();
     if(d.url){window.location.href=d.url;}
-    else{alert("Error: "+(d.error||"Unknown"));buyBtn.disabled=false;buyBtn.textContent="BUY CREDITS";}
-  }catch(e){alert("Error: "+e.message);buyBtn.disabled=false;buyBtn.textContent="BUY CREDITS";}
+    else{alert("Error: "+(d.error||"Unknown"));buyBtn.disabled=false;buyBtn.textContent="BUY GENESIS";}
+  }catch(e){alert("Error: "+e.message);buyBtn.disabled=false;buyBtn.textContent="BUY GENESIS";}
 };
 
 //  Subscription upgrade 
@@ -569,22 +569,22 @@ window.addEventListener("load",function(){
   var params=new URLSearchParams(window.location.search);
   var status=params.get("status");
   if(status==="success"){
-    var pc=parseInt(localStorage.getItem("md_pending_credits")||"0");
+    var pc=parseInt(localStorage.getItem("md_pending_genesis")||"0");
     var pp=localStorage.getItem("md_pending_plan")||"";
     if(pc>0){
-      var cur=parseInt(localStorage.getItem("md_credits")||"0");
+      var cur=parseInt(localStorage.getItem("md_genesis")||"0");
       var newTotal=cur+pc;
-      localStorage.setItem("md_credits",newTotal);
-      localStorage.removeItem("md_pending_credits");
+      localStorage.setItem("md_genesis",newTotal);
+      localStorage.removeItem("md_pending_genesis");
       // Also update Firestore if user is logged in
       var uid=localStorage.getItem("md_user_id");
       if(uid && window.firebase){
         try{
-          firebase.firestore().collection("users").doc(uid).update({credits: newTotal});
+          firebase.firestore().collection("users").doc(uid).update({genesis: newTotal});
         }catch(e){console.warn("Firestore update failed:",e);}
       }
       updateBalance();
-      alert("✅ "+pc+" credits added! New balance: "+newTotal.toLocaleString()+" CR");
+      alert("✅ "+pc+" genesis added! New balance: "+newTotal.toLocaleString()+" GNS");
     }
     if(pp){localStorage.setItem("md_plan",pp);localStorage.removeItem("md_pending_plan");currentPlan=pp;updateBalance();alert("✅ Upgraded to "+pp.toUpperCase()+"!");}
     window.history.replaceState({},"","/pricing.html");

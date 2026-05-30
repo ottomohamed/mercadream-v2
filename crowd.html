@@ -174,8 +174,8 @@ const db = firebase.firestore();
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2">
-<span class="font-label-technical text-silver-technical uppercase">CREDITS:</span>
-<span class="font-label-technical text-neon-acid">9,418 CR</span>
+<span class="font-label-technical text-silver-technical uppercase">GENESIS:</span>
+<span class="font-label-technical text-neon-acid">9,418 GNS</span>
 </div>
 <div class="flex items-center gap-4">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
@@ -196,7 +196,7 @@ const db = firebase.firestore();
 <p class="font-body-md text-silver-technical max-w-xl italic">"Generate thousands of virtual extras with surgical precision and photorealistic behavior mapping."</p>
 </div>
 <div class="flex flex-col items-end">
-<div class="font-label-technical text-neon-acid text-2xl font-bold">110 CREDITS</div>
+<div class="font-label-technical text-neon-acid text-2xl font-bold">110 GENESIS</div>
 <div class="font-label-caps text-silver-technical">PER HIGH-RES RENDER</div>
 </div>
 </section>
@@ -353,7 +353,7 @@ const db = firebase.firestore();
 </div>
 <button class="bg-neon-acid hover:bg-neon-acid/90 text-void-black px-12 py-3 font-label-technical font-bold text-lg flex items-center gap-3 transition-all active:scale-95 group">
 <span class="material-symbols-outlined group-hover:animate-pulse" data-icon="bolt" data-weight="fill">bolt</span>
-            [ GENERATE CROWD � 110 CREDITS ]
+            [ GENERATE CROWD � 110 GENESIS ]
         </button>
 </div>
 <!-- Footer -->
@@ -374,8 +374,8 @@ if(sl&&sizeDisplay)sl.oninput=function(){sizeDisplay.textContent=parseInt(this.v
 document.querySelectorAll(".grid-cols-3 button").forEach(function(btn){btn.onclick=function(){density=btn.textContent.trim();document.querySelectorAll(".grid-cols-3 button").forEach(function(b){b.style.background="";b.style.color="";b.style.borderColor="";});btn.style.background="rgba(200,255,0,0.2)";btn.style.color="#c8ff00";btn.style.borderColor="#c8ff00";};});
 document.querySelectorAll(".grid-cols-2 .technical-border,.grid-cols-2 .bg-neon-acid").forEach(function(btn){btn.onclick=function(){behavior=btn.querySelector(".font-label-technical").textContent.trim();document.querySelectorAll(".grid-cols-2 .technical-border,.grid-cols-2 .bg-neon-acid").forEach(function(b){b.style.background="";b.style.color="";});btn.style.background="#c8ff00";btn.querySelector(".material-symbols-outlined").style.color="#000";btn.querySelector(".font-label-technical").style.color="#000";};});
 document.querySelectorAll(".flex.border.border-outline-variant button").forEach(function(btn){btn.onclick=function(){lighting=btn.textContent.trim();document.querySelectorAll(".flex.border.border-outline-variant button").forEach(function(b){b.style.background="";b.style.color="";});btn.style.background="rgba(200,255,0,0.2)";btn.style.color="#c8ff00";};});
-async function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
-window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button.bg-neon-acid");if(btn){btn.id="btn-crowd";btn.onclick=go;}var bb=document.querySelector("header .material-symbols-outlined");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});
+async function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" genesis.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateGenesis();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
+window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button.bg-neon-acid");if(btn){btn.id="btn-crowd";btn.onclick=go;}var bb=document.querySelector("header .material-symbols-outlined");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateGenesis();});
 </script><script src="/js/pipeline.js"></script></body></html>
 
 

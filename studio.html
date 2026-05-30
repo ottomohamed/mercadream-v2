@@ -185,7 +185,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-md">
 <div class="flex items-center gap-xs px-sm py-unit bg-surface-variant rounded-full border border-outline-variant">
 <span class="material-symbols-outlined text-primary-fixed-dim text-[16px]">database</span>
-<span class="font-label-technical text-label-technical" id="top-credits">0 CR</span>
+<span class="font-label-technical text-label-technical" id="top-genesis">0 GNS</span>
 </div>
 <a href="pricing.html" class="flex items-center gap-xs px-sm py-unit bg-primary-fixed-dim text-on-primary font-label-technical text-[10px] hover:brightness-110 transition-all active:scale-95">
 <span class="material-symbols-outlined text-[14px]">bolt</span>
@@ -280,7 +280,7 @@ RECHARGE
 <div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
-<span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 CR</span>
+<span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 GNS</span>
 </div>
 <a href="pricing.html" class="bg-primary-fixed-dim text-on-primary text-[10px] px-sm py-1 font-label-technical hover:brightness-110 transition-all flex items-center gap-xs">
 <span class="material-symbols-outlined text-[12px]">bolt</span>RECHARGE
@@ -418,8 +418,8 @@ RECHARGE
 <footer class="h-14 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-md z-50 shrink-0">
 <div class="flex items-center gap-xl">
 <div class="flex flex-col">
-<span class="text-[9px] text-on-surface-variant font-label-technical">CURRENT CREDITS</span>
-<span class="font-headline-sm text-primary-fixed-dim" id="footer-credits">0 CR</span>
+<span class="text-[9px] text-on-surface-variant font-label-technical">CURRENT GENESIS</span>
+<span class="font-headline-sm text-primary-fixed-dim" id="footer-genesis">0 GNS</span>
 </div>
 <div class="h-8 w-px bg-outline-variant"></div>
 <div class="flex items-center gap-sm">
@@ -443,19 +443,19 @@ OPEN ASSEMBLY â†’
 </div>
 </footer>
 <script>
-        let credits = parseInt(localStorage.getItem('md_credits') || '0'); // Ø³ÙŠÙØ­Ø¯ÙŽÙ‘Ø« Ù…Ù† Firebase ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹
+        let genesis = parseInt(localStorage.getItem('md_genesis') || '0'); // Ø³ÙŠÙØ­Ø¯ÙŽÙ‘Ø« Ù…Ù† Firebase ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹
         let baseCost = 12;
 
         const costTable = { 'Drama': 20, 'Action': 20, 'Comedy': 20, 'Documentary': 20 };
         const directorColors = { 'Drama': '#a8d700', 'Action': '#ffb4ab', 'Comedy': '#ffba3f', 'Documentary': '#aecae2' };
 
-        updateCredits();
+        updateGenesis();
 
         document.querySelectorAll('input[name="director"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 const val = e.target.value;
                 const cost = costTable[val];
-                document.getElementById('sync-cost').innerText = `${cost} CR`;
+                document.getElementById('sync-cost').innerText = `${cost} GNS`;
                 document.getElementById('director-dot').style.backgroundColor = directorColors[val];
                 document.getElementById('director-dot').style.boxShadow = `0 0 10px ${directorColors[val]}`;
                 document.getElementById('active-director-name').innerText = `${val.toUpperCase()} PROTOCOL`;
@@ -493,8 +493,8 @@ OPEN ASSEMBLY â†’
         // â”€â”€ ØªØ¹Ø¯ÙŠÙ„ Ø¯Ø§Ù„Ø© Ø§Ù„Ø§Ø³ØªÙˆØ¯ÙŠÙˆ Ø§Ù„Ù…Ø­Ø¯Ø«Ø© Ù„Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¨Ø« Ù„ØºØ±ÙØ© Ø§Ù„Ù…ÙˆÙ†ØªØ§Ø¬ â”€â”€
         async function handleSceneGenerated(scene, director) {
             const cost = costTable[director] || 12;
-            if (credits < cost) {
-                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+            if (genesis < cost) {
+                appendBubble('>> INSUFFICIENT GENESIS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
                 return;
             }
 
@@ -519,9 +519,9 @@ OPEN ASSEMBLY â†’
                 const pollUrl = genData.pollUrl || null;
                 addLogLine('JOB SUBMITTED: ' + jobId);
 
-                credits -= cost;
-                updateCredits();
-                if(window.__deductCredits) window.__deductCredits(cost);
+                genesis -= cost;
+                updateGenesis();
+                if(window.__deductGenesis) window.__deductGenesis(cost);
 
                 let attempts = 0;
                 const poll = setInterval(async () => {
@@ -589,9 +589,9 @@ OPEN ASSEMBLY â†’
             const director = directorEl ? directorEl.value : 'Drama';
             const cost = costTable[director] || 12;
 
-            if (credits < cost) {
-                addLogLine('ERROR: INSUFFICIENT CREDITS FOR SYNC.');
-                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+            if (genesis < cost) {
+                addLogLine('ERROR: INSUFFICIENT GENESIS FOR SYNC.');
+                appendBubble('>> INSUFFICIENT GENESIS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
                 return;
             }
 
@@ -634,17 +634,17 @@ OPEN ASSEMBLY â†’
             }
         }
 
-        function updateCredits() {
-            const formatted = credits.toLocaleString();
-            document.getElementById('top-credits').innerText = `${formatted} CR`;
-            document.getElementById('footer-credits').innerText = `${formatted} CR`;
+        function updateGenesis() {
+            const formatted = genesis.toLocaleString();
+            document.getElementById('top-genesis').innerText = `${formatted} GNS`;
+            document.getElementById('footer-genesis').innerText = `${formatted} GNS`;
             
-            // Low credits warning
-            const topEl = document.getElementById('top-credits');
-            if (credits < 50 && credits > 0) {
+            // Low genesis warning
+            const topEl = document.getElementById('top-genesis');
+            if (genesis < 50 && genesis > 0) {
                 topEl.style.color = '#ffba3f';
                 topEl.parentElement.style.borderColor = '#ffba3f';
-            } else if (credits === 0) {
+            } else if (genesis === 0) {
                 topEl.style.color = '#ffb4ab';
                 topEl.parentElement.style.borderColor = '#ffb4ab';
             } else {
@@ -800,7 +800,7 @@ OPEN ASSEMBLY â†’
             header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
                 + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
                 + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: ' + (directorName || director) + '</p>'
-                + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes â€” ' + cost + ' CR each. Click GENERATE.</p></div>';
+                + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes â€” ' + cost + ' GNS each. Click GENERATE.</p></div>';
             chat.insertBefore(header, voiceOverlay);
 
             // Ù…Ø´Ù‡Ø¯ ÙˆØ§Ø­Ø¯ ÙÙŠ ÙƒÙ„ Ù…Ø±Ø©
@@ -816,7 +816,7 @@ OPEN ASSEMBLY â†’
                     + '</div>'
                     + '<button id="gen-btn-' + idx + '" onclick="generateSceneVideo(' + idx + ')"'
                     + ' class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs">'
-                    + '<span class="material-symbols-outlined text-[16px]">bolt</span> GENERATE (' + cost + ' CR)</button>'
+                    + '<span class="material-symbols-outlined text-[16px]">bolt</span> GENERATE (' + cost + ' GNS)</button>'
                     + '</div><div id="video-result-' + idx + '" class="mt-sm hidden"></div>';
                 chat.insertBefore(card, voiceOverlay);
             });
@@ -831,8 +831,8 @@ OPEN ASSEMBLY â†’
 
             const cost = costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 12;
 
-            if (credits < cost) {
-                appendBubble('>> INSUFFICIENT CREDITS. Please recharge.', 'bot', 'SYSTEM');
+            if (genesis < cost) {
+                appendBubble('>> INSUFFICIENT GENESIS. Please recharge.', 'bot', 'SYSTEM');
                 return;
             }
 
@@ -877,9 +877,9 @@ OPEN ASSEMBLY â†’
                 }
 
                 // Ø®ØµÙ… Ø§Ù„Ø±ØµÙŠØ¯
-                credits -= cost;
-                updateCredits();
-                if(window.__deductCredits) window.__deductCredits(cost);
+                genesis -= cost;
+                updateGenesis();
+                if(window.__deductGenesis) window.__deductGenesis(cost);
                 if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...';
 
                 // polling
@@ -970,28 +970,28 @@ OPEN ASSEMBLY â†’
 }
 
 function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
-        function rechargeCredits() { window.location.href = 'pricing.html'; }
+        function rechargeGenesis() { window.location.href = 'pricing.html'; }
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }
     </script>
 
 <script type="module">
-  import { deductCredits, getCurrentCredits } from "/js/firebase-credits.js";
+  import { deductGenesis, getCurrentGenesis } from "/js/firebase-genesis.js";
 
-  // Ø§Ø¬Ø¹Ù„ deductCredits Ù…ØªØ§Ø­Ø© Ù„Ù„Ø³ÙƒØ±ÙŠØ¨Øª Ø§Ù„Ø¯Ø§Ø®Ù„ÙŠ
-  window.__deductCredits = deductCredits;
+  // Ø§Ø¬Ø¹Ù„ deductGenesis Ù…ØªØ§Ø­Ø© Ù„Ù„Ø³ÙƒØ±ÙŠØ¨Øª Ø§Ù„Ø¯Ø§Ø®Ù„ÙŠ
+  window.__deductGenesis = deductGenesis;
 
-  // Ø¹Ù†Ø¯ ÙƒÙ„ ØªØ­Ø¯ÙŠØ« Ù…Ù† Firestore â€” Ø­Ø¯Ù‘Ø« Ù…ØªØºÙŠØ± credits ÙˆØ¯Ø§Ù„Ø© updateCredits
-  window.addEventListener('creditsUpdated', (e) => {
-    // ÙˆØµÙˆÙ„ Ù„Ù€ credits Ø¯Ø§Ø®Ù„ Ø§Ù„Ù€ IIFE Ø¹Ø¨Ø± localStorage Ø§Ù„Ù…ÙØ­Ø¯ÙŽÙ‘Ø«
-    const newVal = e.detail.credits;
-    localStorage.setItem('md_credits', newVal);
+  // Ø¹Ù†Ø¯ ÙƒÙ„ ØªØ­Ø¯ÙŠØ« Ù…Ù† Firestore â€” Ø­Ø¯Ù‘Ø« Ù…ØªØºÙŠØ± genesis ÙˆØ¯Ø§Ù„Ø© updateGenesis
+  window.addEventListener('genesisUpdated', (e) => {
+    // ÙˆØµÙˆÙ„ Ù„Ù€ genesis Ø¯Ø§Ø®Ù„ Ø§Ù„Ù€ IIFE Ø¹Ø¨Ø± localStorage Ø§Ù„Ù…ÙØ­Ø¯ÙŽÙ‘Ø«
+    const newVal = e.detail.genesis;
+    localStorage.setItem('md_genesis', newVal);
     // ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¹Ù†Ø§ØµØ± Ù…Ø¨Ø§Ø´Ø±Ø© Ø¨Ø¯ÙˆÙ† Ø§Ù†ØªØ¸Ø§Ø±
     const fmt = Number(newVal).toLocaleString();
-    const topEl = document.getElementById('top-credits');
-    const footEl = document.getElementById('footer-credits');
-    if (topEl) topEl.innerText = fmt + ' CR';
-    if (footEl) footEl.innerText = fmt + ' CR';
+    const topEl = document.getElementById('top-genesis');
+    const footEl = document.getElementById('footer-genesis');
+    if (topEl) topEl.innerText = fmt + ' GNS';
+    if (footEl) footEl.innerText = fmt + ' GNS';
   });
 </script>
 

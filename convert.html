@@ -155,7 +155,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-6">
 <div class="hidden md:flex flex-col items-end">
 <span class="font-label-caps text-label-caps text-silver-technical uppercase">User Wallet</span>
-<span class="font-label-technical text-label-technical text-neon-acid">9,400 CREDITS</span>
+<span class="font-label-technical text-label-technical text-neon-acid">9,400 GENESIS</span>
 </div>
 <button class="flex items-center gap-2 font-label-technical text-label-technical text-neon-acid border border-neon-acid px-4 py-2 hover:bg-neon-acid/10 transition-colors duration-75 active:scale-95">
 <span class="material-symbols-outlined">arrow_back</span>
@@ -167,7 +167,7 @@ const db = firebase.firestore();
 <!-- Hero Section -->
 <section class="space-y-2 border-l-2 border-neon-acid pl-6">
 <div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps bg-neon-acid text-on-primary px-2 py-0.5">3 CREDITS / TRANS</span>
+<span class="font-label-caps text-label-caps bg-neon-acid text-on-primary px-2 py-0.5">3 GENESIS / TRANS</span>
 <span class="font-label-caps text-label-caps text-silver-technical">CORE_ENGINE: FFmpeg_V.4.4</span>
 </div>
 <h1 class="font-headline-xl text-headline-xl text-primary tracking-tighter uppercase">Universal Format Converter</h1>
@@ -263,7 +263,7 @@ const db = firebase.firestore();
 </div>
 <button class="flex-1 max-w-2xl bg-neon-acid text-on-primary py-5 px-8 font-label-technical text-label-technical font-bold text-center flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span class="text-lg">CONVERT � 3 CREDITS</span>
+<span class="text-lg">CONVERT � 3 GENESIS</span>
 </button>
 <div class="hidden md:flex flex-col items-end">
 <span class="font-label-caps text-label-caps text-outline uppercase">Est. Time</span>
@@ -373,10 +373,10 @@ async function go() {
     
     if (!inputUrl) { alert("Please upload a file or enter a URL first."); return; }
 
-    // Check credits
-    var currentCredits = parseInt(localStorage.getItem("md_credits") || "0");
-    if (currentCredits < COST) {
-        alert("Need " + COST + " credits. You have " + currentCredits + ".");
+    // Check genesis
+    var currentGenesis = parseInt(localStorage.getItem("md_genesis") || "0");
+    if (currentGenesis < COST) {
+        alert("Need " + COST + " genesis. You have " + currentGenesis + ".");
         window.location.href = "pricing.html";
         return;
     }
@@ -397,20 +397,20 @@ async function go() {
 
         if (data.error) {
             log("ERROR: " + data.error);
-            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
             return;
         }
 
-        // Deduct credits
-        localStorage.setItem("md_credits", currentCredits - COST);
-        if (window.__deductCredits) window.__deductCredits(COST);
-        log("CREDITS DEDUCTED: " + COST + " CR");
+        // Deduct genesis
+        localStorage.setItem("md_genesis", currentGenesis - COST);
+        if (window.__deductGenesis) window.__deductGenesis(COST);
+        log("GENESIS DEDUCTED: " + COST + " GNS");
 
         // If already completed (fallback)
         if (data.status === "completed" && data.url) {
             log("CONVERSION COMPLETE: " + data.url.substring(0, 60));
             showConvertResult(data.url, fmt);
-            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
             return;
         }
 
@@ -422,7 +422,7 @@ async function go() {
             if (attempts > 60) {
                 clearInterval(poll);
                 log("TIMEOUT — please try again");
-                if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+                if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
                 return;
             }
             try {
@@ -437,18 +437,18 @@ async function go() {
                     clearInterval(poll);
                     log("DONE: " + pd.url.substring(0, 60));
                     showConvertResult(pd.url, fmt);
-                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
                 } else if (pd.status === "failed") {
                     clearInterval(poll);
                     log("FAILED — please try again");
-                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
                 }
             } catch(e) { log("POLL ERROR: " + e.message); }
         }, 3000);
 
     } catch(e) {
         log("NETWORK ERROR: " + e.message);
-        if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+        if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
     }
 }
 

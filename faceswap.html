@@ -194,7 +194,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-2 md:gap-margin-gutter">
 <div class="flex items-center gap-unit bg-surface-container px-2 md:px-3 py-1.5 rounded-sm border border-outline-variant">
 <span class="material-symbols-outlined text-neon-acid text-[16px] md:text-[18px]">account_balance_wallet</span>
-<span class="font-label-technical text-[10px] md:text-label-technical text-silver-technical" id="header-credits-display">0 CREDITS</span>
+<span class="font-label-technical text-[10px] md:text-label-technical text-silver-technical" id="header-genesis-display">0 GENESIS</span>
 </div>
 <button class="flex items-center gap-unit px-2 md:px-4 py-1.5 bg-surface-variant/20 hover:bg-neon-acid hover:text-void-black transition-all border border-outline-variant font-label-technical text-[10px] md:text-label-technical text-neon-acid" onclick="window.MD.navigate('directors')">
 <span class="material-symbols-outlined text-[14px] md:text-[16px]">arrow_back</span>
@@ -217,7 +217,7 @@ const db = firebase.firestore();
 </div>
 <div class="bg-surface-container p-3 md:p-4 border border-outline-variant flex flex-row md:flex-col items-center justify-between md:justify-center min-w-full md:min-w-[120px] gap-2">
 <span class="font-label-caps text-[10px] md:text-label-caps text-silver-technical uppercase md:mb-1">TRANSACTION_COST</span>
-<div class="flex items-baseline gap-1"><span class="font-headline-md md:font-headline-lg text-neon-acid">8</span><span class="font-label-technical text-[10px] md:text-label-technical text-neon-acid">CREDITS</span></div>
+<div class="flex items-baseline gap-1"><span class="font-headline-md md:font-headline-lg text-neon-acid">8</span><span class="font-label-technical text-[10px] md:text-label-technical text-neon-acid">GENESIS</span></div>
 </div>
 </section>
 <!-- Upload Zone -->
@@ -367,7 +367,7 @@ const db = firebase.firestore();
 </div>
 <button class="w-full md:w-auto flex items-center justify-center gap-4 bg-neon-acid px-6 md:px-12 py-3 md:py-4 font-label-technical text-[13px] md:text-[14px] font-bold text-void-black hover:bg-white transition-all active:scale-95 glow-acid shadow-neon-acid/20" id="btn-faceswap">
 <span class="material-symbols-outlined text-[20px]">bolt</span>
-          SWAP FACE � 8 CREDITS
+          SWAP FACE � 8 GENESIS
         </button>
 </div>
 </div>
@@ -385,15 +385,15 @@ const db = firebase.firestore();
 <script>
 var sourceFile=null, targetFile=null, sourceDataUrl=null, targetDataUrl=null, COST=20;
 
-function updateDisplayCredits() {
-    var c = localStorage.getItem('md_credits');
+function updateDisplayGenesis() {
+    var c = localStorage.getItem('md_genesis');
     if(c === null) {
         c = '0';
-        localStorage.setItem('md_credits', c);
+        localStorage.setItem('md_genesis', c);
     }
-    var d = document.getElementById('header-credits-display');
-    if(d) d.textContent = Number(c).toLocaleString() + ' CREDITS';
-    if(window.MD && typeof window.MD.updateCredits === 'function') window.MD.updateCredits();
+    var d = document.getElementById('header-genesis-display');
+    if(d) d.textContent = Number(c).toLocaleString() + ' GENESIS';
+    if(window.MD && typeof window.MD.updateGenesis === 'function') window.MD.updateGenesis();
 }
 
 function setupUpload(zoneEl, accept, onFile) {
@@ -439,9 +439,9 @@ async function startFaceSwap() {
     if(!sourceDataUrl && !sourceFile) { alert('Upload SOURCE face first.'); return; }
     if(!targetDataUrl && !targetFile) { alert('Upload TARGET media first.'); return; }
 
-    var c = parseInt(localStorage.getItem('md_credits') || '0');
+    var c = parseInt(localStorage.getItem('md_genesis') || '0');
     if(c < COST) {
-        alert('Insufficient credits. You need ' + COST + ' CR, you have ' + c + '.');
+        alert('Insufficient genesis. You need ' + COST + ' CR, you have ' + c + '.');
         window.location.href = 'pricing.html';
         return;
     }
@@ -467,14 +467,14 @@ async function startFaceSwap() {
         if(data.error) {
             alert('Error: ' + data.error);
             if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
-                btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+                btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' GNS';}
             return;
         }
 
-        // Deduct credits
-        localStorage.setItem('md_credits', c - COST);
-        updateDisplayCredits();
-        if(window.__deductCredits) window.__deductCredits(COST);
+        // Deduct genesis
+        localStorage.setItem('md_genesis', c - COST);
+        updateDisplayGenesis();
+        if(window.__deductGenesis) window.__deductGenesis(COST);
 
         if(btn) btn.innerHTML='<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING...';
 
@@ -487,7 +487,7 @@ async function startFaceSwap() {
                 clearInterval(poll);
                 alert('Timeout — please try again.');
                 if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
-                    btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+                    btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' GNS';}
                 return;
             }
             try {
@@ -510,7 +510,7 @@ async function startFaceSwap() {
                     clearInterval(poll);
                     alert('Faceswap failed. Please try again.');
                     if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
-                        btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+                        btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' GNS';}
                 }
             } catch(e) { console.error('Poll error:', e); }
         }, 3000);
@@ -518,7 +518,7 @@ async function startFaceSwap() {
     } catch(e) {
         alert('Network error: ' + e.message);
         if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
-            btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+            btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' GNS';}
     }
 }
 
@@ -543,7 +543,7 @@ if(sl) sl.oninput = function() {
 };
 
 window.addEventListener('load', function() {
-    updateDisplayCredits();
+    updateDisplayGenesis();
     
     var zones = document.querySelectorAll('.technical-border');
     if(zones[0]) setupUpload(zones[0], 'image/jpeg,image/png,image/webp', function(f, z) {

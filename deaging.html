@@ -127,7 +127,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
-<span class="font-label-technical text-label-technical text-neon-acid">9,400 CREDITS</span>
+<span class="font-label-technical text-label-technical text-neon-acid">9,400 GENESIS</span>
 </div>
 <button class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-colors active:scale-95 duration-75 px-4 py-2 border border-outline-variant">
                 Back
@@ -148,7 +148,7 @@ const db = firebase.firestore();
 <div class="flex flex-col items-end">
 <span class="font-label-caps text-neon-acid mb-1">COMPUTE COST</span>
 <div class="text-neon-acid font-orbitron text-4xl font-black border border-neon-acid px-6 py-2">
-                    12 <span class="text-lg">CREDITS</span>
+                    12 <span class="text-lg">GENESIS</span>
 </div>
 </div>
 </section>
@@ -278,7 +278,7 @@ const db = firebase.firestore();
 </div>
 <button class="bg-neon-acid hover:bg-white text-void-black font-orbitron font-black text-xl px-12 py-4 flex items-center gap-4 transition-all active:scale-95">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
-                    [DE-AGE � 30 CREDITS]
+                    [DE-AGE � 30 GENESIS]
                 </button>
 </div>
 </div>
@@ -339,9 +339,9 @@ if (sliders[1]) {
 async function go() {
     if (!sfDataUrl) { alert("Upload a photo first."); return; }
 
-    var c = parseInt(localStorage.getItem("md_credits") || "0");
+    var c = parseInt(localStorage.getItem("md_genesis") || "0");
     if (c < COST) {
-        alert("Need " + COST + " credits. You have " + c + ".");
+        alert("Need " + COST + " genesis. You have " + c + ".");
         window.location.href = "pricing.html";
         return;
     }
@@ -359,13 +359,13 @@ async function go() {
 
         if (data.error) {
             alert("Error: " + data.error);
-            if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+            if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " GNS"; }
             return;
         }
 
-        // Deduct credits
-        localStorage.setItem("md_credits", c - COST);
-        if (window.__deductCredits) window.__deductCredits(COST);
+        // Deduct genesis
+        localStorage.setItem("md_genesis", c - COST);
+        if (window.__deductGenesis) window.__deductGenesis(COST);
         if (btn) btn.textContent = "PROCESSING...";
 
         // Poll
@@ -376,7 +376,7 @@ async function go() {
             if (attempts > 60) {
                 clearInterval(poll);
                 alert("Timeout — please try again.");
-                if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+                if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " GNS"; }
                 return;
             }
             if (btn) btn.textContent = "PROCESSING [" + attempts + "]...";
@@ -403,14 +403,14 @@ async function go() {
                 } else if (pd.status === "failed") {
                     clearInterval(poll);
                     alert("Processing failed. Please try again.");
-                    if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+                    if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " GNS"; }
                 }
             } catch(e) { console.error("Poll error:", e); }
         }, 2000);
 
     } catch(e) {
         alert("Network error: " + e.message);
-        if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+        if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " GNS"; }
     }
 }
 
@@ -420,7 +420,7 @@ window.addEventListener("load", function() {
     if (btn) { btn.id = "bda"; btn.onclick = go; }
     var bb = document.querySelector("header button");
     if (bb) bb.onclick = function() { window.location.href = "directors.html"; };
-    if (window.MD) window.MD.updateCredits();
+    if (window.MD) window.MD.updateGenesis();
 });
 </script><script src="/js/pipeline.js"></script></body></html>
 

@@ -114,7 +114,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2 bg-surface px-3 py-1 surgical-border">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
-<span class="font-label-technical text-sm text-neon-acid" id="header-credits-display">0 CREDITS</span>
+<span class="font-label-technical text-sm text-neon-acid" id="header-genesis-display">0 GENESIS</span>
 </div>
 <div class="flex items-center gap-4 text-on-surface-variant">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
@@ -143,7 +143,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">face_retouching_natural</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">45 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">45 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">Digital De-aging</h3>
@@ -162,7 +162,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">wb_iridescent</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">30 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">30 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">Ray-traced Relighting</h3>
@@ -181,7 +181,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">view_in_ar</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">65 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">65 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">AI Volumetric Capture</h3>
@@ -200,7 +200,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">forum</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">10 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">10 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">Universal Lip Sync</h3>
@@ -219,7 +219,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">psychology</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">25 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">25 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">Semantic Analysis</h3>
@@ -238,7 +238,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">cyclone</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">40 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">40 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">Neural Physics</h3>
@@ -257,7 +257,7 @@ const db = firebase.firestore();
 <div class="p-2 surgical-border group-hover:border-neon-acid transition-colors">
 <span class="material-symbols-outlined text-neon-acid">palette</span>
 </div>
-<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">20 CR</span>
+<span class="font-label-technical text-[10px] text-on-surface-variant uppercase">20 GNS</span>
 </div>
 <div>
 <h3 class="font-bold text-lg mb-2 text-white group-hover:text-neon-acid transition-colors">Auto Color Grading</h3>
@@ -308,7 +308,7 @@ const db = firebase.firestore();
 <button class="h-12 w-full bg-surface-variant/30 text-on-surface-variant cursor-not-allowed flex items-center justify-center gap-4 transition-all" disabled="" id="start-production-btn">
 <span class="material-symbols-outlined">rocket_launch</span>
 <span class="font-label-technical text-sm font-bold uppercase tracking-widest">Start Batch Production</span>
-<span class="px-2 py-0.5 bg-void-black text-[10px]" id="total-cost-display">0 CR</span>
+<span class="px-2 py-0.5 bg-void-black text-[10px]" id="total-cost-display">0 GNS</span>
 </button>
 </div>
 <div class="flex flex-col items-end">
@@ -320,10 +320,10 @@ const db = firebase.firestore();
 <script>
         // MercaDream Global Namespace for Sync
         window.MD = {
-            updateCredits: function() {
-                const credits = localStorage.getItem('md_credits') || '1200';
-                const display = document.getElementById('header-credits-display');
-                if (display) display.textContent = Number(credits).toLocaleString() + ' CREDITS';
+            updateGenesis: function() {
+                const genesis = localStorage.getItem('md_genesis') || '1200';
+                const display = document.getElementById('header-genesis-display');
+                if (display) display.textContent = Number(genesis).toLocaleString() + ' GENESIS';
             }
         };
 
@@ -363,7 +363,7 @@ const db = firebase.firestore();
 
             const count = selectedServices.size;
             countDisplay.textContent = `${count} ITEM${count !== 1 ? 'S' : ''} SELECTED`;
-            costDisplay.textContent = `${totalCost} CR`;
+            costDisplay.textContent = `${totalCost} GNS`;
             
             if (count > 0) {
                 actionBtn.disabled = false;
@@ -397,7 +397,7 @@ const db = firebase.firestore();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            window.MD.updateCredits();
+            window.MD.updateGenesis();
             
             // Re-bind card clicks to direct navigation
             document.querySelectorAll('.service-card').forEach(card => {
