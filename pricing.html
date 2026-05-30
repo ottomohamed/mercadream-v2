@@ -493,8 +493,9 @@ if(input)input.oninput=calcTotal;
 //  Quick amounts 
 document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
   btn.onclick=function(){
-    var map={"100":100,"250":250,"500":500,"1000":1000};
-    var v=map[btn.textContent.trim()]||parseInt(btn.textContent)||0;
+    var txt=btn.textContent.trim();
+    var map={"100":100,"500":500,"1K":1000,"5K":5000};
+    var v=map[txt]||(txt.toUpperCase().endsWith('K')?parseInt(txt)*1000:parseInt(txt))||0;
     if(input){input.value=v;calcTotal();}
     document.querySelectorAll(".grid-cols-4 button").forEach(function(b){b.style.background="";b.style.color="";});
     btn.style.background="#c8ff00";btn.style.color="#060606";
