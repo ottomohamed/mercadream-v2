@@ -205,7 +205,7 @@ const db = firebase.firestore();
 </div>
 <div class="bg-surface-container border border-outline-variant p-6 flex flex-col gap-2">
 <span class="font-technical-xs text-on-surface-variant uppercase">Compute Cost</span>
-<span class="font-headline-md text-primary-fixed">15 CR</span>
+<span class="font-headline-md text-primary-fixed" id="upscale-cost">22 CR</span>
 </div>
 </div>
 <!-- Functional Area -->
@@ -242,8 +242,8 @@ const db = firebase.firestore();
 <div>
 <label class="font-technical-xs text-on-surface-variant block mb-4 uppercase">Output Scale</label>
 <div class="grid grid-cols-2 gap-2">
-<button class="border border-primary-fixed bg-primary-fixed/10 text-primary-fixed py-3 font-technical-sm font-bold">2X HD</button>
-<button class="border border-outline-variant text-on-surface-variant py-3 font-technical-sm hover:border-primary-fixed transition-colors">4X UHD</button>
+<button class="border border-primary-fixed bg-primary-fixed/10 text-primary-fixed py-3 font-technical-sm font-bold" data-scale="2">2X HD</button>
+<button class="border border-outline-variant text-on-surface-variant py-3 font-technical-sm hover:border-primary-fixed transition-colors" data-scale="4">4X UHD</button>
 </div>
 </div>
 <div>
@@ -257,7 +257,7 @@ const db = firebase.firestore();
 <div class="bg-surface-container-highest p-4 flex justify-between items-center">
 <div>
 <span class="block font-technical-xs text-on-surface-variant">TOTAL_COMPUTE</span>
-<span class="font-headline-md text-primary-fixed">15 CR</span>
+<span class="font-headline-md text-primary-fixed" id="upscale-cost">22 CR</span>
 </div>
 <button class="bg-primary-fixed text-on-primary px-8 py-4 font-technical-sm font-bold uppercase shadow-[0_0_20px_rgba(192,245,0,0.2)] hover:scale-105 active:scale-95 transition-all" onclick="startUpscale()">START_CORE</button>
 </div>
@@ -434,9 +434,32 @@ const db = firebase.firestore();
             }, 200);
         }
 
-        function showResult() {
+        function showResult(outputUrl) {
             document.getElementById('progress-container').classList.add('hidden');
             document.getElementById('result-container').classList.remove('hidden');
+            
+            // Show download button and result
+            const resultContainer = document.getElementById('result-container');
+            if (outputUrl && resultContainer) {
+                const isImage = outputUrl.match(/\.(jpg|jpeg|png|webp|gif)/i);
+                const mediaEl = isImage
+                    ? `<img src="${outputUrl}" class="w-full rounded" alt="Upscaled output"/>`
+                    : `<video src="${outputUrl}" controls autoplay muted loop class="w-full rounded"></video>`;
+                
+                const downloadBtn = `<a href="${outputUrl}" download class="mt-4 flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-technical-sm font-bold uppercase hover:brightness-110 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">download</span> DOWNLOAD UPSCALED FILE
+                </a>`;
+                
+                // Find or create media display area
+                let mediaDiv = document.getElementById('upscale-result-media');
+                if (!mediaDiv) {
+                    mediaDiv = document.createElement('div');
+                    mediaDiv.id = 'upscale-result-media';
+                    mediaDiv.className = 'mt-4';
+                    resultContainer.appendChild(mediaDiv);
+                }
+                mediaDiv.innerHTML = mediaEl + downloadBtn;
+            }
         }
 
         // Faking interaction
