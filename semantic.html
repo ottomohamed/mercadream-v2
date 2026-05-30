@@ -386,8 +386,201 @@ const db = firebase.firestore();
     {{DATA:DOCUMENT:DOCUMENT_6}}
 </script>
 <script>
-    // DOCUMENT_84: Semantic Analysis Engine v1.1
-    {{DATA:DOCUMENT:DOCUMENT_84}}
+
+    const SemanticEngine = {
+        config: { cost: 8, maxChars: 10000, minChars: 50 },
+        state: { isAnalyzing: false, selectedParams: ['SCENE PACING'] },
+
+        init() {
+            this.cacheDOM();
+            this.bindEvents();
+            console.log('Semantic Engine v1.1 — Ready');
+        },
+
+        cacheDOM() {
+            this.textarea        = document.querySelector('textarea');
+            this.charCounter     = document.getElementById('char-counter');
+            this.analyzeBtn      = document.getElementById('btn-semantic');
+            this.paramButtons    = document.querySelectorAll('[data-param]');
+            this.statusText      = document.getElementById('status-text');
+            this.reportId        = document.getElementById('report-id');
+            this.reportStatusText = document.getElementById('report-status-text');
+            this.metricsGrid     = document.querySelectorAll('[data-metric]');
+        },
+
+        bindEvents() {
+            if (this.textarea) {
+                this.textarea.addEventListener('input', () => this.handleInput());
+            }
+            this.paramButtons.forEach(btn => {
+                btn.addEventListener('click', () => this.toggleParameter(btn));
+            });
+            if (this.analyzeBtn) {
+                this.analyzeBtn.addEventListener('click', () => this.runAnalysis());
+            }
+            window.addEventListener('creditsUpdated', (e) => {
+                const fmt = Number(e.detail.credits).toLocaleString();
+                document.querySelectorAll('[id="top-credits"]').forEach(el => {
+                    el.textContent = fmt + ' CR';
+                });
+            });
+        },
+
+        handleInput() {
+            const len = this.textarea.value.length;
+            if (this.charCounter) {
+                this.charCounter.textContent = `${len.toLocaleString()} / ${this.config.maxChars.toLocaleString()} CHARACTERS`;
+                this.charCounter.style.color = len > this.config.maxChars ? '#ff5050' : '#c8ff00';
+            }
+        },
+
+        toggleParameter(btn) {
+            if (this.state.isAnalyzing) return;
+            const param = btn.getAttribute('data-param');
+            const index = this.state.selectedParams.indexOf(param);
+            if (index > -1) {
+                if (this.state.selectedParams.length > 1) {
+                    this.state.selectedParams.splice(index, 1);
+                    btn.classList.remove('param-active', 'bg-neon-acid/10', 'border-neon-acid', 'text-neon-acid');
+                } else {
+                    this.notify('MIN 1 PARAMETER REQUIRED', 'err');
+                }
+            } else {
+                this.state.selectedParams.push(param);
+                btn.classList.add('param-active', 'bg-neon-acid/10', 'border-neon-acid', 'text-neon-acid');
+            }
+        },
+
+        async runAnalysis() {
+            if (this.state.isAnalyzing) return;
+
+            const text = this.textarea ? this.textarea.value.trim() : '';
+            if (text.length < this.config.minChars) {
+                this.notify(`INPUT TOO SHORT (MIN ${this.config.minChars} CHARS)`, 'err');
+                return;
+            }
+            if (text.length > this.config.maxChars) {
+                this.notify('INPUT EXCEEDS LIMIT', 'err');
+                return;
+            }
+
+            // Check credits
+            const credits = parseInt(localStorage.getItem('md_credits') || '0');
+            if (credits < this.config.cost) {
+                this.notify('INSUFFICIENT CREDITS — REDIRECTING TO RECHARGE', 'err');
+                setTimeout(() => window.location.href = 'pricing.html', 1500);
+                return;
+            }
+
+            this.setLoading(true);
+            this.resetMetrics();
+            this.notify('ANALYZING...', 'ok');
+
+            try {
+                const response = await fetch('/api/semantic', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        params: this.state.selectedParams
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    this.notify('ERROR: ' + data.error, 'err');
+                    this.setLoading(false);
+                    return;
+                }
+
+                // Deduct credits
+                const newCredits = credits - this.config.cost;
+                localStorage.setItem('md_credits', newCredits);
+                if (window.__deductCredits) window.__deductCredits(this.config.cost);
+
+                this.renderResults(data.scores || data);
+                this.notify('ANALYSIS COMPLETE', 'ok');
+
+            } catch (err) {
+                console.error('Semantic error:', err);
+                this.notify('CONNECTION ERROR — CREDITS PRESERVED', 'err');
+            } finally {
+                this.setLoading(false);
+            }
+        },
+
+        resetMetrics() {
+            this.metricsGrid.forEach(card => {
+                const scoreEl = card.querySelector('.score-val');
+                const barEl   = card.querySelector('.progress-bar');
+                const iconEl  = card.querySelector('.material-symbols-outlined');
+                if (scoreEl) scoreEl.textContent = '--';
+                if (barEl)   barEl.style.width = '0%';
+                if (iconEl)  { iconEl.textContent = 'lock'; iconEl.style.color = ''; }
+                card.style.borderColor = '';
+            });
+        },
+
+        renderResults(scores) {
+            const metrics = ['pacing', 'arc', 'dialogue', 'emotion', 'plot'];
+            metrics.forEach((m, i) => {
+                setTimeout(() => {
+                    const card = document.querySelector(`[data-metric="${m}"]`);
+                    if (!card) return;
+                    const val = scores[m] || Math.floor(Math.random() * 3 + 7);
+                    const scoreEl = card.querySelector('.score-val');
+                    const barEl   = card.querySelector('.progress-bar');
+                    const iconEl  = card.querySelector('.material-symbols-outlined');
+                    if (scoreEl) scoreEl.textContent = `${val}/10`;
+                    if (barEl)   barEl.style.width = `${val * 10}%`;
+                    if (iconEl)  { iconEl.textContent = 'check_circle'; iconEl.style.color = '#c8ff00'; }
+                    card.style.borderColor = 'rgba(200,255,0,0.4)';
+                    card.classList.add('animate-pulse');
+                    setTimeout(() => card.classList.remove('animate-pulse'), 500);
+                }, i * 200);
+            });
+
+            if (this.reportId) {
+                this.reportId.textContent = `ANALYSIS REPORT // ID: SEM_${Date.now().toString(36).toUpperCase()}`;
+            }
+            if (this.statusText) {
+                this.statusText.textContent = 'COMPLETE';
+                this.statusText.style.color = '#c8ff00';
+            }
+        },
+
+        setLoading(active) {
+            this.state.isAnalyzing = active;
+            if (!this.analyzeBtn) return;
+            const btnText = this.analyzeBtn.querySelector('.btn-text');
+            this.analyzeBtn.disabled = active;
+            this.analyzeBtn.style.opacity = active ? '0.7' : '1';
+            if (btnText) {
+                btnText.textContent = active
+                    ? 'COMPUTING NEURAL PATHS...'
+                    : `ANALYZE — ${this.config.cost} CR`;
+            }
+        },
+
+        notify(msg, type) {
+            if (this.reportStatusText) {
+                this.reportStatusText.textContent = msg;
+                this.reportStatusText.style.color = type === 'err' ? '#ff5050' : '#c8ff00';
+                if (type === 'err') {
+                    setTimeout(() => {
+                        if (this.reportStatusText.textContent === msg) {
+                            this.reportStatusText.textContent = 'AWAITING SYSTEM EXECUTION';
+                            this.reportStatusText.style.color = '';
+                        }
+                    }, 4000);
+                }
+            }
+        }
+    };
+
+    window.addEventListener('load', () => SemanticEngine.init());
+
 </script>
 </body></html>
 

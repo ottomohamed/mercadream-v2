@@ -2,10 +2,10 @@
 // MERCADREAM — /api/animate.js
 // Video Animation: Static Image → Animated Video
 // Using WaveSpeed AI (Wan 2.1 i2v)
-// Cost: 10 CR per animation
+// Cost: 25 CR per animation
 // ═══════════════════════════════════════════════════════
 
-const KEY = process.env.WAVESPEED_KEY || process.env.WAVESPEED_API_KEY;
+const KEY = process.env.WAVESPEED_API_KEY;
 const WAVESPEED_BASE = 'https://api.wavespeed.ai/api/v3';
 
 module.exports = async function handler(req, res) {
@@ -24,7 +24,7 @@ module.exports = async function handler(req, res) {
     if (!id) return res.status(400).json({ error: 'id required for polling.' });
 
     try {
-      const url = pollUrl || `${WAVESPEED_BASE}/predictions/${id}/result`;
+      const url = `${WAVESPEED_BASE}/predictions/${id}/result`;
       const r = await fetch(url, {
         headers: { 'Authorization': `Bearer ${KEY}` }
       });
@@ -54,21 +54,18 @@ module.exports = async function handler(req, res) {
   console.log('Duration:', safeDuration);
 
   try {
-    const r = await fetch(`${WAVESPEED_BASE}/predictions`, {
+    const r = await fetch(`${WAVESPEED_BASE}/wavespeed-ai/wan2.1-i2v-480p`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'wavespeed-ai/wan-2.1/i2v-480p',
-        input: {
-          prompt: prompt.trim(),
-          image: image_url,
-          duration: safeDuration,
-          aspect_ratio: '16:9',
-          negative_prompt: 'blurry, distorted, low quality, static, no movement'
-        }
+        prompt: prompt.trim(),
+        image: image_url,
+        duration: safeDuration,
+        aspect_ratio: '16:9',
+        negative_prompt: 'blurry, distorted, low quality, static, no movement'
       })
     });
 

@@ -116,7 +116,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="bg-void-black text-on-surface"><script src="md-engine.js"></script>
 <!-- TopAppBar -->
@@ -292,7 +292,137 @@ const db = firebase.firestore();
 </div>
 </div>
 </footer>
-<script src="/js/navigation.js"></script><script>var sf=null,COST=12;var uz=document.querySelector(".border-2.border-dashed");if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="image/*,video/mp4";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;var r=new FileReader();r.onload=function(ev){uz.innerHTML=(f.type.startsWith("video")?"<video src=\""+ev.target.result+"\" style=\"width:100%;height:100%;object-fit:cover\" muted></video>":"<img src=\""+ev.target.result+"\" style=\"width:100%;height:100%;object-fit:cover\">");};r.readAsDataURL(f);};i.click();};}var sliders=document.querySelectorAll("input[type=range]");if(sliders[0])sliders[0].oninput=function(){var d=document.querySelector(".text-neon-acid.font-label-technical");if(d)d.textContent=this.value+" YRS";};if(sliders[1])sliders[1].oninput=function(){var ds=document.querySelectorAll(".text-neon-acid.font-label-technical");if(ds[1])ds[1].textContent=String(this.value).padStart(2,"0");};async function go(){if(!sf){alert("Upload a photo or video first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("bda");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=4;if(btn)btn.textContent="PROCESSING... "+p+"%";if(p>=100){clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent="COMPLETE - SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}};},300);}window.addEventListener("load",function(){var btn=document.querySelector("footer button.bg-neon-acid");if(btn){btn.id="bda";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+<script src="/js/navigation.js"></script><script>
+var sf = null, sfDataUrl = null, COST = 30;
+var targetAge = 24;
+
+// Upload zone
+var uz = document.querySelector(".border-2.border-dashed");
+if (uz) {
+    uz.style.cursor = "pointer";
+    uz.onclick = function() {
+        var i = document.createElement("input");
+        i.type = "file";
+        i.accept = "image/*";
+        i.onchange = function(e) {
+            var f = e.target.files[0];
+            if (!f) return;
+            sf = f;
+            var r = new FileReader();
+            r.onload = function(ev) {
+                sfDataUrl = ev.target.result;
+                uz.innerHTML = '<img src="' + ev.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+            };
+            r.readAsDataURL(f);
+        };
+        i.click();
+    };
+}
+
+// Age slider
+var sliders = document.querySelectorAll("input[type=range]");
+if (sliders[0]) {
+    targetAge = parseInt(sliders[0].value) || 24;
+    sliders[0].oninput = function() {
+        targetAge = parseInt(this.value);
+        var d = document.querySelector(".text-neon-acid.font-label-technical");
+        if (d) d.textContent = this.value + " YRS";
+    };
+}
+if (sliders[1]) {
+    sliders[1].oninput = function() {
+        var ds = document.querySelectorAll(".text-neon-acid.font-label-technical");
+        if (ds[1]) ds[1].textContent = String(this.value).padStart(2, "0");
+    };
+}
+
+async function go() {
+    if (!sfDataUrl) { alert("Upload a photo first."); return; }
+
+    var c = parseInt(localStorage.getItem("md_credits") || "0");
+    if (c < COST) {
+        alert("Need " + COST + " credits. You have " + c + ".");
+        window.location.href = "pricing.html";
+        return;
+    }
+
+    var btn = document.getElementById("bda");
+    if (btn) { btn.disabled = true; btn.style.background = "#8aad00"; btn.textContent = "SUBMITTING..."; }
+
+    try {
+        var res = await fetch("/api/deaging", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ image_url: sfDataUrl, target_age: targetAge })
+        });
+        var data = await res.json();
+
+        if (data.error) {
+            alert("Error: " + data.error);
+            if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+            return;
+        }
+
+        // Deduct credits
+        localStorage.setItem("md_credits", c - COST);
+        if (window.__deductCredits) window.__deductCredits(COST);
+        if (btn) btn.textContent = "PROCESSING...";
+
+        // Poll
+        var jobId = data.id;
+        var attempts = 0;
+        var poll = setInterval(async function() {
+            attempts++;
+            if (attempts > 60) {
+                clearInterval(poll);
+                alert("Timeout — please try again.");
+                if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+                return;
+            }
+            if (btn) btn.textContent = "PROCESSING [" + attempts + "]...";
+            try {
+                var pr = await fetch("/api/deaging", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({action: "poll", id: jobId})
+                });
+                var pd = await pr.json();
+                if ((pd.status === "completed" || pd.status === "succeeded") && pd.url) {
+                    clearInterval(poll);
+                    // Show result
+                    if (uz) uz.innerHTML = '<img src="' + pd.url + '" style="width:100%;height:100%;object-fit:cover;">';
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.style.background = "#c8ff00";
+                        btn.textContent = "✓ COMPLETE — DOWNLOAD";
+                        btn.onclick = function() {
+                            var a = document.createElement("a");
+                            a.href = pd.url; a.download = "deaged.jpg"; a.click();
+                        };
+                    }
+                } else if (pd.status === "failed") {
+                    clearInterval(poll);
+                    alert("Processing failed. Please try again.");
+                    if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+                }
+            } catch(e) { console.error("Poll error:", e); }
+        }, 2000);
+
+    } catch(e) {
+        alert("Network error: " + e.message);
+        if (btn) { btn.disabled = false; btn.style.background = "#c8ff00"; btn.textContent = "PROCESS — " + COST + " CR"; }
+    }
+}
+
+window.addEventListener("load", function() {
+    var btn = document.querySelector("footer button.bg-neon-acid");
+    if (!btn) btn = document.querySelector("button.bg-neon-acid");
+    if (btn) { btn.id = "bda"; btn.onclick = go; }
+    var bb = document.querySelector("header button");
+    if (bb) bb.onclick = function() { window.location.href = "directors.html"; };
+    if (window.MD) window.MD.updateCredits();
+});
+</script><script src="/js/pipeline.js"></script></body></html>
 
 
 

@@ -161,7 +161,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="font-body-md text-body-md micro-grid min-h-screen pb-32"><script src="md-engine.js"></script>
 <!-- Global Scanline Effect -->
@@ -248,11 +248,11 @@ const db = firebase.firestore();
 <label class="font-label-caps text-label-caps text-silver-technical">[LANGUAGE]</label>
 <div class="relative">
 <select class="w-full bg-void-black border border-outline-variant text-primary font-label-technical p-3 appearance-none focus:border-neon-acid focus:ring-0">
-<option>EN — ENGLISH (NEURAL)</option>
-<option>AR — ARABIC</option>
-<option>ES — SPANISH</option>
-<option>FR — FRENCH</option>
-<option>ZH — MANDARIN</option>
+<option>EN ï¿½ ENGLISH (NEURAL)</option>
+<option>AR ï¿½ ARABIC</option>
+<option>ES ï¿½ SPANISH</option>
+<option>FR ï¿½ FRENCH</option>
+<option>ZH ï¿½ MANDARIN</option>
 </select>
 <span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-silver-technical">expand_more</span>
 </div>
@@ -296,7 +296,7 @@ const db = firebase.firestore();
 <div class="flex-1 max-w-xl">
 <button class="bg-neon-acid text-void-black font-label-caps text-sm w-full py-3 flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all neon-glow uppercase" id="bls">
 <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span id="btn-text" class="">[SYNC LIPS — 0 CREDITS]</span>
+<span id="btn-text" class="">[SYNC LIPS ï¿½ 0 CREDITS]</span>
 </button>
 </div>
 <div class="flex gap-4 items-center">
@@ -312,7 +312,7 @@ const db = firebase.firestore();
 <script src="/js/navigation.js"></script>
 <script src="/js/pipeline.js"></script>
 <script>
-    var vf = null, af = null, COST = 10;
+    var vf = null, af = null, vfUrl = null, afUrl = null, COST = 30;
 
     function initUploads() {
         const vdz = document.getElementById("vid-dropzone");
@@ -329,7 +329,15 @@ const db = firebase.firestore();
             i.accept = acc;
             i.onchange = (e) => {
                 const f = e.target.files[0];
-                if (f) cb(f);
+                if (f) {
+                    cb(f);
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (acc.includes("video")) vfUrl = e.target.result;
+                        if (acc.includes("audio")) afUrl = e.target.result;
+                    };
+                    reader.readAsDataURL(f);
+                }
             };
             i.click();
         };
@@ -352,45 +360,103 @@ const db = firebase.firestore();
         `;
     }
 
-    function go() {
-        if (!vf || !af) {
-            alert("REQUIRED: SOURCE_VIDEO AND TARGET_AUDIO MODULES NOT INITIALIZED.");
-            return;
-        }
+    async function go() {
+        if (!vfUrl && !vf) { alert("REQUIRED: SOURCE_VIDEO NOT INITIALIZED."); return; }
+        if (!afUrl && !af) { alert("REQUIRED: TARGET_AUDIO NOT INITIALIZED."); return; }
 
-        const currentCredits = parseInt(localStorage.getItem("md_credits") || "1200");
+        const currentCredits = parseInt(localStorage.getItem("md_credits") || "0");
         if (currentCredits < COST) {
-            alert("INSUFFICIENT CREDITS. TRANSACTION HALTED.");
+            alert("INSUFFICIENT CREDITS. Need " + COST + " CR.");
+            window.location.href = "pricing.html";
             return;
         }
 
         const btn = document.getElementById("bls");
         const btnText = document.getElementById("btn-text");
-        
         btn.disabled = true;
         btn.style.opacity = "0.8";
-        btn.classList.remove('neon-glow');
+        if (btnText) btnText.textContent = "SUBMITTING...";
 
-        let p = 0;
-        const iv = setInterval(() => {
-            p += Math.floor(Math.random() * 8) + 2;
-            if (p >= 100) {
-                p = 100;
-                clearInterval(iv);
-                finalizeSync(btn, btnText, currentCredits);
+        try {
+            const res = await fetch("/api/lipsync", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    video_url: vfUrl,
+                    audio_url: afUrl,
+                    mode: "video",
+                    sync_mode: "cut_off"
+                })
+            });
+            const data = await res.json();
+
+            if (data.error) {
+                alert("Error: " + data.error);
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                if (btnText) btnText.textContent = "[SYNC LIPS â€” " + COST + " CREDITS]";
+                return;
             }
-            btnText.textContent = `PROCESSING NEURAL_ENGINE... ${p}%`;
-            btn.style.background = `linear-gradient(90deg, #c8ff00 ${p}%, #a8d700 ${p}%)`;
-        }, 150);
+
+            // Deduct credits
+            localStorage.setItem("md_credits", currentCredits - COST);
+            if (window.__deductCredits) window.__deductCredits(COST);
+            if (btnText) btnText.textContent = "PROCESSING...";
+
+            // Poll
+            var jobId = data.id;
+            var attempts = 0;
+            var poll = setInterval(async function() {
+                attempts++;
+                if (attempts > 80) {
+                    clearInterval(poll);
+                    alert("Timeout â€” please try again.");
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    if (btnText) btnText.textContent = "[SYNC LIPS â€” " + COST + " CREDITS]";
+                    return;
+                }
+                if (btnText) btnText.textContent = "PROCESSING [" + attempts + "]...";
+                try {
+                    var pr = await fetch("/api/lipsync", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({action: "poll", id: jobId})
+                    });
+                    var pd = await pr.json();
+                    if ((pd.status === "completed" || pd.status === "succeeded") && pd.url) {
+                        clearInterval(poll);
+                        finalizeSync(btn, btnText, currentCredits, pd.url);
+                    } else if (pd.status === "failed") {
+                        clearInterval(poll);
+                        alert("Lipsync failed. Please try again.");
+                        btn.disabled = false;
+                        btn.style.opacity = "1";
+                        if (btnText) btnText.textContent = "[SYNC LIPS â€” " + COST + " CREDITS]";
+                    }
+                } catch(e) { console.error("Poll error:", e); }
+            }, 3000);
+
+        } catch(e) {
+            alert("Network error: " + e.message);
+            btn.disabled = false;
+            btn.style.opacity = "1";
+        }
     }
 
-    function finalizeSync(btn, btnText, currentCredits) {
+    function finalizeSync(btn, btnText, currentCredits, outputUrl) {
         btn.classList.add('flash-reveal');
         btn.style.background = "#c8ff00";
         btn.style.opacity = "1";
         btn.classList.add('neon-glow');
         
-        btnText.innerHTML = `<span class="flex items-center gap-2">COMPLETE - SEND TO ASSEMBLY <span class="material-symbols-outlined">arrow_forward</span></span>`;
+        btnText.innerHTML = '<span class="flex items-center gap-2">âœ“ COMPLETE â€” DOWNLOAD<span class="material-symbols-outlined">check</span></span>';
+        if (outputUrl) {
+            btn.onclick = () => {
+                var a = document.createElement('a');
+                a.href = outputUrl; a.download = 'lipsync.mp4'; a.click();
+            };
+        }
         
         localStorage.setItem("md_credits", currentCredits - COST);
         if (window.MD && window.MD.updateCredits) {

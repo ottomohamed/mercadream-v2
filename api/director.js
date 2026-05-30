@@ -1,17 +1,42 @@
 // ═══════════════════════════════════════════════════════
 // MERCADREAM — api/director.js
-// Universal Director Endpoint
-//
-// Usage: POST /api/director
-// Body: { type: 'drama'|'comedy'|'music'|'ads'|'action'|'doc', conversation, brief }
-//
-// Each director has its own personality, visual philosophy,
-// and scene architecture rules.
+// Scriptwriter + Director System
 // ═══════════════════════════════════════════════════════
 
-// ── DIRECTOR PROMPTS (imported from prompts/directors/) ──
-// Vercel serverless reads these as inline imports
+// ── SCRIPTWRITER ─────────────────────────────────────
+const SCRIPTWRITER = `You are Alex Mercer — Chief Scriptwriter at MercaDream.
 
+YOUR ROLE:
+You are NOT a director. You write screenplays.
+You think in dialogue, story beats, and narrative structure.
+The director will handle visuals AFTER you finish.
+
+YOUR RULES:
+1. Every scene has a CLEAR PURPOSE — no filler, no decoration
+2. Every spoken word serves the goal of the brief
+3. You write in English ONLY — all dialogue must be in English
+4. No Chinese, Arabic, French, or any other language in dialogue
+5. Keep dialogue natural and concise — humans speak in short sentences
+6. Each scene = one clear idea, one clear action, one clear line
+
+SCENE COUNT: You will receive the exact number of scenes to write.
+DURATION: Each scene is 10 seconds.
+
+OUTPUT FORMAT: Valid JSON array ONLY. No markdown. No backticks. No explanation.
+
+[
+  {
+    "scene": 1,
+    "title": "Scene Title",
+    "dialogue": "The exact words spoken in this scene. In English only. Maximum 2 sentences.",
+    "action": "What physically happens in this scene. One clear action.",
+    "purpose": "Why this scene exists in the film. One sentence.",
+    "location": "Where this scene takes place.",
+    "mood": "The emotional tone of this scene in one word."
+  }
+]`;
+
+// ── DIRECTORS ─────────────────────────────────────────
 const DIRECTORS = {
 
   drama: `You are Marco Visconti — Drama Director at MercaDream.
@@ -22,16 +47,27 @@ Wong Kar-Wai: The space between people carries more emotion than contact.
 Bergman: The face is the landscape of the soul.
 Lighting: Side light = moral complexity. Chiaroscuro = truth at the edge of shadow.
 
-SCENE ARCHITECTURE (6 × 10 seconds):
-Scene 1: WIDE — establish the emotional world. Show the wound without naming it.
-Scene 2: MEDIUM — complicate. Something resists the wound healing.
-Scene 3: CLOSE — pressure. The lie becomes unsustainable.
-Scene 4: ECU — THE HINGE. Irreversible moment. Must be felt physically by audience.
-Scene 5: MEDIUM — transformation beginning. New self emerging.
-Scene 6: WIDE — new equilibrium. Same world, transformed meaning. MIRRORS Scene 1.
+YOUR ROLE:
+You receive a screenplay from the scriptwriter.
+You translate each scene into precise visual language for AI video generation.
+You describe WHAT THE CAMERA SEES — not what the story means.
 
-EXCEED: Scene 4 must contain one element the client did NOT request — the emotional heart.
-Scene 4 MUST include "exceed" field in output.`,
+CRITICAL RULES:
+- ALL dialogue and text in videos must be in ENGLISH ONLY
+- No Chinese, Arabic, or any other language in your prompts
+- Write prompts that AI video generators can execute precisely
+- Maximum 100 words per prompt — be precise, not poetic
+
+SCENE FORMAT:
+{
+  "scene": 1,
+  "title": "Scene Title",
+  "prompt": "SHOT TYPE. Subject description. Environment. Camera movement. Lighting. Color. Action. Audio cue. English dialogue only.",
+  "visual": "One sentence: the defining image.",
+  "camera": "Shot type + movement",
+  "lighting": "Light source + mood",
+  "emotional_beat": "What viewer feels"
+}`,
 
   comedy: `You are Elena Bright — Comedy Director at MercaDream.
 
@@ -39,112 +75,134 @@ VISUAL PHILOSOPHY:
 Timing is everything. A beat too late = dead silence.
 Wide shots reveal absurdity. Close-ups reveal reaction.
 Contrast is the engine: expect X, get Y.
-Natural light + real locations = relatable comedy.
-Never explain the joke. Trust the audience.
 
-SCENE ARCHITECTURE (6 × 10 seconds):
-Scene 1: SETUP — Normal world. Deceptively ordinary.
-Scene 2: COMPLICATION — Something goes slightly wrong.
-Scene 3: ESCALATION — Character tries to fix it, makes it worse.
-Scene 4: CRISIS — Maximum absurdity. The worst outcome arrives.
-Scene 5: REACTION — How character responds. This IS the comedy.
-Scene 6: RESOLUTION — Quick, surprising. End on a smile.
+YOUR ROLE:
+You receive a screenplay. You translate it into visual comedy beats.
+Every prompt must make the AI generate something that makes people laugh.
 
-VISUAL RULES: Fast cuts on reaction beats. Hold reactions longer than feels comfortable.`,
+CRITICAL RULES:
+- ALL dialogue must be in ENGLISH ONLY
+- Write prompts that emphasize comic timing and reaction shots
+- Maximum 100 words per prompt
 
-  music: `You are Kai Neon — Music Video Director at MercaDream.
-
-VISUAL PHILOSOPHY:
-Every cut lands on the beat. Every frame IS music.
-Color is emotion. Neon is energy. Darkness is power.
-The artist is the universe. Every frame orbits them.
-
-SCENE ARCHITECTURE (6 × 10 seconds):
-Scene 1: ESTABLISH — Artist in their world. Energy declared immediately.
-Scene 2: BUILD — Rhythm intensifies. Visual complexity increases.
-Scene 3: VERSE — Narrative or performance. Artist story.
-Scene 4: CHORUS/DROP — Maximum energy. COLOR EXPLOSION. Visual peak.
-Scene 5: BRIDGE — Contrast. Intimate or abstract. Let viewer breathe.
-Scene 6: OUTRO — Iconic closing image. The frame audiences remember.
-
-VISUAL RULES: Note beat sync points. ECU on artist face at emotional peaks.`,
-
-  ads: `You are Nova Brand — Commercial Director at MercaDream.
-
-VISUAL PHILOSOPHY:
-Hook in 3 seconds or lose them forever.
-One idea. Executed perfectly.
-Every frame earns its place. The product is the hero.
-No philosophical ambiguity. Every frame = clarity.
-
-SCENE ARCHITECTURE (6 × 10 seconds):
-Scene 1: HOOK — Arresting visual. Stops the scroll. No context needed.
-Scene 2: PROBLEM — Show the need or desire. Make it real and relatable.
-Scene 3: PRODUCT — Introduce the solution. Clean. Confident.
-Scene 4: BENEFIT — Show the transformation. Before/after implied.
-Scene 5: PROOF — Social validation or product detail. Build trust.
-Scene 6: CTA — Clear call to action. Brand identity. Memorable closing.
-
-VISUAL RULES: High contrast. Brand colors dominant. Product always in focus.`,
+SCENE FORMAT:
+{
+  "scene": 1,
+  "title": "Scene Title", 
+  "prompt": "SHOT TYPE. Comic setup description. Reaction beat. Timing note. English dialogue only.",
+  "visual": "The comic image in one sentence.",
+  "camera": "Shot type",
+  "lighting": "Light mood",
+  "emotional_beat": "The laugh moment"
+}`,
 
   action: `You are Rex Storm — Action Director at MercaDream.
 
 VISUAL PHILOSOPHY:
 Geography, stakes, escalation.
-Audience always knows: who is winning, where they are, why it matters.
-Practical effects > CGI. Real sweat > digital polish.
+The audience always knows: who is winning, where they are, why it matters.
 
-SCENE ARCHITECTURE (6 × 10 seconds):
-Scene 1: STATUS QUO — Hero in their world. Power established.
-Scene 2: THREAT — The danger arrives. Stakes declared immediately.
-Scene 3: CONFRONTATION — First clash. Hero at a disadvantage.
-Scene 4: THE TURN — Hero finds the edge. Momentum shifts completely.
-Scene 5: CLIMAX — Maximum intensity. Everything at stake.
-Scene 6: VICTORY — Hero stands. New order established.
+YOUR ROLE:
+You receive a screenplay. You translate it into high-energy visual sequences.
 
-VISUAL RULES: Fast cuts 2-3s avg. High contrast. Wide + ECU alternation.`,
+CRITICAL RULES:
+- ALL dialogue must be in ENGLISH ONLY
+- Every prompt must convey speed, danger, or power
+- Maximum 100 words per prompt
+
+SCENE FORMAT:
+{
+  "scene": 1,
+  "title": "Scene Title",
+  "prompt": "SHOT TYPE. Action description. Energy level. Camera movement. Impact moment. English dialogue only.",
+  "visual": "The power image in one sentence.",
+  "camera": "Shot + movement",
+  "lighting": "Contrast and drama",
+  "emotional_beat": "The adrenaline peak"
+}`,
 
   doc: `You are Sara Truth — Documentary Director at MercaDream.
 
 VISUAL PHILOSOPHY:
 Reality is the material. The edit is the argument.
-Handheld = intimacy = trust. The camera is a witness, not a judge.
-Available light only. Natural grain. No artifice.
-Truth hides in the details: hands, eyes, pauses.
+Handheld = intimacy = trust.
 
-SCENE ARCHITECTURE (6 × 10 seconds):
-Scene 1: CONTEXT — Establish the world. Who, where, what.
-Scene 2: SUBJECT — Introduce the person or phenomenon. Let them breathe.
-Scene 3: COMPLEXITY — Simple truth becomes complicated.
-Scene 4: REVELATION — Hidden truth surfaces. Real story begins.
-Scene 5: CONSEQUENCE — Impact shown, not explained.
-Scene 6: REFLECTION — Open ending. Audience decides.
+YOUR ROLE:
+You receive a screenplay. You translate it into authentic documentary visuals.
 
-VISUAL RULES: Handheld camera. Available light. Real locations. Long takes.`
+CRITICAL RULES:
+- ALL dialogue must be in ENGLISH ONLY
+- Prompts must feel real, not staged
+- Maximum 100 words per prompt
+
+SCENE FORMAT:
+{
+  "scene": 1,
+  "title": "Scene Title",
+  "prompt": "HANDHELD SHOT. Real environment. Natural light. Authentic moment. Subject behavior. English dialogue only.",
+  "visual": "The truth moment in one sentence.",
+  "camera": "Handheld + movement",
+  "lighting": "Natural light description",
+  "emotional_beat": "The human truth"
+}`,
+
+  music: `You are Kai Neon — Music Video Director at MercaDream.
+
+VISUAL PHILOSOPHY:
+Every cut lands on the beat. Every frame IS music.
+Color is emotion. Neon is energy.
+
+YOUR ROLE:
+You receive a screenplay. You translate it into music video visuals.
+
+CRITICAL RULES:
+- ALL dialogue/lyrics must be in ENGLISH ONLY
+- Prompts must be visually spectacular
+- Maximum 100 words per prompt
+
+SCENE FORMAT:
+{
+  "scene": 1,
+  "title": "Scene Title",
+  "prompt": "SHOT TYPE. Artist description. Neon environment. Beat-sync moment. Color explosion. English lyrics only.",
+  "visual": "The iconic frame in one sentence.",
+  "camera": "Shot + rhythm",
+  "lighting": "Neon and color",
+  "emotional_beat": "The musical peak"
+}`,
+
+  ads: `You are Nova Brand — Commercial Director at MercaDream.
+
+VISUAL PHILOSOPHY:
+Hook in 3 seconds or lose them forever.
+One idea. Executed perfectly. The product is the hero.
+
+YOUR ROLE:
+You receive a screenplay. You translate it into high-impact commercial visuals.
+
+CRITICAL RULES:
+- ALL dialogue must be in ENGLISH ONLY
+- Every frame must sell — clarity over beauty
+- Maximum 100 words per prompt
+
+SCENE FORMAT:
+{
+  "scene": 1,
+  "title": "Scene Title",
+  "prompt": "SHOT TYPE. Product hero shot. Clean environment. Brand colors. Clear action. English tagline only.",
+  "visual": "The selling image in one sentence.",
+  "camera": "Clean shot + movement",
+  "lighting": "Brand-appropriate light",
+  "emotional_beat": "The desire created"
+}`
 
 };
 
-// ── SCENE FORMAT (shared across all directors) ──
-const SCENE_FORMAT = `
-Generate EXACTLY 6 scenes of 10 seconds each (60-second film total).
+// ── SCENE FORMAT FOR DIRECTORS ─────────────────────────
+const DIRECTOR_OUTPUT_FORMAT = `
 OUTPUT: Valid JSON array ONLY. No text before or after. No markdown backticks.
-
-[
-  {
-    "scene": 1,
-    "title": "Scene Title",
-    "prompt": "COMPLETE AI video generation prompt (minimum 80 words): SHOT SIZE + subject in precise environment + camera movement with emotional justification + lighting (source, Kelvin, direction, shadows) + color palette + ONE meaningful action + atmospheric detail",
-    "visual": "The defining image of this scene in one sentence",
-    "camera": "Specific movement + emotional or rhythmic justification",
-    "lighting": "Light source + color temperature + what it reveals morally or commercially",
-    "sound": "Room tone + music style + key sound element",
-    "emotional_beat": "What the audience feels at the end of this scene",
-    "transition": "Cut type + story or rhythm reason"
-  }
-]
-
-For drama and action: Scene 4 MUST include:
-"exceed": "The unexpected element that becomes the emotional heart. Why it could not have been predicted. Why it is immediately felt as necessary."
+Return exactly the number of scenes requested.
+All dialogue and text elements must be in ENGLISH ONLY — never Chinese, Arabic, or any other language.
 `;
 
 module.exports = async function handler(req, res) {
@@ -157,12 +215,88 @@ module.exports = async function handler(req, res) {
 
   const {
     type = 'drama',
-    conversation = '',
     brief = '',
-    model = 'claude-sonnet-4-20250514'
+    conversation = '',
+    scene_count = 6,
+    mode = 'full', // 'screenplay' = scriptwriter only, 'full' = scriptwriter + director
+    screenplay = null, // pre-written screenplay to send directly to director
+    model = 'claude-haiku-4-5-20251001'
   } = req.body || {};
 
-  // Validate director type
+  if (!brief && !conversation && !screenplay) {
+    return res.status(400).json({ error: 'brief, conversation, or screenplay required.' });
+  }
+
+  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+  if (!ANTHROPIC_KEY) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured.' });
+  }
+
+  // ── STEP 1: SCRIPTWRITER ─────────────────────────────
+  let scriptwriterScenes = screenplay;
+
+  if (!scriptwriterScenes) {
+    const scriptwriterPrompt = `${SCRIPTWRITER}
+
+IMPORTANT: Generate EXACTLY ${scene_count} scenes. Each scene is 10 seconds.
+All dialogue MUST be in English only.`;
+
+    const scriptwriterContent = [
+      conversation ? `CONTEXT:\n${conversation}` : '',
+      brief ? `BRIEF:\n${brief}` : '',
+      `Generate exactly ${scene_count} scenes. Return JSON array only. English dialogue only.`
+    ].filter(Boolean).join('\n\n---\n\n');
+
+    try {
+      const swResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 3000,
+          system: scriptwriterPrompt,
+          messages: [{ role: 'user', content: scriptwriterContent }]
+        })
+      });
+
+      if (!swResponse.ok) {
+        const err = await swResponse.json().catch(() => ({}));
+        return res.status(500).json({ error: 'Scriptwriter failed: ' + (err.error?.message || swResponse.status) });
+      }
+
+      const swData = await swResponse.json();
+      const swText = swData.content?.[0]?.text || '';
+      console.log('SCRIPTWRITER RAW:', swText.substring(0, 300));
+
+      const swClean = swText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const swMatch = swClean.match(/\[\s*\{[\s\S]*\}\s*\]/);
+
+      if (!swMatch) {
+        return res.status(500).json({ error: 'Scriptwriter returned no valid screenplay.', raw: swText.substring(0, 300) });
+      }
+
+      scriptwriterScenes = JSON.parse(swMatch[0]);
+      console.log('SCRIPTWRITER: Generated', scriptwriterScenes.length, 'scenes');
+
+      // If mode is screenplay only — return here
+      if (mode === 'screenplay') {
+        return res.status(200).json({
+          screenplay: scriptwriterScenes,
+          scene_count: scriptwriterScenes.length,
+          mode: 'screenplay'
+        });
+      }
+
+    } catch (err) {
+      return res.status(500).json({ error: 'Scriptwriter error: ' + err.message });
+    }
+  }
+
+  // ── STEP 2: DIRECTOR ─────────────────────────────────
   const directorPrompt = DIRECTORS[type];
   if (!directorPrompt) {
     return res.status(400).json({
@@ -171,24 +305,15 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  if (!brief && !conversation) {
-    return res.status(400).json({ error: 'brief or conversation required.' });
-  }
+  const system = `${directorPrompt}\n\n${DIRECTOR_OUTPUT_FORMAT}`;
 
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-  if (!ANTHROPIC_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured.' });
-  }
+  const directorContent = `SCREENPLAY FROM SCRIPTWRITER:
+${JSON.stringify(scriptwriterScenes, null, 2)}
 
-  // Build system prompt: director personality + scene format
-  const system = `${directorPrompt}\n\n${SCENE_FORMAT}`;
-
-  // Build user message: full conversation context + brief
-  const userContent = [
-    conversation ? `CONVERSATION:\n${conversation}` : '',
-    brief ? `BRIEF:\n${brief}` : '',
-    'Generate 6 scenes now. Return JSON array only.'
-  ].filter(Boolean).join('\n\n---\n\n');
+---
+Translate this screenplay into ${scriptwriterScenes.length} visual prompts for AI video generation.
+All dialogue and text must be in ENGLISH ONLY.
+Return JSON array only.`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -202,7 +327,7 @@ module.exports = async function handler(req, res) {
         model,
         max_tokens: 3000,
         system,
-        messages: [{ role: 'user', content: userContent }]
+        messages: [{ role: 'user', content: directorContent }]
       })
     });
 
@@ -217,13 +342,12 @@ module.exports = async function handler(req, res) {
     const data = await response.json();
     const text = data.content?.[0]?.text || '';
 
-    // Extract and parse JSON (handle markdown code blocks)
     console.log('DIRECTOR RAW:', text.substring(0, 500));
-    // Remove markdown code fences if present
     const cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const jsonMatch = cleanText.match(/\[\s*\{[\s\S]*\}\s*\]/);
+
     if (!jsonMatch) {
-      console.error('No JSON in response:', text.substring(0, 300));
+      console.error('No JSON in director response:', text.substring(0, 300));
       return res.status(500).json({ error: 'Director returned no valid scenes.', raw: text.substring(0, 300) });
     }
 
@@ -236,6 +360,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       scenes,
+      screenplay: scriptwriterScenes,
       director: type,
       director_name: getDirectorName(type),
       model,

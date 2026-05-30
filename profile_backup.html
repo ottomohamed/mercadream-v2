@@ -1,0 +1,853 @@
+﻿<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM  PROFILE COMMAND CENTER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">    // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #060606;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .surgical-border {
+            border: 1px solid #222222;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 12px #c8f500;
+            border-color: #c8f500;
+        }
+        .technical-crosshair::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 1px;
+            height: 20px;
+            background: #434933;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed": "#161f00",
+                    "inverse-primary": "#4f6600",
+                    "inverse-on-surface": "#313030",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "secondary": "#ffba3f",
+                    "on-surface": "#e5e2e1",
+                    "secondary-fixed-dim": "#ffba3f",
+                    "on-primary": "#273500",
+                    "on-secondary": "#432c00",
+                    "surface-container-highest": "#353534",
+                    "on-error": "#690005",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "primary": "#ffffff",
+                    "surface-container-low": "#1c1b1b",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "surface": "#131313",
+                    "on-secondary-fixed-variant": "#604100",
+                    "primary-container": "#c0f500",
+                    "primary-fixed-dim": "#a8d700",
+                    "surface-container": "#201f1f",
+                    "on-surface-variant": "#c4caac",
+                    "surface-variant": "#353534",
+                    "error": "#ffb4ab",
+                    "surface-dim": "#131313",
+                    "tertiary-fixed": "#e5e2e1",
+                    "secondary-fixed": "#ffdeae",
+                    "secondary-container": "#c48800",
+                    "surface-tint": "#a8d700",
+                    "surface-container-lowest": "#0e0e0e",
+                    "tertiary": "#ffffff",
+                    "surface-bright": "#3a3939",
+                    "outline": "#8e9479",
+                    "on-tertiary-container": "#656464",
+                    "tertiary-container": "#e5e2e1",
+                    "outline-variant": "#434933",
+                    "on-tertiary": "#303030",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed": "#c0f500",
+                    "background": "#131313",
+                    "on-secondary-container": "#3e2800",
+                    "on-secondary-fixed": "#281900",
+                    "on-background": "#e5e2e1",
+                    "surface-container-high": "#2a2a2a",
+                    "on-primary-container": "#546d00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "margin-desktop": "32px",
+                    "container-max": "1440px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Sora"],
+                    "technical-sm": ["IBM Plex Mono"],
+                    "headline-lg": ["Sora"],
+                    "body-md": ["Inter"],
+                    "label-xs": ["IBM Plex Mono"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+        // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+
+
+
+
+    }</script>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed overflow-x-hidden">
+<div class="scanline-overlay"></div>
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface w-64 z-20">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-2 h-2 bg-primary-fixed animate-pulse"></div>
+<span class="font-display-lg text-headline-lg tracking-tighter text-primary-fixed">MERCADREAM</span>
+</div>
+<div class="mb-8 p-4 bg-surface-container-low border border-outline-variant">
+<div class="flex items-center gap-3 mb-2">
+<img id="sidebar-avatar" alt="Director" class="w-8 h-8 rounded-full border border-primary-fixed" src="https://www.gravatar.com/avatar/000?d=mp"/>
+<div>
+<p class="font-technical-sm text-label-xs text-primary-fixed" id="sidebar-plan">LOADING...</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant" id="sidebar-tier">Studio Tier</p>
+</div>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-technical-sm text-technical-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">movie_filter</span>
+<span class="font-technical-sm text-technical-sm">Production</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+<span class="font-technical-sm text-technical-sm">Marketplace</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span class="font-technical-sm text-technical-sm">Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px]">folder_special</span>
+<span class="font-technical-sm text-technical-sm">Assets</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container border-l-4 border-primary-fixed" href="#">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+<span class="font-technical-sm text-technical-sm">Power Station</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-6 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-technical-sm text-technical-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span class="font-technical-sm text-technical-sm">Support</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto bg-surface-container-lowest">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-outline-variant px-margin-desktop py-4 flex justify-between items-center max-w-container-max mx-auto w-full">
+<div class="flex items-center gap-8">
+<h1 class="font-display-lg text-headline-lg tracking-tighter text-primary-fixed">COMMAND CENTER</h1>
+<nav class="hidden lg:flex gap-6">
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-primary-fixed transition-all" href="#">Studio</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-primary-fixed transition-all" href="#">Assembly</a>
+<a class="font-technical-sm text-technical-sm text-on-surface-variant hover:text-primary-fixed transition-all" href="#">Marketplace</a>
+<a class="font-technical-sm text-technical-sm text-primary-fixed border-b-2 border-primary-fixed pb-1" href="#">Profile</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-surface-variant/30 border border-outline-variant px-3 py-1 items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed">account_balance_wallet</span>
+<span class="font-technical-sm text-label-xs text-on-surface" id="top-credits">0 CR</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed font-technical-sm text-label-xs px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8f500] transition-all">Upgrade</button>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">notifications</span>
+</div>
+</header>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 space-y-gutter">
+<!-- SECTION 1: Profile & Stats Split -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Profile Card -->
+<div class="lg:col-span-5 bg-surface border border-outline-variant p-8 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary-fixed">person_pin</span>
+</div>
+<div class="flex flex-col items-center md:flex-row md:items-start gap-8 relative z-10">
+<div class="relative group/avatar">
+<div class="w-32 h-32 border-2 border-primary-fixed p-1">
+<img id="profile-avatar" class="w-full h-full object-cover" src="https://www.gravatar.com/avatar/000?d=mp"/>
+</div>
+<button class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-background border border-primary-fixed px-2 py-1 text-[10px] font-technical-sm text-primary-fixed whitespace-nowrap hover:bg-primary-fixed hover:text-on-primary-fixed transition-colors">UPLOAD PHOTO</button>
+</div>
+<div class="flex-1 space-y-4">
+<div>
+<h2 class="font-display-lg text-headline-lg text-primary-fixed" id="profile-name">LOADING...</h2>
+<p class="font-technical-sm text-technical-sm text-on-surface-variant" id="profile-email">...</p>
+</div>
+<div class="inline-flex items-center gap-2 bg-primary-container/10 border border-primary-fixed/30 px-3 py-2">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div class="flex flex-col">
+<span class="font-technical-sm text-label-xs text-primary-fixed font-bold" id="plan-title">LOADING...</span>
+<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase" id="plan-sub">...</span>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full md:w-auto border border-primary-fixed px-6 py-2 font-technical-sm text-technical-sm text-primary-fixed hover:bg-primary-fixed/10 transition-all uppercase tracking-tighter neon-glow" id="edit-profile-btn">EDIT PROFILE</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats Dashboard -->
+<div class="lg:col-span-7 grid grid-cols-2 gap-gutter">
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Available Credits</span>
+<span class="material-symbols-outlined text-primary-fixed">token</span>
+</div>
+<div>
+<p class="font-display-lg text-[48px] text-primary-fixed leading-none" id="credits-value">0</p>
+<div class="h-1 bg-surface-variant mt-4 w-full">
+<div class="h-full bg-primary-fixed w-[0%]" id="credits-bar"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Renders Executed</span>
+<span class="material-symbols-outlined text-secondary">movie_creation</span>
+</div>
+<div>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="renders-value">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2" id="renders-sub">+0 this month</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Recharge Cycles</span>
+<span class="material-symbols-outlined text-tertiary-fixed-dim">history</span>
+</div>
+<div>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="recharges-value">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2">Lifetime total</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Saved Assets</span>
+<span class="material-symbols-outlined text-primary-fixed-dim">folder_shared</span>
+</div>
+<div>
+<p class="font-display-lg text-[48px] text-on-surface leading-none" id="assets-value">0</p>
+<p class="font-technical-sm text-label-xs text-on-surface-variant mt-2" id="assets-sub">0 GB utilized</p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: Billing History Table -->
+<section class="bg-surface border border-outline-variant overflow-hidden">
+<div class="bg-surface-variant/20 px-6 py-3 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Billing &amp; Transaction Log</h3>
+<span class="font-technical-sm text-label-xs text-on-surface-variant" id="system-time">System Time: --:-- UTC</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-technical-sm text-technical-sm">
+<thead class="bg-surface-container border-b border-outline-variant">
+<tr>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Service Description</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Credit Value</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="px-6 py-4 font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody id="billing-table-body" class="divide-y divide-outline-variant/30">
+<tr>
+<td colspan="5" class="px-6 py-12 text-center text-on-surface-variant opacity-60">-- No Transaction History --</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- SECTION 3: Bottom Widgets -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- REFER & EARN BOX -->
+<div class="bg-surface border border-outline-variant p-8 flex flex-col">
+<div class="mb-6">
+<h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER &amp; EARN</h3>
+<p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
+</div>
+<div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<span class="font-technical-sm text-headline-lg tracking-widest text-on-surface" id="ref-code">GENERATING...</span>
+<div style="margin-top: 8px; font-size: 10px; color: #888;">
+    <span id="ref-link"></span>
+    <button id="copy-link-btn" style="background: transparent; border: 1px solid #c8ff00; color: #c8ff00; padding: 4px 8px; margin-left: 8px; cursor: pointer; border-radius: 4px;">Copy Link</button>
+</div>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="copy-ref-btn" title="Copy Code">
+<span class="material-symbols-outlined">content_copy</span>
+</button>
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="wa-ref-btn" title="Share WhatsApp">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 border border-outline-variant hover:border-primary-fixed text-on-surface-variant hover:text-primary-fixed transition-all" id="twitter-ref-btn" title="Share Twitter/X">
+<span class="material-symbols-outlined">alternate_email</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="text-center">
+<span class="font-technical-sm text-label-xs text-on-surface-variant block uppercase">Step 1</span>
+<span class="font-technical-sm text-technical-sm text-on-surface">Share Code</span>
+</div>
+<div class="text-center border-x border-outline-variant/30">
+<span class="font-technical-sm text-label-xs text-on-surface-variant block uppercase">Step 2</span>
+<span class="font-technical-sm text-technical-sm text-on-surface">Friend Recharges</span>
+</div>
+<div class="text-center">
+<span class="font-technical-sm text-label-xs text-on-surface-variant block uppercase">Step 3</span>
+<span class="font-technical-sm text-technical-sm text-primary-fixed">10% Bonus</span>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between pt-6 border-t border-outline-variant">
+<div class="flex gap-8">
+<div>
+<p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Friends</p>
+<p class="font-display-lg text-headline-lg text-on-surface" id="friends-count">0</p>
+</div>
+<div>
+<p class="font-technical-sm text-label-xs text-on-surface-variant uppercase">Earned</p>
+<p class="font-display-lg text-headline-lg text-primary-fixed" id="friends-earned">0 <span class="text-label-xs uppercase">CR</span></p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[48px] text-outline-variant">groups</span>
+</div>
+</div>
+<!-- HOW TO USE BOX -->
+<div class="bg-surface border border-outline-variant p-8 flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 border-t border-r border-primary-fixed/20"></div>
+<div class="mb-8">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary-fixed">menu_book</span>
+<h3 class="font-display-lg text-headline-lg text-primary-fixed">MERCADREAM GUIDE</h3>
+</div>
+<p class="font-body-md text-on-surface-variant">Master the surgical precision of our cinematic engine. Access specialized training protocols and community uplink.</p>
+</div>
+<div class="space-y-4">
+<button class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container/50 group transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary-fixed group-hover:scale-110 transition-transform">play_circle</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Watch Tutorial</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container/50 group transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">description</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Read Documentation</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 border border-outline-variant hover:border-primary-fixed bg-surface-container/50 group transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">forum</span>
+<span class="font-technical-sm text-technical-sm text-on-surface uppercase tracking-widest">Join Community</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+<div class="mt-auto pt-8 flex items-center gap-4 opacity-50">
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+<span class="font-technical-sm text-label-xs text-on-surface-variant">v.4.8.2 OPERATIONAL</span>
+<div class="flex-1 h-[1px] bg-outline-variant"></div>
+</div>
+</div>
+</section>
+</div>
+                <!-- MARKETING SECTION - WHY REFER -->
+                <div class="mt-8 bg-gradient-to-r from-surface-container to-surface-container-low border border-primary-fixed/20 p-8">
+                    <div class="text-center mb-6">
+                        <h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2"> WORK WITH US</h3>
+                        <p class="text-on-surface-variant text-sm max-w-2xl mx-auto">Two ways to earn with MercaDream  choose what fits you!</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- Option 1: Content Creator -->
+                        <div class="bg-surface-container-high p-6 border-l-4 border-primary-fixed">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-3xl"></span>
+                                <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest">Content Creator</h4>
+                            </div>
+                            <p class="text-on-surface-variant text-sm mb-4">Create videos, generate AI films, build your portfolio. Use credits to produce unlimited content.</p>
+                            <div class="bg-surface p-3 rounded">
+                                <p class="text-xs text-on-surface-variant"> You get <span class="text-primary-fixed font-bold">credits</span> for every friend who joins and recharges</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Option 2: Money Maker -->
+                        <div class="bg-surface-container-high p-6 border-l-4 border-primary-fixed">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-3xl"></span>
+                                <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest">Money Maker</h4>
+                            </div>
+                            <p class="text-on-surface-variant text-sm mb-4">Don't need credits? Sell them back to us. Turn your referrals into real cash.</p>
+                            <div class="bg-surface p-3 rounded">
+                                <p class="text-xs text-on-surface-variant"> We buy your credits at <span class="text-primary-fixed font-bold">$50 per 1,000 credits</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Examples Table -->
+                    <div class="bg-surface-container-high p-6">
+                        <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest mb-4 text-center"> WHAT YOUR REFERRALS ARE WORTH</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-center">
+                                <thead>
+                                    <tr class="border-b border-outline-variant">
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Friends Referred</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Credits Earned</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Sell Value</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase"> You Get</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm">
+                                    <tr class="border-b border-outline-variant/30">
+                                        <td class="py-3 text-primary-fixed font-bold">5 friends</td>
+                                        <td class="py-3">1,000 credits</td>
+                                        <td class="py-3">$50 USD</td>
+                                        <td class="py-3 text-green-400">+$50 cash</td>
+                                    </tr>
+                                    <tr class="border-b border-outline-variant/30">
+                                        <td class="py-3 text-primary-fixed font-bold">50 friends</td>
+                                        <td class="py-3">10,000 credits</td>
+                                        <td class="py-3">$500 USD</td>
+                                        <td class="py-3 text-green-400">+$500 cash</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 text-primary-fixed font-bold">500 friends</td>
+                                        <td class="py-3">100,000 credits</td>
+                                        <td class="py-3">$5,000 USD</td>
+                                        <td class="py-3 text-green-400 font-bold">+$5,000 cash</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-on-surface-variant/60 text-center mt-4">
+                             Each friend needs to recharge at least once for you to earn credits.<br>
+                            The more they recharge, the more you earn!
+                        </p>
+                    </div>
+                    
+                    <!-- Call to Action -->
+                    <div class="text-center mt-6">
+                        <button onclick="window.location.href='directors.html'" class="bg-primary-fixed text-black px-8 py-3 font-technical-sm text-label-xs uppercase tracking-widest hover:shadow-lg transition-all">
+                             START CREATING NOW
+                        </button>
+                        <p class="text-xs text-on-surface-variant/60 mt-3">Share your referral link and start earning today!</p>
+                    </div>
+                </div>
+
+
+<footer class="bg-surface-container-lowest border-t border-outline-variant px-margin-desktop py-8 max-w-container-max mx-auto w-full">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col gap-2">
+<p class="font-technical-sm text-label-xs text-on-surface-variant"> 2024 MERCADREAM STUDIOS // SURGICAL PRECISION CINEMATICS</p>
+<div class="flex gap-4">
+<a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Privacy Protocol</a>
+<a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">Service Terms</a>
+<a class="font-technical-sm text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed" href="#">API Docs</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="font-technical-sm text-[10px] text-on-surface-variant uppercase tracking-tighter">System Health</span>
+<div class="flex gap-1 mt-1">
+<div class="w-4 h-1 bg-primary-fixed"></div>
+<div class="w-4 h-1 bg-primary-fixed"></div>
+<div class="w-4 h-1 bg-primary-fixed"></div>
+<div class="w-4 h-1 bg-primary-fixed/30"></div>
+</div>
+</div>
+<img alt="Mercadream Logo" class="w-10 h-10 border border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGYPkBfzOUtpOUuwVhXZ-HMCNYXktC91uCmHP88hgErgYGpB3aoq-cA_K5FscLf9bv8Mi3dNQ3I4QxSxosdEPjBgUvBBDrFnMtYGP-x02XM56uU0rcT4HRdlTEvy0Qe6po5Z8jOE5bP6anMq14_w_qw7DLn_BjUnY830SLT1ADD5KELOqlgHLJM1Y7NWO1DPYU17GS05hEN58GniYEiVVv_K5SeAj8eyMrjMaI8hXdZhdCkJ1LLq5vsV1S2k79wSFEQE19Bi6MEsE"/>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Mobile Navigation Bottom Bar -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant flex justify-around p-4 z-40 backdrop-blur-md">
+<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<span class="material-symbols-outlined text-on-surface-variant">movie_filter</span>
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="material-symbols-outlined text-on-surface-variant">bolt</span>
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</div>
+<script src="/js/navigation.js">    // ???? ??? ???????? ???????
+    async function loadReferralStats(userId) {
+        try {
+            // 1. ??? ?????? ???????? (????? ??? totalReferred)
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc, onSnapshot, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283",
+    measurementId: "G-F0CLDJCV42"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUserData = { credits: 0, plan: "free", name: "", email: "", renders: 0, recharges: 0, assets: 0 };
+
+  // ????? ??? ????? ???? ?? UID
+  function generateReferralCode(uid) {
+    return "MD-" + uid.substring(0, 8).toUpperCase();
+  }
+
+  // ????? ????? ???????? ???????
+  function updateUI(user, userData) {
+    // ????? ????????
+    const displayName = userData?.name || user.displayName || user.email.split('@')[0];
+    document.getElementById('profile-name').textContent = displayName;
+    document.getElementById('profile-email').textContent = user.email;
+    
+    // ??????
+    const credits = userData?.credits || 0;
+    document.getElementById('credits-value').textContent = credits.toLocaleString();
+    document.getElementById('top-credits').textContent = credits + ' CR';
+    
+    // ???? ?????? (????: 65% ??? ??? ?????? 1250)
+    const percent = Math.min((credits / 2000) * 100, 100);
+    document.getElementById('credits-bar').style.width = percent + '%';
+    
+    // ??????????
+    document.getElementById('renders-value').textContent = userData?.renders || 0;
+    document.getElementById('recharges-value').textContent = userData?.recharges || 0;
+    document.getElementById('assets-value').textContent = userData?.assets || 0;
+    document.getElementById('renders-sub').textContent = '+' + (userData?.renders || 0) + ' this month';
+    document.getElementById('assets-sub').textContent = ((userData?.assets || 0) / 1024).toFixed(1) + ' GB utilized';
+    
+    // ?????
+    const plan = userData?.plan || 'free';
+    const planNames = { free: 'NO PLAN', creator: 'CREATOR SHIELD', pro: 'PRO SHIELD', studio: 'STUDIO SHIELD' };
+    const planSubs = { free: 'Initialize subscription', creator: 'Creator Node Active', pro: 'Pro Node Active', studio: 'Studio Node Active' };
+    document.getElementById('plan-title').textContent = planNames[plan] || 'NO PLAN';
+    document.getElementById('plan-sub').textContent = planSubs[plan] || 'Premium Node Enabled';
+    document.getElementById('sidebar-plan').textContent = plan === 'free' ? 'NO PLAN' : plan.toUpperCase() + ' MEMBER';
+    document.getElementById('sidebar-tier').textContent = plan === 'free' ? 'Studio Tier 0' : (plan === 'creator' ? 'Studio Tier 1' : 'Studio Tier 2');
+    
+    // ??? ???????
+    const refCode = generateReferralCode(user.uid);
+    document.getElementById('ref-code').textContent = refCode;
+    localStorage.setItem('md_ref_code', refCode);
+    
+    // ??? ?? localStorage
+    localStorage.setItem('md_name', displayName);
+    localStorage.setItem('md_email', user.email);
+    localStorage.setItem('md_credits', credits);
+    localStorage.setItem('md_plan', plan);
+    localStorage.setItem('md_user_id', user.uid);
+    
+    // ???? ???????? ?? localStorage ?? ????
+    const savedAvatar = localStorage.getItem('md_avatar');
+    if (savedAvatar) {
+      document.getElementById('sidebar-avatar').src = savedAvatar;
+      document.getElementById('profile-avatar').src = savedAvatar;
+    }
+  }
+
+  // ??? ???? ????????
+  const uploadBtn = document.querySelector('button.absolute.-bottom-2');
+  if (uploadBtn) {
+    uploadBtn.onclick = function() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          const imgData = ev.target.result;
+          document.getElementById('sidebar-avatar').src = imgData;
+          document.getElementById('profile-avatar').src = imgData;
+          localStorage.setItem('md_avatar', imgData);
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    };
+  }
+
+  // ??? ??? ???????
+  document.getElementById('copy-ref-btn')?.addEventListener('click', () => {
+    const refCode = document.getElementById('ref-code').textContent;
+    if (refCode) {
+      navigator.clipboard.writeText(refCode);
+      const icon = document.querySelector('#copy-ref-btn .material-symbols-outlined');
+      if (icon) {
+        icon.textContent = 'check';
+        setTimeout(() => { icon.textContent = 'content_copy'; }, 2000);
+      }
+    }
+  });
+
+  // ?????? ??????
+  document.getElementById('wa-ref-btn')?.addEventListener('click', () => {
+    const refCode = document.getElementById('ref-code').textContent;
+    window.open("https://wa.me/?text=Join MercaDream with my code " + refCode + "! https://mercadream-v2.vercel.app");
+  });
+
+  // ?????? ?????
+  document.getElementById('twitter-ref-btn')?.addEventListener('click', () => {
+    const refCode = document.getElementById('ref-code').textContent;
+    window.open("https://twitter.com/intent/tweet?text=Join MercaDream " + refCode + " mercadream-v2.vercel.app");
+  });
+
+  // ?? ????? ??????
+  const logoutBtn = document.querySelector('a[href="#"] .material-symbols-outlined');
+  if (logoutBtn && logoutBtn.textContent === 'logout') {
+    logoutBtn.closest('a').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await signOut(auth);
+      localStorage.clear();
+      window.location.href = 'login.html';
+    });
+  }
+
+  // ?? ????? ????? ??????
+  document.getElementById('edit-profile-btn')?.addEventListener('click', () => {
+    const newName = prompt('Enter your name:', document.getElementById('profile-name').textContent);
+    if (newName && newName.trim()) {
+      const user = auth.currentUser;
+      if (user) {
+        updateDoc(doc(db, "users", user.uid), { name: newName.trim() }).then(() => {
+          localStorage.setItem('md_name', newName.trim());
+          document.getElementById('profile-name').textContent = newName.trim();
+        }).catch(console.error);
+      }
+    }
+  });
+
+  // ?? ???????
+  document.querySelector('button.bg-primary-fixed.text-on-primary-fixed')?.addEventListener('click', () => {
+    window.location.href = 'pricing.html';
+  });
+
+  // ????? ??? ??????
+  function updateSystemTime() {
+    const now = new Date();
+    const timeString = now.toISOString().replace('T', ' // ').slice(0, 19) + ' UTC';
+    const timeEl = document.getElementById('system-time');
+    if (timeEl) timeEl.textContent = 'System Time: ' + timeString;
+  }
+  updateSystemTime();
+  setInterval(updateSystemTime, 1000);
+
+  //  ?????? ???? ????? ?????? ???? ???????? ?? Firestore 
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+    
+    console.log('Logged in as:', user.email);
+    
+    // ???????? ??????? ??????? ???????? ?? Firestore ???????? user.uid
+    const userRef = doc(db, "users", user.uid);
+    onSnapshot(userRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        console.log(' Firestore data loaded:', userData);
+        updateUI(user, userData);
+      } else {
+        console.warn('No document found, creating new profile...');
+        const newUser = {
+          name: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          credits: 0,
+          plan: "free",
+          renders: 0,
+          recharges: 0,
+          assets: 0,
+          createdAt: new Date()
+        };
+        setDoc(userRef, newUser);
+        updateUI(user, newUser);
+      }
+            const totalReferred = userSnap.data()?.totalReferred || 0;
+            
+            // 2. ??? ??? ????? ?????? ????? ????? ?? referrals
+            const referralsQuery = query(collection(db, "referrals"), 
+                where("referrerId", "==", userId),
+                where("status", "==", "completed"));
+            const querySnapshot = await getDocs(referralsQuery);
+            const converted = querySnapshot.size;
+            
+            // 3. ???? ???? ???????
+            const conversionRate = totalReferred > 0 ? Math.round((converted / totalReferred) * 100) : 0;
+            
+            // 4. ????? ???????
+            document.getElementById('stat-total-referred').textContent = totalReferred;
+            document.getElementById('stat-converted').textContent = converted;
+            document.getElementById('stat-conversion-rate').textContent = conversionRate + '%';
+            document.getElementById('conversion-bar').style.width = conversionRate + '%';
+            
+            console.log(` Referral stats: ${totalReferred} referred, ${converted} converted (${conversionRate}%)`);
+        } catch (error) {
+            console.error('Error loading referral stats:', error);
+        }
+    }
+    
+    // ??????? ?????? ??? ????? ?????? ????????
+    if (userData) {
+        loadReferralStats(user.uid);
+    }</script>
+</body>
+</html>
+

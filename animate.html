@@ -135,7 +135,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black"><script src="md-engine.js"></script>
 <!-- TOP APP BAR -->
@@ -145,7 +145,7 @@ const db = firebase.firestore();
 </div>
 <div class="flex items-center gap-gutter">
 <div class="flex items-center gap-2 px-3 py-1 bg-surface-variant/30 border border-outline-variant rounded">
-<a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
+<span class="material-symbols-outlined text-neon-acid text-sm" data-icon="account_balance_wallet">account_balance_wallet</span>
 <span class="font-label-technical text-label-technical text-neon-acid">9,400 CREDITS</span>
 </div>
 <button class="font-label-technical text-label-technical text-silver-technical hover:text-neon-acid transition-colors active:scale-95 duration-75">
@@ -263,7 +263,7 @@ const db = firebase.firestore();
 </div>
 <button class="w-full md:w-auto px-12 py-4 bg-neon-acid text-void-black font-headline-lg-mobile md:font-label-technical font-bold flex items-center justify-center gap-3 hover:shadow-[0_0_20px_rgba(200,255,0,0.4)] transition-all active:scale-95 group">
 <span class="material-symbols-outlined" data-icon="bolt" data-weight="fill">bolt</span>
-            [? ANIMATE � 25 CREDITS]
+            [? ANIMATE � 10 CREDITS]
             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
 </button>
 <div class="hidden md:flex gap-6">
@@ -274,8 +274,8 @@ const db = firebase.firestore();
 
 <script src="/js/navigation.js"></script>
 <script>
-var uploadedFile=null,selectedStyle='subtle';
-var COST=5;
+var uploadedFile=null, uploadedDataUrl=null, selectedStyle='subtle';
+var COST=25;
 
 function triggerUpload(){
   var i=document.createElement('input');
@@ -294,7 +294,7 @@ function triggerUpload(){
           '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00">? PHOTO READY</div>';
       }
     };
-    r.readAsDataURL(f);
+    r.onload=function(ev){uploadedDataUrl=ev.target.result;}; r.readAsDataURL(f);
   };
   i.click();
 }
@@ -310,27 +310,107 @@ function selectStyle(s){
   });
 }
 
-function startAnimate(){
-  if(!uploadedFile){alert('Please upload a photo first.');return;}
-  var c=parseInt(await MDEngine.deduct(COST);
-  if(c<COST){alert('Need '+COST+' credits. You have: '+c);window.location.href='pricing.html';return;}
+async function startAnimate(){
+  if(!uploadedDataUrl && !uploadedFile){alert('Please upload a photo first.');return;}
+
+  // Check credits
+  var currentCredits=parseInt(localStorage.getItem('md_credits')||'0');
+  if(currentCredits<COST){
+    alert('Need '+COST+' credits. You have: '+currentCredits);
+    window.location.href='pricing.html';
+    return;
+  }
+
   var btn=document.getElementById('btn-animate');
-  if(btn){btn.disabled=true;btn.style.background='#8aad00';}
-  var p=0;
-  var iv=setInterval(function(){
-    p+=10;
-    if(btn)btn.textContent='PROCESSING... '+p+'%';
-    if(p>=100){
-      clearInterval(iv);
-      await MDEngine.deduct(COST);
-      if(window.MD)window.MD.updateCredits();
-      if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent='? COMPLETE � DOWNLOAD OR SEND TO ASSEMBLY';}
-      var d=document.getElementById('btn-download');
-      var a=document.getElementById('btn-to-assembly');
-      if(d){d.style.opacity='1';d.style.cursor='pointer';d.onclick=function(){alert('In production this downloads your animated video!');};}
-      if(a){a.style.opacity='1';a.style.cursor='pointer';a.onclick=function(){window.location.href='assembly.html';};}
+  if(btn){btn.disabled=true;btn.textContent='SUBMITTING...';}
+
+  // Build prompt based on style
+  var stylePrompts={
+    subtle:'Subtle gentle movement, soft breathing motion, natural ambient animation',
+    parallax:'Smooth parallax depth effect, layers moving at different speeds, cinematic',
+    cinematic:'Epic cinematic camera movement, dramatic zoom, professional film quality',
+    dramatic:'Dramatic intense motion, dynamic camera, powerful movement, high energy'
+  };
+  var prompt=stylePrompts[selectedStyle]||stylePrompts.subtle;
+
+  // Use data URL as image
+  var imageUrl=uploadedDataUrl;
+
+  try {
+    if(btn)btn.textContent='GENERATING...';
+    
+    var res=await fetch('/api/animate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:prompt,image_url:imageUrl,duration:5})
+    });
+    var data=await res.json();
+
+    if(data.error){
+      alert('Error: '+data.error);
+      if(btn){btn.disabled=false;btn.textContent='ANIMATE — '+COST+' CR';}
+      return;
     }
-  },300);
+
+    // Deduct credits
+    localStorage.setItem('md_credits',currentCredits-COST);
+    if(window.__deductCredits)window.__deductCredits(COST);
+
+    if(btn)btn.textContent='PROCESSING...';
+
+    // Poll
+    var jobId=data.id;
+    var attempts=0;
+    var poll=setInterval(async function(){
+      attempts++;
+      if(attempts>60){
+        clearInterval(poll);
+        alert('Timeout — please try again.');
+        if(btn){btn.disabled=false;btn.textContent='ANIMATE — '+COST+' CR';}
+        return;
+      }
+      try{
+        var pr=await fetch('/api/animate',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({action:'poll',id:jobId})
+        });
+        var pd=await pr.json();
+        if(btn)btn.textContent='PROCESSING ['+attempts+']...';
+
+        if((pd.status==='completed'||pd.status==='succeeded')&&pd.url){
+          clearInterval(poll);
+          if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.textContent='✓ COMPLETE';}
+          
+          // Show result
+          var d=document.getElementById('btn-download');
+          var a=document.getElementById('btn-to-assembly');
+          if(d){
+            d.style.opacity='1';d.style.cursor='pointer';
+            d.onclick=function(){
+              var link=document.createElement('a');
+              link.href=pd.url;link.download='animated.mp4';link.click();
+            };
+          }
+          if(a){a.style.opacity='1';a.style.cursor='pointer';a.onclick=function(){window.location.href='assembly.html';};}
+          
+          // Show preview
+          var zone=document.getElementById('upload-zone');
+          if(zone){
+            zone.innerHTML='<video src="'+pd.url+'" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"></video>';
+          }
+        } else if(pd.status==='failed'){
+          clearInterval(poll);
+          alert('Animation failed. Please try again.');
+          if(btn){btn.disabled=false;btn.textContent='ANIMATE — '+COST+' CR';}
+        }
+      }catch(e){console.error('Poll error:',e);}
+    },3000);
+
+  }catch(e){
+    alert('Network error: '+e.message);
+    if(btn){btn.disabled=false;btn.textContent='ANIMATE — '+COST+' CR';}
+  }
 }
 
 window.addEventListener('load',function(){

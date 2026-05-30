@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════
-// MERCADREAM — api/deaging.js
-// AI Age Filter using WaveSpeed
-// Cost: 30 CR per transformation
+// MERCADREAM — api/convert.js
+// Video Format Conversion using WaveSpeed FFmpeg
+// Cost: 8 CR per conversion
 // ═══════════════════════════════════════════════════════
 
 const KEY = process.env.WAVESPEED_API_KEY;
@@ -36,26 +36,34 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // ── DEAGING ──────────────────────────────────────────
-  const { image_url, target_age = 25 } = body;
+  // ── CONVERT ──────────────────────────────────────────
+  const { video_url, format = 'mp4', quality = 'high' } = body;
 
-  if (!image_url) return res.status(400).json({ error: 'image_url required.' });
+  if (!video_url) return res.status(400).json({ error: 'video_url required.' });
 
-  const safeAge = Math.min(Math.max(parseInt(target_age) || 25, 1), 90);
+  // Map quality to CRF value
+  const crfMap = { low: 32, medium: 24, high: 18, ultra: 12 };
+  const crf = crfMap[quality.toLowerCase()] || 18;
 
-  console.log('=== DEAGING ===');
-  console.log('Target age:', safeAge);
+  // Supported formats
+  const supportedFormats = ['mp4', 'webm', 'mov', 'avi', 'gif', 'mkv'];
+  const targetFormat = supportedFormats.includes(format.toLowerCase()) ? format.toLowerCase() : 'mp4';
+
+  console.log('=== CONVERT ===');
+  console.log('Format:', targetFormat, '| Quality:', quality, '| CRF:', crf);
+  console.log('Input:', video_url.substring(0, 80));
 
   try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/ai-age-filter', {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/video-converter', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        image: image_url,
-        target_age: safeAge
+        video: video_url,
+        output_format: targetFormat,
+        crf: crf
       })
     });
 
@@ -63,12 +71,22 @@ module.exports = async function handler(req, res) {
     console.log('Response:', JSON.stringify(d).substring(0, 200));
 
     const jobId = (d.data && d.data.id) || d.id || null;
-    if (!jobId) return res.status(400).json({ error: 'No job ID returned', raw: d });
 
-    return res.status(200).json({ id: jobId, status: 'processing' });
+    if (!jobId) {
+      // Fallback: if conversion API not available, return original
+      console.warn('No job ID - returning original URL as fallback');
+      return res.status(200).json({
+        status: 'completed',
+        url: video_url,
+        fallback: true,
+        message: 'Conversion service unavailable. Original file returned.'
+      });
+    }
+
+    return res.status(200).json({ id: jobId, status: 'processing', format: targetFormat });
 
   } catch (e) {
-    console.error('Deaging error:', e.message);
+    console.error('Convert error:', e.message);
     return res.status(500).json({ error: e.message });
   }
 };

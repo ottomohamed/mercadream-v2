@@ -182,7 +182,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="text-on-background font-body-md min-h-screen pb-48 md:pb-32"><script src="md-engine.js"></script>
 <div class="scanline top-0"></div>
@@ -193,7 +193,7 @@ const db = firebase.firestore();
 </div>
 <div class="flex items-center gap-2 md:gap-margin-gutter">
 <div class="flex items-center gap-unit bg-surface-container px-2 md:px-3 py-1.5 rounded-sm border border-outline-variant">
-<a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
+<span class="material-symbols-outlined text-neon-acid text-[16px] md:text-[18px]">account_balance_wallet</span>
 <span class="font-label-technical text-[10px] md:text-label-technical text-silver-technical" id="header-credits-display">0 CREDITS</span>
 </div>
 <button class="flex items-center gap-unit px-2 md:px-4 py-1.5 bg-surface-variant/20 hover:bg-neon-acid hover:text-void-black transition-all border border-outline-variant font-label-technical text-[10px] md:text-label-technical text-neon-acid" onclick="window.MD.navigate('directors')">
@@ -367,7 +367,7 @@ const db = firebase.firestore();
 </div>
 <button class="w-full md:w-auto flex items-center justify-center gap-4 bg-neon-acid px-6 md:px-12 py-3 md:py-4 font-label-technical text-[13px] md:text-[14px] font-bold text-void-black hover:bg-white transition-all active:scale-95 glow-acid shadow-neon-acid/20" id="btn-faceswap">
 <span class="material-symbols-outlined text-[20px]">bolt</span>
-          SWAP FACE � 20 CREDITS
+          SWAP FACE � 8 CREDITS
         </button>
 </div>
 </div>
@@ -383,7 +383,7 @@ const db = firebase.firestore();
 </footer>
 <script src="/js/navigation.js"></script>
 <script>
-var sourceFile=null, targetFile=null, COST=8;
+var sourceFile=null, targetFile=null, sourceDataUrl=null, targetDataUrl=null, COST=20;
 
 function updateDisplayCredits() {
     var c = localStorage.getItem('md_credits');
@@ -432,54 +432,108 @@ function showPreview(file, zone) {
             '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.9">') + 
             '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.9);color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:10px;padding:4px 8px;border:1px solid #c8ff00;z-index:20"> READY</div>';
     };
-    r.readAsDataURL(file);
+    r.onload=function(ev){if(sourceFile===file)sourceDataUrl=ev.target.result;if(targetFile===file)targetDataUrl=ev.target.result;}; r.readAsDataURL(file);
 }
 
-function startFaceSwap() {
-    if(!sourceFile) { alert('Upload SOURCE face first.'); return; }
-    if(!targetFile) { alert('Upload TARGET media first.'); return; }
-    
+async function startFaceSwap() {
+    if(!sourceDataUrl && !sourceFile) { alert('Upload SOURCE face first.'); return; }
+    if(!targetDataUrl && !targetFile) { alert('Upload TARGET media first.'); return; }
+
     var c = parseInt(localStorage.getItem('md_credits') || '0');
     if(c < COST) {
-        alert('Insufficient credits. Current balance: ' + c + '. Minimum 8 required.');
+        alert('Insufficient credits. You need ' + COST + ' CR, you have ' + c + '.');
+        window.location.href = 'pricing.html';
         return;
     }
-    
+
     var btn = document.getElementById('btn-faceswap');
-    if(btn) {
-        btn.disabled = true;
-        btn.style.background = '#353534';
-        btn.style.color = '#a1a1a1';
-    }
-    
-    var p = 0;
-    var iv = setInterval(function() {
-        p += 5;
-        if(btn) btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING... ' + p + '%';
-        
-        if(p >= 100) {
-            clearInterval(iv);
-            
-            // Credit Logic
-            var newBalance = c - COST;
-            localStorage.setItem('md_credits', newBalance);
-            updateDisplayCredits();
-            
-            if(btn) {
-                btn.disabled = false;
-                btn.style.background = '#c8ff00';
-                btn.style.color = '#060606';
-                btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE � 20 CREDITS';
-            }
-            
-            // Centralized pipeline completion
-            if(window.MD && typeof window.MD.showCompletionModal === 'function') {
-                window.MD.showCompletionModal('faceswap');
-            } else {
-                alert('FACESWAP COMPLETE');
-            }
+    if(btn) { btn.disabled=true; btn.style.background='#353534'; btn.style.color='#a1a1a1';
+        btn.innerHTML='<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> SUBMITTING...'; }
+
+    var targetType = (targetFile && targetFile.type.startsWith('video')) ? 'video' : 'image';
+
+    try {
+        var res = await fetch('/api/faceswap', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                source_face_url: sourceDataUrl,
+                target_url: targetDataUrl,
+                target_type: targetType
+            })
+        });
+        var data = await res.json();
+
+        if(data.error) {
+            alert('Error: ' + data.error);
+            if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
+                btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+            return;
         }
-    }, 100);
+
+        // Deduct credits
+        localStorage.setItem('md_credits', c - COST);
+        updateDisplayCredits();
+        if(window.__deductCredits) window.__deductCredits(COST);
+
+        if(btn) btn.innerHTML='<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING...';
+
+        // Poll
+        var jobId = data.id;
+        var attempts = 0;
+        var poll = setInterval(async function() {
+            attempts++;
+            if(attempts > 60) {
+                clearInterval(poll);
+                alert('Timeout — please try again.');
+                if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
+                    btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+                return;
+            }
+            try {
+                var pr = await fetch('/api/faceswap', {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({action:'poll', id:jobId})
+                });
+                var pd = await pr.json();
+                if(btn) btn.innerHTML='<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING ['+attempts+']...';
+
+                if((pd.status==='completed'||pd.status==='succeeded') && pd.url) {
+                    clearInterval(poll);
+                    if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
+                        btn.innerHTML='<span class="material-symbols-outlined text-[20px]">check</span> COMPLETE — DOWNLOAD';}
+
+                    // Show result
+                    showFaceswapResult(pd.url, targetType);
+
+                } else if(pd.status==='failed') {
+                    clearInterval(poll);
+                    alert('Faceswap failed. Please try again.');
+                    if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
+                        btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+                }
+            } catch(e) { console.error('Poll error:', e); }
+        }, 3000);
+
+    } catch(e) {
+        alert('Network error: ' + e.message);
+        if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
+            btn.innerHTML='<span class="material-symbols-outlined text-[20px]">bolt</span> SWAP FACE — ' + COST + ' CR';}
+    }
+}
+
+function showFaceswapResult(url, type) {
+    var div = document.createElement('div');
+    div.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0a0a0a;border:1px solid #c8ff00;padding:20px;z-index:9999;text-align:center;font-family:IBM Plex Mono,monospace;min-width:320px;';
+    var media = type==='video'
+        ? '<video src="'+url+'" controls autoplay muted loop style="width:100%;max-height:200px;margin-bottom:12px;"></video>'
+        : '<img src="'+url+'" style="width:100%;max-height:200px;object-fit:contain;margin-bottom:12px;">';
+    div.innerHTML = media
+        + '<div style="color:#c8ff00;font-size:11px;margin-bottom:12px;">✓ FACESWAP COMPLETE</div>'
+        + '<a href="'+url+'" download style="background:#c8ff00;color:#060606;padding:8px 20px;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:bold;text-decoration:none;display:inline-block;margin-right:8px;">⬇ DOWNLOAD</a>'
+        + '<a href="assembly.html" style="background:transparent;color:#c8ff00;padding:8px 20px;font-family:IBM Plex Mono,monospace;font-size:10px;border:1px solid #c8ff00;text-decoration:none;display:inline-block;">ASSEMBLY</a>'
+        + '<div onclick="this.parentElement.remove()" style="color:#434933;font-size:9px;margin-top:10px;cursor:pointer;">✕ CLOSE</div>';
+    document.body.appendChild(div);
 }
 
 var sl = document.querySelector('input[type="range"]');

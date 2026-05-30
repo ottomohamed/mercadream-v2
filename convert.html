@@ -144,7 +144,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="bg-void-black text-on-surface font-body-md overflow-x-hidden"><script src="md-engine.js"></script>
 <!-- TopAppBar -->
@@ -167,7 +167,7 @@ const db = firebase.firestore();
 <!-- Hero Section -->
 <section class="space-y-2 border-l-2 border-neon-acid pl-6">
 <div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps bg-neon-acid text-on-primary px-2 py-0.5">8 CREDITS / TRANS</span>
+<span class="font-label-caps text-label-caps bg-neon-acid text-on-primary px-2 py-0.5">3 CREDITS / TRANS</span>
 <span class="font-label-caps text-label-caps text-silver-technical">CORE_ENGINE: FFmpeg_V.4.4</span>
 </div>
 <h1 class="font-headline-xl text-headline-xl text-primary tracking-tighter uppercase">Universal Format Converter</h1>
@@ -263,7 +263,7 @@ const db = firebase.firestore();
 </div>
 <button class="flex-1 max-w-2xl bg-neon-acid text-on-primary py-5 px-8 font-label-technical text-label-technical font-bold text-center flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span class="text-lg">CONVERT � 8 CREDITS</span>
+<span class="text-lg">CONVERT � 3 CREDITS</span>
 </button>
 <div class="hidden md:flex flex-col items-end">
 <span class="font-label-caps text-label-caps text-outline uppercase">Est. Time</span>
@@ -304,7 +304,169 @@ const db = firebase.firestore();
 <span class="font-label-caps text-[8px] text-outline-variant uppercase">Telemetry Signal Strong</span>
 </div>
 </div>
-<script src="/js/navigation.js"></script><script>var sf=null,fmt="MP4",COST=3;var uz=document.querySelector(".technical-grid.technical-border");if(uz){uz.style.cursor="pointer";uz.onclick=function(){var i=document.createElement("input");i.type="file";i.accept="video/*,audio/*";i.onchange=function(e){var f=e.target.files[0];if(!f)return;sf=f;uz.innerHTML="<div style=\"padding:24px;text-align:center\"><div style=\"color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:12px;margin-bottom:8px\"> FILE LOADED</div><div style=\"color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:10px\">"+f.name.substring(0,40)+"</div><div style=\"color:#434933;font-family:IBM Plex Mono,monospace;font-size:9px;margin-top:4px\">"+(f.size/1024/1024).toFixed(1)+" MB</div></div>";};i.click();};}document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(btn){btn.onclick=function(){fmt=btn.textContent.trim();document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(b){b.style.background="";b.style.color="";b.style.borderColor="";});btn.style.background="#c8ff00";btn.style.color="#060606";btn.style.borderColor="#c8ff00";};});var ql=document.querySelector("input[type=range]");var qd=document.querySelector(".text-neon-acid.font-label-technical");var qlabels=["LOW","MEDIUM","HIGH","ULTRA 4K"];if(ql)ql.oninput=function(){if(qd)qd.textContent=qlabels[this.value-1]||"ULTRA 4K";};function log(msg){var t=document.getElementById("terminal-log");if(t){t.innerHTML+="<div style=\"color:#c8ff00;margin:2px 0\">$ "+msg+"</div>";t.scrollTop=t.scrollHeight;}}async function go(){if(!sf){alert("Upload a file first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" credits.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-convert");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var terminal=document.createElement("div");terminal.id="terminal-log";terminal.style.cssText="position:fixed;bottom:80px;left:0;right:0;max-width:896px;margin:0 auto;background:#0a0a0a;border:1px solid #434933;padding:12px;font-family:IBM Plex Mono,monospace;font-size:10px;color:#c8ff00;height:100px;overflow-y:auto;z-index:100";document.body.appendChild(terminal);var steps=["ffmpeg -i input."+sf.name.split(".").pop()+" -c:v libx264","analyzing bitstream...","remuxing to "+fmt+"...","applying codec H.265...","optimizing output bitrate...","finalizing output file...","conversion complete!"];var si=0;var iv=setInterval(function(){if(si<steps.length){log(steps[si]);si++;}else{clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateCredits();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  DOWNLOAD";}log("OUTPUT: mercadream_converted."+fmt.toLowerCase());}},600);}window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button");if(btn){btn.id="btn-convert";btn.onclick=go;}var bb=document.querySelector("header button");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateCredits();});</script><script src="/js/pipeline.js"></script></body></html>
+<script src="/js/navigation.js"></script><script>
+var sf = null, sfUrl = null, fmt = "MP4", COST = 8, quality = "HIGH";
+
+// Drop zone
+var uz = document.querySelector(".technical-grid.technical-border");
+if (uz) {
+    uz.style.cursor = "pointer";
+    uz.onclick = function() {
+        var i = document.createElement("input");
+        i.type = "file";
+        i.accept = "video/*,audio/*";
+        i.onchange = function(e) {
+            var f = e.target.files[0];
+            if (!f) return;
+            sf = f;
+            sfUrl = URL.createObjectURL(f);
+            uz.innerHTML = '<div style="padding:24px;text-align:center"><div style="color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:12px;margin-bottom:8px">✓ FILE LOADED</div><div style="color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:10px">' + f.name.substring(0, 40) + '</div><div style="color:#434933;font-family:IBM Plex Mono,monospace;font-size:9px;margin-top:4px">' + (f.size/1024/1024).toFixed(1) + ' MB</div></div>';
+        };
+        i.click();
+    };
+}
+
+// URL input
+var urlInput = document.querySelector('input[placeholder*="URL"], input[placeholder*="url"], input[placeholder*="http"]');
+var connectBtn = document.querySelector('button[onclick*="connect"], .connect-btn');
+
+// Format buttons
+document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(btn) {
+    btn.onclick = function() {
+        fmt = btn.textContent.trim();
+        document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(b) {
+            b.style.background = ""; b.style.color = ""; b.style.borderColor = "";
+        });
+        btn.style.background = "#c8ff00";
+        btn.style.color = "#060606";
+        btn.style.borderColor = "#c8ff00";
+    };
+});
+
+// Quality slider
+var ql = document.querySelector("input[type=range]");
+var qd = document.querySelector(".text-neon-acid.font-label-technical");
+var qlabels = ["LOW", "MEDIUM", "HIGH", "ULTRA 4K"];
+if (ql) ql.oninput = function() {
+    quality = qlabels[this.value-1] || "HIGH";
+    if (qd) qd.textContent = quality;
+};
+
+function log(msg) {
+    var t = document.getElementById("terminal-log");
+    if (!t) {
+        t = document.createElement("div");
+        t.id = "terminal-log";
+        t.style.cssText = "position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:90%;max-width:600px;background:#0a0a0a;border:1px solid #434933;padding:12px;max-height:200px;overflow-y:auto;z-index:9999;font-family:IBM Plex Mono,monospace;font-size:10px;";
+        document.body.appendChild(t);
+    }
+    t.innerHTML += '<div style="color:#c8ff00;margin:2px 0">$ ' + msg + '</div>';
+    t.scrollTop = t.scrollHeight;
+}
+
+async function go() {
+    // Get input URL
+    var inputUrl = sfUrl;
+    if (!inputUrl && urlInput && urlInput.value.trim()) {
+        inputUrl = urlInput.value.trim();
+    }
+    
+    if (!inputUrl) { alert("Please upload a file or enter a URL first."); return; }
+
+    // Check credits
+    var currentCredits = parseInt(localStorage.getItem("md_credits") || "0");
+    if (currentCredits < COST) {
+        alert("Need " + COST + " credits. You have " + currentCredits + ".");
+        window.location.href = "pricing.html";
+        return;
+    }
+
+    var btn = document.getElementById("btn-convert");
+    if (btn) { btn.disabled = true; btn.textContent = "CONVERTING..."; }
+
+    log("STARTING CONVERSION: " + fmt + " / " + quality);
+    log("INPUT: " + inputUrl.substring(0, 60));
+
+    try {
+        var res = await fetch("/api/convert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ video_url: inputUrl, format: fmt, quality: quality })
+        });
+        var data = await res.json();
+
+        if (data.error) {
+            log("ERROR: " + data.error);
+            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+            return;
+        }
+
+        // Deduct credits
+        localStorage.setItem("md_credits", currentCredits - COST);
+        if (window.__deductCredits) window.__deductCredits(COST);
+        log("CREDITS DEDUCTED: " + COST + " CR");
+
+        // If already completed (fallback)
+        if (data.status === "completed" && data.url) {
+            log("CONVERSION COMPLETE: " + data.url.substring(0, 60));
+            showConvertResult(data.url, fmt);
+            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+            return;
+        }
+
+        // Poll
+        log("JOB ID: " + data.id + " — polling...");
+        var attempts = 0;
+        var poll = setInterval(async function() {
+            attempts++;
+            if (attempts > 60) {
+                clearInterval(poll);
+                log("TIMEOUT — please try again");
+                if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+                return;
+            }
+            try {
+                var pr = await fetch("/api/convert", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "poll", id: data.id })
+                });
+                var pd = await pr.json();
+                log("POLL [" + attempts + "]: " + pd.status);
+                if ((pd.status === "completed" || pd.status === "succeeded") && pd.url) {
+                    clearInterval(poll);
+                    log("DONE: " + pd.url.substring(0, 60));
+                    showConvertResult(pd.url, fmt);
+                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+                } else if (pd.status === "failed") {
+                    clearInterval(poll);
+                    log("FAILED — please try again");
+                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+                }
+            } catch(e) { log("POLL ERROR: " + e.message); }
+        }, 3000);
+
+    } catch(e) {
+        log("NETWORK ERROR: " + e.message);
+        if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " CR"; }
+    }
+}
+
+function showConvertResult(url, format) {
+    var existing = document.getElementById("convert-result");
+    if (existing) existing.remove();
+    var div = document.createElement("div");
+    div.id = "convert-result";
+    div.style.cssText = "position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0a0a0a;border:1px solid #c8ff00;padding:20px;z-index:9999;text-align:center;font-family:IBM Plex Mono,monospace;min-width:300px;";
+    div.innerHTML = '<div style="color:#c8ff00;font-size:12px;margin-bottom:12px">✓ CONVERSION COMPLETE — ' + format + '</div>'
+        + '<a href="' + url + '" download style="background:#c8ff00;color:#060606;padding:10px 24px;font-family:IBM Plex Mono,monospace;font-size:11px;font-weight:bold;text-decoration:none;display:inline-block;margin-right:8px;">⬇ DOWNLOAD</a>'
+        + '<a href="assembly.html" style="background:transparent;color:#c8ff00;padding:10px 24px;font-family:IBM Plex Mono,monospace;font-size:11px;border:1px solid #c8ff00;text-decoration:none;display:inline-block;">OPEN IN ASSEMBLY</a>'
+        + '<div onclick="document.getElementById('convert-result').remove()" style="color:#434933;font-size:10px;margin-top:12px;cursor:pointer;">✕ CLOSE</div>';
+    document.body.appendChild(div);
+    var t = document.getElementById("terminal-log");
+    if (t) t.remove();
+}
+</script><script src="/js/pipeline.js"></script></body></html>
 
 
 
