@@ -262,6 +262,24 @@ const db = firebase.firestore();
 <span class="font-label-technical text-[10px]">DOCS</span>
 </label>
 </div>
+<div class="mt-sm border border-outline-variant/40 bg-surface-container p-xs">
+<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest">REFERENCE IMAGE (OPTIONAL)</div>
+<label class="flex items-center gap-xs cursor-pointer group" id="ref-image-label">
+  <div class="w-8 h-8 border border-dashed border-outline-variant group-hover:border-primary-fixed-dim flex items-center justify-center transition-all" id="ref-preview">
+    <span class="material-symbols-outlined text-[14px] text-outline-variant group-hover:text-primary-fixed-dim">add_photo_alternate</span>
+  </div>
+  <div class="flex-1">
+    <div class="font-label-technical text-[9px] text-on-surface-variant group-hover:text-primary-fixed-dim">Upload character photo</div>
+    <div class="font-label-technical text-[8px] text-outline-variant">Keeps face consistent</div>
+  </div>
+  <input type="file" id="ref-image-input" accept="image/*" class="hidden" onchange="handleRefImage(this)"/>
+</label>
+<div id="ref-image-status" class="hidden mt-xs font-label-technical text-[8px] text-primary-fixed-dim flex items-center gap-xs">
+  <span class="material-symbols-outlined text-[10px]">check_circle</span>
+  <span id="ref-image-name">image.jpg</span>
+  <button onclick="clearRefImage()" class="ml-auto text-outline-variant hover:text-error text-[10px]">✕</button>
+</div>
+</div>
 <div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
@@ -429,7 +447,7 @@ OPEN ASSEMBLY â†’
         let credits = parseInt(localStorage.getItem('md_credits') || '0'); // Ø³ÙŠÙØ­Ø¯ÙŽÙ‘Ø« Ù…Ù† Firebase ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹
         let baseCost = 12;
 
-        const costTable = { 'Drama': 12, 'Action': 12, 'Comedy': 12, 'Documentary': 12 };
+        const costTable = { 'Drama': 20, 'Action': 20, 'Comedy': 20, 'Documentary': 20 };
         const directorColors = { 'Drama': '#a8d700', 'Action': '#ffb4ab', 'Comedy': '#ffba3f', 'Documentary': '#aecae2' };
 
         updateCredits();
@@ -817,7 +835,7 @@ OPEN ASSEMBLY â†’
                 const genRes = await fetch('/api/wavespeed', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt, duration: 10 })
+                    body: JSON.stringify({ prompt, duration: 15, image_url: window._refImageUrl || null })
                 });
                 const genData = await genRes.json();
 
@@ -906,7 +924,44 @@ OPEN ASSEMBLY â†’
             }
         }
 
-        function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
+        // ── REFERENCE IMAGE HANDLER ──────────────────────────
+let _refImageBase64 = null;
+window._refImageUrl = null;
+
+function handleRefImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        _refImageBase64 = e.target.result;
+        window._refImageUrl = e.target.result; // base64 data URL
+        
+        // Update UI
+        const preview = document.getElementById('ref-preview');
+        preview.innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover"/>';
+        
+        const status = document.getElementById('ref-image-status');
+        status.classList.remove('hidden');
+        status.classList.add('flex');
+        document.getElementById('ref-image-name').textContent = file.name;
+        
+        addLogLine('REFERENCE IMAGE LOADED: ' + file.name);
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearRefImage() {
+    _refImageBase64 = null;
+    window._refImageUrl = null;
+    document.getElementById('ref-preview').innerHTML = '<span class="material-symbols-outlined text-[14px] text-outline-variant">add_photo_alternate</span>';
+    document.getElementById('ref-image-status').classList.add('hidden');
+    document.getElementById('ref-image-status').classList.remove('flex');
+    document.getElementById('ref-image-input').value = '';
+    addLogLine('REFERENCE IMAGE CLEARED');
+}
+
+function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
         function rechargeCredits() { window.location.href = 'pricing.html'; }
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }

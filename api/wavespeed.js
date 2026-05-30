@@ -1,9 +1,10 @@
 // ═══════════════════════════════════════════════════════
 // MERCADREAM — api/wavespeed.js
-// Seedance v1 Pro — text-to-video
+// Kling v3.0 Pro — Image-to-Video + Text-to-Video
+// Audio native, character consistency, 15 seconds max
 // ═══════════════════════════════════════════════════════
 
-const KEY = process.env.WAVESPEED_KEY || process.env.WAVESPEED_API_KEY;
+const KEY = process.env.WAVESPEED_API_KEY;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,7 +21,7 @@ module.exports = async function handler(req, res) {
     if (!pollId) return res.status(400).json({ error: 'No prediction ID' });
 
     try {
-      const pollUrl = body.pollUrl || ('https://api.wavespeed.ai/api/v3/predictions/' + pollId + '/result');
+      const pollUrl = 'https://api.wavespeed.ai/api/v3/predictions/' + pollId + '/result';
       const pr = await fetch(pollUrl, {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + KEY }
@@ -31,7 +32,7 @@ module.exports = async function handler(req, res) {
       const url = (data.outputs && data.outputs.length > 0 && data.outputs[0])
         || data.url || data.output || null;
 
-      console.log('POLL:', JSON.stringify({ status, url: url ? url.substring(0,60) : 'NULL' }));
+      console.log('POLL:', JSON.stringify({ status, url: url ? url.substring(0, 60) : 'NULL' }));
 
       const normalizedStatus = (status === 'succeeded') ? 'completed' : status;
       return res.status(200).json({ status: normalizedStatus, url, id: pollId });
@@ -43,44 +44,64 @@ module.exports = async function handler(req, res) {
 
   // ── GENERATE ──────────────────────────────────────────
   const prompt = body.prompt || '';
-  const duration = Math.min(parseInt(body.duration) || 5, 10);
+  const duration = Math.min(parseInt(body.duration) || 10, 15);
+  const imageUrl = body.image_url || null; // صورة مرجعية اختيارية
 
   if (!prompt || prompt.trim().length < 5) {
     return res.status(400).json({ error: 'Prompt too short' });
   }
 
-  console.log('=== SEEDANCE GENERATE ===');
-  console.log('Model: bytedance/seedance-v1-pro-t2v-480p');
+  // اختر النموذج حسب وجود صورة مرجعية
+  const model = imageUrl
+    ? 'kwaivgi/kling-v3.0-pro/image-to-video'
+    : 'kwaivgi/kling-v3.0-pro/text-to-video';
+
+  const endpoint = 'https://api.wavespeed.ai/api/v3/' + model;
+
+  console.log('=== KLING 3.0 PRO GENERATE ===');
+  console.log('Model:', model);
   console.log('Prompt:', prompt.substring(0, 100));
   console.log('Duration:', duration);
+  console.log('Reference image:', imageUrl ? 'YES' : 'NO');
+
+  // بناء الـ body حسب النموذج
+  const requestBody = {
+    prompt: prompt.trim(),
+    duration: duration,
+    aspect_ratio: '16:9',
+    cfg_scale: 0.5,
+    generate_audio: true
+  };
+
+  // أضف الصورة المرجعية إذا موجودة
+  if (imageUrl) {
+    requestBody.image = imageUrl;
+  }
 
   try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/bytedance/seedance-v1-pro-t2v-480p', {
+    const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + KEY,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        prompt: prompt.trim(),
-        duration: duration,
-        aspect_ratio: '16:9',
-        resolution: '480p'
-      })
+      body: JSON.stringify(requestBody)
     });
 
     const d = await r.json();
     console.log('HTTP status:', r.status);
-    console.log('Response:', JSON.stringify(d));
+    console.log('Response:', JSON.stringify(d).substring(0, 300));
 
     const jobId = (d.data && d.data.id) || d.id || null;
-    const pollUrl = jobId ? 'https://api.wavespeed.ai/api/v3/predictions/' + jobId + '/result' : null;
+    const pollUrl = jobId
+      ? 'https://api.wavespeed.ai/api/v3/predictions/' + jobId + '/result'
+      : null;
 
     if (!jobId) {
       return res.status(400).json({ error: 'No job ID returned', raw: d });
     }
 
-    return res.status(200).json({ id: jobId, pollUrl, status: 'processing' });
+    return res.status(200).json({ id: jobId, pollUrl, status: 'processing', model });
 
   } catch (e) {
     return res.status(500).json({ error: e.message });
