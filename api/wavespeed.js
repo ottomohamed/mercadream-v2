@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════
 // MERCADREAM — api/wavespeed.js
-// Kling v3.0 Pro — Image-to-Video + Text-to-Video
-// Audio native, character consistency, 15 seconds max
+// Seedance v1.5 Pro — Text-to-Video with native audio
 // ═══════════════════════════════════════════════════════
 
 const KEY = process.env.WAVESPEED_API_KEY;
@@ -44,48 +43,32 @@ module.exports = async function handler(req, res) {
 
   // ── GENERATE ──────────────────────────────────────────
   const prompt = body.prompt || '';
-  const duration = Math.min(parseInt(body.duration) || 10, 15);
-  const imageUrl = body.image_url || null; // صورة مرجعية اختيارية
+  const duration = Math.min(parseInt(body.duration) || 10, 12);
 
   if (!prompt || prompt.trim().length < 5) {
     return res.status(400).json({ error: 'Prompt too short' });
   }
 
-  // اختر النموذج حسب وجود صورة مرجعية
-  const model = imageUrl
-    ? 'kwaivgi/kling-v3.0-pro/image-to-video'
-    : 'kwaivgi/kling-v3.0-pro/text-to-video';
-
-  const endpoint = 'https://api.wavespeed.ai/api/v3/' + model;
-
-  console.log('=== KLING 3.0 PRO GENERATE ===');
-  console.log('Model:', model);
+  console.log('=== SEEDANCE 1.5 PRO GENERATE ===');
   console.log('Prompt:', prompt.substring(0, 100));
   console.log('Duration:', duration);
-  console.log('Reference image:', imageUrl ? 'YES' : 'NO');
-
-  // بناء الـ body حسب النموذج
-  const requestBody = {
-    prompt: prompt.trim(),
-    duration: duration,
-    aspect_ratio: '16:9',
-    cfg_scale: 0.5,
-    generate_audio: true
-  };
-
-  // أضف الصورة المرجعية إذا موجودة
-  if (imageUrl) {
-    requestBody.image = imageUrl;
-  }
 
   try {
-    const r = await fetch(endpoint, {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/bytedance/seedance-v1.5-pro/text-to-video', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + KEY,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({
+        prompt: prompt.trim(),
+        duration: duration,
+        aspect_ratio: '16:9',
+        resolution: '720p',
+        generate_audio: true,
+        camera_fixed: false,
+        seed: -1
+      })
     });
 
     const d = await r.json();
@@ -101,7 +84,7 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'No job ID returned', raw: d });
     }
 
-    return res.status(200).json({ id: jobId, pollUrl, status: 'processing', model });
+    return res.status(200).json({ id: jobId, pollUrl, status: 'processing' });
 
   } catch (e) {
     return res.status(500).json({ error: e.message });

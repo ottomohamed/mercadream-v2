@@ -262,24 +262,6 @@ const db = firebase.firestore();
 <span class="font-label-technical text-[10px]">DOCS</span>
 </label>
 </div>
-<div class="mt-sm border border-outline-variant/40 bg-surface-container p-xs">
-<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest">REFERENCE IMAGE (OPTIONAL)</div>
-<label class="flex items-center gap-xs cursor-pointer group" id="ref-image-label">
-  <div class="w-8 h-8 border border-dashed border-outline-variant group-hover:border-primary-fixed-dim flex items-center justify-center transition-all" id="ref-preview">
-    <span class="material-symbols-outlined text-[14px] text-outline-variant group-hover:text-primary-fixed-dim">add_photo_alternate</span>
-  </div>
-  <div class="flex-1">
-    <div class="font-label-technical text-[9px] text-on-surface-variant group-hover:text-primary-fixed-dim">Upload character photo</div>
-    <div class="font-label-technical text-[8px] text-outline-variant">Keeps face consistent</div>
-  </div>
-  <input type="file" id="ref-image-input" accept="image/*" class="hidden" onchange="handleRefImage(this)"/>
-</label>
-<div id="ref-image-status" class="hidden mt-xs font-label-technical text-[8px] text-primary-fixed-dim flex items-center gap-xs">
-  <span class="material-symbols-outlined text-[10px]">check_circle</span>
-  <span id="ref-image-name">image.jpg</span>
-  <button onclick="clearRefImage()" class="ml-auto text-outline-variant hover:text-error text-[10px]">✕</button>
-</div>
-</div>
 <div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
@@ -724,37 +706,51 @@ OPEN ASSEMBLY â†’
             const typingId = showTyping();
             appendBubble('>> Generating your script... please wait.', 'bot', 'SYSTEM');
 
-            try {
-                // Ø§Ø³ØªØ¯Ø¹Ø§Ø¡ /api/director Ù…Ø¨Ø§Ø´Ø±Ø© Ù„ØªÙˆÙ„ÙŠØ¯ 6 Ù…Ø´Ø§Ù‡Ø¯
-                const response = await fetch('/api/director', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: directorType,
-                        brief: text,
-                        model: 'claude-haiku-4-5-20251001'
-                    })
-                });
-                const data = await response.json();
-                removeTyping(typingId);
+            // Auto-retry up to 3 times
+            let lastError = null;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    if (attempt > 1) {
+                        addLogLine('RETRY ' + attempt + '/3...');
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
+                    const response = await fetch('/api/director', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: directorType,
+                            brief: text,
+                            model: 'claude-haiku-4-5-20251001'
+                        })
+                    });
+                    const data = await response.json();
 
-                if (data.error) {
-                    appendBubble('>> ERROR: ' + data.error, 'bot', 'SYSTEM');
-                    return;
+                    if (data.error) {
+                        lastError = data.error;
+                        continue;
+                    }
+
+                    if (!data.scenes || !data.scenes.length) {
+                        lastError = 'No scenes returned';
+                        continue;
+                    }
+
+                    removeTyping(typingId);
+                    generatedScenes = data.scenes;
+                    addLogLine('SCRIPT GENERATED: ' + data.scenes.length + ' scenes');
+                    renderScriptCards(data.scenes, director, data.director_name);
+                    lastError = null;
+                    break;
+
+                } catch (err) {
+                    lastError = err.message;
+                    continue;
                 }
+            }
 
-                if (!data.scenes || !data.scenes.length) {
-                    appendBubble('>> Could not generate script. Try again.', 'bot', 'SYSTEM');
-                    return;
-                }
-
-                generatedScenes = data.scenes;
-                addLogLine('SCRIPT GENERATED: ' + data.scenes.length + ' scenes');
-                renderScriptCards(data.scenes, director, data.director_name);
-
-            } catch (err) {
+            if (lastError) {
                 removeTyping(typingId);
-                appendBubble('>> CONNECTION ERROR: ' + err.message, 'bot', 'SYSTEM');
+                appendBubble('>> ERROR after 3 attempts: ' + lastError, 'bot', 'SYSTEM');
             }
         }
 
@@ -835,7 +831,7 @@ OPEN ASSEMBLY â†’
                 const genRes = await fetch('/api/wavespeed', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt, duration: 15, image_url: window._refImageUrl || null })
+                    body: JSON.stringify({ prompt, duration: 15 })
                 });
                 const genData = await genRes.json();
 
@@ -924,44 +920,7 @@ OPEN ASSEMBLY â†’
             }
         }
 
-        // ── REFERENCE IMAGE HANDLER ──────────────────────────
-let _refImageBase64 = null;
-window._refImageUrl = null;
-
-function handleRefImage(input) {
-    const file = input.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        _refImageBase64 = e.target.result;
-        window._refImageUrl = e.target.result; // base64 data URL
-        
-        // Update UI
-        const preview = document.getElementById('ref-preview');
-        preview.innerHTML = '<img src="' + e.target.result + '" class="w-full h-full object-cover"/>';
-        
-        const status = document.getElementById('ref-image-status');
-        status.classList.remove('hidden');
-        status.classList.add('flex');
-        document.getElementById('ref-image-name').textContent = file.name;
-        
-        addLogLine('REFERENCE IMAGE LOADED: ' + file.name);
-    };
-    reader.readAsDataURL(file);
-}
-
-function clearRefImage() {
-    _refImageBase64 = null;
-    window._refImageUrl = null;
-    document.getElementById('ref-preview').innerHTML = '<span class="material-symbols-outlined text-[14px] text-outline-variant">add_photo_alternate</span>';
-    document.getElementById('ref-image-status').classList.add('hidden');
-    document.getElementById('ref-image-status').classList.remove('flex');
-    document.getElementById('ref-image-input').value = '';
-    addLogLine('REFERENCE IMAGE CLEARED');
-}
-
-function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
+        function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
         function rechargeCredits() { window.location.href = 'pricing.html'; }
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }
