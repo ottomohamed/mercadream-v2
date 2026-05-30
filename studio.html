@@ -262,6 +262,17 @@ const db = firebase.firestore();
 <span class="font-label-technical text-[10px]">DOCS</span>
 </label>
 </div>
+<div class="mt-sm border border-outline-variant/40 bg-surface-container p-xs">
+<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest">SCENES</div>
+<div class="flex gap-xs">
+  <button onclick="setSceneCount(2)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="2">2</button>
+  <button onclick="setSceneCount(3)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="3">3</button>
+  <button onclick="setSceneCount(4)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="4">4</button>
+  <button onclick="setSceneCount(5)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="5">5</button>
+  <button onclick="setSceneCount(6)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-primary-fixed-dim text-primary-fixed-dim bg-primary-fixed-dim/10 transition-all" data-count="6">6</button>
+</div>
+<input type="hidden" id="scene-count" value="6"/>
+</div>
 <div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
@@ -704,7 +715,7 @@ OPEN ASSEMBLY â†’
             const directorType = directorTypeMap[director] || 'drama';
 
             const typingId = showTyping();
-            appendBubble('>> Generating your script... please wait.', 'bot', 'SYSTEM');
+            appendBubble('>> SCRIPTWRITER: Writing screenplay... please wait.', 'bot', 'SYSTEM');
 
             // Auto-retry up to 3 times
             let lastError = null;
@@ -714,12 +725,15 @@ OPEN ASSEMBLY â†’
                         addLogLine('RETRY ' + attempt + '/3...');
                         await new Promise(r => setTimeout(r, 1000));
                     }
+                    const sceneCount = parseInt(document.getElementById('scene-count')?.value || '6');
                     const response = await fetch('/api/director', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             type: directorType,
                             brief: text,
+                            scene_count: sceneCount,
+                            mode: 'full',
                             model: 'claude-haiku-4-5-20251001'
                         })
                     });
@@ -737,7 +751,8 @@ OPEN ASSEMBLY â†’
 
                     removeTyping(typingId);
                     generatedScenes = data.scenes;
-                    addLogLine('SCRIPT GENERATED: ' + data.scenes.length + ' scenes');
+                    addLogLine('SCREENPLAY: ' + data.scenes.length + ' scenes written by Alex Mercer');
+                    addLogLine('DIRECTOR: ' + (data.director_name || director) + ' translating visuals...');
                     renderScriptCards(data.scenes, director, data.director_name);
                     lastError = null;
                     break;
@@ -920,7 +935,22 @@ OPEN ASSEMBLY â†’
             }
         }
 
-        function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
+        function setSceneCount(n) {
+    document.getElementById('scene-count').value = n;
+    document.querySelectorAll('.scene-btn').forEach(btn => {
+        const count = parseInt(btn.getAttribute('data-count'));
+        if (count === n) {
+            btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+            btn.classList.remove('border-outline-variant');
+        } else {
+            btn.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+            btn.classList.add('border-outline-variant');
+        }
+    });
+    addLogLine('SCENE COUNT SET: ' + n + ' scenes');
+}
+
+function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
         function rechargeCredits() { window.location.href = 'pricing.html'; }
         function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
         function setMode(m) { addLogLine('MODE: ' + m); }
@@ -944,6 +974,104 @@ OPEN ASSEMBLY â†’
     if (topEl) topEl.innerText = fmt + ' CR';
     if (footEl) footEl.innerText = fmt + ' CR';
   });
+</script>
+
+<!-- ── ONBOARDING MODAL ─────────────────────────────── -->
+<div id="onboarding-overlay" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" style="display:none!important">
+  <div class="bg-surface-container border border-primary-fixed-dim/40 max-w-md w-full mx-4 p-lg shadow-[0_0_40px_rgba(168,215,0,0.15)]">
+    
+    <div class="flex items-center gap-sm mb-md">
+      <span class="material-symbols-outlined text-primary-fixed-dim text-[24px]">movie</span>
+      <h2 class="font-headline-sm text-headline-sm text-primary-fixed-dim tracking-widest">WELCOME TO STUDIO</h2>
+    </div>
+
+    <div class="space-y-md font-label-technical text-[11px] text-on-surface-variant leading-relaxed">
+      
+      <div class="flex gap-sm items-start">
+        <span class="text-primary-fixed-dim font-bold shrink-0">01</span>
+        <p><span class="text-on-surface">Write your idea</span> in the text box below — describe your scene or story.</p>
+      </div>
+
+      <div class="flex gap-sm items-start">
+        <span class="text-primary-fixed-dim font-bold shrink-0">02</span>
+        <p><span class="text-on-surface">Choose scene count</span> from the left sidebar — 2 to 6 scenes.</p>
+      </div>
+
+      <div class="flex gap-sm items-start">
+        <span class="text-primary-fixed-dim font-bold shrink-0">03</span>
+        <p><span class="text-on-surface">Choose your director</span> from the sidebar — each director has a unique style:<br/>
+        <span class="text-primary-fixed-dim">DRAMA</span> · <span class="text-error">ACTION</span> · <span class="text-secondary">COMEDY</span> · <span class="text-tertiary-fixed-dim">DOCS</span></p>
+      </div>
+
+      <div class="flex gap-sm items-start">
+        <span class="text-primary-fixed-dim font-bold shrink-0">04</span>
+        <p><span class="text-on-surface">Press Send</span> — the Scriptwriter writes the screenplay, then the Director translates it visually.</p>
+      </div>
+
+      <div class="flex gap-sm items-start">
+        <span class="text-primary-fixed-dim font-bold shrink-0">05</span>
+        <p><span class="text-on-surface">Generate each scene</span> by pressing GENERATE — each scene is 10-15 seconds with native audio.</p>
+      </div>
+
+    </div>
+
+    <div class="mt-lg pt-md border-t border-outline-variant flex items-center justify-between">
+      <label class="flex items-center gap-xs cursor-pointer group">
+        <input type="checkbox" id="dont-show-again" class="hidden"/>
+        <div id="checkbox-visual" class="w-4 h-4 border border-outline-variant group-hover:border-primary-fixed-dim flex items-center justify-center transition-all">
+          <span class="material-symbols-outlined text-[10px] text-primary-fixed-dim hidden" id="check-icon">check</span>
+        </div>
+        <span class="font-label-technical text-[10px] text-on-surface-variant group-hover:text-on-surface transition-all">Don't show again</span>
+      </label>
+      
+      <button onclick="closeOnboarding()" class="bg-primary-fixed-dim text-on-primary px-lg py-xs font-label-technical text-[11px] hover:brightness-110 transition-all active:scale-95">
+        START PRODUCTION →
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── ONBOARDING ────────────────────────────────────────
+(function() {
+  const overlay = document.getElementById('onboarding-overlay');
+  const checkbox = document.getElementById('dont-show-again');
+  const checkIcon = document.getElementById('check-icon');
+  const checkboxVisual = document.getElementById('checkbox-visual');
+
+  // Show if not dismissed before
+  if (!localStorage.getItem('md_studio_onboarded')) {
+    overlay.style.display = 'flex';
+    overlay.style.removeProperty('display');
+    overlay.style.cssText = 'display:flex!important';
+  }
+
+  // Toggle checkbox
+  if (checkboxVisual) {
+    checkboxVisual.addEventListener('click', function() {
+      checkbox.checked = !checkbox.checked;
+      if (checkbox.checked) {
+        checkIcon.classList.remove('hidden');
+        checkboxVisual.classList.add('border-primary-fixed-dim', 'bg-primary-fixed-dim/20');
+      } else {
+        checkIcon.classList.add('hidden');
+        checkboxVisual.classList.remove('border-primary-fixed-dim', 'bg-primary-fixed-dim/20');
+      }
+    });
+  }
+})();
+
+function closeOnboarding() {
+  const overlay = document.getElementById('onboarding-overlay');
+  const checkbox = document.getElementById('dont-show-again');
+  
+  if (checkbox && checkbox.checked) {
+    localStorage.setItem('md_studio_onboarded', 'true');
+  }
+  
+  overlay.style.cssText = 'display:none!important';
+}
 </script>
 </body></html>
 
