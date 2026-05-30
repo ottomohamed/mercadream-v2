@@ -305,7 +305,7 @@ const db = firebase.firestore();
 <button class="w-full group relative overflow-hidden bg-neon-acid text-void-black py-5 flex justify-center items-center gap-4 active:scale-[0.99] transition-all disabled:opacity-80" id="btn-relight">
 <div class="absolute top-0 left-0 w-full h-[1px] bg-white/30"></div>
 <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform">bolt</span>
-<span class="font-headline-lg text-[20px] uppercase tracking-tighter" id="btn-relight-text">Initialize Relighting (15 CR)</span>
+<span class="font-headline-lg text-[20px] uppercase tracking-tighter" id="btn-relight-text">Initialize Relighting (25 CR)</span>
 <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
 </button>
 <div class="h-1.5 w-full bg-surface-container overflow-hidden hidden" id="progress-bar-container">
@@ -330,7 +330,7 @@ const db = firebase.firestore();
 <div class="absolute inset-0 transition-transform duration-75 pointer-events-none" id="dial-pointer-axis" style="transform: rotate(0deg);">
 <div class="w-4 h-4 bg-neon-acid absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-void-black shadow-[0_0_15px_rgba(200,255,0,0.6)]"></div>
 </div>
-<span class="font-label-technical text-[14px] text-neon-acid relative z-10 pointer-events-none drop-shadow-sm" id="angle-readout">0°</span>
+<span class="font-label-technical text-[14px] text-neon-acid relative z-10 pointer-events-none drop-shadow-sm" id="angle-readout">0ï¿½</span>
 </div>
 </div>
 <div class="space-y-3">
@@ -391,7 +391,7 @@ const db = firebase.firestore();
 const MD_Core = {
     state: {
         credits: parseInt(localStorage.getItem("md_credits") !== null ? localStorage.getItem("md_credits") : "0"),
-        cost: 15,
+        cost: 25,
         sourceLoaded: false,
         processing: false,
         angle: 0,
@@ -494,7 +494,7 @@ const MD_Core = {
             if (a < 0) a += 360;
             this.state.angle = a % 360;
             this.els.dialAxis.style.transform = `rotate(${this.state.angle}deg)`;
-            this.els.angleReadout.textContent = `${this.state.angle}°`;
+            this.els.angleReadout.textContent = `${this.state.angle}ï¿½`;
         };
 
         this.els.dial.onmousedown = (e) => { dragging = true; update(e); };
