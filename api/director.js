@@ -217,9 +217,11 @@ module.exports = async function handler(req, res) {
     const data = await response.json();
     const text = data.content?.[0]?.text || '';
 
-    // Extract and parse JSON
+    // Extract and parse JSON (handle markdown code blocks)
     console.log('DIRECTOR RAW:', text.substring(0, 500));
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    // Remove markdown code fences if present
+    const cleanText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    const jsonMatch = cleanText.match(/\[\s*\{[\s\S]*\}\s*\]/);
     if (!jsonMatch) {
       console.error('No JSON in response:', text.substring(0, 300));
       return res.status(500).json({ error: 'Director returned no valid scenes.', raw: text.substring(0, 300) });

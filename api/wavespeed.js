@@ -1,8 +1,8 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// MERCADREAM â€” api/wavespeed.js
-// Seedance v1 Pro â€” text-to-video
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-const KEY = process.env.WAVESPEED_API_KEY;
+// ═══════════════════════════════════════════════════════
+// MERCADREAM — api/wavespeed.js
+// Seedance v1 Pro — text-to-video
+// ═══════════════════════════════════════════════════════
+
 const KEY = process.env.WAVESPEED_KEY || process.env.WAVESPEED_API_KEY;
 
 module.exports = async function handler(req, res) {
@@ -14,7 +14,7 @@ module.exports = async function handler(req, res) {
 
   const body = req.body || {};
 
-  // â”€â”€ POLL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── POLL ──────────────────────────────────────────────
   if (body.action === 'poll' || (body.id && !body.prompt)) {
     const pollId = body.id;
     if (!pollId) return res.status(400).json({ error: 'No prediction ID' });
@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // â”€â”€ GENERATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── GENERATE ──────────────────────────────────────────
   const prompt = body.prompt || '';
   const duration = Math.min(parseInt(body.duration) || 5, 10);
 
