@@ -187,6 +187,10 @@ const db = firebase.firestore();
 <span class="material-symbols-outlined text-primary-fixed-dim text-[16px]">database</span>
 <span class="font-label-technical text-label-technical" id="top-credits">0 CR</span>
 </div>
+<a href="pricing.html" class="flex items-center gap-xs px-sm py-unit bg-primary-fixed-dim text-on-primary font-label-technical text-[10px] hover:brightness-110 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+RECHARGE
+</a>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" onclick="cycleLang()" title="Switch Language">language</button>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_balance_wallet</button>
 </div>
@@ -278,7 +282,9 @@ const db = firebase.firestore();
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
 <span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 CR</span>
 </div>
-<button class="bg-surface-variant border border-outline text-[10px] px-sm py-1 font-label-technical hover:bg-primary-fixed-dim hover:text-on-primary transition-all" onclick="window.location.href='pricing.html'">RECHARGE</button>
+<a href="pricing.html" class="bg-primary-fixed-dim text-on-primary text-[10px] px-sm py-1 font-label-technical hover:brightness-110 transition-all flex items-center gap-xs">
+<span class="material-symbols-outlined text-[12px]">bolt</span>RECHARGE
+</a>
 </div>
 </section>
 </aside>
@@ -632,6 +638,19 @@ OPEN ASSEMBLY â†’
             const formatted = credits.toLocaleString();
             document.getElementById('top-credits').innerText = `${formatted} CR`;
             document.getElementById('footer-credits').innerText = `${formatted} CR`;
+            
+            // Low credits warning
+            const topEl = document.getElementById('top-credits');
+            if (credits < 50 && credits > 0) {
+                topEl.style.color = '#ffba3f';
+                topEl.parentElement.style.borderColor = '#ffba3f';
+            } else if (credits === 0) {
+                topEl.style.color = '#ffb4ab';
+                topEl.parentElement.style.borderColor = '#ffb4ab';
+            } else {
+                topEl.style.color = '';
+                topEl.parentElement.style.borderColor = '';
+            }
         }
 
         function animatePipeline() {
