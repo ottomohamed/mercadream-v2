@@ -185,7 +185,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-md">
 <div class="flex items-center gap-xs px-sm py-unit bg-surface-variant rounded-full border border-outline-variant">
 <span class="material-symbols-outlined text-primary-fixed-dim text-[16px]">database</span>
-<span class="font-label-technical text-label-technical" id="top-credits">1,000 CR</span>
+<span class="font-label-technical text-label-technical" id="top-credits">0 CR</span>
 </div>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" onclick="cycleLang()" title="Switch Language">language</button>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_balance_wallet</button>
@@ -402,7 +402,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-xl">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">CURRENT CREDITS</span>
-<span class="font-headline-sm text-primary-fixed-dim" id="footer-credits">1,000 CR</span>
+<span class="font-headline-sm text-primary-fixed-dim" id="footer-credits">0 CR</span>
 </div>
 <div class="h-8 w-px bg-outline-variant"></div>
 <div class="flex items-center gap-sm">
@@ -700,7 +700,8 @@ OPEN ASSEMBLY â†’
 
             const directorEl = document.querySelector('input[name="director"]:checked');
             const director = directorEl ? directorEl.value : 'Drama';
-            const directorType = director.toLowerCase() === 'documentary' ? 'doc' : director.toLowerCase();
+            const directorTypeMap = { 'Drama': 'drama', 'Action': 'action', 'Comedy': 'comedy', 'Documentary': 'doc' };
+            const directorType = directorTypeMap[director] || 'drama';
 
             const typingId = showTyping();
             appendBubble('>> Generating your script... please wait.', 'bot', 'SYSTEM');
