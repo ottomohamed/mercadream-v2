@@ -22,6 +22,7 @@ module.exports = async function handler(req, res) {
     try {
       const pollUrl = body.pollUrl || ('https://api.wavespeed.ai/api/v3/predictions/' + pollId + '/result');
       const pr = await fetch(pollUrl, {
+        method: 'GET',
         headers: { 'Authorization': 'Bearer ' + KEY }
       });
       const pd = await pr.json();
@@ -54,22 +55,17 @@ module.exports = async function handler(req, res) {
   console.log('Duration:', duration);
 
   try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/predictions', {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/bytedance/seedance-v1-pro-t2v-480p', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'bytedance/seedance-v1-pro-t2v-480p',
-        input: {
-          prompt: prompt.trim(),
-          duration: duration,
-          aspect_ratio: '16:9',
-          resolution: '480p'
-        },
-        page: 1,
-        page_size: 10
+        prompt: prompt.trim(),
+        duration: duration,
+        aspect_ratio: '16:9',
+        resolution: '480p'
       })
     });
 
@@ -78,8 +74,7 @@ module.exports = async function handler(req, res) {
     console.log('Response:', JSON.stringify(d));
 
     const jobId = (d.data && d.data.id) || d.id || null;
-    const pollUrl = (d.data && d.data.urls && d.data.urls.get)
-      || (jobId ? 'https://api.wavespeed.ai/api/v3/predictions/' + jobId + '/result' : null);
+    const pollUrl = jobId ? 'https://api.wavespeed.ai/api/v3/predictions/' + jobId + '/result' : null;
 
     if (!jobId) {
       return res.status(400).json({ error: 'No job ID returned', raw: d });
