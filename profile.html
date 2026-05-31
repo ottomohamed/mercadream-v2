@@ -199,7 +199,7 @@
 <div class="flex items-center gap-4">
 <div class="hidden md:flex bg-surface-variant/30 border border-outline-variant px-3 py-1 items-center gap-2">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
-<span class="font-technical-sm text-label-xs text-on-surface" id="top-genesis">0 GNS</span>
+<span class="font-technical-sm text-label-xs text-on-surface" id="top-credits">0 CR</span>
 </div>
 <button class="bg-primary-fixed text-on-primary-fixed font-technical-sm text-label-xs px-4 py-1 uppercase tracking-widest hover:drop-shadow-[0_0_8px_#c8f500] transition-all">Upgrade</button>
 <span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">notifications</span>
@@ -242,13 +242,13 @@
 <div class="lg:col-span-7 grid grid-cols-2 gap-gutter">
 <div class="bg-surface border border-outline-variant p-6 flex flex-col justify-between hover:border-primary-fixed transition-colors">
 <div class="flex justify-between items-start">
-<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Available Genesis</span>
+<span class="font-technical-sm text-label-xs text-on-surface-variant uppercase tracking-widest">Available Credits</span>
 <span class="material-symbols-outlined text-primary-fixed">token</span>
 </div>
 <div>
-<p class="font-display-lg text-[48px] text-primary-fixed leading-none" id="genesis-value">0</p>
+<p class="font-display-lg text-[48px] text-primary-fixed leading-none" id="credits-value">0</p>
 <div class="h-1 bg-surface-variant mt-4 w-full">
-<div class="h-full bg-primary-fixed w-[0%]" id="genesis-bar"></div>
+<div class="h-full bg-primary-fixed w-[0%]" id="credits-bar"></div>
 </div>
 </div>
 </div>
@@ -315,7 +315,7 @@
 <div class="bg-surface border border-outline-variant p-8 flex flex-col">
 <div class="mb-6">
 <h3 class="font-display-lg text-headline-lg text-primary-fixed mb-2">REFER &amp; EARN</h3>
-<p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering genesis.</p>
+<p class="font-body-md text-on-surface-variant">Expand the collective. Share your unique uplink code to earn recursive rendering credits.</p>
 </div>
 <div class="bg-surface-container-low border border-dashed border-primary-fixed p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
 <span class="font-technical-sm text-headline-lg tracking-widest text-on-surface" id="ref-code">GENERATING...</span>
@@ -418,9 +418,9 @@
                                 <span class="text-3xl"></span>
                                 <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest">Content Creator</h4>
                             </div>
-                            <p class="text-on-surface-variant text-sm mb-4">Create videos, generate AI films, build your portfolio. Use genesis to produce unlimited content.</p>
+                            <p class="text-on-surface-variant text-sm mb-4">Create videos, generate AI films, build your portfolio. Use credits to produce unlimited content.</p>
                             <div class="bg-surface p-3 rounded">
-                                <p class="text-xs text-on-surface-variant"> You get <span class="text-primary-fixed font-bold">genesis</span> for every friend who joins and recharges</p>
+                                <p class="text-xs text-on-surface-variant"> You get <span class="text-primary-fixed font-bold">credits</span> for every friend who joins and recharges</p>
                             </div>
                         </div>
                         
@@ -430,9 +430,9 @@
                                 <span class="text-3xl"></span>
                                 <h4 class="font-technical-sm text-label-xs text-primary-fixed uppercase tracking-widest">Money Maker</h4>
                             </div>
-                            <p class="text-on-surface-variant text-sm mb-4">Don't need genesis? Sell them back to us. Turn your referrals into real cash.</p>
+                            <p class="text-on-surface-variant text-sm mb-4">Don't need credits? Sell them back to us. Turn your referrals into real cash.</p>
                             <div class="bg-surface p-3 rounded">
-                                <p class="text-xs text-on-surface-variant"> We buy your genesis at <span class="text-primary-fixed font-bold">$50 per 1,000 genesis</span></p>
+                                <p class="text-xs text-on-surface-variant"> We buy your credits at <span class="text-primary-fixed font-bold">$50 per 1,000 credits</span></p>
                             </div>
                         </div>
                     </div>
@@ -445,7 +445,7 @@
                                 <thead>
                                     <tr class="border-b border-outline-variant">
                                         <th class="py-3 text-xs text-on-surface-variant uppercase">Friends Referred</th>
-                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Genesis Earned</th>
+                                        <th class="py-3 text-xs text-on-surface-variant uppercase">Credits Earned</th>
                                         <th class="py-3 text-xs text-on-surface-variant uppercase">Sell Value</th>
                                         <th class="py-3 text-xs text-on-surface-variant uppercase"> You Get</th>
                                     </tr>
@@ -453,19 +453,19 @@
                                 <tbody class="text-sm">
                                     <tr class="border-b border-outline-variant/30">
                                         <td class="py-3 text-primary-fixed font-bold">5 friends</td>
-                                        <td class="py-3">1,000 genesis</td>
+                                        <td class="py-3">1,000 credits</td>
                                         <td class="py-3">$50 USD</td>
                                         <td class="py-3 text-green-400">+$50 cash</td>
                                     </tr>
                                     <tr class="border-b border-outline-variant/30">
                                         <td class="py-3 text-primary-fixed font-bold">50 friends</td>
-                                        <td class="py-3">10,000 genesis</td>
+                                        <td class="py-3">10,000 credits</td>
                                         <td class="py-3">$500 USD</td>
                                         <td class="py-3 text-green-400">+$500 cash</td>
                                     </tr>
                                     <tr>
                                         <td class="py-3 text-primary-fixed font-bold">500 friends</td>
-                                        <td class="py-3">100,000 genesis</td>
+                                        <td class="py-3">100,000 credits</td>
                                         <td class="py-3">$5,000 USD</td>
                                         <td class="py-3 text-green-400 font-bold">+$5,000 cash</td>
                                     </tr>
@@ -473,7 +473,7 @@
                             </table>
                         </div>
                         <p class="text-xs text-on-surface-variant/60 text-center mt-4">
-                             Each friend needs to recharge at least once for you to earn genesis.<br>
+                             Each friend needs to recharge at least once for you to earn credits.<br>
                             The more they recharge, the more you earn!
                         </p>
                     </div>
@@ -543,7 +543,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let currentUserData = { genesis: 0, plan: "free", name: "", email: "", renders: 0, recharges: 0, assets: 0 };
+  let currentUserData = { credits: 0, plan: "free", name: "", email: "", renders: 0, recharges: 0, assets: 0 };
 
   // ????? ??? ????? ???? ?? UID
   function generateReferralCode(uid) {
@@ -558,13 +558,13 @@
     document.getElementById('profile-email').textContent = user.email;
     
     // ??????
-    const genesis = userData?.genesis || 0;
-    document.getElementById('genesis-value').textContent = genesis.toLocaleString();
-    document.getElementById('top-genesis').textContent = genesis + ' GNS';
+    const credits = userData?.credits || 0;
+    document.getElementById('credits-value').textContent = credits.toLocaleString();
+    document.getElementById('top-credits').textContent = credits + ' CR';
     
     // ???? ?????? (????: 65% ??? ??? ?????? 1250)
-    const percent = Math.min((genesis / 2000) * 100, 100);
-    document.getElementById('genesis-bar').style.width = percent + '%';
+    const percent = Math.min((credits / 2000) * 100, 100);
+    document.getElementById('credits-bar').style.width = percent + '%';
     
     // ??????????
     document.getElementById('renders-value').textContent = userData?.renders || 0;
@@ -590,7 +590,7 @@
     // ??? ?? localStorage
     localStorage.setItem('md_name', displayName);
     localStorage.setItem('md_email', user.email);
-    localStorage.setItem('md_genesis', genesis);
+    localStorage.setItem('md_credits', credits);
     localStorage.setItem('md_plan', plan);
     localStorage.setItem('md_user_id', user.uid);
     
@@ -711,7 +711,7 @@
         const newUser = {
           name: user.displayName || user.email.split('@')[0],
           email: user.email,
-          genesis: 0,
+          credits: 0,
           plan: "free",
           renders: 0,
           recharges: 0,
@@ -723,6 +723,103 @@
       }
     });
   });
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+// ── FIREBASE INIT ─────────────────────────────────────
+if (!firebase.apps.length) {
+  firebase.initializeApp({
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283"
+  });
+}
+
+// ── LOAD REAL DATA ────────────────────────────────────
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!user) {
+    window.location.href = 'register.html';
+    return;
+  }
+
+  firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    var data = doc.data();
+
+    // Update balance displays
+    var gns = data.credits || 0;
+    var formatted = gns.toLocaleString();
+    var balEl = document.getElementById('balance-display');
+    var hdrEl = document.getElementById('header-gns');
+    if (balEl) balEl.textContent = formatted;
+    if (hdrEl) hdrEl.textContent = formatted + ' GNS';
+
+    // Update referral code
+    var refEl = document.getElementById('referral-code');
+    if (refEl) refEl.textContent = data.referralCode || 'MD-' + user.uid.substring(0,8).toUpperCase();
+
+    // Store in localStorage
+    localStorage.setItem('md_credits', gns);
+    localStorage.setItem('md_user_id', user.uid);
+    localStorage.setItem('md_name', data.name || user.displayName || 'Creator');
+  });
+
+  // Load Genesis Collection
+  firebase.firestore().collection('genesis_vault')
+    .where('ownerId', '==', user.uid)
+    .get()
+    .then(function(snap) {
+      var count = snap.size;
+      var countEl = document.querySelector('[data-count], .space-y-6 .text-muted');
+      // Update collection count
+      document.querySelectorAll('.font-code-sm.text-muted').forEach(function(el) {
+        if (el.textContent.includes('COUNT:')) {
+          el.textContent = 'COUNT: ' + String(count).padStart(2, '0');
+        }
+      });
+    }).catch(function(){});
+
+  // Copy referral code
+  var copyBtn = document.querySelector('button.bg-primary.text-void');
+  if (copyBtn) {
+    copyBtn.onclick = function() {
+      var code = document.getElementById('referral-code').textContent;
+      navigator.clipboard.writeText('https://www.mercadream.com/register.html?ref=' + code)
+        .then(function() { copyBtn.textContent = 'COPIED!'; setTimeout(function() { copyBtn.textContent = 'COPY'; }, 2000); });
+    };
+  }
+});
+
+// Transaction history button
+var txBtn = document.querySelector('button.text-acid-dim.underline');
+if (txBtn) {
+  txBtn.onclick = function() {
+    var uid = localStorage.getItem('md_user_id');
+    if (!uid) return;
+    firebase.firestore().collection('genesis_vault')
+      .where('ownerId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(10)
+      .get()
+      .then(function(snap) {
+        var msg = 'YOUR GENESIS COLLECTION (' + snap.size + ' items):
+
+';
+        snap.forEach(function(doc) {
+          var d = doc.data();
+          msg += d.genesisId + ' — ' + d.title + '
+';
+        });
+        alert(msg || 'No items yet. Generate videos in Studio!');
+      });
+  };
+}
 </script>
 </body>
 </html>

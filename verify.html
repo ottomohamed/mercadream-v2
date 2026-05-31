@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Genesis Vault · Video Ownership Registry</title>
+<meta name="description" content="Register and verify video ownership with Genesis DNA. First-ever video notary system powered by AI."/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain: "mercadream-4b4b3.firebaseapp.com",
+  projectId: "mercadream-4b4b3",
+  storageBucket: "mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId: "257560928442",
+  appId: "1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+<style>
+:root {
+  --void: #040404;
+  --acid: #c8ff00;
+  --acid-dim: #a8d700;
+  --acid-glow: rgba(200,255,0,0.15);
+  --surface: #0a0a0a;
+  --surface2: #111;
+  --border: #1a1a1a;
+  --border2: #252525;
+  --text: #e5e2e1;
+  --muted: #4a4a4a;
+  --error: #ff3333;
+  --success: #00ff88;
+  --gold: #ffd700;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  background: var(--void); color: var(--text); 
+  font-family: 'IBM Plex Mono', monospace; 
+  min-height: 100vh; overflow-x: hidden;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: 
+    linear-gradient(rgba(200,255,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,255,0,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Scanline */
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 100;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+}
+
+section, header, footer { position: relative; z-index: 1; }
+
+/* HEADER */
+.header {
+  height: 56px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(4,4,4,0.95); backdrop-filter: blur(10px);
+  position: sticky; top: 0; z-index: 50;
+}
+
+/* HERO */
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid rgba(200,255,0,0.3); padding: 4px 14px;
+  font-size: 9px; letter-spacing: 4px; color: var(--acid);
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.hero-badge::before { 
+  content: ''; width: 6px; height: 6px; 
+  background: var(--acid); border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* TABS */
+.tab-btn {
+  flex: 1; padding: 14px; border: none; background: transparent;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+  color: var(--muted); border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.tab-btn.active { color: var(--acid); border-bottom-color: var(--acid); }
+.tab-btn:hover { color: var(--text); }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border: 2px dashed var(--border2); background: var(--surface);
+  cursor: pointer; transition: all 0.3s; position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; overflow: hidden;
+}
+.upload-zone:hover { border-color: var(--acid); background: rgba(200,255,0,0.02); }
+.upload-zone.active { border-color: var(--acid); border-style: solid; }
+.upload-zone video, .upload-zone img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+
+/* PROCESS BTN */
+.process-btn {
+  width: 100%; padding: 16px; border: none; cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.process-btn.register { background: var(--acid); color: var(--void); }
+.process-btn.register:hover { box-shadow: 0 0 30px var(--acid-glow); transform: translateY(-1px); }
+.process-btn.verify { background: transparent; border: 1px solid var(--acid); color: var(--acid); }
+.process-btn.verify:hover { background: var(--acid); color: var(--void); }
+.process-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+/* CERTIFICATE */
+.certificate {
+  border: 1px solid var(--acid); background: var(--surface);
+  position: relative; overflow: hidden; display: none;
+}
+.certificate::before {
+  content: 'GENESIS VAULT';
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-30deg);
+  font-family: Orbitron, monospace; font-size: 48px; font-weight: 900;
+  color: rgba(200,255,0,0.04); letter-spacing: 8px; white-space: nowrap;
+  pointer-events: none;
+}
+.cert-field {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.cert-field:last-child { border-bottom: none; }
+.cert-label { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+.cert-value { font-size: 11px; color: var(--text); text-align: right; max-width: 60%; word-break: break-all; }
+
+/* REJECTED */
+.rejected-box {
+  border: 1px solid var(--error); background: rgba(255,51,51,0.05);
+  padding: 24px; display: none;
+}
+
+/* STATS */
+.stat-card {
+  border: 1px solid var(--border2); background: var(--surface);
+  padding: 20px; text-align: center;
+}
+
+/* INPUT */
+.gns-input {
+  width: 100%; background: var(--surface); border: 1px solid var(--border2);
+  color: var(--text); font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; padding: 12px 16px; outline: none;
+  transition: border-color 0.2s;
+}
+.gns-input:focus { border-color: var(--acid); }
+
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* QR placeholder */
+.qr-box {
+  width: 80px; height: 80px; border: 1px solid var(--acid);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2); flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="index.html" style="font-family:Orbitron,monospace;font-size:14px;font-weight:900;color:var(--acid);text-decoration:none;letter-spacing:3px;">MERCADREAM</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);padding:4px 12px;">
+      <span class="material-symbols-outlined" style="font-size:14px;color:var(--acid);">bolt</span>
+      <span id="top-gns" style="font-size:11px;">0 GNS</span>
+    </div>
+    <a href="profile.html"><span class="material-symbols-outlined" style="color:var(--muted);font-size:20px;">account_circle</span></a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section style="padding:48px 20px 32px;text-align:center;max-width:800px;margin:0 auto;">
+  <div class="hero-badge">Genesis Vault · World's First Video Notary</div>
+  <h1 style="font-family:Orbitron,monospace;font-size:clamp(24px,5vw,44px);font-weight:900;line-height:1.1;margin-bottom:16px;">
+    YOUR VIDEO.<br/><span style="color:var(--acid);">YOUR PROOF.</span>
+  </h1>
+  <p style="font-size:11px;color:var(--muted);letter-spacing:1px;max-width:500px;margin:0 auto 32px;">
+    Upload any video from any source. We stamp it with an immutable Genesis DNA. 
+    If it's already registered — we tell you who owns it.
+  </p>
+
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:500px;margin:0 auto;">
+    <div class="stat-card">
+      <div style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:var(--acid);" id="stat-total">0</div>
+      <div style="font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:4px;">REGISTERED</div>
+    </div>
+    <div class="stat-card">
+      <div style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:var(--acid);">50</div>
+      <div style="font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:4px;">GNS / STAMP</div>
+    </div>
+    <div class="stat-card">
+      <div style="font-family:Orbitron,monospace;font-size:20px;font-weight:900;color:var(--acid);">∞</div>
+      <div style="font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:4px;">VALIDITY</div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN TOOL -->
+<section style="padding:0 20px 60px;max-width:800px;margin:0 auto;">
+
+  <!-- TABS -->
+  <div style="display:flex;border:1px solid var(--border);margin-bottom:24px;">
+    <button class="tab-btn active" id="tab-register" onclick="switchTab('register')">
+      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:6px;">verified</span>
+      REGISTER OWNERSHIP — 50 GNS
+    </button>
+    <button class="tab-btn" id="tab-verify" onclick="switchTab('verify')">
+      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:6px;">search</span>
+      VERIFY VIDEO — FREE
+    </button>
+  </div>
+
+  <!-- REGISTER TAB -->
+  <div id="panel-register">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      
+      <!-- Upload -->
+      <div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:10px;">01 — UPLOAD YOUR VIDEO</div>
+        <div class="upload-zone" id="upload-zone" style="height:260px;" onclick="triggerUpload()">
+          <span class="material-symbols-outlined" style="font-size:48px;color:var(--border2);">video_file</span>
+          <div style="font-size:11px;color:var(--muted);">CLICK OR DROP VIDEO</div>
+          <div style="font-size:9px;color:var(--border2);">MP4 · MOV · WEBM · AVI</div>
+        </div>
+        <input type="file" id="file-input" accept="video/*" style="display:none;" onchange="handleFile(this)"/>
+
+        <!-- Title -->
+        <div style="margin-top:12px;">
+          <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:6px;">02 — TITLE (OPTIONAL)</div>
+          <input type="text" id="video-title" class="gns-input" placeholder="My cinematic reel..."/>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:10px;">WHAT YOU GET:</div>
+        <div style="border:1px solid var(--border2);background:var(--surface);padding:16px;margin-bottom:12px;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:start;gap:10px;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--acid);flex-shrink:0;">fingerprint</span>
+              <div>
+                <div style="font-size:10px;color:var(--text);margin-bottom:2px;">GENESIS DNA</div>
+                <div style="font-size:9px;color:var(--muted);">Unique immutable ID embedded to your video</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:start;gap:10px;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--acid);flex-shrink:0;">verified_user</span>
+              <div>
+                <div style="font-size:10px;color:var(--text);margin-bottom:2px;">OWNERSHIP CERTIFICATE</div>
+                <div style="font-size:9px;color:var(--muted);">Downloadable proof with timestamp</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:start;gap:10px;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--acid);flex-shrink:0;">qr_code</span>
+              <div>
+                <div style="font-size:10px;color:var(--text);margin-bottom:2px;">VERIFICATION QR</div>
+                <div style="font-size:9px;color:var(--muted);">Anyone can scan to verify ownership instantly</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:start;gap:10px;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--acid);flex-shrink:0;">block</span>
+              <div>
+                <div style="font-size:10px;color:var(--text);margin-bottom:2px;">THEFT PROTECTION</div>
+                <div style="font-size:9px;color:var(--muted);">Any re-registration attempt will be blocked</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border2);background:var(--surface);padding:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:9px;color:var(--muted);letter-spacing:2px;">REGISTRATION FEE</div>
+            <div style="font-family:Orbitron,monospace;font-size:18px;font-weight:700;color:var(--acid);">50 GNS</div>
+          </div>
+          <div style="font-size:8px;color:var(--muted);margin-top:4px;">= $5.00 · One-time · Lifetime validity</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="process-btn register" id="register-btn" onclick="registerVideo()" style="margin-top:16px;">
+      <span class="material-symbols-outlined" id="reg-icon" style="font-size:20px;">fingerprint</span>
+      <span id="reg-text">STAMP WITH GENESIS DNA — 50 GNS</span>
+    </button>
+    <div style="font-size:9px;color:var(--muted);text-align:center;margin-top:8px;" id="reg-status"></div>
+  </div>
+
+  <!-- VERIFY TAB -->
+  <div id="panel-verify" style="display:none;">
+    <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:16px;">VERIFY BY VIDEO OR GENESIS ID</div>
+    
+    <!-- Upload for verify -->
+    <div class="upload-zone" id="verify-zone" style="height:160px;margin-bottom:16px;" onclick="triggerVerifyUpload()">
+      <span class="material-symbols-outlined" style="font-size:36px;color:var(--border2);">search</span>
+      <div style="font-size:11px;color:var(--muted);">DROP VIDEO TO CHECK OWNERSHIP</div>
+      <div style="font-size:9px;color:var(--border2);">OR ENTER GENESIS ID BELOW</div>
+    </div>
+    <input type="file" id="verify-file" accept="video/*" style="display:none;" onchange="handleVerifyFile(this)"/>
+
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <input type="text" id="genesis-id-input" class="gns-input" placeholder="GNS-2026-XXXXX-XXXX-XXXX" style="flex:1;"/>
+      <button onclick="verifyById()" style="background:transparent;border:1px solid var(--acid);color:var(--acid);padding:12px 20px;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all 0.2s;" onmouseover="this.style.background='var(--acid)';this.style.color='var(--void)';" onmouseout="this.style.background='transparent';this.style.color='var(--acid)';">
+        CHECK ID
+      </button>
+    </div>
+
+    <button class="process-btn verify" id="verify-btn" onclick="verifyVideo()" style="display:none;">
+      <span class="material-symbols-outlined" id="ver-icon" style="font-size:20px;">search</span>
+      <span id="ver-text">VERIFY THIS VIDEO — FREE</span>
+    </button>
+  </div>
+
+  <!-- CERTIFICATE (shared) -->
+  <div class="certificate" id="certificate" style="margin-top:24px;padding:24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-family:Orbitron,monospace;font-size:11px;font-weight:700;color:var(--acid);letter-spacing:3px;">GENESIS CERTIFICATE</div>
+        <div style="font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:2px;">MERCADREAM OWNERSHIP REGISTRY</div>
+      </div>
+      <div class="qr-box">
+        <span class="material-symbols-outlined" style="font-size:32px;color:var(--acid);">qr_code</span>
+      </div>
+    </div>
+
+    <div id="cert-fields">
+      <div class="cert-field">
+        <span class="cert-label">GENESIS ID</span>
+        <span class="cert-value" id="cert-id" style="color:var(--acid);font-family:Orbitron,monospace;font-size:10px;">—</span>
+      </div>
+      <div class="cert-field">
+        <span class="cert-label">STATUS</span>
+        <span class="cert-value" id="cert-status">—</span>
+      </div>
+      <div class="cert-field">
+        <span class="cert-label">OWNER</span>
+        <span class="cert-value" id="cert-owner">—</span>
+      </div>
+      <div class="cert-field">
+        <span class="cert-label">TITLE</span>
+        <span class="cert-value" id="cert-title">—</span>
+      </div>
+      <div class="cert-field">
+        <span class="cert-label">REGISTERED</span>
+        <span class="cert-value" id="cert-date">—</span>
+      </div>
+      <div class="cert-field">
+        <span class="cert-label">DNA HASH</span>
+        <span class="cert-value" id="cert-hash" style="font-size:9px;color:var(--muted);">—</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <button onclick="downloadCertificate()" style="flex:1;background:var(--acid);color:var(--void);border:none;padding:10px;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span class="material-symbols-outlined" style="font-size:14px;">download</span>DOWNLOAD CERTIFICATE
+      </button>
+      <button onclick="shareCertificate()" style="background:transparent;border:1px solid var(--acid);color:var(--acid);padding:10px 16px;font-family:IBM Plex Mono,monospace;font-size:9px;cursor:pointer;">
+        <span class="material-symbols-outlined" style="font-size:14px;">share</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- REJECTED -->
+  <div class="rejected-box" id="rejected-box" style="margin-top:24px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <span class="material-symbols-outlined" style="font-size:32px;color:var(--error);">block</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--error);letter-spacing:2px;">REGISTRATION REJECTED</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px;">THIS VIDEO IS ALREADY REGISTERED</div>
+      </div>
+    </div>
+    <div style="border:1px solid rgba(255,51,51,0.2);padding:16px;background:rgba(255,51,51,0.03);">
+      <div class="cert-field" style="border-bottom-color:rgba(255,51,51,0.2);">
+        <span class="cert-label">GENESIS ID</span>
+        <span class="cert-value" id="rej-id" style="color:var(--error);">—</span>
+      </div>
+      <div class="cert-field" style="border-bottom-color:rgba(255,51,51,0.2);">
+        <span class="cert-label">REGISTERED OWNER</span>
+        <span class="cert-value" id="rej-owner">—</span>
+      </div>
+      <div class="cert-field" style="border-bottom:none;">
+        <span class="cert-label">REGISTERED ON</span>
+        <span class="cert-value" id="rej-date">—</span>
+      </div>
+    </div>
+    <div style="font-size:9px;color:var(--muted);margin-top:12px;line-height:1.6;">
+      This video has already been stamped in our registry. You cannot register it again. 
+      If you believe this is an error, contact support with your original file.
+    </div>
+  </div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+<section style="padding:48px 20px;border-top:1px solid var(--border);max-width:800px;margin:0 auto;">
+  <div style="font-size:9px;color:var(--acid);letter-spacing:4px;margin-bottom:24px;text-align:center;">HOW IT WORKS</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+    <div style="text-align:center;padding:20px;border:1px solid var(--border);">
+      <div style="font-family:Orbitron,monospace;font-size:24px;font-weight:900;color:var(--acid);margin-bottom:8px;">01</div>
+      <div style="font-size:10px;letter-spacing:2px;margin-bottom:8px;">UPLOAD</div>
+      <div style="font-size:9px;color:var(--muted);line-height:1.6;">Upload your video from any source — AI generated, filmed, or edited</div>
+    </div>
+    <div style="text-align:center;padding:20px;border:1px solid var(--border);">
+      <div style="font-family:Orbitron,monospace;font-size:24px;font-weight:900;color:var(--acid);margin-bottom:8px;">02</div>
+      <div style="font-size:10px;letter-spacing:2px;margin-bottom:8px;">SCAN</div>
+      <div style="font-size:9px;color:var(--muted);line-height:1.6;">We check our registry. If it's registered — you're told. If not — we stamp it</div>
+    </div>
+    <div style="text-align:center;padding:20px;border:1px solid var(--border);">
+      <div style="font-family:Orbitron,monospace;font-size:24px;font-weight:900;color:var(--acid);margin-bottom:8px;">03</div>
+      <div style="font-size:10px;letter-spacing:2px;margin-bottom:8px;">OWN</div>
+      <div style="font-size:9px;color:var(--muted);line-height:1.6;">Receive your Genesis Certificate with QR code. Valid forever. Transferable</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:48px 20px 60px;text-align:center;border-top:1px solid var(--border);">
+  <div style="font-size:9px;color:var(--muted);letter-spacing:4px;margin-bottom:12px;">DON'T HAVE A VIDEO YET?</div>
+  <h2 style="font-family:Orbitron,monospace;font-size:clamp(16px,3vw,24px);font-weight:700;margin-bottom:20px;">GENERATE ONE WITH AI</h2>
+  <button onclick="window.location.href='studio.html'" style="background:transparent;border:1px solid var(--acid);color:var(--acid);padding:14px 36px;font-family:IBM Plex Mono,monospace;font-size:11px;font-weight:700;letter-spacing:3px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--acid)';this.style.color='var(--void)';" onmouseout="this.style.background='transparent';this.style.color='var(--acid)';">
+    ENTER STUDIO → FROM 12 GNS
+  </button>
+</section>
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+var COST = 50;
+var uploadedFile = null;
+var uploadedDataUrl = null;
+var verifyFile = null;
+var verifyDataUrl = null;
+var currentTab = 'register';
+var currentCertData = null;
+
+// ── FIREBASE ──────────────────────────────────────────
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (doc.exists) {
+        var gns = doc.data().credits || 0;
+        localStorage.setItem('md_credits', gns);
+        localStorage.setItem('md_user_id', user.uid);
+        localStorage.setItem('md_name', doc.data().name || 'Creator');
+        document.getElementById('top-gns').textContent = gns.toLocaleString() + ' GNS';
+      }
+    });
+  }
+});
+
+// Load stats
+loadStats();
+
+async function loadStats() {
+  try {
+    var r = await fetch('/api/fingerprint', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action: 'stats'})
+    });
+    var d = await r.json();
+    if (d.total) document.getElementById('stat-total').textContent = d.total.toLocaleString();
+  } catch(e) {}
+}
+
+// ── TABS ──────────────────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('tab-verify').classList.toggle('active', tab === 'verify');
+  document.getElementById('panel-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('panel-verify').style.display = tab === 'verify' ? 'block' : 'none';
+  hideCertificate();
+}
+
+// ── UPLOAD ────────────────────────────────────────────
+function triggerUpload() { document.getElementById('file-input').click(); }
+function triggerVerifyUpload() { document.getElementById('verify-file').click(); }
+
+function handleFile(input) {
+  var f = input.files[0];
+  if (!f) return;
+  uploadedFile = f;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedDataUrl = e.target.result;
+    var zone = document.getElementById('upload-zone');
+    zone.classList.add('active');
+    zone.innerHTML = '';
+    var vid = document.createElement('video');
+    vid.src = uploadedDataUrl; vid.muted = true; vid.loop = true; vid.autoplay = true;
+    vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.6;';
+    zone.appendChild(vid);
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;';
+    overlay.innerHTML = '<span class="material-symbols-outlined" style="font-size:24px;color:var(--acid);">check_circle</span>'
+      + '<div style="font-size:10px;color:var(--acid);letter-spacing:2px;">' + f.name.substring(0,30) + '</div>'
+      + '<div style="font-size:9px;color:var(--muted);">' + (f.size/1024/1024).toFixed(1) + ' MB</div>';
+    zone.appendChild(overlay);
+  };
+  reader.readAsDataURL(f);
+}
+
+function handleVerifyFile(input) {
+  var f = input.files[0];
+  if (!f) return;
+  verifyFile = f;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    verifyDataUrl = e.target.result;
+    var zone = document.getElementById('verify-zone');
+    zone.innerHTML = '<span class="material-symbols-outlined" style="font-size:24px;color:var(--acid);">video_file</span>'
+      + '<div style="font-size:10px;color:var(--acid);">' + f.name.substring(0,30) + '</div>'
+      + '<div style="font-size:9px;color:var(--muted);">Ready to verify</div>';
+    document.getElementById('verify-btn').style.display = 'flex';
+  };
+  reader.readAsDataURL(f);
+}
+
+// ── REGISTER ──────────────────────────────────────────
+async function registerVideo() {
+  if (!uploadedDataUrl) { setRegStatus('UPLOAD A VIDEO FIRST', true); return; }
+
+  var gns = parseInt(localStorage.getItem('md_credits') || '0');
+  if (gns < COST) {
+    setRegStatus('INSUFFICIENT GNS — NEED ' + COST + ' GNS', true);
+    setTimeout(function() { window.location.href = 'pricing.html'; }, 2000);
+    return;
+  }
+
+  var btn = document.getElementById('register-btn');
+  var icon = document.getElementById('reg-icon');
+  var text = document.getElementById('reg-text');
+  btn.disabled = true;
+  icon.classList.add('spinner');
+  text.textContent = 'SCANNING REGISTRY...';
+  setRegStatus('Checking if video is already registered...');
+  hideCertificate();
+
+  try {
+    var uid = localStorage.getItem('md_user_id');
+    var uname = localStorage.getItem('md_name') || 'Creator';
+    var title = document.getElementById('video-title').value.trim() || 'Untitled Video';
+
+    var res = await fetch('/api/fingerprint', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'register',
+        videoUrl: uploadedDataUrl,
+        ownerId: uid || 'anonymous',
+        ownerName: uname,
+        title: title
+      })
+    });
+    var data = await res.json();
+
+    icon.classList.remove('spinner');
+    btn.disabled = false;
+    text.textContent = 'STAMP WITH GENESIS DNA — ' + COST + ' GNS';
+
+    if (data.alreadyRegistered) {
+      // REJECTED
+      setRegStatus('VIDEO ALREADY REGISTERED — REJECTED', true);
+      showRejected(data);
+    } else if (data.genesisId) {
+      // SUCCESS — deduct credits
+      var newGns = gns - COST;
+      localStorage.setItem('md_credits', newGns);
+      document.getElementById('top-gns').textContent = newGns.toLocaleString() + ' GNS';
+      if (uid && firebase.auth().currentUser) {
+        firebase.firestore().collection('users').doc(uid).update({ credits: newGns });
+      }
+      setRegStatus('✓ GENESIS DNA REGISTERED SUCCESSFULLY');
+      showCertificate(data.certificate || data);
+    } else {
+      setRegStatus('ERROR: ' + (data.error || 'Unknown error'), true);
+    }
+  } catch(e) {
+    icon.classList.remove('spinner');
+    btn.disabled = false;
+    text.textContent = 'STAMP WITH GENESIS DNA — ' + COST + ' GNS';
+    setRegStatus('NETWORK ERROR: ' + e.message, true);
+  }
+}
+
+// ── VERIFY ────────────────────────────────────────────
+async function verifyVideo() {
+  if (!verifyDataUrl) return;
+  await verifyRequest({ action: 'verify', videoUrl: verifyDataUrl });
+}
+
+async function verifyById() {
+  var id = document.getElementById('genesis-id-input').value.trim();
+  if (!id) return;
+  await verifyRequest({ action: 'verify', genesisId: id });
+}
+
+async function verifyRequest(payload) {
+  var icon = document.getElementById('ver-icon');
+  var text = document.getElementById('ver-text');
+  var btn = document.getElementById('verify-btn');
+  if (btn) btn.disabled = true;
+  if (icon) icon.classList.add('spinner');
+  if (text) text.textContent = 'SCANNING...';
+  hideCertificate();
+
+  try {
+    var res = await fetch('/api/fingerprint', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+
+    if (icon) icon.classList.remove('spinner');
+    if (btn) btn.disabled = false;
+    if (text) text.textContent = 'VERIFY THIS VIDEO — FREE';
+
+    if (data.verified && data.genesisId) {
+      showCertificate(data);
+    } else {
+      // Not found — offer to register
+      document.getElementById('certificate').style.display = 'none';
+      document.getElementById('rejected-box').style.display = 'none';
+      alert('NO RECORD FOUND — This video is not registered in Genesis Vault. Switch to Register tab to stamp it.');
+    }
+  } catch(e) {
+    if (icon) icon.classList.remove('spinner');
+    if (btn) { btn.disabled = false; }
+    alert('NETWORK ERROR: ' + e.message);
+  }
+}
+
+// ── DISPLAY ───────────────────────────────────────────
+function showCertificate(data) {
+  document.getElementById('rejected-box').style.display = 'none';
+  var cert = document.getElementById('certificate');
+  cert.style.display = 'block';
+
+  document.getElementById('cert-id').textContent = data.genesisId || data.id || '—';
+  
+  // Show match type
+  var statusHtml = '<span style="color:var(--success);">✓ VERIFIED ORIGINAL</span>';
+  if (data.matchType === 'partial') {
+    statusHtml = '<span style="color:var(--gold);">⚠ PARTIAL MATCH — ' + (data.matchScore || 0) + '% CLIP DETECTED</span>';
+  } else if (data.matchScore) {
+    statusHtml = '<span style="color:var(--success);">✓ VERIFIED — ' + data.matchScore + '% MATCH</span>';
+  }
+  document.getElementById('cert-status').innerHTML = statusHtml;
+  document.getElementById('cert-owner').textContent = data.owner || data.ownerName || '—';
+  document.getElementById('cert-title').textContent = data.title || '—';
+  document.getElementById('cert-date').textContent = data.created || data.createdAt || new Date().toISOString();
+  document.getElementById('cert-hash').textContent = data.masterHash || data.videoHash || '—';
+  
+  // Add frame count if available
+  var frameEl = document.getElementById('cert-frames');
+  if (frameEl && data.frameCount) {
+    frameEl.textContent = data.frameCount + ' FRAMES INDEXED';
+  }
+  currentCertData = data;
+  cert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showRejected(data) {
+  document.getElementById('certificate').style.display = 'none';
+  var box = document.getElementById('rejected-box');
+  box.style.display = 'block';
+  document.getElementById('rej-id').textContent = data.genesisId || '—';
+  document.getElementById('rej-owner').textContent = data.owner || '—';
+  document.getElementById('rej-date').textContent = data.created || '—';
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideCertificate() {
+  document.getElementById('certificate').style.display = 'none';
+  document.getElementById('rejected-box').style.display = 'none';
+}
+
+function downloadCertificate() {
+  if (!currentCertData) return;
+  var text = [
+    '═══════════════════════════════════════',
+    '   MERCADREAM — GENESIS CERTIFICATE    ',
+    '═══════════════════════════════════════',
+    'GENESIS ID : ' + (currentCertData.genesisId || '—'),
+    'OWNER      : ' + (currentCertData.owner || '—'),
+    'TITLE      : ' + (currentCertData.title || '—'),
+    'REGISTERED : ' + (currentCertData.created || '—'),
+    'DNA HASH   : ' + (currentCertData.videoHash || '—'),
+    'STATUS     : VERIFIED ORIGINAL',
+    '═══════════════════════════════════════',
+    'Verify at: mercadream.com/verify/' + (currentCertData.genesisId || ''),
+    '═══════════════════════════════════════'
+  ].join('\n');
+  var blob = new Blob([text], {type: 'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'genesis-certificate-' + (currentCertData.genesisId || 'unknown') + '.txt';
+  a.click();
+}
+
+async function shareCertificate() {
+  var url = 'https://www.mercadream.com/verify.html?id=' + (currentCertData?.genesisId || '');
+  if (navigator.share) {
+    await navigator.share({ title: 'Genesis Certificate', url });
+  } else {
+    navigator.clipboard.writeText(url);
+    alert('Certificate URL copied!');
+  }
+}
+
+function setRegStatus(msg, isError) {
+  var el = document.getElementById('reg-status');
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--error)' : 'var(--acid)';
+}
+
+// ── FIREBASE ──────────────────────────────────────────
+if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+  firebase.initializeApp({
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283"
+  });
+}
+if (typeof firebase !== 'undefined') {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+        if (doc.exists) {
+          var gns = doc.data().credits || 0;
+          localStorage.setItem('md_credits', gns);
+          localStorage.setItem('md_user_id', user.uid);
+          localStorage.setItem('md_name', doc.data().name || 'Creator');
+          document.getElementById('top-gns').textContent = gns.toLocaleString() + ' GNS';
+        }
+      });
+    }
+  });
+}
+
+// Check URL params for direct verification
+window.addEventListener('load', function() {
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  if (id) {
+    switchTab('verify');
+    document.getElementById('genesis-id-input').value = id;
+    verifyById();
+  }
+});
+</script>
+</body>
+</html>
