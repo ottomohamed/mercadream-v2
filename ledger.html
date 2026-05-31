@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><!-- Designer: LEDGER_LOG_V2.6 + Firebase Real Data -->
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | LEDGER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+:root { --void:#040404; --acid:#A8D700; }
+body { background:var(--void); color:#E5E2E1; font-family:'IBM Plex Mono',monospace; overflow-x:hidden; min-height:max(884px,100dvh); }
+.grid-bg { background-size:40px 40px; background-image:linear-gradient(to right,#1A1A1A 1px,transparent 1px),linear-gradient(to bottom,#1A1A1A 1px,transparent 1px); }
+.scanline { width:100%;height:100%;z-index:100;background:linear-gradient(0deg,rgba(0,0,0,0) 0%,rgba(168,215,0,.03) 50%,rgba(0,0,0,0) 100%);background-size:100% 4px;position:fixed;pointer-events:none;animation:scanline 8s linear infinite; }
+@keyframes scanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100%)} }
+.neon-glow { box-shadow:0 0 10px rgba(168,215,0,.3); }
+.segmented-progress { display:flex; gap:2px; }
+.segment { height:8px; flex:1; background:#1A1A1A; }
+.segment.filled { background:var(--acid); }
+@keyframes spin { to{transform:rotate(360deg)} }
+.spinner { animation:spin 1s linear infinite; }
+</style>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{colors:{
+  "outline-variant":"#434933","on-surface-variant":"#c4caac","acid-dim":"#A8D700",
+  "surface":"#0A0A0A","surface-container":"#201f1f","surface-container-lowest":"#0e0e0e",
+  "surface-container-high":"#2a2a2a","on-surface":"#e5e2e1","primary":"#ffffff",
+  "muted":"#4A4A4A","void":"#040404","error":"#FF3333","success":"#00FF88",
+  "border":"#1A1A1A","secondary-fixed":"#ffe16d","secondary-container":"#ffdb3c"
+},spacing:{"margin-mobile":"20px","margin-desktop":"40px","grid-unit":"40px"},
+fontFamily:{"headline-xl":["Orbitron"],"headline-md":["Orbitron"],"headline-lg":["Orbitron"],
+  "label-caps":["IBM Plex Mono"],"code-sm":["IBM Plex Mono"],"body-md":["IBM Plex Mono"],"body-lg":["IBM Plex Mono"]},
+fontSize:{"headline-xl":["48px",{lineHeight:"1.1",letterSpacing:"0.1em",fontWeight:"700"}],
+  "headline-md":["24px",{lineHeight:"1.2",fontWeight:"500"}],
+  "headline-lg":["32px",{lineHeight:"1.2",fontWeight:"600"}],
+  "label-caps":["12px",{lineHeight:"1",letterSpacing:"0.2em",fontWeight:"700"}],
+  "code-sm":["14px",{lineHeight:"1.4",fontWeight:"400"}],
+  "body-md":["16px",{lineHeight:"1.5",fontWeight:"400"}],
+  "body-lg":["18px",{lineHeight:"1.6",fontWeight:"400"}]}}}}
+</script>
+</head>
+<body class="grid-bg min-h-screen pb-24">
+<div class="scanline"></div>
+
+<!-- HEADER -->
+<header class="w-full top-0 sticky z-50 bg-void border-b border-outline-variant flex justify-between items-center px-margin-mobile py-4">
+  <div class="flex items-center gap-3">
+    <span class="material-symbols-outlined text-acid-dim">terminal</span>
+    <h1 class="font-headline-md text-headline-md text-acid-dim tracking-tighter">LEDGER_LOG</h1>
+  </div>
+  <a href="profile.html" class="hover:bg-surface transition-colors p-2">
+    <span class="material-symbols-outlined text-acid-dim">account_balance_wallet</span>
+  </a>
+</header>
+
+<main class="px-margin-mobile py-6 max-w-2xl mx-auto">
+
+  <!-- BALANCE -->
+  <section class="mb-10 p-6 bg-surface border border-outline-variant relative overflow-hidden">
+    <div class="absolute top-0 right-0 p-2 font-label-caps text-[10px] text-muted">SERIAL: MD-992-LX</div>
+    <p class="font-label-caps text-on-surface-variant mb-1">TOTAL_CREDITS_AVAILABLE</p>
+    <div class="flex items-baseline gap-2 mb-6">
+      <span id="balance-display" class="font-headline-xl text-headline-xl text-primary neon-glow">0</span>
+      <span class="font-headline-md text-headline-md text-acid-dim">GNS</span>
+    </div>
+    <div class="space-y-4">
+      <div class="flex justify-between font-label-caps text-label-caps">
+        <span class="text-on-surface-variant">TRANSACTION SUMMARY</span>
+        <span class="text-acid-dim" id="node-status">LOADING...</span>
+      </div>
+      <div class="grid grid-cols-2 gap-4 border-t border-outline-variant pt-4">
+        <div>
+          <p class="text-[10px] font-label-caps text-muted mb-1">TOTAL_IN</p>
+          <p id="total-in" class="font-body-lg text-success text-body-lg">+0 GNS</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-label-caps text-muted mb-1">TOTAL_OUT</p>
+          <p id="total-out" class="font-body-lg text-error text-body-lg">-0 GNS</p>
+        </div>
+      </div>
+      <div class="segmented-progress mt-4" id="progress-bar">
+        <div class="segment"></div><div class="segment"></div><div class="segment"></div>
+        <div class="segment"></div><div class="segment"></div><div class="segment"></div>
+        <div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSACTION LIST -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="font-headline-md text-headline-md text-primary">HISTORY_FEED</h2>
+    <span class="material-symbols-outlined text-muted text-sm spinner" id="loading-icon">refresh</span>
+  </div>
+
+  <div class="space-y-px" id="tx-feed">
+    <div class="p-12 text-center">
+      <span class="material-symbols-outlined text-acid-dim text-4xl spinner">refresh</span>
+      <p class="font-label-caps text-muted mt-4 text-xs">LOADING TRANSACTIONS...</p>
+    </div>
+  </div>
+
+  <!-- DOWNLOAD -->
+  <div class="mt-8 flex justify-center">
+    <button id="download-btn" class="w-full py-4 border border-acid-dim text-acid-dim font-label-caps text-label-caps hover:bg-acid-dim hover:text-void transition-all active:scale-[0.98]">
+      &gt; DOWNLOAD_FULL_LEDGER_TXT
+    </button>
+  </div>
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="fixed bottom-0 w-full z-50 bg-void border-t border-outline-variant flex justify-around items-center h-20 px-4">
+  <a href="ledger.html" class="flex flex-col items-center justify-center text-on-primary bg-primary p-2 border border-acid-dim" style="box-shadow:0 0 10px rgba(168,215,0,.4)">
+    <span class="material-symbols-outlined" style="color:#040404;">database</span>
+    <span class="font-label-caps text-[10px] mt-1" style="color:#040404;">LEDGER</span>
+  </a>
+  <a href="verify.html" class="flex flex-col items-center justify-center text-on-surface-variant p-2 opacity-60 hover:text-acid-dim hover:opacity-100 transition-all">
+    <span class="material-symbols-outlined">box_add</span>
+    <span class="font-label-caps text-[10px] mt-1">MINT</span>
+  </a>
+  <a href="market.html" class="flex flex-col items-center justify-center text-on-surface-variant p-2 opacity-60 hover:text-acid-dim hover:opacity-100 transition-all">
+    <span class="material-symbols-outlined">storefront</span>
+    <span class="font-label-caps text-[10px] mt-1">MARKET</span>
+  </a>
+  <a href="verify.html" class="flex flex-col items-center justify-center text-on-surface-variant p-2 opacity-60 hover:text-acid-dim hover:opacity-100 transition-all">
+    <span class="material-symbols-outlined">security</span>
+    <span class="font-label-caps text-[10px] mt-1">VAULT</span>
+  </a>
+</nav>
+
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!user) { window.location.href = 'register.html'; return; }
+
+  // Live balance
+  firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    var gns = doc.data().credits || 0;
+    document.getElementById('balance-display').textContent = gns.toLocaleString();
+    document.getElementById('node-status').textContent = 'ACTIVE_NODE';
+    localStorage.setItem('md_credits', gns);
+    localStorage.setItem('md_user_id', user.uid);
+  });
+
+  loadTransactions(user.uid);
+});
+
+async function loadTransactions(uid) {
+  var feed = document.getElementById('tx-feed');
+  var icon = document.getElementById('loading-icon');
+
+  try {
+    var snap = await firebase.firestore().collection('genesis_vault')
+      .orderBy('createdAt', 'desc').limit(50).get();
+
+    var txns = [];
+    var totalIn = 0, totalOut = 0;
+
+    snap.forEach(function(doc) {
+      var d = doc.data();
+
+      // MINTED by this user
+      if (d.ownerId === uid && !d.transferredAt) {
+        txns.push({ type:'mint', title:'Genesis DNA Minted', sub:d.genesisId||'—', amount:-50, date:d.createdAt, status:'CONFIRMED' });
+        totalOut += 50;
+      }
+      // PURCHASED (transferred to this user)
+      if (d.ownerId === uid && d.transferredAt) {
+        txns.push({ type:'purchase', title:'Market Purchase: '+(d.title||'Video'), sub:d.genesisId||'—', amount:-(d.price||0), date:d.transferredAt, status:'CONFIRMED' });
+        totalOut += d.price||0;
+      }
+    });
+
+    // Sort by date newest first
+    txns.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+    // Update totals
+    document.getElementById('total-in').textContent = '+' + totalIn.toLocaleString() + ' GNS';
+    document.getElementById('total-out').textContent = '-' + totalOut.toLocaleString() + ' GNS';
+
+    // Progress bar
+    var total = totalIn + totalOut;
+    var ratio = total > 0 ? Math.round((totalIn/total)*10) : 0;
+    document.querySelectorAll('.segment').forEach(function(seg,i){ seg.classList.toggle('filled', i < ratio); });
+
+    if (icon) icon.classList.remove('spinner');
+
+    if (!txns.length) {
+      feed.innerHTML = '<div class="p-12 text-center"><span class="material-symbols-outlined text-muted text-4xl">receipt_long</span><p class="font-label-caps text-muted mt-4 text-xs">NO TRANSACTIONS YET</p><p class="font-code-sm text-muted mt-2 text-xs">Generate and register videos to see activity</p></div>';
+      return;
+    }
+
+    feed.innerHTML = txns.map(function(tx) {
+      var icons = {mint:'fingerprint', purchase:'arrow_upward', recharge:'arrow_downward', sale:'arrow_downward'};
+      var icon2 = icons[tx.type] || 'swap_horiz';
+      var icolor = tx.amount > 0 ? 'text-success' : 'text-error';
+      var acolor = tx.amount > 0 ? 'text-success' : 'text-error';
+      var amt = (tx.amount > 0 ? '+' : '') + (tx.amount||0).toLocaleString() + ' GNS';
+      var dt = tx.date ? new Date(tx.date).toLocaleString('en-GB').replace(',',' ') : '—';
+      return '<div class="bg-surface-container-lowest border border-border p-4 flex gap-4 hover:border-acid-dim transition-all">' +
+        '<div class="w-10 h-10 border border-outline-variant flex items-center justify-center shrink-0">' +
+        '<span class="material-symbols-outlined ' + icolor + '" style="font-variation-settings:'FILL' 1">' + icon2 + '</span></div>' +
+        '<div class="flex-1 min-w-0">' +
+        '<div class="flex justify-between items-start">' +
+        '<h3 class="font-body-md text-primary truncate">' + tx.title + '</h3>' +
+        '<p class="font-body-md ' + acolor + ' ml-2 shrink-0">' + amt + '</p></div>' +
+        '<p class="font-code-sm text-muted mt-1 truncate uppercase">' + tx.sub + '</p>' +
+        '<div class="flex justify-between items-end mt-4">' +
+        '<span class="text-[10px] font-label-caps text-muted">' + dt + '</span>' +
+        '<span class="bg-outline-variant/30 text-acid-dim border border-acid-dim px-2 py-0.5 text-[10px] font-bold">CONFIRMED</span>' +
+        '</div></div></div>';
+    }).join('');
+
+  } catch(e) {
+    if (icon) icon.classList.remove('spinner');
+    feed.innerHTML = '<div class="p-8 text-center"><p class="text-error font-label-caps text-xs">ERROR LOADING LEDGER</p></div>';
+  }
+}
+
+// Download
+document.getElementById('download-btn').onclick = function() {
+  var rows = document.querySelectorAll('#tx-feed > div');
+  var txt = 'MERCADREAM LEDGER\n' + '='.repeat(40) + '\n\n';
+  rows.forEach(function(row) {
+    var title = row.querySelector('.font-body-md.text-primary');
+    var amt = row.querySelector('.text-success, .text-error');
+    var dt = row.querySelector('.font-label-caps.text-muted');
+    if (title) txt += (title.textContent||'').trim() + '  ' + (amt ? amt.textContent : '') + '  ' + (dt ? dt.textContent : '') + '\n';
+  });
+  var blob = new Blob([txt], {type:'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mercadream-ledger.txt';
+  a.click();
+};
+</script>
+</body>
+</html>
