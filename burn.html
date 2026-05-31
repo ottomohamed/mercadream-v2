@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | Genesis Protocol</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+body{background:#000;color:#e5e2e1;font-family:"IBM Plex Mono",monospace;overflow-x:hidden;min-height:max(884px,100dvh);}
+.terminal-grid{background-image:radial-gradient(circle,#1a1a1a 1px,transparent 1px);background-size:24px 24px;}
+.acid-glow{box-shadow:0 0 15px rgba(200,255,0,.15);}
+.beveled-btn{clip-path:polygon(0 0,92% 0,100% 25%,100% 100%,8% 100%,0 75%);}
+.scanline{width:100%;height:100px;z-index:100;background:linear-gradient(0deg,rgba(200,255,0,0) 0%,rgba(200,255,0,.02) 50%,rgba(200,255,0,0) 100%);opacity:.1;position:fixed;bottom:100%;pointer-events:none;animation:scanline 8s linear infinite;}
+@keyframes scanline{0%{bottom:100%}100%{bottom:-100px}}
+</style>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{colors:{
+  "primary-fixed":"#c0f500","primary-fixed-dim":"#a8d700","on-primary":"#273500",
+  "surface":"#131313","surface-container":"#201f1f","surface-container-lowest":"#0e0e0e",
+  "surface-container-high":"#2a2a2a","on-surface":"#e5e2e1","on-surface-variant":"#c4caac",
+  "outline-variant":"#434933","background":"#131313"
+}}}}
+</script>
+</head>
+<body class="bg-background terminal-grid">
+<div class="scanline"></div>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-background/80 backdrop-blur-md border-b border-outline-variant">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary-fixed">terminal</span>
+    <h1 style="font-family:Orbitron;font-size:20px;font-weight:700;color:#c0f500;letter-spacing:-0.02em;">MERCADREAM</h1>
+  </div>
+  <div id="gns-header" class="px-3 py-1 border border-outline-variant bg-surface-container" style="font-family:IBM Plex Mono;font-size:11px;color:#c0f500;">0 GNS</div>
+</header>
+
+<main class="pt-20 pb-24 px-4 max-w-md mx-auto space-y-6">
+  <!-- CIRCULATING SUPPLY -->
+  <section class="border border-outline-variant bg-surface-container-lowest p-4 relative overflow-hidden">
+    <div class="absolute top-0 right-0 p-1 text-background" style="background:#c0f500;font-family:IBM Plex Mono;font-size:10px;letter-spacing:.1em;">LIVE_DATA</div>
+    <p style="font-family:IBM Plex Mono;font-size:12px;letter-spacing:.2em;color:#c4caac;margin-bottom:8px;text-transform:uppercase;">CIRCULATING_SUPPLY</p>
+    <div class="flex items-baseline gap-2">
+      <span id="supply-counter" style="font-family:Orbitron;font-size:28px;font-weight:700;color:#c0f500;">1,000,000,000</span>
+      <span style="font-family:IBM Plex Mono;font-size:12px;color:#c0f500;letter-spacing:.2em;">GNS</span>
+    </div>
+    <div class="w-full h-1 bg-surface-variant mt-4 overflow-hidden">
+      <div id="supply-bar" class="h-full bg-primary-fixed transition-all duration-1000" style="width:100%"></div>
+    </div>
+    <p id="burn-rate" style="font-family:IBM Plex Mono;font-size:12px;color:#c4caac;margin-top:8px;opacity:.6;">↓ LOADING...</p>
+  </section>
+
+  <!-- DEFLATIONARY CYCLE -->
+  <section class="space-y-4">
+    <h2 style="font-family:IBM Plex Mono;font-size:12px;letter-spacing:.2em;color:#e5e2e1;border-left:2px solid #c0f500;padding-left:8px;text-transform:uppercase;">Genesis Conversion Cycle</h2>
+    <div class="grid grid-cols-3 gap-2">
+      <div class="bg-surface-container border border-outline-variant p-3 flex flex-col items-center text-center">
+        <span class="material-symbols-outlined text-primary-fixed mb-2">shopping_cart</span>
+        <span style="font-family:IBM Plex Mono;font-size:10px;color:#c4caac;text-transform:uppercase;">1. BUY GNS</span>
+      </div>
+      <div class="bg-surface-container border border-primary-fixed p-3 flex flex-col items-center text-center acid-glow">
+        <span class="material-symbols-outlined text-primary-fixed mb-2" style="font-variation-settings:'FILL' 1;">movie</span>
+        <span style="font-family:IBM Plex Mono;font-size:10px;color:#c0f500;text-transform:uppercase;">2. CREATE</span>
+      </div>
+      <div class="bg-surface-container border border-outline-variant p-3 flex flex-col items-center text-center">
+        <span class="material-symbols-outlined mb-2" style="color:#c4caac;">diamond</span>
+        <span style="font-family:IBM Plex Mono;font-size:10px;color:#c4caac;text-transform:uppercase;">3. ASSET</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- VELOCITY CHART -->
+  <section class="bg-surface-container border border-outline-variant p-4">
+    <div class="flex justify-between items-center mb-6">
+      <h2 style="font-family:IBM Plex Mono;font-size:12px;letter-spacing:.2em;color:#e5e2e1;text-transform:uppercase;">CONVERSION_VELOCITY</h2>
+      <span id="velocity-delta" style="font-family:IBM Plex Mono;font-size:12px;color:#c0f500;">+0 TODAY</span>
+    </div>
+    <div class="h-32 flex items-end gap-1 px-2" id="chart-bars">
+      <div class="flex-1 bg-primary-fixed/20" style="height:20%"></div>
+      <div class="flex-1 bg-primary-fixed/30" style="height:30%"></div>
+      <div class="flex-1 bg-primary-fixed/40" style="height:25%"></div>
+      <div class="flex-1 bg-primary-fixed/50" style="height:40%"></div>
+      <div class="flex-1 bg-primary-fixed/60" style="height:50%"></div>
+      <div class="flex-1 bg-primary-fixed border-t-2 border-primary-fixed" style="height:60%;box-shadow:0 -5px 15px rgba(200,255,0,.4)"></div>
+    </div>
+  </section>
+
+  <!-- PROTOCOL LOGIC -->
+  <section class="relative group border border-primary-fixed/30 p-4 space-y-3" style="background:rgba(200,255,0,.05)">
+    <div class="flex items-center gap-2 text-primary-fixed">
+      <span class="material-symbols-outlined">info</span>
+      <h3 style="font-family:IBM Plex Mono;font-size:12px;letter-spacing:.2em;text-transform:uppercase;">PROTOCOL_LOGIC</h3>
+    </div>
+    <p style="font-family:IBM Plex Mono;font-size:13px;color:#e5e2e1;line-height:1.6;">
+      <span style="color:#c0f500;font-weight:700;">Every Creation Increases Rarity.</span> 
+      When GNS converts into a Genesis-stamped video asset, it permanently leaves circulation. 
+      Early adopters hold appreciating assets. The platform holds growing value.
+    </p>
+  </section>
+
+  <!-- RECENT CONVERSIONS -->
+  <section class="space-y-4">
+    <h2 style="font-family:IBM Plex Mono;font-size:12px;letter-spacing:.2em;color:#e5e2e1;border-left:2px solid #c0f500;padding-left:8px;text-transform:uppercase;">Recent Conversions</h2>
+    <div id="conversions-feed" class="space-y-3">
+      <div class="p-8 text-center">
+        <span class="material-symbols-outlined text-primary-fixed spinner" style="font-size:32px;animation:spin 1s linear infinite;">refresh</span>
+      </div>
+    </div>
+    <button onclick="window.location.href='ledger.html'" class="w-full py-4 bg-primary-fixed text-background beveled-btn hover:bg-white transition-colors active:scale-95" style="font-family:IBM Plex Mono;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;">
+      VIEW FULL LEDGER
+    </button>
+  </section>
+</main>
+
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-background/90 backdrop-blur-xl border-t border-outline-variant">
+  <a href="index.html" class="flex flex-col items-center text-on-surface-variant p-1 hover:text-primary-fixed transition-all">
+    <span class="material-symbols-outlined">explore</span>
+    <span style="font-family:IBM Plex Mono;font-size:10px;letter-spacing:.1em;">Explore</span>
+  </a>
+  <a href="studio.html" class="flex flex-col items-center text-on-surface-variant p-1 hover:text-primary-fixed transition-all">
+    <span class="material-symbols-outlined">movie_filter</span>
+    <span style="font-family:IBM Plex Mono;font-size:10px;letter-spacing:.1em;">Studio</span>
+  </a>
+  <a href="verify.html" class="flex flex-col items-center text-on-surface-variant p-1 hover:text-primary-fixed transition-all">
+    <span class="material-symbols-outlined">verified</span>
+    <span style="font-family:IBM Plex Mono;font-size:10px;letter-spacing:.1em;">Vault</span>
+  </a>
+  <a href="market.html" class="flex flex-col items-center text-primary-fixed bg-on-primary-fixed-variant/20 rounded-lg p-1 border border-primary-fixed">
+    <span class="material-symbols-outlined">storefront</span>
+    <span style="font-family:IBM Plex Mono;font-size:10px;letter-spacing:.1em;">Market</span>
+  </a>
+  <a href="profile.html" class="flex flex-col items-center text-on-surface-variant p-1 hover:text-primary-fixed transition-all">
+    <span class="material-symbols-outlined">person</span>
+    <span style="font-family:IBM Plex Mono;font-size:10px;letter-spacing:.1em;">Profile</span>
+  </a>
+</nav>
+
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!user) return;
+  
+  firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    var gns = doc.data().credits || 0;
+    localStorage.setItem('md_credits', gns);
+    document.getElementById('gns-header').textContent = gns.toLocaleString() + ' GNS';
+  });
+  
+  // Load genesis vault stats
+  firebase.firestore().collection('genesis_vault').orderBy('createdAt','desc').limit(20).get().then(function(snap) {
+    var total = snap.size;
+    var converted = total * 50;
+    var initialSupply = 1000000000;
+    var circulating = initialSupply - converted;
+    
+    document.getElementById('supply-counter').textContent = circulating.toLocaleString();
+    document.getElementById('supply-bar').style.width = (circulating / initialSupply * 100) + '%';
+    document.getElementById('burn-rate').textContent = '↓ -' + converted.toLocaleString() + ' GNS CONVERTED TO ASSETS';
+    document.getElementById('velocity-delta').textContent = '+' + total + ' TODAY';
+    
+    // Recent conversions
+    var feed = document.getElementById('conversions-feed');
+    var items = [];
+    snap.forEach(function(doc) { items.push(doc.data()); });
+    
+    if (!items.length) {
+      feed.innerHTML = '<div class="p-8 text-center" style="font-family:IBM Plex Mono;font-size:10px;color:#4a4a4a;">NO CONVERSIONS YET</div>';
+      return;
+    }
+    
+    feed.innerHTML = items.slice(0,5).map(function(d) {
+      var thumb = d.thumbnail || '';
+      return '<div class="flex gap-4 p-3 bg-surface-container-lowest border border-outline-variant">' +
+        (thumb ? '<div class="w-16 h-16 shrink-0 border border-outline-variant overflow-hidden"><img class="w-full h-full object-cover" src="' + thumb + '"/></div>' :
+          '<div class="w-16 h-16 shrink-0 border border-outline-variant bg-surface flex items-center justify-center"><span class="material-symbols-outlined text-primary-fixed">movie</span></div>') +
+        '<div class="flex-1 min-w-0">' +
+        '<div class="flex justify-between items-start">' +
+        '<p style="font-family:IBM Plex Mono;font-size:11px;color:#c0f500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (d.genesisId||'—') + '</p>' +
+        '<span style="font-family:IBM Plex Mono;font-size:10px;color:#c4caac;">MINTED</span></div>' +
+        '<p style="font-family:IBM Plex Mono;font-size:10px;color:#c4caac;text-transform:uppercase;margin-top:4px;">' + (d.title||'Untitled') + '</p>' +
+        '<div style="margin-top:8px;display:flex;align-items:center;gap:4px;color:#c0f500;font-family:IBM Plex Mono;font-size:11px;">' +
+        '<span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">movie</span><span>-50 GNS → ASSET</span></div></div></div>';
+    }).join('');
+  }).catch(function() {
+    document.getElementById('conversions-feed').innerHTML = '<div class="p-8 text-center" style="font-family:IBM Plex Mono;font-size:10px;color:#4a4a4a;">NO DATA</div>';
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | NEURAL_CLEAN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=IBM+Plex+Mono:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+:root{--acid-green:#C8FF00;--muted-silver:#a0a0a0;}
+body{background:#080808;color:#e5e2e1;font-family:"IBM Plex Mono",monospace;overflow-x:hidden;min-height:max(884px,100dvh);}
+.terminal-grid{background-size:32px 32px;background-image:linear-gradient(to right,rgba(200,255,0,.03) 1px,transparent 1px),linear-gradient(to bottom,rgba(200,255,0,.03) 1px,transparent 1px);}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.1) 50%);background-size:100% 3px;pointer-events:none;z-index:100;}
+.glass-panel{background:rgba(20,20,20,.6);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.05);}
+.glow-border{border:1px solid rgba(200,255,0,.3);box-shadow:inset 0 0 10px rgba(200,255,0,.05),0 0 15px rgba(200,255,0,.1);}
+.laser-scan{position:absolute;top:0;left:0;width:100%;height:2px;background:var(--acid-green);box-shadow:0 0 15px var(--acid-green),0 0 30px var(--acid-green);z-index:10;animation:scan 4s linear infinite;}
+@keyframes scan{0%{top:0%;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100%;opacity:0}}
+.execute-btn{position:relative;overflow:hidden;background:var(--acid-green);color:#000;transition:all .3s;border:1px solid var(--acid-green);}
+.execute-btn:hover:not(:disabled){background:transparent;color:var(--acid-green);box-shadow:0 0 30px rgba(200,255,0,.4);}
+.execute-btn:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(1);}
+.font-orbitron{font-family:"Orbitron",sans-serif;}
+.custom-scrollbar::-webkit-scrollbar{width:4px}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:var(--acid-green);border-radius:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{animation:spin 1s linear infinite}
+</style>
+</head>
+<body class="terminal-grid text-white antialiased">
+<div class="scanlines"></div>
+<header class="w-full top-0 sticky bg-black/80 backdrop-blur-xl border-b border-white/5 flex justify-between items-center px-6 py-4 z-50">
+  <div class="flex items-center gap-4">
+    <div class="w-8 h-8 flex items-center justify-center border border-primary/40 bg-primary/5" style="border-color:rgba(200,255,0,.4)">
+      <span class="material-symbols-outlined text-xl" style="color:#C8FF00">settings_input_component</span>
+    </div>
+    <h1 class="font-orbitron text-lg font-bold tracking-widest text-white">MERCADREAM <span style="color:rgba(200,255,0,.6)">//</span> <span style="color:#C8FF00">NEURAL_CLEAN</span></h1>
+  </div>
+  <div class="flex items-center gap-4">
+    <div id="gns-balance" class="font-orbitron text-sm font-bold" style="color:#C8FF00">GNS: 0</div>
+    <a href="profile.html" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center">
+      <span class="material-symbols-outlined" style="color:#a0a0a0">person</span>
+    </a>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-12 pb-32">
+  <section class="mb-10">
+    <div class="flex items-center gap-3 mb-2">
+      <span class="w-2 h-2 animate-pulse" style="background:#C8FF00;box-shadow:0 0 8px #C8FF00"></span>
+      <p style="font-size:9px;letter-spacing:.15em;color:#C8FF00;text-transform:uppercase;font-weight:700;">CORE_PROTOCOL_ACTIVE</p>
+    </div>
+    <h2 class="text-4xl font-orbitron font-bold uppercase">Utility: BG_Remover</h2>
+    <div class="h-px w-full mt-6" style="background:linear-gradient(to right,rgba(200,255,0,.5),rgba(255,255,255,.1),transparent)"></div>
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-8 space-y-6">
+      <input accept="image/*" class="hidden" id="file-input" type="file"/>
+      <div class="relative glass-panel glow-border p-1 cursor-pointer overflow-hidden" id="drop-zone">
+        <div class="laser-scan"></div>
+        <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 z-20" style="border-color:#C8FF00"></div>
+        <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 z-20" style="border-color:#C8FF00"></div>
+        <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 z-20" style="border-color:#C8FF00"></div>
+        <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 z-20" style="border-color:#C8FF00"></div>
+        <div class="relative bg-black/40 min-h-96 flex flex-col items-center justify-center p-12" id="scan-area">
+          <div id="scan-init">
+            <span class="material-symbols-outlined text-7xl mb-4" style="color:#C8FF00;display:block;text-align:center;text-shadow:0 0 20px rgba(200,255,0,.4)">filter_center_focus</span>
+            <h3 class="font-orbitron text-2xl font-bold tracking-widest text-white mb-3 text-center uppercase">Upload Image</h3>
+            <p style="font-size:9px;color:#a0a0a0;letter-spacing:.15em;text-align:center;text-transform:uppercase;">JPG · PNG · WEBP — Background will be removed</p>
+          </div>
+          <div class="hidden absolute inset-0 z-20 p-8 flex items-center justify-center" id="upload-preview">
+            <img alt="" class="max-h-full max-w-full object-contain" id="preview-img" src=""/>
+          </div>
+          <div class="absolute bottom-0 left-0 w-full h-0.5" style="background:rgba(255,255,255,.05)">
+            <div id="progress-bar" class="h-full transition-all" style="background:#C8FF00;box-shadow:0 0 10px #C8FF00;width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4">
+        <button id="execute-btn" class="execute-btn flex-2 py-5 px-10 font-orbitron font-bold tracking-widest text-sm flex items-center justify-center gap-4" disabled>
+          <span class="material-symbols-outlined" id="btn-icon">auto_fix_high</span>
+          <span id="btn-text">REMOVE BACKGROUND — 15 GNS</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="lg:col-span-4 space-y-6">
+      <div class="glass-panel p-6">
+        <h3 class="font-orbitron text-xs font-bold tracking-widest flex items-center gap-2 mb-4" style="color:#C8FF00">
+          <span class="material-symbols-outlined text-sm">database</span>PROTOCOL_SPECS
+        </h3>
+        <p style="font-size:11px;line-height:1.6;color:#a0a0a0;font-style:italic;border-left:1px solid rgba(200,255,0,.3);padding-left:16px;">
+          AI Background Removal Engine. Isolates subjects with pixel-perfect precision. Outputs transparent PNG ready for compositing.
+        </p>
+      </div>
+
+      <div class="bg-black/80 border border-white/10 overflow-hidden flex flex-col h-64">
+        <div class="bg-white/5 px-4 py-2 flex gap-1.5 border-b border-white/10">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+          <div class="w-2.5 h-2.5 rounded-full" style="background:rgba(200,255,0,.5)"></div>
+        </div>
+        <div id="terminal-content" class="p-4 text-xs space-y-1.5 overflow-y-auto custom-scrollbar flex-1">
+          <p style="color:rgba(200,255,0,.6)">&gt; INITIALIZING...</p>
+          <p style="color:rgba(255,255,255,.4)">&gt; NEURAL_WEIGHTS: LOADED</p>
+          <p id="terminal-ready" class="animate-pulse" style="color:#C8FF00">&gt; READY_FOR_INPUT...</p>
+        </div>
+      </div>
+
+      <div id="result-panel" style="display:none;border:1px solid rgba(200,255,0,.3);padding:16px;">
+        <img id="result-img" src="" style="width:100%;max-height:200px;object-fit:contain;margin-bottom:12px;"/>
+        <a id="result-download" href="" download="clean.png" style="display:block;text-align:center;padding:10px;background:#C8FF00;color:#000;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;text-decoration:none;">⬇ DOWNLOAD PNG</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="fixed bottom-0 w-full z-50 bg-black/90 backdrop-blur-2xl border-t border-white/5 pb-safe">
+  <div class="flex justify-around items-stretch max-w-2xl mx-auto">
+    <a href="ledger.html" class="flex flex-col items-center gap-1 py-4 px-6" style="color:#a0a0a0">
+      <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+      <span style="font-size:8px;letter-spacing:.15em;text-transform:uppercase;">LEDGER</span>
+    </a>
+    <a href="studio.html" class="flex flex-col items-center gap-1 py-4 px-6" style="color:#a0a0a0">
+      <span class="material-symbols-outlined text-2xl">movie_filter</span>
+      <span style="font-size:8px;letter-spacing:.15em;text-transform:uppercase;">STUDIO</span>
+    </a>
+    <a href="clean.html" class="flex flex-col items-center gap-1 py-4 px-10 border-t-2" style="color:#C8FF00;border-color:#C8FF00;background:rgba(200,255,0,.05)">
+      <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">auto_fix_high</span>
+      <span style="font-size:8px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;">UTILITY</span>
+    </a>
+    <a href="verify.html" class="flex flex-col items-center gap-1 py-4 px-6" style="color:#a0a0a0">
+      <span class="material-symbols-outlined text-2xl">security</span>
+      <span style="font-size:8px;letter-spacing:.15em;text-transform:uppercase;">VAULT</span>
+    </a>
+  </div>
+</nav>
+
+<script>
+var CLEAN_COST = 15;
+var currentUser = null;
+var selectedDataUrl = null;
+
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+
+firebase.auth().onAuthStateChanged(function(user) {
+  currentUser = user;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      var gns = doc.data().credits || 0;
+      localStorage.setItem('md_credits', gns);
+      localStorage.setItem('md_user_id', user.uid);
+      document.getElementById('gns-balance').textContent = 'GNS: ' + gns.toLocaleString();
+    });
+  }
+});
+
+document.getElementById('drop-zone').addEventListener('click', function() {
+  document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    selectedDataUrl = ev.target.result;
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('upload-preview').classList.remove('hidden');
+    document.getElementById('scan-init').classList.add('hidden');
+    document.getElementById('execute-btn').disabled = false;
+    addLog('FILE_ATTACHED: ' + file.name.toUpperCase());
+  };
+  reader.readAsDataURL(file);
+});
+
+function addLog(text, cls) {
+  var p = document.createElement('p');
+  p.style.color = cls === 'error' ? '#ff4444' : 'rgba(200,255,0,.8)';
+  p.textContent = '> ' + text;
+  var tc = document.getElementById('terminal-content');
+  tc.appendChild(p);
+  tc.scrollTop = tc.scrollHeight;
+}
+
+document.getElementById('execute-btn').addEventListener('click', async function() {
+  if (!selectedDataUrl) return;
+  var gns = parseInt(localStorage.getItem('md_credits') || '0');
+  if (gns < CLEAN_COST) {
+    addLog('INSUFFICIENT GNS', 'error');
+    setTimeout(function() { window.location.href = 'pricing.html'; }, 1500);
+    return;
+  }
+  
+  var btn = document.getElementById('execute-btn');
+  var icon = document.getElementById('btn-icon');
+  var text = document.getElementById('btn-text');
+  btn.disabled = true;
+  icon.classList.add('spinner');
+  text.textContent = 'PROCESSING...';
+  addLog('EXECUTING NEURAL SCAN...');
+  
+  var bar = document.getElementById('progress-bar');
+  var prog = 0;
+  var fakeInt = setInterval(function() {
+    if (prog < 90) { prog += 5; bar.style.width = prog + '%'; }
+  }, 300);
+  
+  try {
+    var res = await fetch('/api/bgremover', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ input_url: selectedDataUrl, mode: 'image', action: 'remove' })
+    });
+    var data = await res.json();
+    
+    if (data.error) {
+      clearInterval(fakeInt);
+      addLog('ERROR: ' + data.error, 'error');
+      btn.disabled = false; icon.classList.remove('spinner'); text.textContent = 'REMOVE BACKGROUND — 15 GNS';
+      return;
+    }
+    
+    var newGns = gns - CLEAN_COST;
+    localStorage.setItem('md_credits', newGns);
+    if (currentUser) firebase.firestore().collection('users').doc(currentUser.uid).update({ credits: newGns });
+    document.getElementById('gns-balance').textContent = 'GNS: ' + newGns.toLocaleString();
+    
+    if (data.url) {
+      clearInterval(fakeInt);
+      showResult(data.url);
+      btn.disabled = false; icon.classList.remove('spinner'); text.textContent = '✓ COMPLETE';
+      return;
+    }
+    
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 40) { clearInterval(poll); clearInterval(fakeInt); btn.disabled = false; return; }
+      text.textContent = 'PROCESSING [' + attempts + ']...';
+      var pr = await fetch('/api/bgremover', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'poll', id: data.id})
+      });
+      var pd = await pr.json();
+      if (pd.url) {
+        clearInterval(poll); clearInterval(fakeInt);
+        showResult(pd.url);
+        btn.disabled = false; icon.classList.remove('spinner'); text.textContent = '✓ COMPLETE';
+      }
+    }, 2000);
+    
+  } catch(e) {
+    clearInterval(fakeInt);
+    addLog('ERROR: ' + e.message, 'error');
+    btn.disabled = false; icon.classList.remove('spinner'); text.textContent = 'REMOVE BACKGROUND — 15 GNS';
+  }
+});
+
+function showResult(url) {
+  document.getElementById('progress-bar').style.width = '100%';
+  addLog('RECONSTRUCTION_COMPLETE [100%]');
+  var panel = document.getElementById('result-panel');
+  document.getElementById('result-img').src = url;
+  document.getElementById('result-download').href = url;
+  panel.style.display = 'block';
+}
+</script>
+</body>
+</html>

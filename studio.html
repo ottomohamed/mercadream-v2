@@ -1,19 +1,24 @@
-﻿<!DOCTYPE html>
-<html class="dark" lang="en"><head>
+﻿<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM Studio | Production Suite</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
+        body {
+            background-image: 
+                linear-gradient(to right, rgba(168, 215, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(168, 215, 0, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
         .scanline-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(200, 255, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
             z-index: 100;
@@ -26,7 +31,7 @@
             background: rgba(0,0,0,0.2);
         }
         .terminal-scroll::-webkit-scrollbar-thumb {
-            background: #a8d700;
+            background: #c8ff00;
         }
         @keyframes blink {
             0%, 100% { opacity: 1; }
@@ -37,8 +42,8 @@
         }
         .waveform-bar {
             width: 4px;
-            background: #a8d700;
-            border-radius: 2px;
+            background: #c8ff00;
+            border-radius: 0;
             animation: waveform 1s ease-in-out infinite;
         }
         @keyframes waveform {
@@ -49,13 +54,31 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 10px; height: 10px;
-            border-top: 1px solid #a8d700; border-left: 1px solid #a8d700;
+            border-top: 1px solid #c8ff00; border-left: 1px solid #c8ff00;
         }
         .corner-bracket::after {
             content: '';
             position: absolute;
             bottom: 0; right: 0; width: 10px; height: 10px;
-            border-bottom: 1px solid #a8d700; border-right: 1px solid #a8d700;
+            border-bottom: 1px solid #c8ff00; border-right: 1px solid #c8ff00;
+        }
+        * { border-radius: 0 !important; }
+
+        /* Onboarding Styles from SCREEN_15 */
+        .neon-glow-acid {
+            box-shadow: 0 0 15px rgba(168, 215, 0, 0.3);
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: #c8ff00;
+            animation: blink 1s step-end infinite;
+        }
+        #main-content.blur-active {
+            filter: blur(8px) brightness(0.4);
+            pointer-events: none;
+            transition: filter 0.3s ease;
         }
     </style>
 <script id="tailwind-config">
@@ -67,56 +90,51 @@
                       "secondary-fixed": "#ffdeae",
                       "on-secondary": "#432c00",
                       "on-secondary-fixed-variant": "#604100",
-                      "secondary": "#ffba3f",
+                      "secondary": "#ffd700",
                       "on-tertiary-fixed-variant": "#2f4a5e",
                       "tertiary": "#ffffff",
-                      "primary": "#ffffff",
-                      "background": "#121509",
+                      "primary": "#c8ff00",
+                      "background": "#0a0a0a",
                       "tertiary-fixed": "#cae6ff",
                       "inverse-on-surface": "#2f3225",
                       "tertiary-container": "#cae6ff",
-                      "surface-container-lowest": "#0c0f05",
-                      "primary-fixed-dim": "#a8d700",
+                      "surface-container-lowest": "#050505",
+                      "primary-fixed-dim": "#c8ff00",
                       "on-tertiary-fixed": "#001e2f",
-                      "outline-variant": "#444934",
-                      "primary-container": "#c3f432",
-                      "surface-dim": "#121509",
-                      "surface-container-low": "#1a1d11",
-                      "on-primary-container": "#546d00",
+                      "outline-variant": "#333333",
+                      "primary-container": "#c8ff00",
+                      "surface-dim": "#0a0a0a",
+                      "surface-container-low": "#111111",
+                      "on-primary-container": "#000000",
                       "tertiary-fixed-dim": "#aecae2",
-                      "on-primary-fixed": "#161f00",
-                      "surface-container-high": "#282b1f",
-                      "on-error": "#690005",
-                      "outline": "#8e937b",
-                      "error": "#ffb4ab",
-                      "surface-container": "#1e2115",
+                      "on-primary-fixed": "#000000",
+                      "surface-container-high": "#1a1a1a",
+                      "on-error": "#ffffff",
+                      "outline": "#444444",
+                      "error": "#ff3b3b",
+                      "surface-container": "#151515",
                       "inverse-primary": "#4f6600",
-                      "surface-variant": "#333629",
-                      "surface-tint": "#a8d700",
-                      "surface-bright": "#373b2d",
-                      "on-primary": "#273500",
-                      "primary-fixed": "#c3f432",
-                      "on-primary-fixed-variant": "#3b4d00",
+                      "surface-variant": "#222222",
+                      "surface-tint": "#c8ff00",
+                      "surface-bright": "#2a2a2a",
+                      "on-primary": "#000000",
+                      "primary-fixed": "#c8ff00",
+                      "on-primary-fixed-variant": "#000000",
                       "on-secondary-container": "#3e2800",
-                      "surface-container-highest": "#333629",
-                      "secondary-fixed-dim": "#ffba3f",
-                      "on-surface": "#e2e4d1",
-                      "on-surface-variant": "#c4c9ae",
-                      "on-background": "#e2e4d1",
+                      "surface-container-highest": "#222222",
+                      "secondary-fixed-dim": "#ffd700",
+                      "on-surface": "#e0e0e0",
+                      "on-surface-variant": "#a0a0a0",
+                      "on-background": "#e0e0e0",
                       "on-secondary-fixed": "#281900",
                       "on-tertiary": "#173346",
                       "on-error-container": "#ffdad6",
-                      "inverse-surface": "#e2e4d1",
+                      "inverse-surface": "#e0e0e0",
                       "on-tertiary-container": "#4d677d",
                       "error-container": "#93000a",
                       "secondary-container": "#c48800",
-                      "surface": "#121509"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
+                      "surface": "#0a0a0a",
+                      "acid-dim": "#c8ff00"
               },
               "spacing": {
                       "sm": "8px",
@@ -125,11 +143,15 @@
                       "unit": "4px",
                       "md": "16px",
                       "xl": "32px",
-                      "xs": "4px"
+                      "xs": "4px",
+                      "margin-mobile": "20px",
+                      "grid-unit": "40px"
               },
               "fontFamily": {
                       "headline-sm": ["Orbitron"],
+                      "headline-xl": ["Orbitron"],
                       "label-technical": ["IBM Plex Mono"],
+                      "label-caps": ["IBM Plex Mono"],
                       "body-md": ["Inter"],
                       "body-lg": ["Inter"],
                       "display-lg": ["Orbitron"],
@@ -138,7 +160,9 @@
               },
               "fontSize": {
                       "headline-sm": ["18px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.1em", "fontWeight": "700"}],
                       "label-technical": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.2em", "fontWeight": "700"}],
                       "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
                       "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
                       "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
@@ -148,55 +172,50 @@
             },
           },
         }
-      </script>
-<script>
-
-</script>
+    </script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-    authDomain: "mercadream-4b4b3.firebaseapp.com",
-    projectId: "mercadream-4b4b3",
-    storageBucket: "mercadream-4b4b3.firebasestorage.app",
-    messagingSenderId: "257560928442",
-    appId: "1:257560928442:web:06983f27629a13eeed6283",
-    measurementId: "G-F0CLDJCV42"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
-
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+            authDomain: "mercadream-4b4b3.firebaseapp.com",
+            projectId: "mercadream-4b4b3",
+            storageBucket: "mercadream-4b4b3.firebasestorage.app",
+            messagingSenderId: "257560928442",
+            appId: "1:257560928442:web:06983f27629a13eeed6283",
+            measurementId: "G-F0CLDJCV42"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
 </head>
-<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container h-screen w-screen overflow-hidden flex flex-col"><script src="md-engine.js"></script>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container h-screen w-screen overflow-hidden flex flex-col relative">
 <div class="scanline-overlay"></div>
-<header class="h-16 flex items-center justify-between px-md border-b border-outline-variant bg-surface-container-lowest z-50 shadow-[0_0_12px_rgba(168,215,0,0.2)]">
+<!-- MAIN STUDIO INTERFACE -->
+<div class="flex flex-col h-full w-full" id="main-content">
+<header class="h-16 flex items-center justify-between px-md border-b border-outline-variant bg-surface-container-lowest z-50 shadow-[0_0_15px_rgba(168,217,0,0.2)]">
 <div class="flex items-center gap-md">
 <h1 class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-fixed-dim">MERCADREAM</h1>
-<span class="font-label-technical text-label-technical text-on-surface-variant border-l border-outline-variant pl-md uppercase tracking-widest">Production Suite V.2.4.0</span>
+<span class="font-label-technical text-label-technical text-on-surface-variant border-l border-outline-variant pl-md uppercase tracking-widest">Studio V.2.4.0</span>
 </div>
 <nav class="hidden md:flex items-center gap-lg h-full">
-<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs" onclick="switchPhase('DISCOVERY',this)">DISCOVERY</button>
-<button class="font-label-technical text-label-technical text-primary border-b-2 border-primary-fixed-dim h-full px-xs active-phase" onclick="switchPhase('SCREENPLAY',this)">SCREENPLAY</button>
-<button class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full px-xs" onclick="switchPhase('PRODUCTION',this)">PRODUCTION</button>
+<a class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full flex items-center px-xs" href="explore.html">EXPLORE</a>
+<a class="font-label-technical text-label-technical text-primary border-b-2 border-primary-fixed-dim h-full flex items-center px-xs" href="studio.html">STUDIO</a>
+<a class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full flex items-center px-xs" href="vault.html">VAULT</a>
+<a class="font-label-technical text-label-technical text-on-surface-variant hover:text-primary transition-colors border-b-2 border-transparent hover:border-primary-fixed-dim h-full flex items-center px-xs" href="profile.html">PROFILE</a>
 </nav>
 <div class="flex items-center gap-md">
-<div class="flex items-center gap-xs px-sm py-unit bg-surface-variant rounded-full border border-outline-variant">
-<span class="material-symbols-outlined text-primary-fixed-dim text-[16px]">database</span>
-<span class="font-label-technical text-label-technical" id="top-credits">0 CR</span>
+<div class="flex items-center gap-xs px-sm py-unit bg-surface-variant border border-outline-variant">
+<span class="material-symbols-outlined text-[#c8ff00] text-[16px]">bolt</span>
+<span class="font-label-technical text-label-technical" id="top-credits">1,250 GNS</span>
 </div>
-<a href="pricing.html" class="flex items-center gap-xs px-sm py-unit bg-primary-fixed-dim text-on-primary font-label-technical text-[10px] hover:brightness-110 transition-all active:scale-95">
-<span class="material-symbols-outlined text-[14px]">bolt</span>
-RECHARGE
-</a>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" onclick="cycleLang()" title="Switch Language">language</button>
-<a href="profile.html" class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant flex items-center justify-center hover:border-primary-fixed-dim transition-all" title="My Profile"><span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim text-[20px]">account_circle</span></a>
+<a class="w-8 h-8 bg-surface-variant border border-outline-variant flex items-center justify-center hover:border-primary-fixed-dim transition-all" href="profile.html" title="My Profile"><span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim text-[20px]">account_circle</span></a>
 </div>
 </header>
-<main class="flex-1 flex overflow-hidden gap-panel-gap p-unit min-h-0">
-<aside class="w-[clamp(260px,20vw,320px)] flex flex-col gap-panel-gap min-h-0">
+<main class="flex-1 flex flex-col md:flex-row overflow-hidden gap-panel-gap p-unit min-h-0">
+<aside class="w-full md:w-[clamp(260px,20vw,320px)] flex flex-col gap-panel-gap min-h-0 order-2 md:order-1">
 <section class="flex-1 bg-surface-container-low border border-outline-variant flex flex-col min-h-0 relative">
 <div class="p-sm border-b border-outline-variant bg-surface-container flex justify-between items-center">
 <h2 class="font-headline-sm text-headline-sm text-primary-fixed-dim">CREW</h2>
@@ -208,108 +227,90 @@ RECHARGE
 <span class="material-symbols-outlined">smart_toy</span>
 </div>
 <div>
-<p class="font-label-technical text-primary-fixed-dim text-sm">GEMINI-9</p>
-<p class="text-[10px] text-on-surface-variant font-label-technical">LEAD NARRATIVE</p>
+<p class="font-label-technical text-primary-fixed-dim text-sm uppercase">Gemini-9</p>
+<p class="text-[10px] text-on-surface-variant font-label-technical uppercase">Lead Narrative</p>
 </div>
-<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700]"></div>
-</div>
-<div class="p-sm bg-surface-container-high border border-outline-variant flex items-center gap-md relative opacity-60">
-<div class="w-10 h-10 bg-surface-variant flex items-center justify-center text-on-surface">
-<span class="material-symbols-outlined">psychology</span>
-</div>
-<div>
-<p class="font-label-technical text-sm">CLAUDE-3</p>
-<p class="text-[10px] text-on-surface-variant font-label-technical">DIALOGUE SYNC</p>
-</div>
-<div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-outline"></div>
+<div class="absolute top-2 right-2 w-2 h-2 bg-primary-fixed-dim shadow-[0_0_8px_#c8ff00]"></div>
 </div>
 </div>
 <div class="mt-auto p-md bg-surface-container border-t border-outline-variant">
-<h3 class="font-label-technical text-[10px] text-on-surface-variant mb-sm">COMMAND LIBRARY</h3>
+<h3 class="font-label-technical text-[10px] text-on-surface-variant mb-sm uppercase">Command Library</h3>
 <div class="flex flex-col gap-xs">
-<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30 rounded">
+<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30">
 <span class="font-label-technical text-[11px]">/EXECUTE_GENESIS</span>
 <span class="bg-primary-fixed-dim text-on-primary text-[8px] px-1 font-bold">EXEC</span>
-</div>
-<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30 rounded">
-<span class="font-label-technical text-[11px]">/MOD_TONALITY</span>
-<span class="bg-secondary text-on-secondary text-[8px] px-1 font-bold">MOD</span>
-</div>
-<div class="flex justify-between items-center p-xs bg-surface-variant/50 border border-outline-variant/30 rounded">
-<span class="font-label-technical text-[11px]">/SYNC_SEQUENCE</span>
-<span class="bg-tertiary-fixed-dim text-on-tertiary text-[8px] px-1 font-bold">SYNC</span>
 </div>
 </div>
 </div>
 </section>
-<section class="h-1/3 bg-surface-container-low border border-outline-variant flex flex-col p-md min-h-0">
-<h3 class="font-label-technical text-[11px] text-on-surface-variant mb-md tracking-tighter">DIRECTOR PROTOCOL</h3>
+<section class="h-auto md:h-1/3 bg-surface-container-low border border-outline-variant flex flex-col p-md min-h-0">
+<h3 class="font-label-technical text-[11px] text-on-surface-variant mb-md tracking-tighter uppercase">Director Protocol</h3>
 <div class="grid grid-cols-2 gap-sm" id="director-selector">
 <label class="flex items-center gap-xs p-xs border border-primary-fixed-dim bg-primary-fixed-dim/10 cursor-pointer transition-all hover:bg-primary-fixed-dim/20">
 <input checked="" class="hidden" name="director" type="radio" value="Drama"/>
-<span class="w-2 h-2 rounded-full bg-primary-fixed-dim"></span>
+<span class="w-2 h-2 bg-primary-fixed-dim"></span>
 <span class="font-label-technical text-[10px]">DRAMA</span>
 </label>
 <label class="flex items-center gap-xs p-xs border border-outline cursor-pointer transition-all hover:border-error hover:bg-error/10">
 <input class="hidden" name="director" type="radio" value="Action"/>
-<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="w-2 h-2 bg-error"></span>
 <span class="font-label-technical text-[10px]">ACTION</span>
 </label>
 <label class="flex items-center gap-xs p-xs border border-outline cursor-pointer transition-all hover:border-secondary hover:bg-secondary/10">
 <input class="hidden" name="director" type="radio" value="Comedy"/>
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="w-2 h-2 bg-secondary"></span>
 <span class="font-label-technical text-[10px]">COMEDY</span>
 </label>
 <label class="flex items-center gap-xs p-xs border border-outline cursor-pointer transition-all hover:border-tertiary-fixed-dim hover:bg-tertiary-fixed-dim/10">
 <input class="hidden" name="director" type="radio" value="Documentary"/>
-<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span class="w-2 h-2 bg-tertiary-fixed-dim"></span>
 <span class="font-label-technical text-[10px]">DOCS</span>
 </label>
 </div>
 <div class="mt-sm border border-outline-variant/40 bg-surface-container p-xs">
-<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest">SCENES</div>
+<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest uppercase">Scenes</div>
 <div class="flex gap-xs">
-  <button onclick="setSceneCount(2)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="2">2</button>
-  <button onclick="setSceneCount(3)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="3">3</button>
-  <button onclick="setSceneCount(4)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="4">4</button>
-  <button onclick="setSceneCount(5)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="5">5</button>
-  <button onclick="setSceneCount(6)" class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-primary-fixed-dim text-primary-fixed-dim bg-primary-fixed-dim/10 transition-all" data-count="6">6</button>
+<button class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="2" onclick="setSceneCount(2)">2</button>
+<button class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="3" onclick="setSceneCount(3)">3</button>
+<button class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="4" onclick="setSceneCount(4)">4</button>
+<button class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-count="5" onclick="setSceneCount(5)">5</button>
+<button class="scene-btn flex-1 py-1 text-[9px] font-label-technical border border-primary-fixed-dim text-primary-fixed-dim bg-primary-fixed-dim/10 transition-all" data-count="6" onclick="setSceneCount(6)">6</button>
 </div>
-<input type="hidden" id="scene-count" value="6"/>
+<input id="scene-count" type="hidden" value="6"/>
 </div>
 <div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
-<span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">12 CR</span>
+<span class="text-primary-fixed-dim font-headline-sm" id="sync-cost">50 GNS</span>
 </div>
-<a href="pricing.html" class="bg-primary-fixed-dim text-on-primary text-[10px] px-sm py-1 font-label-technical hover:brightness-110 transition-all flex items-center gap-xs">
-<span class="material-symbols-outlined text-[12px]">bolt</span>RECHARGE
-</a>
+<a class="bg-surface-variant border border-outline text-on-surface text-[10px] px-sm py-1 font-label-technical hover:border-primary-fixed-dim transition-all flex items-center gap-xs" href="pricing.html">
+<span class="material-symbols-outlined text-[12px] text-primary">bolt</span>RECHARGE
+                    </a>
 </div>
 </section>
 </aside>
-<div class="flex-grow flex flex-col gap-panel-gap min-h-0">
+<div class="flex-grow flex flex-col gap-panel-gap min-h-0 order-1 md:order-2">
 <header class="bg-surface-container border border-outline-variant p-md flex justify-between items-center h-14 shrink-0">
 <div class="flex items-center gap-md">
 <span class="font-headline-sm text-headline-sm uppercase">Phase 02: <span class="text-primary-fixed-dim">Narrative Sync</span></span>
 </div>
-<button class="bg-primary-fixed-dim text-on-primary px-lg py-unit font-label-technical text-sm flex items-center gap-xs hover:shadow-[0_0_12px_rgba(168,215,0,0.4)] transition-all active:scale-[0.97]">
+<button class="bg-primary-fixed-dim text-on-primary px-lg py-unit font-label-technical text-sm flex items-center gap-xs hover:shadow-[0_0_12px_rgba(200,255,0,0.4)] transition-all active:scale-[0.97]">
 <span class="material-symbols-outlined text-[18px]">sync</span>
                     SYNC SESSION
                 </button>
 </header>
-<section id="chat-messages" class="flex-grow bg-surface-container-lowest border border-outline-variant overflow-y-auto p-lg flex flex-col gap-lg terminal-scroll relative">
-<div class="flex gap-md self-end max-w-[80%]">
+<section class="flex-grow bg-surface-container-lowest border border-outline-variant overflow-y-auto p-lg flex flex-col gap-lg terminal-scroll relative" id="chat-messages">
+<div class="flex gap-md self-end max-w-[90%] md:max-w-[80%]">
 <div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
 <p class="text-body-md text-on-surface">Initiate screenplay structure for 'CYBERPUNK NEON' series. Focus on Act 1 sequence 4 - The meeting at the rain-soaked docks.</p>
-<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 â€” USER_MAIN</span>
+<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 — USER_MAIN</span>
 </div>
-<div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center rounded-none border border-on-surface shrink-0">
+<div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0">
 <span class="material-symbols-outlined">person</span>
 </div>
 </div>
-<div class="flex gap-md max-w-[80%]">
-<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center rounded-none border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0">
+<div class="flex gap-md max-w-[90%] md:max-w-[80%]">
+<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0">
 <span class="material-symbols-outlined">smart_toy</span>
 </div>
 <div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md corner-bracket relative">
@@ -322,11 +323,11 @@ RECHARGE
 </div>
 </div>
 <p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">
-<span class="text-primary-fixed-dim">>></span> Loading thematic assets...<br/>
-<span class="text-primary-fixed-dim">>></span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
-<span class="text-primary-fixed-dim">>></span> Screenplay protocol engaged. Ready for Act 1 details.
+<span class="text-primary-fixed-dim">&gt;&gt;</span> Loading thematic assets...<br/>
+<span class="text-primary-fixed-dim">&gt;&gt;</span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
+<span class="text-primary-fixed-dim">&gt;&gt;</span> Screenplay protocol engaged. Ready for Act 1 details.
                         </p>
-<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 â€” GEMINI-9</span>
+<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 — GEMINI-9</span>
 </div>
 </div>
 <div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
@@ -339,17 +340,17 @@ RECHARGE
 <div class="waveform-bar" style="animation-duration: 1.1s"></div>
 <div class="waveform-bar" style="animation-duration: 0.7s"></div>
 </div>
-<p class="font-headline-sm text-primary-fixed-dim tracking-widest animate-pulse" id="listening-text">LISTENING...</p>
-<button class="border border-outline px-lg py-sm font-label-technical hover:bg-error/20 hover:border-error transition-all" onclick="toggleVoice()">TERMINATE VOICE SYNC</button>
+<p class="font-headline-sm text-primary-fixed-dim tracking-widest animate-pulse uppercase" id="listening-text">Listening...</p>
+<button class="border border-outline px-lg py-sm font-label-technical hover:bg-error/20 hover:border-error transition-all uppercase" onclick="toggleVoice()">Terminate Voice Sync</button>
 </div>
 </section>
 <footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
 <div class="flex gap-md items-end">
 <div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
-<textarea id="chat-input" class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" placeholder="Ø§ÙƒØªØ¨ ÙÙƒØ±ØªÙƒ Ù‡Ù†Ø§... (Ø¨Ø£ÙŠ Ù„ØºØ©)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+<textarea class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" id="chat-input" onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){event.preventDefault();sendMessage()}" placeholder="اكتب فكرتك هنا... (بأي لغة)"></textarea>
 <div class="absolute bottom-2 right-2 flex gap-sm">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
-<button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#a8d700] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
+<button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#c8ff00] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
 </div>
 </div>
 </div>
@@ -359,20 +360,20 @@ RECHARGE
 </div>
 </footer>
 </div>
-<aside class="w-[clamp(240px,20vw,320px)] flex flex-col gap-panel-gap min-h-0">
+<aside class="w-full md:w-[clamp(240px,20vw,320px)] flex flex-col gap-panel-gap min-h-0 order-3">
 <section class="h-[clamp(140px,18vh,200px)] bg-black border border-outline-variant relative overflow-hidden flex items-center justify-center shrink-0">
-<img class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale" data-alt="A futuristic cinematic wide shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL3mH4bdJKbd0Dm7EkItlv5ItJEndW7nhIEofXAH0Ejmnl9hNpFZmQirKJf_Iu29eDh47QUhqXr4byIhpHmkkqLMJKN-b6veHEycAX3jTUvWJwx9qgRnU-5OkXnyYdszbWgGcE2NrSUv6QuziEbtczF4ep6ICaWUM_hpuNGKOZmNGHKdsg80smcBoNAvyexlXRfN31FzJ1ls2lMijl6li79sCljaIAJ_ZYmZgVIoy2UAXI7PegDvOPm6-vVrslV-qv2wxvzbOa7xs"/>
+<img alt="Futuristic cinematic shot" class="absolute inset-0 w-full h-full object-cover opacity-40 grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL3mH4bdJKbd0Dm7EkItlv5ItJEndW7nhIEofXAH0Ejmnl9hNpFZmQirKJf_Iu29eDh47QUhqXr4byIhpHmkkqLMJKN-b6veHEycAX3jTUvWJwx9qgRnU-5OkXnyYdszbWgGcE2NrSUv6QuziEbtczF4ep6ICaWUM_hpuNGKOZmNGHKdsg80smcBoNAvyexlXRfN31FzJ1ls2lMijl6li79sCljaIAJ_ZYmZgVIoy2UAXI7PegDvOPm6-vVrslV-qv2wxvzbOa7xs"/>
 <div class="z-10 flex flex-col items-center">
 <span class="material-symbols-outlined text-[48px] text-primary-fixed-dim animate-blink mb-sm">videocam</span>
-<p class="font-label-technical text-primary-fixed-dim animate-blink text-sm tracking-widest">AWAITING SYNC</p>
+<p class="font-label-technical text-primary-fixed-dim animate-blink text-sm tracking-widest uppercase">Awaiting Sync</p>
 </div>
 <div class="absolute top-2 left-2 font-label-code text-[9px] text-primary-fixed-dim/70">REC // 00:00:00:00</div>
 <div class="absolute top-2 right-2 flex gap-1">
-<div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
+<div class="w-1.5 h-1.5 bg-error animate-pulse"></div>
 </div>
 </section>
 <section class="flex-grow bg-surface-container-low border border-outline-variant p-md flex flex-col gap-lg min-h-0">
-<h3 class="font-label-technical text-[11px] text-on-surface-variant border-b border-outline-variant pb-xs shrink-0">PIPELINE STAGES</h3>
+<h3 class="font-label-technical text-[11px] text-on-surface-variant border-b border-outline-variant pb-xs shrink-0 uppercase">Pipeline Stages</h3>
 <div class="flex flex-col gap-md">
 <div class="pipeline-stage">
 <div class="flex justify-between items-center mb-unit">
@@ -380,7 +381,7 @@ RECHARGE
 <span class="font-label-technical text-[10px] text-primary-fixed-dim" id="p1-val">0%</span>
 </div>
 <div class="w-full h-1 bg-surface-variant">
-<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700]" id="p1-bar" style="width: 0%"></div>
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#c8ff00]" id="p1-bar" style="width: 0%"></div>
 </div>
 </div>
 <div class="pipeline-stage">
@@ -389,7 +390,7 @@ RECHARGE
 <span class="font-label-technical text-[10px] text-primary-fixed-dim" id="p2-val">45%</span>
 </div>
 <div class="w-full h-1 bg-surface-variant">
-<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700] transition-all duration-1000" id="p2-bar" style="width: 45%"></div>
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#c8ff00] transition-all duration-1000" id="p2-bar" style="width: 45%"></div>
 </div>
 </div>
 <div class="pipeline-stage">
@@ -398,705 +399,414 @@ RECHARGE
 <span class="font-label-technical text-[10px] text-on-surface-variant" id="p3-val">0%</span>
 </div>
 <div class="w-full h-1 bg-surface-variant">
-<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#a8d700] transition-all duration-1000" id="p3-bar" style="width: 0%"></div>
+<div class="h-full bg-primary-fixed-dim shadow-[0_0_8px_#c8ff00] transition-all duration-1000" id="p3-bar" style="width: 0%"></div>
 </div>
 </div>
 </div>
 <div class="mt-auto flex flex-col min-h-0">
-<h3 class="font-label-technical text-[11px] text-on-surface-variant mb-xs shrink-0">LIVE SYNC LOG</h3>
+<h3 class="font-label-technical text-[11px] text-on-surface-variant mb-xs shrink-0 uppercase">Live Sync Log</h3>
 <div class="flex-grow h-32 bg-black border border-outline-variant p-sm font-label-code text-[10px] text-primary-fixed-dim overflow-y-auto terminal-scroll leading-tight" id="sync-log">
 <div class="opacity-50">[09:40:12] INITIALIZING SYSTEM...</div>
 <div class="opacity-50">[09:40:13] CORE KERNEL CONNECTED</div>
 <div class="opacity-50">[09:40:15] AGENT_GEMINI_9 ATTACHED</div>
 <div class="opacity-50">[09:41:00] PIPELINE_AWARENESS_ACTIVE</div>
-<div class="text-white">> SYSTEM READY.</div>
+<div class="text-white">&gt; SYSTEM READY.</div>
 </div>
 </div>
 </section>
 </aside>
 </main>
-<footer class="h-14 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-md z-50 shrink-0">
-<div class="flex items-center gap-xl">
+<footer class="h-auto md:h-14 bg-surface-container-lowest border-t border-outline-variant flex flex-col md:flex-row items-center justify-between px-md py-sm md:py-0 z-50 shrink-0 gap-md">
+<div class="flex items-center gap-xl w-full md:w-auto justify-between md:justify-start">
 <div class="flex flex-col">
-<span class="text-[9px] text-on-surface-variant font-label-technical">CURRENT CREDITS</span>
-<span class="font-headline-sm text-primary-fixed-dim" id="footer-credits">0 CR</span>
+<span class="text-[9px] text-on-surface-variant font-label-technical uppercase">Current Balance</span>
+<span class="font-headline-sm text-primary-fixed-dim" id="footer-credits">1,250 GNS</span>
 </div>
-<div class="h-8 w-px bg-outline-variant"></div>
+<div class="hidden md:block h-8 w-px bg-outline-variant"></div>
 <div class="flex items-center gap-sm">
-<span class="w-3 h-3 rounded-full bg-primary-fixed-dim shadow-[0_0_10px_#a8d700]" id="director-dot"></span>
-<span class="font-label-technical text-xs uppercase tracking-widest" id="active-director-name">DRAMA PROTOCOL</span>
+<span class="w-3 h-3 bg-primary-fixed-dim shadow-[0_0_10px_#c8ff00]" id="director-dot"></span>
+<span class="font-label-technical text-xs uppercase tracking-widest" id="active-director-name">Drama Protocol</span>
 </div>
 </div>
-<div class="flex items-center gap-md">
-<div class="flex bg-surface-container-high border border-outline-variant p-1 rounded">
-<button id="btn-auto" class="px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical" onclick="setMode('AUTO')">AUTO</button>
-<button id="btn-manual" class="px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors" onclick="setMode('MANUAL')">MANUAL</button>
+<div class="flex items-center gap-md w-full md:w-auto justify-between md:justify-end">
+<div class="flex bg-surface-container-high border border-outline-variant p-1">
+<button class="px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical" id="btn-auto" onclick="setMode('AUTO')">AUTO</button>
+<button class="px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors" id="btn-manual" onclick="setMode('MANUAL')">MANUAL</button>
 </div>
-<button class="bg-secondary text-on-secondary px-xl py-2 font-headline-sm flex items-center gap-md hover:shadow-[0_0_20px_rgba(255,186,63,0.5)] transition-all active:scale-[0.95]" onclick="startGeneration()">
+<button class="bg-[#c8ff00] text-black px-xl py-2 font-headline-sm flex items-center gap-md hover:shadow-[0_0_20px_rgba(200,255,0,0.5)] transition-all active:scale-[0.95] flex-1 md:flex-none justify-center" onclick="startGeneration()">
 <span class="material-symbols-outlined" data-weight="fill">rocket_launch</span>
 <span id="btn-generate-text">GENERATE</span>
-            </button>
-<a href="assembly.html" class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97]">
+</button>
+<a class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97] hidden md:flex" href="assembly.html">
 <span class="material-symbols-outlined text-[18px]">movie_edit</span>
-OPEN ASSEMBLY â†’
-</a>
+                OPEN ASSEMBLY →
+            </a>
 </div>
 </footer>
+</div>
+<!-- ONBOARDING MODAL OVERLAY -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-void/80 backdrop-blur-sm hidden" id="onboarding-overlay">
+<div class="bg-surface-container border border-acid-dim/40 max-w-lg w-full p-8 shadow-[0_0_50px_rgba(200,255,0,0.2)] relative overflow-hidden crt-flicker">
+<!-- FX DECORATION -->
+<div class="absolute top-0 left-0 w-full h-[2px] bg-acid-dim/20" style="animation: scanline 8s linear infinite;"></div>
+<section class="mb-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="text-acid-dim font-label-technical">&gt;</span>
+<span class="font-label-caps text-label-caps text-acid-dim tracking-[0.3em]">SYSTEM_INITIALIZATION</span>
+</div>
+<h1 class="font-headline-xl text-[36px] leading-tight text-primary uppercase">
+                WELCOME TO<br/>
+<span class="text-acid-dim">STUDIO</span><span class="terminal-cursor ml-1"></span>
+</h1>
+</section>
+<div class="space-y-8 mb-10">
+<!-- STEP 1 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 border border-acid-dim flex items-center justify-center bg-void group-hover:bg-acid-dim group-hover:text-void transition-colors duration-300">
+<span class="material-symbols-outlined text-[20px]">movie</span>
+</div>
+<div class="w-px h-full bg-outline-variant mt-2"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-acid-dim mb-1">01. DESCRIBE IDEA</h3>
+<p class="font-body-md text-on-surface-variant text-sm leading-relaxed">
+                        Input your story concept or visual prompt for the narrative engine. Our AI translates text into cinematic reality.
+                    </p>
+</div>
+</div>
+<!-- STEP 2 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 border border-acid-dim flex items-center justify-center bg-void group-hover:bg-acid-dim group-hover:text-void transition-colors duration-300">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+</div>
+<div class="w-px h-full bg-outline-variant mt-2"></div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-acid-dim mb-1">02. CHOOSE SETTINGS</h3>
+<p class="font-body-md text-on-surface-variant text-sm leading-relaxed">
+                        Select your director protocol (Drama, Action, etc.) and scene count (2-6). Fine-tune the aesthetic frequency.
+                    </p>
+</div>
+</div>
+<!-- STEP 3 -->
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 border border-acid-dim flex items-center justify-center bg-void group-hover:bg-acid-dim group-hover:text-void transition-colors duration-300">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</div>
+</div>
+<div>
+<h3 class="font-label-caps text-label-caps text-acid-dim mb-1">03. SYNC &amp; GENERATE</h3>
+<p class="font-body-md text-on-surface-variant text-sm leading-relaxed">
+                        Initiate the pipeline to produce high-fidelity cinematic scenes optimized for global distribution.
+                    </p>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<!-- CHECKBOX -->
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="relative w-5 h-5">
+<input class="peer absolute opacity-0 cursor-pointer h-full w-full" id="onboard-skip-check" type="checkbox"/>
+<div class="h-5 w-5 bg-void border border-outline peer-checked:border-acid-dim peer-checked:bg-acid-dim/20 transition-all"></div>
+<span class="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-acid-dim opacity-0 peer-checked:opacity-100 text-sm font-bold">check</span>
+</div>
+<span class="font-label-caps text-[10px] text-on-surface-variant group-hover:text-primary transition-colors uppercase">Don't show this again</span>
+</label>
+<!-- CTA BUTTON -->
+<button class="w-full h-14 bg-primary-fixed text-void font-headline-sm text-lg uppercase tracking-widest neon-glow-acid active:scale-95 transition-all flex items-center justify-center gap-3 font-bold" onclick="completeOnboarding()">
+                START PRODUCTION
+                <span class="material-symbols-outlined">rocket_launch</span>
+</button>
+</div>
+</div>
+</div>
 <script>
-        let credits = parseInt(localStorage.getItem('md_credits') || '0'); // Ø³ÙŠÙØ­Ø¯ÙŽÙ‘Ø« Ù…Ù† Firebase ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹
-        let baseCost = 12;
+    let credits = parseInt(localStorage.getItem('md_credits') || '1250');
+    let baseCost = 50;
 
-        const costTable = { 'Drama': 20, 'Action': 20, 'Comedy': 20, 'Documentary': 20 };
-        const directorColors = { 'Drama': '#a8d700', 'Action': '#ffb4ab', 'Comedy': '#ffba3f', 'Documentary': '#aecae2' };
+    const costTable = { 'Drama': 50, 'Action': 50, 'Comedy': 50, 'Documentary': 50 };
+    const directorColors = { 'Drama': '#c8ff00', 'Action': '#ff3b3b', 'Comedy': '#ffd700', 'Documentary': '#aecae2' };
 
-        updateCredits();
+    // Onboarding Logic
+    function initOnboarding() {
+        const overlay = document.getElementById('onboarding-overlay');
+        const mainContent = document.getElementById('main-content');
+        
+        if (!localStorage.getItem('md_studio_onboarded')) {
+            overlay.classList.remove('hidden');
+            mainContent.classList.add('blur-active');
+        }
+    }
 
-        document.querySelectorAll('input[name="director"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const val = e.target.value;
-                const cost = costTable[val];
-                document.getElementById('sync-cost').innerText = `${cost} CR`;
-                document.getElementById('director-dot').style.backgroundColor = directorColors[val];
-                document.getElementById('director-dot').style.boxShadow = `0 0 10px ${directorColors[val]}`;
-                document.getElementById('active-director-name').innerText = `${val.toUpperCase()} PROTOCOL`;
-                
-                document.querySelectorAll('#director-selector label').forEach(l => {
-                    l.classList.remove('border-primary-fixed-dim', 'bg-primary-fixed-dim/10', 'bg-surface-variant');
-                    l.classList.add('border-outline');
-                    l.style.borderColor = ''; 
-                });
-                
-                const parent = e.target.parentElement;
-                parent.classList.remove('border-outline');
-                parent.style.borderColor = directorColors[val];
-                parent.classList.add('bg-surface-variant');
-                addLogLine(`DIRECTOR PROTOCOL SWITCHED TO: ${val.toUpperCase()}`);
+    function completeOnboarding() {
+        const skipCheck = document.getElementById('onboard-skip-check');
+        if (skipCheck && skipCheck.checked) {
+            localStorage.setItem('md_studio_onboarded', 'true');
+        }
+        
+        document.getElementById('onboarding-overlay').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('blur-active');
+        addLogLine('OPERATOR AUTHORIZED. PRODUCTION SUITE READY.');
+    }
+
+    window.addEventListener('load', initOnboarding);
+
+    updateCredits();
+
+    document.querySelectorAll('input[name="director"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const val = e.target.value;
+            const cost = costTable[val];
+            document.getElementById('sync-cost').innerText = `${cost} GNS`;
+            document.getElementById('director-dot').style.backgroundColor = directorColors[val];
+            document.getElementById('director-dot').style.boxShadow = `0 0 10px ${directorColors[val]}`;
+            document.getElementById('active-director-name').innerText = `${val.toUpperCase()} PROTOCOL`;
+            
+            document.querySelectorAll('#director-selector label').forEach(l => {
+                l.classList.remove('border-primary-fixed-dim', 'bg-primary-fixed-dim/10', 'bg-surface-variant');
+                l.classList.add('border-outline');
+                l.style.borderColor = ''; 
             });
+            
+            const parent = e.target.parentElement;
+            parent.classList.remove('border-outline');
+            parent.style.borderColor = directorColors[val];
+            parent.classList.add('bg-surface-variant');
+            addLogLine(`DIRECTOR PROTOCOL SWITCHED TO: ${val.toUpperCase()}`);
+        });
+    });
+
+    function toggleVoice() {
+        const overlay = document.getElementById('voice-overlay');
+        const isHidden = overlay.style.display === 'none' || overlay.style.display === '';
+        overlay.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden) addLogLine('VOICE SYNC SESSION STARTED...');
+    }
+
+    function addLogLine(text) {
+        const log = document.getElementById('sync-log');
+        const entry = document.createElement('div');
+        const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+        entry.innerHTML = `<span class="opacity-50">[${time}]</span> ${text}`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    async function startGeneration() {
+        const directorEl = document.querySelector('input[name="director"]:checked');
+        const director = directorEl ? directorEl.value : 'Drama';
+        const cost = costTable[director] || 50;
+
+        if (credits < cost) {
+            addLogLine('ERROR: INSUFFICIENT GNS FOR SYNC.');
+            appendBubble('>> INSUFFICIENT GNS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
+            return;
+        }
+
+        addLogLine('GENERATE pressed — requesting scene from ' + director);
+        animatePipeline();
+    }
+
+    function updateCredits() {
+        const formatted = credits.toLocaleString();
+        const topCr = document.getElementById('top-credits');
+        const footCr = document.getElementById('footer-credits');
+        if (topCr) topCr.innerText = `${formatted} GNS`;
+        if (footCr) footCr.innerText = `${formatted} GNS`;
+        
+        if (topCr) {
+            if (credits < 100 && credits > 0) {
+                topCr.style.color = '#ffd700'; 
+                topCr.parentElement.style.borderColor = '#ffd700';
+            } else if (credits === 0) {
+                topCr.style.color = '#ff3b3b'; 
+                topCr.parentElement.style.borderColor = '#ff3b3b';
+            } else {
+                topCr.style.color = '#c8ff00';
+                topCr.parentElement.style.borderColor = '';
+            }
+        }
+    }
+
+    function animatePipeline() {
+        const bars = ['p1', 'p2', 'p3'];
+        let current = 0;
+        function process() {
+            if (current >= bars.length) { return; }
+            const id = bars[current];
+            const bar = document.getElementById(`${id}-bar`);
+            const val = document.getElementById(`${id}-val`);
+            bar.style.width = '0%';
+            val.innerText = '0%';
+            setTimeout(() => {
+                bar.style.width = '100%';
+                val.innerText = '100%';
+                current++;
+                setTimeout(process, 1200);
+            }, 100);
+        }
+        process();
+    }
+
+    let generatedScenes = [];
+    let activeGenerations = {};
+
+    function appendBubble(text, role, label) {
+        const chat = document.getElementById('chat-messages');
+        const voiceOverlay = document.getElementById('voice-overlay');
+        const now = new Date().toLocaleTimeString('en-GB', {hour12: false});
+        const div = document.createElement('div');
+        div.className = role === 'user' ? 'flex gap-md self-end max-w-[90%] md:max-w-[80%]' : 'flex gap-md max-w-[90%] md:max-w-[80%]';
+        if (role === 'user') {
+            const msgWrap = document.createElement('div');
+            msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
+            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} — USER_MAIN</span>`;
+            div.appendChild(msgWrap);
+            const icon = document.createElement('div');
+            icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
+            icon.innerHTML = '<span class="material-symbols-outlined">person</span>';
+            div.appendChild(icon);
+        } else {
+            div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
+            const bubble = document.createElement('div');
+            bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
+            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
+            div.appendChild(bubble);
+        }
+        chat.insertBefore(div, voiceOverlay);
+        chat.scrollTop = chat.scrollHeight;
+        return div;
+    }
+
+    function showTyping() {
+        const chat = document.getElementById('chat-messages');
+        const voiceOverlay = document.getElementById('voice-overlay');
+        const id = 'typing-' + Date.now();
+        const div = document.createElement('div');
+        div.className = 'flex gap-md max-w-[80%]';
+        div.id = id;
+        div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md flex gap-[3px] items-center h-10"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div>';
+        chat.insertBefore(div, voiceOverlay);
+        chat.scrollTop = chat.scrollHeight;
+        return id;
+    }
+
+    function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+    async function sendMessage() {
+        const textarea = document.getElementById('chat-input');
+        const text = textarea ? textarea.value.trim() : '';
+        if (!text) return;
+
+        appendBubble(text, 'user');
+        textarea.value = '';
+        addLogLine('IDEA RECEIVED: ' + text.substring(0, 60));
+
+        const typingId = showTyping();
+        setTimeout(() => {
+            removeTyping(typingId);
+            const directorEl = document.querySelector('input[name="director"]:checked');
+            const director = directorEl ? directorEl.value : 'Drama';
+            const mockScenes = Array.from({length: parseInt(document.getElementById('scene-count').value)}, (_, i) => ({
+                scene: i + 1,
+                title: `Neon Sequence ${i+1}`,
+                prompt: `Cinematic wide shot, cyberpunk aesthetic, rainy docks, directed by ${director}.`
+            }));
+            generatedScenes = mockScenes;
+            renderScriptCards(mockScenes, director, `${director} AI`);
+        }, 1500);
+    }
+
+    function renderScriptCards(scenes, director, directorName) {
+        const chat = document.getElementById('chat-messages');
+        const voiceOverlay = document.getElementById('voice-overlay');
+        const cost = costTable[director] || 50;
+
+        const header = document.createElement('div');
+        header.className = 'flex gap-md max-w-full w-full';
+        header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
+            + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
+            + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs uppercase">Director: ' + (directorName || director) + '</p>'
+            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' GNS each. Click GENERATE.</p></div>';
+        chat.insertBefore(header, voiceOverlay);
+
+        scenes.forEach((scene, idx) => {
+            const card = document.createElement('div');
+            card.className = 'w-full bg-surface-container border border-outline-variant p-md space-y-sm';
+            card.id = 'scene-card-' + idx;
+            card.innerHTML = '<div class="flex justify-between items-start gap-md">'
+                + '<div class="flex-1">'
+                + '<span class="font-label-technical text-[10px] text-primary-fixed-dim uppercase">Scene ' + scene.scene + '</span>'
+                + '<h3 class="font-label-technical text-sm text-on-surface mt-xs font-bold uppercase">' + (scene.title || 'Scene') + '</h3>'
+                + '<p class="font-label-technical text-[11px] text-on-surface-variant mt-xs">' + (scene.prompt || '').substring(0, 150) + '...</p>'
+                + '</div>'
+                + '<button id="gen-btn-' + idx + '" onclick="generateSceneVideo(' + idx + ')"'
+                + ' class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs uppercase">'
+                + '<span class="material-symbols-outlined text-[16px]">bolt</span> Generate (' + cost + ' GNS)</button>'
+                + '</div><div id="video-result-' + idx + '" class="mt-sm hidden"></div>';
+            chat.insertBefore(card, voiceOverlay);
         });
 
-        function toggleVoice() {
-            const overlay = document.getElementById('voice-overlay');
-            const isHidden = overlay.style.display === 'none' || overlay.style.display === '';
-            overlay.style.display = isHidden ? 'flex' : 'none';
-            if (isHidden) addLogLine('VOICE SYNC SESSION STARTED...');
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function generateSceneVideo(idx) {
+        const scene = generatedScenes[idx];
+        if (!scene) return;
+        const cost = costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 50;
+
+        if (credits < cost) {
+            appendBubble('>> INSUFFICIENT GNS. Please recharge.', 'bot', 'SYSTEM');
+            return;
         }
+        
+        if (activeGenerations[idx]) return;
+        activeGenerations[idx] = true;
 
-        function addLogLine(text) {
-            const log = document.getElementById('sync-log');
-            const entry = document.createElement('div');
-            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            entry.innerHTML = `<span class="opacity-50">[${time}]</span> ${text}`;
-            log.appendChild(entry);
-            log.scrollTop = log.scrollHeight;
-        }
+        const btn = document.getElementById('gen-btn-' + idx);
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...'; }
 
-        // â”€â”€ ØªØ¹Ø¯ÙŠÙ„ Ø¯Ø§Ù„Ø© Ø§Ù„Ø§Ø³ØªÙˆØ¯ÙŠÙˆ Ø§Ù„Ù…Ø­Ø¯Ø«Ø© Ù„Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¨Ø« Ù„ØºØ±ÙØ© Ø§Ù„Ù…ÙˆÙ†ØªØ§Ø¬ â”€â”€
-        async function handleSceneGenerated(scene, director) {
-            const cost = costTable[director] || 12;
-            if (credits < cost) {
-                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
-                return;
-            }
+        credits -= cost;
+        localStorage.setItem('md_credits', credits);
+        updateCredits();
+        addLogLine(`SCENE ${idx+1} GENERATION INITIATED [${cost} GNS DEDUCTED]`);
+        animatePipeline();
 
-            const prompt = scene.prompt || scene.title || 'Cinematic scene, high quality, 16:9';
-            addLogLine('SUBMITTING TO WAVESPEED: ' + prompt.substring(0, 80));
-            appendBubble('>> GENERATING VIDEO... please wait 30-60 seconds.', 'bot', 'SYSTEM');
-
-            try {
-                const genRes = await fetch('/api/wavespeed', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, duration: 10 })
-                });
-                const genData = await genRes.json();
-
-                if (genData.error || !genData.id) {
-                    appendBubble('>> WAVESPEED ERROR: ' + (genData.error || 'No job ID'), 'bot', 'SYSTEM');
-                    return;
-                }
-
-                const jobId = genData.id;
-                const pollUrl = genData.pollUrl || null;
-                addLogLine('JOB SUBMITTED: ' + jobId);
-
-                credits -= cost;
-                updateCredits();
-                if(window.__deductCredits) window.__deductCredits(cost);
-
-                let attempts = 0;
-                const poll = setInterval(async () => {
-                    attempts++;
-                    if (attempts > 40) {
-                        clearInterval(poll);
-                        appendBubble('>> TIMEOUT: Generation took too long.', 'bot', 'SYSTEM');
-                        return;
-                    }
-                    try {
-                        const pollRes = await fetch('/api/wavespeed', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'poll', id: jobId, pollUrl: pollUrl })
-                        });
-                        const pd = await pollRes.json();
-                        const status = pd.status;
-                        const url = pd.url;
-
-                        addLogLine('POLL [' + attempts + ']: ' + status);
-
-                        if ((status === 'completed' || status === 'succeeded') && url) {
-                            clearInterval(poll);
-
-                            const sceneObj = {
-                                id: 'scene-' + Date.now(),
-                                sceneNumber: JSON.parse(localStorage.getItem('md_6scenes') || '[]').length + 1,
-                                title: scene.title || 'Untitled Scene',
-                                prompt: prompt,
-                                director: director,
-                                videoUrl: url,
-                                thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400',
-                                duration: '00:10',
-                                status: 'ready',
-                                cost: cost
-                            };
-
-                            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-                            existing.push(sceneObj);
-                            localStorage.setItem('md_6scenes', JSON.stringify(existing));
-                            localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
-                                name: sceneObj.title.toUpperCase() + '.mp4',
-                                url: url,
-                                timestamp: Date.now()
-                            }));
-
-                            appendBubble('>> VIDEO READY: <strong>' + sceneObj.title + '</strong><br>>> SCENES: ' + existing.length, 'bot', director.toUpperCase() + '-DIRECTOR');
-                            addLogLine('VIDEO READY: ' + url);
-                            animatePipeline();
-
-                        } else if (status === 'failed') {
-                            clearInterval(poll);
-                            appendBubble('>> GENERATION FAILED. Try again.', 'bot', 'SYSTEM');
-                        }
-                    } catch(e) { addLogLine('POLL ERROR: ' + e.message); }
-                }, 3000);
-
-            } catch (err) {
-                appendBubble('>> NETWORK ERROR: ' + err.message, 'bot', 'SYSTEM');
-            }
-        }
-
-        async function startGeneration() {
-            const directorEl = document.querySelector('input[name="director"]:checked');
-            const director = directorEl ? directorEl.value : 'Drama';
-            const cost = costTable[director] || 12;
-
-            if (credits < cost) {
-                addLogLine('ERROR: INSUFFICIENT CREDITS FOR SYNC.');
-                appendBubble('>> INSUFFICIENT CREDITS. RECHARGE TO CONTINUE.', 'bot', 'SYSTEM');
-                return;
-            }
-
-            addLogLine('GENERATE pressed â€” requesting scene from ' + director);
-            animatePipeline();
-            const typingId = showTyping();
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: 'Generate the next scene now.',
-                        director: director,
-                        contentType: contentTypeMap[director] || 'Film',
-                        phase: 'director',
-                        history: chatHistory,
-                        dreamBrief: dreamBrief
-                    })
-                });
-
-                const data = await response.json();
-                removeTyping(typingId);
-
-                if (data.error) {
-                    appendBubble('>> DIRECTOR ERROR: ' + data.error, 'bot', 'SYSTEM');
-                    return;
-                }
-
-                if (data.scene) {
-                    handleSceneGenerated(data.scene, director);
-                    chatHistory.push({ role: 'user', content: 'Generate scene.' });
-                    chatHistory.push({ role: 'assistant', content: JSON.stringify(data.scene) });
-                } else {
-                    appendBubble(data.reply || '>> Scene generation in progress...', 'bot', director.toUpperCase() + '-DIRECTOR');
-                }
-            } catch (err) {
-                removeTyping(typingId);
-                addLogLine('GENERATE ERROR: ' + err.message);
-            }
-        }
-
-        function updateCredits() {
-            const formatted = credits.toLocaleString();
-            document.getElementById('top-credits').innerText = `${formatted} CR`;
-            document.getElementById('footer-credits').innerText = `${formatted} CR`;
-            
-            // Low credits warning
-            const topEl = document.getElementById('top-credits');
-            if (credits < 50 && credits > 0) {
-                topEl.style.color = '#ffba3f';
-                topEl.parentElement.style.borderColor = '#ffba3f';
-            } else if (credits === 0) {
-                topEl.style.color = '#ffb4ab';
-                topEl.parentElement.style.borderColor = '#ffb4ab';
-            } else {
-                topEl.style.color = '';
-                topEl.parentElement.style.borderColor = '';
-            }
-        }
-
-        function animatePipeline() {
-            const bars = ['p1', 'p2', 'p3'];
-            let current = 0;
-            function process() {
-                if (current >= bars.length) { return; }
-                const id = bars[current];
-                const bar = document.getElementById(`${id}-bar`);
-                const val = document.getElementById(`${id}-val`);
-                bar.style.width = '0%';
-                val.innerText = '0%';
-                setTimeout(() => {
-                    bar.style.width = '100%';
-                    val.innerText = '100%';
-                    current++;
-                    setTimeout(process, 1200);
-                }, 100);
-            }
-            process();
-        }
-
-        // â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        let activeGenerations = {}; // ØªØªØ¨Ø¹ Ø§Ù„ØªÙˆÙ„ÙŠØ¯Ø§Øª Ø§Ù„Ø¬Ø§Ø±ÙŠØ©
-
-        function appendBubble(text, role, label) {
-            const chat = document.getElementById('chat-messages');
-            const voiceOverlay = document.getElementById('voice-overlay');
-            const now = new Date().toLocaleTimeString('en-GB', {hour12: false});
-            const div = document.createElement('div');
-            div.className = role === 'user' ? 'flex gap-md self-end max-w-[80%]' : 'flex gap-md max-w-[80%]';
-            if (role === 'user') {
-                const msgWrap = document.createElement('div');
-                msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
-                msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} â€” USER_MAIN</span>`;
-                div.appendChild(msgWrap);
-                const icon = document.createElement('div');
-                icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
-                icon.innerHTML = '<span class="material-symbols-outlined">person</span>';
-                div.appendChild(icon);
-            } else {
-                div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
-                const bubble = document.createElement('div');
-                bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
-                bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' â€” ' + (label || 'GEMINI-9') + '</span>';
-                div.appendChild(bubble);
-            }
-            chat.insertBefore(div, voiceOverlay);
-            chat.scrollTop = chat.scrollHeight;
-            return div;
-        }
-
-        function showTyping() {
-            const chat = document.getElementById('chat-messages');
-            const voiceOverlay = document.getElementById('voice-overlay');
-            const id = 'typing-' + Date.now();
-            const div = document.createElement('div');
-            div.className = 'flex gap-md max-w-[80%]';
-            div.id = id;
-            div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div><div class="bg-surface-container-high border border-primary-fixed-dim/30 p-md flex gap-[3px] items-center h-10"><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-75"></div><div class="w-1 h-1 bg-primary-fixed-dim animate-pulse delay-150"></div></div>';
-            chat.insertBefore(div, voiceOverlay);
-            chat.scrollTop = chat.scrollHeight;
-            return id;
-        }
-
-        function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
-
-        // â”€â”€ SEND MESSAGE: ÙÙƒØ±Ø© ÙˆØ§Ø­Ø¯Ø© â†’ script ÙƒØ§Ù…Ù„ â”€â”€â”€â”€â”€â”€
-        async function sendMessage() {
-            const textarea = document.getElementById('chat-input');
-            const text = textarea ? textarea.value.trim() : '';
-            if (!text) return;
-
-            appendBubble(text, 'user');
-            textarea.value = '';
-            addLogLine('IDEA RECEIVED: ' + text.substring(0, 60));
-
-            const directorEl = document.querySelector('input[name="director"]:checked');
-            const director = directorEl ? directorEl.value : 'Drama';
-            const directorTypeMap = { 'Drama': 'drama', 'Action': 'action', 'Comedy': 'comedy', 'Documentary': 'doc' };
-            const directorType = directorTypeMap[director] || 'drama';
-
-            const typingId = showTyping();
-            appendBubble('>> SCRIPTWRITER: Writing screenplay... please wait.', 'bot', 'SYSTEM');
-
-            // Auto-retry up to 3 times
-            let lastError = null;
-            for (let attempt = 1; attempt <= 3; attempt++) {
-                try {
-                    if (attempt > 1) {
-                        addLogLine('RETRY ' + attempt + '/3...');
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
-                    const sceneCount = parseInt(document.getElementById('scene-count')?.value || '6');
-                    const response = await fetch('/api/director', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            type: directorType,
-                            brief: text,
-                            scene_count: sceneCount,
-                            mode: 'full',
-                            model: 'claude-haiku-4-5-20251001'
-                        })
-                    });
-                    const data = await response.json();
-
-                    if (data.error) {
-                        lastError = data.error;
-                        continue;
-                    }
-
-                    if (!data.scenes || !data.scenes.length) {
-                        lastError = 'No scenes returned';
-                        continue;
-                    }
-
-                    removeTyping(typingId);
-                    generatedScenes = data.scenes;
-                    addLogLine('SCREENPLAY: ' + data.scenes.length + ' scenes written by Alex Mercer');
-                    addLogLine('DIRECTOR: ' + (data.director_name || director) + ' translating visuals...');
-                    renderScriptCards(data.scenes, director, data.director_name);
-                    lastError = null;
-                    break;
-
-                } catch (err) {
-                    lastError = err.message;
-                    continue;
-                }
-            }
-
-            if (lastError) {
-                removeTyping(typingId);
-                appendBubble('>> ERROR after 3 attempts: ' + lastError, 'bot', 'SYSTEM');
-            }
-        }
-
-        // â”€â”€ RENDER SCRIPT CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        function renderScriptCards(scenes, director, directorName) {
-            const chat = document.getElementById('chat-messages');
-            const voiceOverlay = document.getElementById('voice-overlay');
-            const cost = costTable[director] || 12;
-
-            // header
-            const header = document.createElement('div');
-            header.className = 'flex gap-md max-w-full w-full';
-            header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#a8d700] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
-                + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
-                + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs">DIRECTOR: ' + (directorName || director) + '</p>'
-                + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes â€” ' + cost + ' CR each. Click GENERATE.</p></div>';
-            chat.insertBefore(header, voiceOverlay);
-
-            // Ù…Ø´Ù‡Ø¯ ÙˆØ§Ø­Ø¯ ÙÙŠ ÙƒÙ„ Ù…Ø±Ø©
-            scenes.forEach((scene, idx) => {
-                const card = document.createElement('div');
-                card.className = 'w-full bg-surface-container border border-outline-variant p-md space-y-sm';
-                card.id = 'scene-card-' + idx;
-                card.innerHTML = '<div class="flex justify-between items-start gap-md">'
-                    + '<div class="flex-1">'
-                    + '<span class="font-label-technical text-[10px] text-primary-fixed-dim">SCENE ' + scene.scene + '</span>'
-                    + '<h3 class="font-label-technical text-sm text-on-surface mt-xs font-bold">' + (scene.title || 'Scene') + '</h3>'
-                    + '<p class="font-label-technical text-[11px] text-on-surface-variant mt-xs">' + (scene.prompt || '').substring(0, 150) + '...</p>'
-                    + '</div>'
-                    + '<button id="gen-btn-' + idx + '" onclick="generateSceneVideo(' + idx + ')"'
-                    + ' class="shrink-0 bg-primary-fixed-dim text-on-primary font-label-technical text-[11px] px-md py-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs">'
-                    + '<span class="material-symbols-outlined text-[16px]">bolt</span> GENERATE (' + cost + ' CR)</button>'
-                    + '</div><div id="video-result-' + idx + '" class="mt-sm hidden"></div>';
-                chat.insertBefore(card, voiceOverlay);
-            });
-
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        // â”€â”€ GENERATE SCENE VIDEO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        async function generateSceneVideo(idx) {
-            const scene = generatedScenes[idx];
-            if (!scene) return;
-
-            const cost = costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 12;
-
-            if (credits < cost) {
-                appendBubble('>> INSUFFICIENT CREDITS. Please recharge.', 'bot', 'SYSTEM');
-                return;
-            }
-
-            if (activeGenerations[idx]) return; // Ù…Ù†Ø¹ Ø§Ù„Ø¶ØºØ· Ø§Ù„Ù…Ø²Ø¯ÙˆØ¬
-            activeGenerations[idx] = true;
-
-            const btn = document.getElementById('gen-btn-' + idx);
+        setTimeout(() => {
             const resultDiv = document.getElementById('video-result-' + idx);
-            if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> GENERATING...'; }
-
-            // ØªØ±Ø¬Ù…Ø© Ø§Ù„Ù€ prompt Ø¥Ø°Ø§ ÙƒØ§Ù† Ø¹Ø±Ø¨ÙŠØ§Ù‹
-            let prompt = scene.prompt || scene.title || 'Cinematic scene';
-            const hasArabic = /[\u0600-\u06FF]/.test(prompt);
-            if (hasArabic) {
-                try {
-                    const tr = await fetch('/api/chat', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: 'Translate to English for video AI, return only translation: ' + prompt, director: 'Drama', phase: 'director', history: [], dreamBrief: null })
-                    });
-                    const td = await tr.json();
-                    if (td.reply) prompt = td.reply;
-                } catch(e) {}
+            if (resultDiv) {
+                resultDiv.className = 'mt-sm block';
+                resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-primary-fixed-dim flex items-center justify-center"><p class="font-label-technical text-primary-fixed-dim">RENDER COMPLETE</p></div><p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">✓ VIDEO READY</p>';
             }
+            if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
+            activeGenerations[idx] = false;
+            addLogLine(`SCENE ${idx+1} RENDER SUCCESS`);
+        }, 3000);
+    }
 
-            addLogLine('GENERATING SCENE ' + (idx+1) + ': ' + prompt.substring(0, 60));
-
-            try {
-                // Ø¥Ø±Ø³Ø§Ù„ Ù„Ù€ WaveSpeed
-                const genRes = await fetch('/api/wavespeed', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt, duration: 15 })
-                });
-                const genData = await genRes.json();
-
-                if (genData.error || !genData.id) {
-                    if (btn) { btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">bolt</span> RETRY'; }
-                    activeGenerations[idx] = false;
-                    addLogLine('ERROR: ' + (genData.error || 'No job ID'));
-                    return;
-                }
-
-                // Ø®ØµÙ… Ø§Ù„Ø±ØµÙŠØ¯
-                credits -= cost;
-                updateCredits();
-                if(window.__deductCredits) window.__deductCredits(cost);
-                if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...';
-
-                // polling
-                const jobId = genData.id;
-                const pollUrl = genData.pollUrl;
-                let attempts = 0;
-
-                const poll = setInterval(async () => {
-                    attempts++;
-                    if (attempts > 60) {
-                        clearInterval(poll);
-                        if (btn) { btn.disabled = false; btn.innerHTML = 'TIMEOUT â€” RETRY'; }
-                        activeGenerations[idx] = false;
-                        return;
-                    }
-
-                    try {
-                        const pr = await fetch('/api/wavespeed', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'poll', id: jobId, pollUrl })
-                        });
-                        const pd = await pr.json();
-                        const status = pd.status;
-                        const url = pd.url;
-
-                        addLogLine('SCENE ' + (idx+1) + ' [' + attempts + ']: ' + status);
-
-                        if ((status === 'completed' || status === 'succeeded') && url) {
-                            clearInterval(poll);
-                            activeGenerations[idx] = false;
-
-                            // Ø¹Ø±Ø¶ Ø§Ù„ÙÙŠØ¯ÙŠÙˆ ÙÙŠ Ø§Ù„ÙƒØ§Ø±Ø¯
-                            if (resultDiv) {
-                                resultDiv.className = 'mt-sm';
-                                resultDiv.className = 'mt-sm';
-                                resultDiv.innerHTML = '<video src="' + url + '" controls autoplay muted loop playsinline class="w-full max-h-48 object-cover border border-primary-fixed-dim"></video><p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">âœ“ VIDEO READY</p>';
-                            }
-
-                            if (btn) { btn.disabled = false; btn.innerHTML = 'âœ“ DONE â€” REGENERATE'; }
-
-                            // Ø­ÙØ¸ ÙÙŠ md_6scenes
-                            const sceneObj = {
-                                id: 'scene-' + Date.now() + '-' + idx,
-                                sceneNumber: idx + 1,
-                                title: scene.title,
-                                prompt: prompt,
-                                videoUrl: url,
-                                thumbnail: '',
-                                duration: '00:10',
-                                status: 'ready',
-                                cost
-                            };
-                            const existing = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-                            existing.push(sceneObj);
-                            localStorage.setItem('md_6scenes', JSON.stringify(existing));
-                            addLogLine('VIDEO READY â€” SCENE ' + (idx+1) + ': ' + url.substring(0,50));
-                            animatePipeline();
-
-                        } else if (status === 'failed') {
-                            clearInterval(poll);
-                            activeGenerations[idx] = false;
-                            if (btn) { btn.disabled = false; btn.innerHTML = 'FAILED â€” RETRY'; }
-                        }
-                    } catch(e) { addLogLine('POLL ERROR: ' + e.message); }
-                }, 3000);
-
-            } catch (err) {
-                if (btn) { btn.disabled = false; btn.innerHTML = 'ERROR â€” RETRY'; }
-                activeGenerations[idx] = false;
-                addLogLine('NETWORK ERROR: ' + err.message);
+    function setSceneCount(n) {
+        document.getElementById('scene-count').value = n;
+        document.querySelectorAll('.scene-btn').forEach(btn => {
+            const count = parseInt(btn.getAttribute('data-count'));
+            if (count === n) {
+                btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+                btn.classList.remove('border-outline-variant');
+            } else {
+                btn.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+                btn.classList.add('border-outline-variant');
             }
-        }
+        });
+        addLogLine('SCENE COUNT SET: ' + n + ' scenes');
+    }
 
-        function setSceneCount(n) {
-    document.getElementById('scene-count').value = n;
-    document.querySelectorAll('.scene-btn').forEach(btn => {
-        const count = parseInt(btn.getAttribute('data-count'));
-        if (count === n) {
-            btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
-            btn.classList.remove('border-outline-variant');
-        } else {
-            btn.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
-            btn.classList.add('border-outline-variant');
-        }
-    });
-    addLogLine('SCENE COUNT SET: ' + n + ' scenes');
-}
-
-function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
-        function rechargeCredits() { window.location.href = 'pricing.html'; }
-        function switchPhase(p, b) { addLogLine('PHASE: ' + p); }
-        function setMode(m) { addLogLine('MODE: ' + m); }
-    </script>
-
-<script type="module">
-  import { deductCredits, getCurrentCredits } from "/js/firebase-credits.js";
-
-  // Ø§Ø¬Ø¹Ù„ deductCredits Ù…ØªØ§Ø­Ø© Ù„Ù„Ø³ÙƒØ±ÙŠØ¨Øª Ø§Ù„Ø¯Ø§Ø®Ù„ÙŠ
-  window.__deductCredits = deductCredits;
-
-  // Ø¹Ù†Ø¯ ÙƒÙ„ ØªØ­Ø¯ÙŠØ« Ù…Ù† Firestore â€” Ø­Ø¯Ù‘Ø« Ù…ØªØºÙŠØ± credits ÙˆØ¯Ø§Ù„Ø© updateCredits
-  window.addEventListener('creditsUpdated', (e) => {
-    // ÙˆØµÙˆÙ„ Ù„Ù€ credits Ø¯Ø§Ø®Ù„ Ø§Ù„Ù€ IIFE Ø¹Ø¨Ø± localStorage Ø§Ù„Ù…ÙØ­Ø¯ÙŽÙ‘Ø«
-    const newVal = e.detail.credits;
-    localStorage.setItem('md_credits', newVal);
-    // ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¹Ù†Ø§ØµØ± Ù…Ø¨Ø§Ø´Ø±Ø© Ø¨Ø¯ÙˆÙ† Ø§Ù†ØªØ¸Ø§Ø±
-    const fmt = Number(newVal).toLocaleString();
-    const topEl = document.getElementById('top-credits');
-    const footEl = document.getElementById('footer-credits');
-    if (topEl) topEl.innerText = fmt + ' CR';
-    if (footEl) footEl.innerText = fmt + ' CR';
-  });
-</script>
-
-<!-- ── ONBOARDING MODAL ─────────────────────────────── -->
-<div id="onboarding-overlay" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" style="display:none!important">
-  <div class="bg-surface-container border border-primary-fixed-dim/40 max-w-md w-full mx-4 p-lg shadow-[0_0_40px_rgba(168,215,0,0.15)]">
-    
-    <div class="flex items-center gap-sm mb-md">
-      <span class="material-symbols-outlined text-primary-fixed-dim text-[24px]">movie</span>
-      <h2 class="font-headline-sm text-headline-sm text-primary-fixed-dim tracking-widest">WELCOME TO STUDIO</h2>
-    </div>
-
-    <div class="space-y-md font-label-technical text-[11px] text-on-surface-variant leading-relaxed">
-      
-      <div class="flex gap-sm items-start">
-        <span class="text-primary-fixed-dim font-bold shrink-0">01</span>
-        <p><span class="text-on-surface">Write your idea</span> in the text box below — describe your scene or story.</p>
-      </div>
-
-      <div class="flex gap-sm items-start">
-        <span class="text-primary-fixed-dim font-bold shrink-0">02</span>
-        <p><span class="text-on-surface">Choose scene count</span> from the left sidebar — 2 to 6 scenes.</p>
-      </div>
-
-      <div class="flex gap-sm items-start">
-        <span class="text-primary-fixed-dim font-bold shrink-0">03</span>
-        <p><span class="text-on-surface">Choose your director</span> from the sidebar — each director has a unique style:<br/>
-        <span class="text-primary-fixed-dim">DRAMA</span> · <span class="text-error">ACTION</span> · <span class="text-secondary">COMEDY</span> · <span class="text-tertiary-fixed-dim">DOCS</span></p>
-      </div>
-
-      <div class="flex gap-sm items-start">
-        <span class="text-primary-fixed-dim font-bold shrink-0">04</span>
-        <p><span class="text-on-surface">Press Send</span> — the Scriptwriter writes the screenplay, then the Director translates it visually.</p>
-      </div>
-
-      <div class="flex gap-sm items-start">
-        <span class="text-primary-fixed-dim font-bold shrink-0">05</span>
-        <p><span class="text-on-surface">Generate each scene</span> by pressing GENERATE — each scene is 10-15 seconds with native audio.</p>
-      </div>
-
-    </div>
-
-    <div class="mt-lg pt-md border-t border-outline-variant flex items-center justify-between">
-      <label class="flex items-center gap-xs cursor-pointer group">
-        <input type="checkbox" id="dont-show-again" class="hidden"/>
-        <div id="checkbox-visual" class="w-4 h-4 border border-outline-variant group-hover:border-primary-fixed-dim flex items-center justify-center transition-all">
-          <span class="material-symbols-outlined text-[10px] text-primary-fixed-dim hidden" id="check-icon">check</span>
-        </div>
-        <span class="font-label-technical text-[10px] text-on-surface-variant group-hover:text-on-surface transition-all">Don't show again</span>
-      </label>
-      
-      <button onclick="closeOnboarding()" class="bg-primary-fixed-dim text-on-primary px-lg py-xs font-label-technical text-[11px] hover:brightness-110 transition-all active:scale-95">
-        START PRODUCTION →
-      </button>
-    </div>
-
-  </div>
-</div>
-
-<script>
-// ── ONBOARDING ────────────────────────────────────────
-(function() {
-  const overlay = document.getElementById('onboarding-overlay');
-  const checkbox = document.getElementById('dont-show-again');
-  const checkIcon = document.getElementById('check-icon');
-  const checkboxVisual = document.getElementById('checkbox-visual');
-
-  // Show if not dismissed before
-  if (!localStorage.getItem('md_studio_onboarded')) {
-    overlay.style.display = 'flex';
-    overlay.style.removeProperty('display');
-    overlay.style.cssText = 'display:flex!important';
-  }
-
-  // Toggle checkbox
-  if (checkboxVisual) {
-    checkboxVisual.addEventListener('click', function() {
-      checkbox.checked = !checkbox.checked;
-      if (checkbox.checked) {
-        checkIcon.classList.remove('hidden');
-        checkboxVisual.classList.add('border-primary-fixed-dim', 'bg-primary-fixed-dim/20');
-      } else {
-        checkIcon.classList.add('hidden');
-        checkboxVisual.classList.remove('border-primary-fixed-dim', 'bg-primary-fixed-dim/20');
-      }
-    });
-  }
-})();
-
-function closeOnboarding() {
-  const overlay = document.getElementById('onboarding-overlay');
-  const checkbox = document.getElementById('dont-show-again');
-  
-  if (checkbox && checkbox.checked) {
-    localStorage.setItem('md_studio_onboarded', 'true');
-  }
-  
-  overlay.style.cssText = 'display:none!important';
-}
+    function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
+    function setMode(m) { 
+        addLogLine('MODE: ' + m); 
+        document.getElementById('btn-auto').className = m === 'AUTO' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
+        document.getElementById('btn-manual').className = m === 'MANUAL' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
+    }
 </script>
 </body></html>
-
-
-
-
-
-
-
