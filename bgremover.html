@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MERCADREAM — Background Changer</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain: "mercadream-4b4b3.firebaseapp.com",
+  projectId: "mercadream-4b4b3",
+  storageBucket: "mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId: "257560928442",
+  appId: "1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+<style>
+:root {
+  --void: #060606; --acid: #c8ff00; --acid-dim: #a8d700;
+  --surface: #0e0e0e; --surface2: #141414; --border: #1e1e1e;
+  --text: #e5e2e1; --muted: #555; --error: #ff4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--void); color: var(--text); font-family: 'IBM Plex Mono', monospace; min-height: 100vh; }
+
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.04) 4px);
+}
+
+/* MODE TOGGLE */
+.mode-btn {
+  padding: 10px 24px; border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+}
+.mode-btn.active { border-color: var(--acid); color: var(--acid); background: rgba(200,255,0,0.05); }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border: 2px dashed var(--border); cursor: pointer; transition: all 0.3s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; position: relative; overflow: hidden; background: var(--surface);
+}
+.upload-zone:hover { border-color: var(--acid); background: rgba(200,255,0,0.02); }
+.upload-zone.has-file { border-style: solid; border-color: var(--acid); }
+.upload-zone img, .upload-zone video { 
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; 
+}
+
+/* BG PRESETS */
+.bg-preset {
+  width: 60px; height: 60px; cursor: pointer; border: 2px solid transparent;
+  overflow: hidden; flex-shrink: 0; transition: border-color 0.2s;
+}
+.bg-preset:hover, .bg-preset.active { border-color: var(--acid); }
+.bg-preset img { width: 100%; height: 100%; object-fit: cover; }
+
+/* PROCESS BTN */
+.process-btn {
+  background: var(--acid); color: var(--void); border: none; cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; padding: 16px 40px;
+  display: flex; align-items: center; gap: 12px; transition: all 0.2s;
+}
+.process-btn:hover { background: var(--acid-dim); box-shadow: 0 0 20px rgba(200,255,0,0.3); }
+.process-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* RESULT */
+.result-preview {
+  border: 1px solid var(--acid); overflow: hidden; position: relative;
+  display: none;
+}
+.result-preview img, .result-preview video {
+  width: 100%; height: 100%; object-fit: contain; max-height: 400px;
+}
+
+/* COMPARE SLIDER */
+.compare-wrap { position: relative; overflow: hidden; cursor: col-resize; }
+.compare-after { position: absolute; inset: 0; overflow: hidden; }
+.compare-line { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--acid); cursor: col-resize; z-index: 10; }
+.compare-handle {
+  position: absolute; top: 50%; transform: translateY(-50%) translateX(-50%);
+  width: 32px; height: 32px; background: var(--acid); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; z-index: 11;
+}
+
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* EXAMPLES STRIP */
+.example-card {
+  flex-shrink: 0; width: 140px; cursor: pointer;
+  border: 1px solid var(--border); overflow: hidden; transition: border-color 0.2s;
+}
+.example-card:hover { border-color: var(--acid); }
+.example-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.example-card .label {
+  padding: 6px 8px; font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); background: var(--surface2);
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header style="height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--void);z-index:50;">
+  <a href="index.html" style="font-family:Orbitron,monospace;font-size:14px;font-weight:900;color:var(--acid);text-decoration:none;letter-spacing:3px;">MERCADREAM</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);padding:4px 12px;">
+      <span class="material-symbols-outlined" style="font-size:14px;color:var(--acid);">bolt</span>
+      <span id="top-gns" style="font-size:11px;">0 GNS</span>
+    </div>
+    <a href="profile.html"><span class="material-symbols-outlined" style="color:var(--muted);font-size:20px;">account_circle</span></a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section style="padding:36px 20px 24px;text-align:center;max-width:700px;margin:0 auto;">
+  <div style="font-size:9px;color:var(--acid);letter-spacing:4px;margin-bottom:10px;">AI BACKGROUND STUDIO</div>
+  <h1 style="font-family:Orbitron,monospace;font-size:clamp(22px,5vw,38px);font-weight:900;line-height:1.1;margin-bottom:12px;">
+    REMOVE OR CHANGE<br/><span style="color:var(--acid);">ANY BACKGROUND</span>
+  </h1>
+  <p style="font-size:10px;color:var(--muted);letter-spacing:1px;">Images · Videos · Instant AI Processing</p>
+</section>
+
+<!-- EXAMPLES STRIP -->
+<section style="padding:0 0 32px;overflow:hidden;position:relative;">
+  <div style="font-size:9px;color:var(--muted);letter-spacing:3px;text-align:center;margin-bottom:14px;">BEFORE → AFTER EXAMPLES</div>
+  <div style="display:flex;gap:8px;overflow-x:auto;padding:0 20px;scrollbar-width:none;">
+    <div class="example-card">
+      <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop" alt="Portrait"/>
+      <div class="label">PORTRAIT → STUDIO</div>
+    </div>
+    <div class="example-card">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop" alt="Product"/>
+      <div class="label">PRODUCT → WHITE</div>
+    </div>
+    <div class="example-card">
+      <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=200&h=200&fit=crop" alt="Person"/>
+      <div class="label">PERSON → CITY</div>
+    </div>
+    <div class="example-card">
+      <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop" alt="Pet"/>
+      <div class="label">PET → REMOVED</div>
+    </div>
+    <div class="example-card">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop" alt="Food"/>
+      <div class="label">FOOD → CLEAN</div>
+    </div>
+    <div class="example-card">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=200&h=200&fit=crop" alt="Fashion"/>
+      <div class="label">FASHION → CUSTOM</div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN TOOL -->
+<section style="padding:0 20px 60px;max-width:900px;margin:0 auto;">
+
+  <!-- MODE SELECT -->
+  <div style="display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border);width:fit-content;">
+    <button class="mode-btn active" id="mode-image" onclick="setMode('image')">
+      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:6px;">image</span>
+      IMAGE — 5 GNS
+    </button>
+    <button class="mode-btn" id="mode-video" onclick="setMode('video')">
+      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:6px;">videocam</span>
+      VIDEO — 15 GNS
+    </button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    
+    <!-- LEFT: INPUT -->
+    <div>
+      <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:10px;">01 — UPLOAD YOUR FILE</div>
+      <div class="upload-zone" id="upload-zone" style="height:280px;" onclick="triggerUpload()">
+        <span class="material-symbols-outlined" style="font-size:40px;color:var(--muted);">cloud_upload</span>
+        <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">CLICK TO UPLOAD</div>
+        <div style="font-size:9px;color:var(--border);letter-spacing:1px;" id="file-hint">JPG · PNG · WEBP</div>
+      </div>
+      <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="handleFile(this)"/>
+      
+      <!-- BG OPTIONS -->
+      <div id="bg-section" style="margin-top:16px;">
+        <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:10px;">02 — CHOOSE ACTION</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button class="mode-btn active" id="action-remove" onclick="setAction('remove')" style="flex:1;padding:8px;">
+            REMOVE BG
+          </button>
+          <button class="mode-btn" id="action-replace" onclick="setAction('replace')" style="flex:1;padding:8px;">
+            REPLACE BG
+          </button>
+        </div>
+        
+        <!-- BG Presets -->
+        <div id="bg-presets" style="display:none;">
+          <div style="font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:8px;">SELECT BACKGROUND:</div>
+          <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;">
+            <div class="bg-preset active" onclick="selectBg(this,'studio')" title="Studio">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e,#16213e);"></div>
+            </div>
+            <div class="bg-preset" onclick="selectBg(this,'white')" title="White">
+              <div style="width:100%;height:100%;background:#ffffff;"></div>
+            </div>
+            <div class="bg-preset" onclick="selectBg(this,'gradient')" title="Gradient">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);"></div>
+            </div>
+            <div class="bg-preset" onclick="selectBg(this,'city')" title="City">
+              <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=120&h=120&fit=crop"/>
+            </div>
+            <div class="bg-preset" onclick="selectBg(this,'nature')" title="Nature">
+              <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=120&h=120&fit=crop"/>
+            </div>
+            <div class="bg-preset" onclick="selectBg(this,'studio2')" title="Studio Dark">
+              <div style="width:100%;height:100%;background:radial-gradient(circle,#1a1a1a,#000);"></div>
+            </div>
+            <div class="bg-preset" onclick="selectBg(this,'upload')" title="Upload custom" style="border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--muted);">add_photo_alternate</span>
+            </div>
+          </div>
+          <input type="file" id="bg-file-input" style="display:none;" accept="image/*" onchange="handleBgFile(this)"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: OUTPUT -->
+    <div>
+      <div style="font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:10px;">03 — RESULT</div>
+      
+      <!-- Placeholder -->
+      <div id="result-placeholder" style="height:280px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;">
+        <span class="material-symbols-outlined" style="font-size:40px;color:var(--border);">auto_fix_high</span>
+        <div style="font-size:10px;color:var(--border);letter-spacing:2px;">AWAITING PROCESS</div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-preview" id="result-preview" style="height:280px;">
+        <img id="result-img" src="" alt="Result" style="display:none;"/>
+        <video id="result-video" src="" controls muted loop style="display:none;"></video>
+      </div>
+
+      <!-- Download actions -->
+      <div id="result-actions" style="display:none;margin-top:12px;display:none;">
+        <div style="display:flex;gap:8px;">
+          <button onclick="downloadResult()" style="flex:1;background:var(--acid);color:var(--void);border:none;padding:12px;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">download</span>DOWNLOAD
+          </button>
+          <button onclick="shareResult()" style="background:transparent;border:1px solid var(--acid);color:var(--acid);padding:12px 16px;font-family:IBM Plex Mono,monospace;font-size:10px;cursor:pointer;">
+            <span class="material-symbols-outlined" style="font-size:16px;">share</span>
+          </button>
+          <button onclick="resetTool()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 16px;font-family:IBM Plex Mono,monospace;font-size:10px;cursor:pointer;">
+            <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCESS BUTTON -->
+  <div style="margin-top:24px;text-align:center;">
+    <button class="process-btn" id="process-btn" onclick="processFile()">
+      <span class="material-symbols-outlined" style="font-size:20px;" id="process-icon">auto_fix_high</span>
+      <span id="process-text">PROCESS — 5 GNS</span>
+    </button>
+    <div style="margin-top:10px;font-size:9px;color:var(--muted);letter-spacing:1px;" id="status-msg"></div>
+  </div>
+
+</section>
+
+<!-- CTA BOTTOM -->
+<section style="padding:48px 20px;border-top:1px solid var(--border);text-align:center;background:linear-gradient(0deg,rgba(200,255,0,0.03),transparent);">
+  <div style="font-size:9px;color:var(--muted);letter-spacing:4px;margin-bottom:12px;">NEED FULL CINEMATIC PRODUCTION?</div>
+  <h2 style="font-family:Orbitron,monospace;font-size:clamp(16px,3vw,24px);font-weight:700;margin-bottom:20px;">GENERATE YOUR OWN AI VIDEO</h2>
+  <button onclick="window.location.href='studio.html'" style="background:transparent;border:1px solid var(--acid);color:var(--acid);padding:14px 36px;font-family:IBM Plex Mono,monospace;font-size:11px;font-weight:700;letter-spacing:3px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--acid)';this.style.color='var(--void)';" onmouseout="this.style.background='transparent';this.style.color='var(--acid)';">
+    ENTER STUDIO → FROM 12 GNS
+  </button>
+</section>
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+var mode = 'image';       // 'image' | 'video'
+var action = 'remove';    // 'remove' | 'replace'
+var selectedBg = 'studio';
+var uploadedDataUrl = null;
+var uploadedFile = null;
+var bgDataUrl = null;
+var resultUrl = null;
+var COST = { image: 5, video: 15 };
+
+// ── FIREBASE ──────────────────────────────────────────
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (doc.exists) {
+        var gns = doc.data().credits || 0;
+        localStorage.setItem('md_credits', gns);
+        localStorage.setItem('md_user_id', user.uid);
+        document.getElementById('top-gns').textContent = gns.toLocaleString() + ' GNS';
+      }
+    });
+  }
+});
+
+// ── MODE / ACTION ─────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  document.getElementById('mode-image').classList.toggle('active', m === 'image');
+  document.getElementById('mode-video').classList.toggle('active', m === 'video');
+  document.getElementById('file-input').accept = m === 'image' ? 'image/*' : 'video/*';
+  document.getElementById('file-hint').textContent = m === 'image' ? 'JPG · PNG · WEBP' : 'MP4 · MOV · WEBM';
+  document.getElementById('process-text').textContent = 'PROCESS — ' + COST[m] + ' GNS';
+  resetTool();
+}
+
+function setAction(a) {
+  action = a;
+  document.getElementById('action-remove').classList.toggle('active', a === 'remove');
+  document.getElementById('action-replace').classList.toggle('active', a === 'replace');
+  document.getElementById('bg-presets').style.display = a === 'replace' ? 'block' : 'none';
+}
+
+function selectBg(el, name) {
+  document.querySelectorAll('.bg-preset').forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+  selectedBg = name;
+  if (name === 'upload') {
+    document.getElementById('bg-file-input').click();
+  }
+}
+
+function handleBgFile(input) {
+  var f = input.files[0];
+  if (!f) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    bgDataUrl = e.target.result;
+    selectedBg = 'custom';
+  };
+  reader.readAsDataURL(f);
+}
+
+// ── UPLOAD ────────────────────────────────────────────
+function triggerUpload() {
+  document.getElementById('file-input').click();
+}
+
+function handleFile(input) {
+  var f = input.files[0];
+  if (!f) return;
+  uploadedFile = f;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    uploadedDataUrl = e.target.result;
+    var zone = document.getElementById('upload-zone');
+    zone.classList.add('has-file');
+    zone.innerHTML = '';
+    if (mode === 'image') {
+      var img = document.createElement('img');
+      img.src = uploadedDataUrl;
+      zone.appendChild(img);
+    } else {
+      var vid = document.createElement('video');
+      vid.src = uploadedDataUrl;
+      vid.muted = true; vid.loop = true; vid.autoplay = true;
+      vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      zone.appendChild(vid);
+    }
+    setStatus('FILE LOADED — READY TO PROCESS');
+  };
+  reader.readAsDataURL(f);
+}
+
+// ── PROCESS ───────────────────────────────────────────
+async function processFile() {
+  if (!uploadedDataUrl) { setStatus('UPLOAD A FILE FIRST', true); return; }
+
+  var gns = parseInt(localStorage.getItem('md_credits') || '0');
+  var cost = COST[mode];
+  if (gns < cost) {
+    setStatus('INSUFFICIENT GNS — REDIRECTING...', true);
+    setTimeout(function() { window.location.href = 'pricing.html'; }, 1500);
+    return;
+  }
+
+  var btn = document.getElementById('process-btn');
+  btn.disabled = true;
+  document.getElementById('process-icon').classList.add('spinner');
+  setStatus('SUBMITTING TO AI...');
+
+  // Build bg URL for replace
+  var bgUrl = null;
+  if (action === 'replace') {
+    var bgMap = {
+      studio: 'https://images.unsplash.com/photo-1518655048521-f130df041f66?w=1080',
+      white: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI6QAAAABJRU5ErkJggg==',
+      gradient: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1080',
+      city: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080',
+      nature: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1080',
+      studio2: 'https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=1080',
+      custom: bgDataUrl
+    };
+    bgUrl = bgMap[selectedBg] || bgMap.studio;
+  }
+
+  try {
+    var endpoint = mode === 'image' ? '/api/bgremover' : '/api/bgremover';
+    var res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        input_url: uploadedDataUrl,
+        mode: mode,
+        action: action,
+        bg_url: bgUrl
+      })
+    });
+    var data = await res.json();
+
+    if (data.error) {
+      setStatus('ERROR: ' + data.error, true);
+      btn.disabled = false;
+      document.getElementById('process-icon').classList.remove('spinner');
+      return;
+    }
+
+    // Deduct GNS
+    var newGns = gns - cost;
+    localStorage.setItem('md_credits', newGns);
+    document.getElementById('top-gns').textContent = newGns.toLocaleString() + ' GNS';
+    var uid = localStorage.getItem('md_user_id');
+    if (uid && firebase.auth().currentUser) {
+      firebase.firestore().collection('users').doc(uid).update({ credits: newGns });
+    }
+
+    setStatus('PROCESSING... ' + (mode === 'video' ? '(1-3 min)' : '(~10 sec)'));
+    document.getElementById('process-text').textContent = 'PROCESSING...';
+
+    // If instant result
+    if (data.url) {
+      showResult(data.url);
+      return;
+    }
+
+    // Poll
+    var jobId = data.id;
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 80) {
+        clearInterval(poll);
+        setStatus('TIMEOUT — TRY AGAIN', true);
+        btn.disabled = false;
+        document.getElementById('process-icon').classList.remove('spinner');
+        return;
+      }
+      setStatus('PROCESSING [' + attempts + ']...');
+      try {
+        var pr = await fetch('/api/bgremover', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({action: 'poll', id: jobId})
+        });
+        var pd = await pr.json();
+        if ((pd.status === 'completed' || pd.status === 'succeeded') && pd.url) {
+          clearInterval(poll);
+          showResult(pd.url);
+        } else if (pd.status === 'failed') {
+          clearInterval(poll);
+          setStatus('PROCESSING FAILED — TRY AGAIN', true);
+          btn.disabled = false;
+          document.getElementById('process-icon').classList.remove('spinner');
+        }
+      } catch(e) { console.error('Poll error:', e); }
+    }, 2000);
+
+  } catch(e) {
+    setStatus('NETWORK ERROR: ' + e.message, true);
+    btn.disabled = false;
+    document.getElementById('process-icon').classList.remove('spinner');
+  }
+}
+
+function showResult(url) {
+  resultUrl = url;
+  document.getElementById('result-placeholder').style.display = 'none';
+  var preview = document.getElementById('result-preview');
+  preview.style.display = 'block';
+
+  if (mode === 'image') {
+    var img = document.getElementById('result-img');
+    img.src = url; img.style.display = 'block';
+    document.getElementById('result-video').style.display = 'none';
+  } else {
+    var vid = document.getElementById('result-video');
+    vid.src = url; vid.style.display = 'block';
+    document.getElementById('result-img').style.display = 'none';
+  }
+
+  document.getElementById('result-actions').style.display = 'flex';
+  document.getElementById('process-btn').disabled = false;
+  document.getElementById('process-icon').classList.remove('spinner');
+  document.getElementById('process-text').textContent = 'PROCESS AGAIN';
+  setStatus('✓ COMPLETE — DOWNLOAD YOUR FILE');
+}
+
+function downloadResult() {
+  if (!resultUrl) return;
+  var a = document.createElement('a');
+  a.href = resultUrl;
+  a.download = 'mercadream_bg_' + mode + '.png';
+  a.click();
+}
+
+async function shareResult() {
+  if (!resultUrl) return;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Created with MercaDream AI', url: resultUrl });
+    } catch(e) {}
+  } else {
+    navigator.clipboard.writeText(resultUrl);
+    setStatus('URL COPIED TO CLIPBOARD');
+  }
+}
+
+function resetTool() {
+  uploadedDataUrl = null; uploadedFile = null; resultUrl = null;
+  var zone = document.getElementById('upload-zone');
+  zone.classList.remove('has-file');
+  zone.innerHTML = '<span class="material-symbols-outlined" style="font-size:40px;color:var(--muted);">cloud_upload</span>'
+    + '<div style="font-size:11px;color:var(--muted);letter-spacing:1px;">CLICK TO UPLOAD</div>'
+    + '<div style="font-size:9px;color:var(--border);letter-spacing:1px;" id="file-hint">' + (mode === 'image' ? 'JPG · PNG · WEBP' : 'MP4 · MOV · WEBM') + '</div>';
+  document.getElementById('result-placeholder').style.display = 'flex';
+  document.getElementById('result-preview').style.display = 'none';
+  document.getElementById('result-actions').style.display = 'none';
+  document.getElementById('process-btn').disabled = false;
+  document.getElementById('process-icon').classList.remove('spinner');
+  document.getElementById('process-text').textContent = 'PROCESS — ' + COST[mode] + ' GNS';
+  setStatus('');
+}
+
+function setStatus(msg, isError) {
+  var el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--error)' : 'var(--muted)';
+}
+</script>
+</body>
+</html>
