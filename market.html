@@ -1,294 +1,197 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
-<head>
+
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM | GENESIS MARKET</title>
+<title>MERCADREAM — Genesis Market Core</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Orbitron:wght@500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
-@keyframes flicker { 0%{opacity:.97} 5%{opacity:.95} 10%{opacity:.9} 15%{opacity:.98} 100%{opacity:1} }
-.flicker-animation { animation: flicker .15s infinite; }
-.scanlines { background: linear-gradient(to bottom,rgba(18,16,16,0) 50%,rgba(0,0,0,.15) 50%); background-size:100% 4px; pointer-events:none; z-index:100; }
-.grid-bg { background-image: linear-gradient(to right,#1A1A1A 1px,transparent 1px),linear-gradient(to bottom,#1A1A1A 1px,transparent 1px); background-size:40px 40px; }
-.neon-glow { box-shadow:0 0 10px rgba(168,215,0,.4); }
-::-webkit-scrollbar { display:none; }
-.terminal-cursor { display:inline-block;width:8px;height:1.2em;background:#A8D700;animation:blink 1s step-end infinite;vertical-align:middle;margin-left:4px; }
-@keyframes blink { 50%{opacity:0} }
-body { min-height: max(884px, 100dvh); }
-</style>
-<script>
-tailwind.config = {
-  darkMode:"class",
-  theme:{extend:{colors:{
-    "acid-dim":"#A8D700","void":"#040404","surface":"#0A0A0A","surface-container":"#201f1f",
-    "surface-container-highest":"#353534","outline-variant":"#434933","muted":"#4A4A4A",
-    "on-surface":"#e5e2e1","on-surface-variant":"#c4caac","error":"#FF3333","success":"#00FF88",
-    "primary":"#ffffff","primary-fixed":"#c0f500","primary-fixed-dim":"#a8d700"
-  },borderRadius:{"DEFAULT":"0px","full":"9999px"},
-  spacing:{"grid-unit":"40px","margin-mobile":"20px","margin-desktop":"40px"},
-  fontFamily:{"label-caps":["IBM Plex Mono"],"headline-md":["Orbitron"],"headline-lg":["Orbitron"],"code-sm":["IBM Plex Mono"]},
-  fontSize:{"label-caps":["12px",{lineHeight:"1",letterSpacing:"0.2em",fontWeight:"700"}],
-    "headline-md":["24px",{lineHeight:"1.2",fontWeight:"500"}],
-    "headline-lg":["32px",{lineHeight:"1.2",fontWeight:"600"}],
-    "code-sm":["14px",{lineHeight:"1.4",fontWeight:"400"}]}}}
-}
-</script>
+        :root {
+            --acid: #A8D700;
+            --void: #040404;
+            --surface: #0a0a0a;
+            --border: #1a1a1a;
+            --border-highlight: #434933;
+            --text-muted: #4a4a4a;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background: var(--void); color: #e5e2e1; 
+            font-family: 'IBM Plex Mono', monospace; 
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Scanline Animation */
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        .scan-line { 
+            position: fixed; inset: 0; pointer-events: none; z-index: 100;
+            background: linear-gradient(to bottom, transparent, rgba(168, 215, 0, 0.05), transparent);
+            height: 2px; width: 100%; animation: scan 4s linear infinite;
+        }
+
+        /* CRT Grid Overlay */
+        .grid-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 50;
+            background-image: 
+                linear-gradient(rgba(168, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 215, 0, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .terminal-header {
+            border-bottom: 1px solid var(--border);
+            background: rgba(4, 4, 4, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 60;
+        }
+
+        .asset-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .asset-card:hover {
+            border-color: var(--acid);
+            box-shadow: 0 0 15px rgba(168, 215, 0, 0.1);
+        }
+        .asset-card.sold {
+            opacity: 0.5;
+            border-color: #333;
+        }
+        .sold-label {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
+            color: #ff3333; font-family: 'Orbitron', sans-serif; font-weight: 900;
+            font-size: 10px; letter-spacing: 2px; border: 1px solid #ff3333;
+            padding: 1px 4px; background: rgba(0,0,0,0.8);
+            z-index: 10;
+        }
+
+        .flicker { animation: flicker 0.1s infinite; }
+        @keyframes flicker { 0% { opacity: 0.9; } 100% { opacity: 1; } }
+
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--void); }
+        ::-webkit-scrollbar-thumb { background: var(--border-highlight); }
+    </style>
 </head>
-<body class="bg-void text-on-surface font-code-sm overflow-x-hidden">
-<div class="scanlines fixed inset-0 opacity-20 pointer-events-none"></div>
-
-<!-- HEADER -->
-<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-grid-unit" style="box-shadow:0 0 15px rgba(168,217,0,.2)">
-  <div class="flex items-center gap-4">
-    <a href="index.html" class="font-headline-md text-headline-md text-primary tracking-widest uppercase" style="text-decoration:none;">MERCADREAM</a>
-  </div>
-  <div class="flex items-center gap-3">
-    <div class="flex items-center bg-surface-container border border-outline-variant px-3 py-1 gap-2">
-      <span class="material-symbols-outlined text-acid-dim text-sm" style="font-variation-settings:'FILL' 1;">bolt</span>
-      <span id="header-gns" class="font-label-caps text-label-caps text-acid-dim">0 GNS</span>
-    </div>
-    <a href="profile.html"><span class="material-symbols-outlined text-on-surface-variant" style="font-size:24px;">account_circle</span></a>
-  </div>
-</header>
-
-<!-- PAGE TITLE -->
-<main class="pt-grid-unit pb-24 grid-bg min-h-screen">
-  <section class="px-margin-mobile pt-8 pb-4">
-    <div class="flex items-baseline gap-2 border-l-4 border-acid-dim pl-4">
-      <h2 class="font-headline-lg text-headline-lg text-primary uppercase">GENESIS MARKET</h2>
-      <span class="terminal-cursor"></span>
-    </div>
-    <p class="font-code-sm text-muted mt-2 text-xs">BUY · SELL · TRANSFER OWNERSHIP</p>
-  </section>
-
-  <!-- FILTERS -->
-  <div class="sticky top-10 z-40 bg-void/90 backdrop-blur-md border-y border-outline-variant">
-    <div class="flex overflow-x-auto py-3 px-margin-mobile gap-3 items-center">
-      <button onclick="filterMarket('all')" class="filter-btn flex-shrink-0 px-4 py-1 border border-acid-dim bg-acid-dim text-void font-label-caps text-label-caps" data-filter="all">ALL</button>
-      <button onclick="filterMarket('drama')" class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="drama">DRAMA</button>
-      <button onclick="filterMarket('action')" class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="action">ACTION</button>
-      <button onclick="filterMarket('music')" class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="music">MUSIC</button>
-      <button onclick="filterMarket('doc')" class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="doc">DOCUMENTARY</button>
-    </div>
-  </div>
-
-  <!-- GRID -->
-  <section id="market-grid" class="grid grid-cols-2 gap-px bg-outline-variant mt-4 border-b border-outline-variant">
-    <!-- Cards injected by JS -->
-    <div class="col-span-2 p-12 text-center">
-      <span class="material-symbols-outlined text-acid-dim text-4xl spinner" style="animation:spin 1s linear infinite;">refresh</span>
-      <p class="font-label-caps text-muted mt-4 text-xs">LOADING MARKET...</p>
-    </div>
-  </section>
-</main>
-
-<!-- BOTTOM NAV -->
-<nav class="fixed bottom-0 left-0 w-full z-50 bg-void border-t border-outline-variant h-16 flex justify-around items-center px-4">
-  <a href="index.html" class="flex flex-col items-center text-muted hover:text-primary transition-all">
-    <span class="material-symbols-outlined">grid_view</span>
-    <span class="font-label-caps text-[10px] mt-1">EXPLORE</span>
-  </a>
-  <a href="studio.html" class="flex flex-col items-center text-muted hover:text-primary transition-all">
-    <span class="material-symbols-outlined">movie_filter</span>
-    <span class="font-label-caps text-[10px] mt-1">STUDIO</span>
-  </a>
-  <a href="market.html" class="flex flex-col items-center text-primary border-t-2 border-primary pt-2 pb-1">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">storefront</span>
-    <span class="font-label-caps text-[10px] mt-1">MARKET</span>
-  </a>
-  <a href="verify.html" class="flex flex-col items-center text-muted hover:text-primary transition-all">
-    <span class="material-symbols-outlined">verified</span>
-    <span class="font-label-caps text-[10px] mt-1">VAULT</span>
-  </a>
-  <a href="profile.html" class="flex flex-col items-center text-muted hover:text-primary transition-all">
-    <span class="material-symbols-outlined">account_circle</span>
-    <span class="font-label-caps text-[10px] mt-1">PROFILE</span>
-  </a>
-</nav>
-
-<!-- PURCHASE MODAL -->
-<div id="purchase-modal" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(4,4,4,0.95);backdrop-filter:blur(4px);">
-  <div style="width:100%;max-width:480px;margin:16px;border:1px solid #434933;background:#0a0a0a;overflow:hidden;">
-    <div style="height:3px;background:#a8d700;"></div>
-    <div style="padding:10px 20px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;background:#111;">
-      <span style="font-family:IBM Plex Mono;font-size:9px;letter-spacing:3px;color:#a8d700;">SECURE_TRANSFER_PROTOCOL</span>
-      <span style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;">AES-256-GCM</span>
-    </div>
-    <div style="padding:24px;">
-      <h2 style="font-family:Orbitron;font-size:18px;font-weight:700;color:#fff;margin-bottom:20px;">CONFIRM OWNERSHIP TRANSFER</h2>
-      <div style="border:1px solid #1a1a1a;padding:16px;background:#040404;display:grid;grid-template-columns:100px 1fr;gap:14px;margin-bottom:16px;">
-        <img id="modal-thumb" src="" style="width:100px;height:100px;object-fit:cover;border:1px solid #1a1a1a;"/>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div>
-            <div style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;letter-spacing:2px;margin-bottom:3px;">ASSET</div>
-            <div id="modal-title" style="font-family:IBM Plex Mono;font-size:12px;color:#e5e2e1;font-weight:700;"></div>
-          </div>
-          <div>
-            <div style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;letter-spacing:2px;margin-bottom:3px;">GENESIS ID</div>
-            <div id="modal-genesis" style="font-family:Orbitron;font-size:9px;color:#a8d700;"></div>
-          </div>
-          <div style="display:flex;align-items:baseline;gap:6px;">
-            <span id="modal-price" style="font-family:Orbitron;font-size:22px;font-weight:700;color:#a8d700;"></span>
-            <span style="font-family:IBM Plex Mono;font-size:10px;color:#a8d700;">GNS</span>
-          </div>
-          <div id="modal-balance" style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;"></div>
-        </div>
-      </div>
-      <div style="border-left:3px solid #ff3333;padding:10px 14px;background:rgba(255,51,51,.05);margin-bottom:20px;font-family:IBM Plex Mono;font-size:10px;color:#e5e2e1;line-height:1.6;">
-        This transfers the <strong style="color:#ff3333;">Genesis DNA deed</strong> permanently. Cannot be undone.
-      </div>
-      <div style="display:flex;gap:10px;">
-        <button onclick="closePurchase()" style="flex:1;padding:14px;border:1px solid #1a1a1a;background:transparent;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;color:#4a4a4a;cursor:pointer;">CANCEL</button>
-        <button id="confirm-btn" onclick="confirmPurchase()" style="flex:2;padding:14px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 15px rgba(168,215,0,.3);">CONFIRM PURCHASE</button>
-      </div>
-    </div>
-  </div>
+<body class="pb-20">
+<div class="scan-line"></div>
+<div class="grid-overlay"></div>
+<!-- Header -->
+<header class="terminal-header p-4 md:px-8 flex justify-between items-end">
+<div>
+<h1 class="text-2xl md:text-3xl font-black tracking-tighter uppercase font-headline">MERCADREAM <span class="text-[#A8D700]">CORE</span></h1>
+<p class="text-[8px] text-[#4a4a4a] tracking-[2px] mt-1 uppercase">AUTONOMOUS ASSET LIQUIDITY PROTOCOL v.2026.05</p>
 </div>
-
-<style>
-@keyframes spin { to { transform: rotate(360deg); } }
-</style>
-
+<div class="text-right">
+<div class="text-[8px] text-[#4a4a4a] mb-1 tracking-widest">SYSTEM_LOAD</div>
+<div class="text-xl md:text-2xl font-bold text-[#A8D700] font-headline flicker" id="load-val">0.0%</div>
+</div>
+</header>
+<!-- Stats Bar -->
+<div class="bg-surface border-b border-[#434933] px-4 md:px-8 py-2 flex justify-between items-center text-[9px] font-label-caps">
+<div class="flex gap-6">
+<span class="text-[#c4caac]">NODE: 0x4F...E1</span>
+<span class="text-[#c4caac] hidden sm:inline">PROTOCOL: GENESIS_OVR</span>
+<span class="text-[#c4caac]">LATENCY: 14ms</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-[#A8D700] animate-pulse"></div>
+<span class="text-[#A8D700] font-bold">LIVE_UPLINK</span>
+</div>
+</div>
+<!-- Main Grid -->
+<main class="p-2 md:p-4 max-w-[1920px] mx-auto">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3" id="asset-grid">
+<!-- Items injected by JS -->
+</div>
+</main>
+<!-- Navigation -->
+<nav class="fixed bottom-0 left-0 w-full z-[70] bg-[#040404] border-t border-[#434933] h-16 flex justify-around items-center px-4">
+<a class="flex flex-col items-center text-[#4a4a4a] hover:text-white transition-colors" href="index.html">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-[8px] mt-1 font-bold">EXPLORE</span>
+</a>
+<a class="flex flex-col items-center text-[#A8D700]" href="market.html">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">terminal</span>
+<span class="text-[8px] mt-1 font-bold">CORE</span>
+</a>
+<a class="flex flex-col items-center text-[#4a4a4a] hover:text-white transition-colors" href="verify.html">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+<span class="text-[8px] mt-1 font-bold">VAULT</span>
+</a>
+<a class="flex flex-col items-center text-[#4a4a4a] hover:text-white transition-colors" href="profile.html">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+<span class="text-[8px] mt-1 font-bold">PROFILE</span>
+</a>
+</nav>
 <script>
-firebase.initializeApp({
-  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-  authDomain:"mercadream-4b4b3.firebaseapp.com",
-  projectId:"mercadream-4b4b3",
-  storageBucket:"mercadream-4b4b3.firebasestorage.app",
-  messagingSenderId:"257560928442",
-  appId:"1:257560928442:web:06983f27629a13eeed6283"
-});
+        const grid = document.getElementById('asset-grid');
+        const loadVal = document.getElementById('load-val');
 
-var currentUser = null;
-var allListings = [];
-var pendingPurchase = null;
+        const generateAsset = (index) => {
+            const id = 8000 + index;
+            const price = (Math.random() * 5000 + 500).toFixed(0);
+            const isSold = Math.random() > 0.85;
+            const type = ['DRAMA', 'ACTION', 'NEURAL', 'AUDIO', 'SYNC', 'LOGIC', 'KERNEL', 'PULSE'][Math.floor(Math.random() * 8)];
+            
+            return `
+                <article class="asset-card p-2 md:p-2.5 ${isSold ? 'sold' : ''}">
+                    <div class="flex justify-between items-start mb-1.5">
+                        <div class="text-[7px] text-[#A8D700] font-bold tracking-tighter">ID: ${id}</div>
+                        <div class="text-[6px] bg-white/5 px-1 py-0.5 border border-white/10 text-[#c4caac]">${type}</div>
+                    </div>
+                    
+                    <div class="aspect-video sm:aspect-square bg-[#040404] border border-white/5 mb-2 relative overflow-hidden group">
+                        <img src="https://picsum.photos/seed/${id}/300/300" class="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                        ${isSold ? '<div class="sold-label">LOCKED</div>' : ''}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
 
-firebase.auth().onAuthStateChanged(function(user) {
-  currentUser = user;
-  if (user) {
-    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
-      if (doc.exists) {
-        var gns = doc.data().credits || 0;
-        localStorage.setItem('md_credits', gns);
-        localStorage.setItem('md_user_id', user.uid);
-        localStorage.setItem('md_name', doc.data().name || 'Creator');
-        document.getElementById('header-gns').textContent = gns.toLocaleString() + ' GNS';
-      }
-    });
-  }
-  loadMarket();
-});
+                    <div class="flex flex-col gap-0.5">
+                        <div class="flex justify-between items-end">
+                            <span class="text-[7px] text-[#4a4a4a] uppercase tracking-widest">Valuation</span>
+                            <span class="text-[10px] md:text-xs font-bold font-headline ${isSold ? 'line-through text-[#4a4a4a]' : 'text-white'}">${Number(price).toLocaleString()} <span class="text-[7px]">GNS</span></span>
+                        </div>
+                        <div class="text-[6px] mt-0.5 flex justify-between">
+                            <span class="${isSold ? 'text-red-900' : 'text-[#4a4a4a]'}">${isSold ? 'ACCESS_DENIED' : 'SYNC_AVAILABLE'}</span>
+                            <span class="text-[#4a4a4a] opacity-50">${(Math.random() * 2).toFixed(1)}s ago</span>
+                        </div>
+                    </div>
+                </article>
+            `;
+        };
 
-async function loadMarket(filter) {
-  var grid = document.getElementById('market-grid');
-  try {
-    var query = firebase.firestore().collection('genesis_vault').where('status','==','for_sale').orderBy('createdAt','desc').limit(20);
-    var snap = await query.get();
-    allListings = [];
-    snap.forEach(function(doc) { allListings.push({id: doc.id, ...doc.data()}); });
-    renderGrid(allListings, filter);
-  } catch(e) {
-    // Show empty state
-    grid.innerHTML = '<div class="col-span-2 p-12 text-center"><span class="material-symbols-outlined text-muted text-4xl">storefront</span><p class="font-label-caps text-muted mt-4 text-xs">NO LISTINGS YET</p><p class="font-code-sm text-muted mt-2 text-xs">Be the first to list your Genesis video</p><a href="profile.html" style="display:inline-block;margin-top:16px;padding:10px 24px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;text-decoration:none;">GO TO PROFILE</a></div>';
-  }
-}
+        const updateGrid = () => {
+            // High density update
+            let items = '';
+            for (let i = 0; i < 48; i++) {
+                items += generateAsset(i);
+            }
+            grid.innerHTML = items;
+            
+            // Randomize load value
+            const load = (Math.random() * 100).toFixed(1);
+            loadVal.textContent = load + '%';
+            
+            if (load > 85) loadVal.style.color = '#ff3333';
+            else loadVal.style.color = '#A8D700';
+        };
 
-function renderGrid(items, filter) {
-  var grid = document.getElementById('market-grid');
-  var filtered = filter && filter !== 'all' ? items.filter(function(i) { return (i.director||'').toLowerCase().includes(filter); }) : items;
-  
-  if (!filtered.length) {
-    grid.innerHTML = '<div class="col-span-2 p-12 text-center"><span class="material-symbols-outlined text-muted text-4xl">search_off</span><p class="font-label-caps text-muted mt-4 text-xs">NO RESULTS</p></div>';
-    return;
-  }
-  
-  grid.innerHTML = filtered.map(function(d) {
-    var thumb = d.thumbnail || 'https://images.unsplash.com/photo-1518655048521-f130df041f66?w=400&h=600&fit=crop';
-    var sold = d.status === 'sold';
-    return '<article class="bg-surface group relative flex flex-col">' +
-      '<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">' +
-      '<img class="w-full h-full object-cover ' + (sold ? 'grayscale opacity-40' : 'group-hover:scale-105 transition-transform duration-500 opacity-80') + '" src="' + thumb + '" alt="' + (d.title||'') + '"/>' +
-      (sold ? '<div class="absolute inset-0 flex items-center justify-center" style="transform:rotate(-15deg)"><div style="background:#ff3333;color:#040404;font-family:Orbitron;font-size:28px;font-weight:900;padding:8px 16px;border:2px solid #040404;">SOLD</div></div>' : '') +
-      '<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">' + (d.genesisId||'—') + '</span></div>' +
-      '</div>' +
-      '<div class="p-4 flex-grow flex flex-col gap-2' + (sold?' opacity-60':'') + '">' +
-      '<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (d.title||'Untitled') + '</h3>' +
-      '<div><span style="color:#a8d700;font-family:IBM Plex Mono;font-size:11px;">' + (d.genesisId||'—') + '</span>' +
-      '<div style="display:flex;justify-content:space-between;margin-top:4px;"><span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@' + (d.ownerName||'creator').replace(/\s/g,'_').toUpperCase() + '</span>' +
-      '<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">' + (d.director||'AI').toUpperCase() + '</span></div></div>' +
-      '<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">' + (d.price||0).toLocaleString() + '</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>' +
-      '<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">' +
-      (d.previewUrl ? '<a href="' + d.previewUrl + '" target="_blank" style="display:block;text-align:center;padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;text-decoration:none;">PREVIEW</a>' : '<span style="display:block;text-align:center;padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;">NO PREVIEW</span>') +
-      (sold ? '<div style="text-align:center;padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;">OUT OF STOCK</div>' :
-        '<button onclick="openPurchase('' + d.id + '','' + (d.genesisId||'') + '','' + (d.title||'Untitled').replace(/'/g,"") + '',' + (d.price||0) + ','' + thumb + '')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>') +
-      '</div></div></article>';
-  }).join('');
-}
+        // Initial render
+        updateGrid();
 
-function filterMarket(filter) {
-  document.querySelectorAll('.filter-btn').forEach(function(b) {
-    b.classList.remove('bg-acid-dim','text-void','border-acid-dim');
-    b.classList.add('border-outline-variant');
-  });
-  document.querySelector('[data-filter="'+filter+'"]').classList.add('bg-acid-dim','text-void');
-  renderGrid(allListings, filter);
-}
-
-function openPurchase(docId, genesisId, title, price, thumb) {
-  pendingPurchase = {docId, genesisId, title, price};
-  document.getElementById('modal-thumb').src = thumb;
-  document.getElementById('modal-genesis').textContent = genesisId;
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-price').textContent = price.toLocaleString();
-  var bal = parseInt(localStorage.getItem('md_credits')||'0');
-  document.getElementById('modal-balance').textContent = 'YOUR BALANCE: ' + bal.toLocaleString() + ' GNS';
-  var modal = document.getElementById('purchase-modal');
-  modal.style.display = 'flex';
-}
-
-function closePurchase() {
-  document.getElementById('purchase-modal').style.display = 'none';
-  pendingPurchase = null;
-}
-
-async function confirmPurchase() {
-  if (!pendingPurchase || !currentUser) { alert('Please login first.'); return; }
-  var bal = parseInt(localStorage.getItem('md_credits')||'0');
-  if (bal < pendingPurchase.price) {
-    alert('Insufficient GNS. Need ' + pendingPurchase.price + ', have ' + bal + '.');
-    window.location.href = 'pricing.html';
-    return;
-  }
-  var btn = document.getElementById('confirm-btn');
-  btn.textContent = 'PROCESSING...';
-  btn.disabled = true;
-  try {
-    var newBal = bal - pendingPurchase.price;
-    await firebase.firestore().collection('users').doc(currentUser.uid).update({credits: newBal});
-    localStorage.setItem('md_credits', newBal);
-    document.getElementById('header-gns').textContent = newBal.toLocaleString() + ' GNS';
-    await firebase.firestore().collection('genesis_vault').doc(pendingPurchase.docId).update({
-      ownerId: currentUser.uid,
-      ownerName: localStorage.getItem('md_name') || currentUser.email,
-      status: 'owned',
-      price: 0,
-      transferredAt: new Date().toISOString()
-    });
-    closePurchase();
-    alert('✓ TRANSFER COMPLETE
-' + pendingPurchase.genesisId + ' is now in your collection.');
-    loadMarket();
-  } catch(e) {
-    alert('Error: ' + e.message);
-    btn.textContent = 'CONFIRM PURCHASE';
-    btn.disabled = false;
-  }
-}
-</script>
-</body>
-</html>
+        // Live update cycle (simulating high-frequency data refresh)
+        // Reduced frequency for desktop performance/stability while keeping the "live" feel
+        setInterval(updateGrid, 5000);
+    </script>
+</body></html>
