@@ -139,17 +139,7 @@ const db = firebase.firestore();
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">03_Studio</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="market.html">04_Market</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="verify.html">05_Vault</a>
-<div class="relative" id="more-menu-wrap">
-  <button onclick="toggleMoreMenu()" class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1" id="more-menu-btn">MORE ▾</button>
-  <div class="absolute top-full left-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-36 z-50" id="more-menu" style="display:none;">
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="assembly.html">Assembly</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="stockreel.html">Stock Reel</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="bgremover.html">BG Remover</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="audio.html">Neural Audio</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="clean.html">Neural Clean</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="pricing.html">Pricing</a>
-  </div>
-</div>
+
 </div>
 <div class="flex items-center gap-4 md:gap-6">
 <div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5 group hover:border-neon-acid transition-colors" id="credit-display">
@@ -290,6 +280,77 @@ const db = firebase.firestore();
                         Launch Node
                     </button>
 </div>
+
+<!-- Stock Reel Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: SR-042</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">video_library</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Stock Reel</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+  Browse and download licensed stock footage for your productions. Curated cinematic reels.
+</p>
+<button onclick="window.location.href='stockreel.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
+  Launch Node
+</button>
+</div>
+<!-- BG Remover Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: BG-077</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">auto_fix_high</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">BG Remover</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+  AI-powered background removal for images and video. Precision edge detection at native resolution.
+</p>
+<button onclick="window.location.href='bgremover.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
+  Launch Node
+</button>
+</div>
+<!-- Neural Audio Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: NA-113</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">music_note</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Audio</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+  AI music and soundtrack generation from text prompts. Full compositions at 44.1KHz studio quality.
+</p>
+<button onclick="window.location.href='audio.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
+  Launch Node
+</button>
+</div>
+<!-- Neural Clean Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: NC-201</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">cleaning_services</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Clean</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+  Perceptual image reconstruction. Removes artifacts, noise and overlays with surgical precision.
+</p>
+<button onclick="window.location.href='clean.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
+  Launch Node
+</button>
+</div>
+<!-- Assembly Service -->
+<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
+<div class="flex justify-between items-start mb-12">
+<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: AS-305</span>
+<span class="material-symbols-outlined text-neon-acid group-hover:text-black">movie_edit</span>
+</div>
+<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Assembly</h3>
+<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
+  Multi-scene video assembly and editing. Combine AI-generated clips into full cinematic sequences.
+</p>
+<button onclick="window.location.href='assembly.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
+  Launch Node
+</button>
+</div>
 <!-- Upscaling Service -->
 <div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
 <div class="flex justify-between items-start mb-12">
@@ -404,27 +465,6 @@ const db = firebase.firestore();
             }
         }, 3000);
     });
-</script>
-
-<script>
-function toggleMoreMenu() {
-  var menu = document.getElementById('more-menu');
-  var btn = document.getElementById('more-menu-btn');
-  var isOpen = menu.style.display !== 'none';
-  menu.style.display = isOpen ? 'none' : 'block';
-  btn.textContent = isOpen ? 'MORE ▾' : 'MORE ▴';
-}
-
-// Close when clicking outside
-document.addEventListener('click', function(e) {
-  var wrap = document.getElementById('more-menu-wrap');
-  if (wrap && !wrap.contains(e.target)) {
-    var menu = document.getElementById('more-menu');
-    var btn = document.getElementById('more-menu-btn');
-    if (menu) menu.style.display = 'none';
-    if (btn) btn.textContent = 'MORE ▾';
-  }
-});
 </script>
 </body></html>
 
