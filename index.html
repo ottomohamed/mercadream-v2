@@ -159,8 +159,13 @@
 <!-- Hero Section -->
 <section class="relative h-[calc(100vh-80px)] w-full overflow-hidden">
 <div class="absolute inset-0 z-0">
-<!-- Video Placeholder - Use image for reliable rendering -->
-<img alt="Hero Background" class="w-full h-full object-cover opacity-30 grayscale blur-sm" src="https://lh3.googleusercontent.com/aida/AP1WRLsdKpC6xff2VNw45EQ5szABewjLQ1EHPfysMgwawdn-sBFXvvyGOToEsKEk3g5sfJxjZBa99mRw2tGDfWIPj6QSFnKwAcP59YgXJNDChWb7-LKoPCZqcj-U_lD5RtzfKXUDUGNE1mVQ6uvOzUlvbxMtFkOxLmP6L-yjcwcalYWniv0ey96SsoqvJ9sJoG8uEEsI4Q3op2lP-rgixkmwlMU6ZwnPKMB7hCAuGkxD9-rYQcAnaCuGod5skus"/>
+<video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60"
+  onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
+  <source src="media/hero3.mp4" type="video/mp4"/>
+  <source src="media/hero2.mp4" type="video/mp4"/>
+  <source src="media/hero1.mp4" type="video/mp4"/>
+</video>
+<div id="hero-fallback" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#040404 0%,#0a0a0a 50%,#040404 100%);"></div>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/30"></div>
 <div class="scanning-line"></div>
 </div>
@@ -540,9 +545,17 @@
                 e.stopPropagation();
                 moreDropdown.classList.toggle('hidden');
             });
-            
-            document.addEventListener('click', () => {
-                moreDropdown.classList.add('hidden');
+
+            // Stop clicks INSIDE dropdown from closing it
+            moreDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            // Only close when clicking OUTSIDE both trigger and dropdown
+            document.addEventListener('click', (e) => {
+                if (!moreTrigger.contains(e.target) && !moreDropdown.contains(e.target)) {
+                    moreDropdown.classList.add('hidden');
+                }
             });
         }
 
@@ -608,64 +621,25 @@
 </script>
 
 <script>
-// ── SERVICE CARD ROUTING ─────────────────────────────
 (function() {
-  var SERVICE_MAP = {
-    'Neural Faceswap': 'faceswap.html',
-    'Dynamic Relighting': 'relighting.html',
-    '8K Ultra-Scan': 'upscale.html',
-    'Stock Reel': 'stockreel.html',
-    'BG Remover': 'bgremover.html',
-    'Neural Audio': 'audio.html',
-    'Neural Clean': 'clean.html',
-    'Assembly': 'assembly.html',
-    'Animate': 'animate.html',
-    'Lipsync': 'lipsync.html',
-    'De-Aging': 'deaging.html',
-    'Convert': 'convert.html',
-    'Semantic': 'semantic.html',
+  var MAP = {
+    'Neural Faceswap':'faceswap.html','Dynamic Relighting':'relighting.html',
+    '8K Ultra-Scan':'upscale.html','Stock Reel':'stockreel.html',
+    'BG Remover':'bgremover.html','Neural Audio':'audio.html',
+    'Neural Clean':'clean.html','Assembly':'assembly.html',
+    'Animate':'animate.html','Lipsync':'lipsync.html',
+    'De-Aging':'deaging.html','Convert':'convert.html','Semantic':'semantic.html'
   };
-
   document.querySelectorAll('.bg-surface-container').forEach(function(card) {
     var h3 = card.querySelector('h3');
     if (!h3) return;
-    var title = h3.textContent.trim();
-    var dest = SERVICE_MAP[title];
+    var dest = MAP[h3.textContent.trim()];
     if (!dest) return;
-    // Make whole card clickable
     card.style.cursor = 'pointer';
-    card.addEventListener('click', function() {
-      window.location.href = dest;
-    });
-    // Add onclick to Launch Node button
     var btn = card.querySelector('button');
-    if (btn) {
-      btn.onclick = function(e) {
-        e.stopPropagation();
-        window.location.href = dest;
-      };
-    }
+    if (btn) btn.onclick = function(e) { e.stopPropagation(); window.location.href = dest; };
+    card.onclick = function() { window.location.href = dest; };
   });
-
-  // ── DROPDOWN FIX ─────────────────────────────────────
-  var trigger = document.getElementById('more-menu-trigger');
-  var dropdown = document.getElementById('more-menu-dropdown');
-  if (trigger && dropdown) {
-    trigger.addEventListener('click', function(e) {
-      e.stopPropagation();
-      dropdown.classList.toggle('hidden');
-    });
-    // Keep dropdown open when hovering/clicking inside it
-    dropdown.addEventListener('click', function(e) {
-      e.stopPropagation();
-    });
-    // Close when clicking anywhere outside
-    document.addEventListener('click', function(e) {
-      if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.add('hidden');
-      }
-    });
-  }
 })();
 </script>
 </body></html>
