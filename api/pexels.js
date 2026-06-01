@@ -1,23 +1,31 @@
-﻿module.exports = async function(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  if(req.method === "OPTIONS") return res.status(200).end();
+// ═══════════════════════════════════════════════════════
+// MERCADREAM — api/pexels.js
+// Pexels Stock Video Search
+// ═══════════════════════════════════════════════════════
 
-  var KEY = process.env.PEXELS_KEY;
-  var query = (req.query.q || "cinematic scene").trim();
-  var perPage = parseInt(req.query.per_page) || 6;
+const PEXELS_KEY = process.env.PEXELS_API_KEY;
+
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  if (!PEXELS_KEY) return res.status(500).json({ error: 'PEXELS_API_KEY not configured.' });
+
+  const { query = 'sunset', per_page = 12, orientation = 'portrait' } = req.body || req.query || {};
 
   try {
-    var r = await fetch(
-      "https://api.pexels.com/videos/search?query="+encodeURIComponent(query)+"&per_page="+perPage+"&orientation=landscape",
-      { headers: { Authorization: KEY } }
-    );
-    var data = await r.json();
-    var videos = (data.videos||[]).map(function(v){
-      var file = v.video_files.find(function(f){return f.quality==="hd";})||v.video_files[0];
-      return { id:v.id, url:file?file.link:"", thumb:v.image, duration:v.duration };
+    const url = `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=${per_page}&orientation=${orientation}&size=medium`;
+    
+    const r = await fetch(url, {
+      headers: { 'Authorization': PEXELS_KEY }
     });
-    res.json({ videos: videos, total: data.total_results });
-  } catch(e) {
-    res.status(500).json({ error: e.message });
+
+    const data = await r.json();
+    return res.status(200).json(data);
+
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
   }
 };

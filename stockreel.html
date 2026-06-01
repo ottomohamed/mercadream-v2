@@ -266,13 +266,13 @@ firebase.auth().onAuthStateChanged(function(user) {
 // ── Demo reel strip (Pexels curated) ─────────────────
 var DEMO_REELS = [
   { url: 'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4', tag: 'SUNSET', title: 'Golden Hour' },
-  { url: 'https://videos.pexels.com/video-files/1448735/1448735-uhd_2560_1440_25fps.mp4', tag: 'OCEAN', title: 'Wave Crash' },
+  { url: 'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4', tag: 'OCEAN', title: 'Wave Crash' },
   { url: 'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4', tag: 'CITY', title: 'Night Drive' },
-  { url: 'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_30fps.mp4', tag: 'NATURE', title: 'Forest Light' },
-  { url: 'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4', tag: 'FIRE', title: 'Flames Dance' },
-  { url: 'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4', tag: 'ABSTRACT', title: 'Neon Flow' },
-  { url: 'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4', tag: 'TRAVEL', title: 'Aerial Shot' },
-  { url: 'https://videos.pexels.com/video-files/1448735/1448735-uhd_2560_1440_25fps.mp4', tag: 'OCEAN', title: 'Deep Blue' },
+  { url: 'https://videos.pexels.com/video-files/3571264/3571264-hd_1280_720_30fps.mp4', tag: 'NATURE', title: 'Forest Light' },
+  { url: 'https://videos.pexels.com/video-files/4812205/4812205-hd_1280_720_25fps.mp4', tag: 'FIRE', title: 'Flames Dance' },
+  { url: 'https://videos.pexels.com/video-files/3129957/3129957-hd_1280_720_30fps.mp4', tag: 'ABSTRACT', title: 'Neon Flow' },
+  { url: 'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4', tag: 'TRAVEL', title: 'Aerial Shot' },
+  { url: 'https://videos.pexels.com/video-files/856074/856074-hd_1280_720_25fps.mp4', tag: 'DRONE', title: 'Sky View' },
 ];
 
 function buildReelStrip() {
@@ -321,7 +321,11 @@ async function searchReels() {
     renderResults(videos);
   } catch(e) {
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('empty').style.display = 'block';
+    var emptyEl = document.getElementById('empty');
+    if (emptyEl) {
+      emptyEl.style.display = 'block';
+      emptyEl.innerHTML = '<p style="color:var(--acid);font-family:IBM Plex Mono;font-size:11px;letter-spacing:2px;">API KEY REQUIRED — Add PEXELS_API_KEY to Vercel environment variables</p><p style="color:#4a4a4a;font-size:10px;margin-top:8px;">get free key at pexels.com/api</p>';
+    }
   }
 }
 
