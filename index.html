@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-
-<html class="dark" lang="en" style=""><head>
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MercaDream | AI FILM STUDIO - Surgical Precision Portal</title>
@@ -104,29 +102,24 @@
         .ca-tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; }
         .ca-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
         .ca-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
+        
+        .service-card-bg {
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .service-card:hover .service-card-bg {
+            transform: scale(1.1);
+        }
+        .service-card:hover .service-overlay {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .service-card:hover .neon-glow {
+            text-shadow: 0 0 10px #c8ff00, 0 0 20px #c8ff00;
+        }
     </style>
-<script>
-
-</script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-    authDomain: "mercadream-4b4b3.firebaseapp.com",
-    projectId: "mercadream-4b4b3",
-    storageBucket: "mercadream-4b4b3.firebasestorage.app",
-    messagingSenderId: "257560928442",
-    appId: "1:257560928442:web:06983f27629a13eeed6283",
-    measurementId: "G-F0CLDJCV42"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
-<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden"><script src="md-engine.js"></script>
+<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden">
 <nav class="fixed top-0 w-full z-[100] bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/30 h-20 flex items-center px-margin-mobile md:px-margin-desktop justify-between" id="main-nav">
 <div class="flex items-center gap-4">
 <div class="font-headline text-xl md:text-2xl tracking-[0.2em] text-white font-black uppercase">MercaDream</div>
@@ -139,22 +132,22 @@ const db = firebase.firestore();
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">03_Studio</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="market.html">04_Market</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="verify.html">05_Vault</a>
-<div class="relative group">
-  <button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1">MORE ▾</button>
-  <div class="absolute top-full left-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-32 hidden group-hover:block z-50">
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="assembly.html">Assembly</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="stockreel.html">Stock Reel</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="bgremover.html">BG Remover</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="audio.html">Neural Audio</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="clean.html">Neural Clean</a>
-    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="pricing.html">Pricing</a>
-  </div>
+<div class="relative">
+<button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1" id="more-menu-trigger">MORE ▾</button>
+<div class="absolute top-full right-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-40 hidden z-50 shadow-2xl" id="more-menu-dropdown">
+<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="assembly.html">Assembly</a>
+<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="stockreel.html">Stock Reel</a>
+<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="bgremover.html">BG Remover</a>
+<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="audio.html">Neural Audio</a>
+<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="clean.html">Neural Clean</a>
+<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3" href="pricing.html">Pricing</a>
+</div>
 </div>
 </div>
 <div class="flex items-center gap-4 md:gap-6">
 <div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5 group hover:border-neon-acid transition-colors" id="credit-display">
 <span class="material-symbols-outlined text-sm text-neon-acid">bolt</span>
-<span class="text-neon-acid font-bold" id="user-credits">0.00 CRD</span>
+<span class="text-neon-acid font-bold" id="user-credits">0.00 GNS</span>
 </div>
 <div class="flex items-center gap-3">
 <button class="px-5 py-2 border border-white text-[10px] font-technical uppercase tracking-tighter hover:bg-white hover:text-black transition-all" id="nav-auth-btn">LOG IN</button>
@@ -163,56 +156,50 @@ const db = firebase.firestore();
 </div>
 </nav>
 <main class="pt-20">
-<!-- Corner-Aligned Hero Section -->
+<!-- Hero Section -->
 <section class="relative h-[calc(100vh-80px)] w-full overflow-hidden">
 <div class="absolute inset-0 z-0">
-<video autoplay="" class="w-full h-full object-cover opacity-95" loop="" muted="" playsinline="">
-<source src="media/hero3.mp4" type="video/mp4"/>
-</video>
+<!-- Video Placeholder - Use image for reliable rendering -->
+<img alt="Hero Background" class="w-full h-full object-cover opacity-30 grayscale blur-sm" src="https://lh3.googleusercontent.com/aida/AP1WRLsdKpC6xff2VNw45EQ5szABewjLQ1EHPfysMgwawdn-sBFXvvyGOToEsKEk3g5sfJxjZBa99mRw2tGDfWIPj6QSFnKwAcP59YgXJNDChWb7-LKoPCZqcj-U_lD5RtzfKXUDUGNE1mVQ6uvOzUlvbxMtFkOxLmP6L-yjcwcalYWniv0ey96SsoqvJ9sJoG8uEEsI4Q3op2lP-rgixkmwlMU6ZwnPKMB7hCAuGkxD9-rYQcAnaCuGod5skus"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/30"></div>
 <div class="scanning-line"></div>
 </div>
-<!-- Layout Container for UI elements -->
 <div class="relative z-20 h-full w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col justify-between">
-<!-- Top Left: Brand Title -->
-<div class="max-w-2xl">
-<h1 class="font-headline tracking-tight leading-none text-white text-3xl md:text-5xl lg:text-6xl flex flex-col gap-2">
+<div class="max-w-4xl">
+<h1 class="font-headline tracking-tight leading-none text-white text-4xl md:text-7xl lg:text-8xl flex flex-col gap-2">
 <span class="block">MERCADREAM</span>
-<span class="block text-neon-acid tracking-[0.2em] opacity-80 text-xl md:text-2xl lg:text-3xl">AI FILM STUDIO</span>
+<span class="block text-neon-acid tracking-[0.2em] opacity-80 text-xl md:text-3xl lg:text-4xl">AI FILM STUDIO</span>
 </h1>
-<div class="mt-6 flex items-center gap-4 text-neon-acid/40">
-<div class="w-12 h-px bg-neon-acid/40"></div>
-<span class="font-technical text-[10px] uppercase tracking-widest">System_Online // Terminal_v04</span>
+<div class="mt-8 flex items-center gap-4 text-neon-acid/60">
+<div class="w-16 h-px bg-neon-acid/40"></div>
+<span class="font-technical text-xs uppercase tracking-widest">System_Online // Terminal_v04.62</span>
 </div>
 </div>
-<!-- Bottom Row: Split between Left (Desc) and Right (CTA) -->
-<div class="flex flex-col md:flex-row items-end justify-between gap-8">
-<!-- Bottom Left: Description -->
+<div class="flex flex-col md:flex-row items-end justify-between gap-8 pb-8">
 <div class="max-w-md">
 <p class="font-technical text-xs md:text-sm text-on-surface-variant uppercase tracking-[0.15em] leading-relaxed border-l-2 border-neon-acid/40 pl-6">
-                Autonomous cinematic generation.<br/>
-                Neural direction.<br/>
-                Real-time dream extraction via surgical AI precision.
-            </p>
+                        Autonomous cinematic generation.<br/>
+                        Neural direction.<br/>
+                        Real-time dream extraction via surgical AI precision.
+                    </p>
 </div>
-<!-- Bottom Right: CTAs -->
 <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-<button class="px-10 py-5 bg-neon-acid text-black font-headline font-bold text-base uppercase group relative overflow-hidden transition-all hover:pr-14" id="hero-primary-cta">
+<button class="px-12 py-6 bg-neon-acid text-black font-headline font-bold text-lg uppercase group relative overflow-hidden transition-all hover:pr-16" id="hero-primary-cta">
 <span class="relative z-10">INITIALIZE ACCESS</span>
 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">arrow_forward</span>
 <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-0"></div>
 </button>
-<button class="px-10 py-5 border border-outline/50 text-white font-headline font-bold text-base uppercase hover:border-neon-acid hover:text-neon-acid transition-all backdrop-blur-md bg-black/20">
-                VIEW SYSTEM_INTEL
-            </button>
+<button class="px-12 py-6 border border-outline/50 text-white font-headline font-bold text-lg uppercase hover:border-neon-acid hover:text-neon-acid transition-all backdrop-blur-md bg-black/20">
+                        VIEW SYSTEM_INTEL
+                    </button>
 </div>
 </div>
 </div>
 </section>
 <!-- Platform Status Dashboard -->
-<section class="py-12 border-y border-outline-variant/20 bg-surface-container-low micro-grid px-margin-mobile">
+<section class="py-12 border-y border-outline-variant/20 bg-surface-container-low micro-grid px-margin-mobile md:px-margin-desktop">
 <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-gutter">
-<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative group overflow-hidden">
 <div class="corner-accent ca-tl"></div>
 <div class="font-technical text-[10px] text-on-surface-variant uppercase">Global GPU Load</div>
 <div class="flex items-baseline gap-2">
@@ -220,37 +207,37 @@ const db = firebase.firestore();
 <span class="font-technical text-xs">%</span>
 </div>
 <div class="w-full bg-white/5 h-1 mt-2">
-<div class="bg-neon-acid h-full transition-all duration-500" style="width: 82%"></div>
+<div class="bg-neon-acid h-full transition-all duration-500" id="gpu-bar" style="width: 82%"></div>
 </div>
 </div>
-<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative">
 <div class="corner-accent ca-tl"></div>
 <div class="font-technical text-[10px] text-on-surface-variant uppercase">Active Clusters</div>
 <div class="flex items-baseline gap-2">
 <span class="font-headline text-2xl text-white" id="active-clusters">1,402</span>
 </div>
-<div class="font-technical text-[9px] text-neon-acid">REGION_STATUS: NOMINAL</div>
+<div class="font-technical text-[9px] text-neon-acid uppercase tracking-tighter">Region_Status: Nominal</div>
 </div>
-<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative">
 <div class="corner-accent ca-tl"></div>
 <div class="font-technical text-[10px] text-on-surface-variant uppercase">Successful Renders</div>
 <div class="flex items-baseline gap-2">
 <span class="font-headline text-2xl text-white" id="render-count">48,291</span>
 </div>
-<div class="font-technical text-[9px] text-on-surface-variant">+24 IN LAST 60S</div>
+<div class="font-technical text-[9px] text-on-surface-variant uppercase tracking-tighter">+24 IN LAST 60S</div>
 </div>
-<div class="p-6 border border-outline-variant/30 bg-black/20 flex flex-col gap-2 relative">
+<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative">
 <div class="corner-accent ca-tl"></div>
 <div class="font-technical text-[10px] text-on-surface-variant uppercase">Network Latency</div>
 <div class="flex items-baseline gap-2">
 <span class="font-headline text-2xl text-neon-acid">0.04</span>
 <span class="font-technical text-xs">ms</span>
 </div>
-<div class="font-technical text-[9px] text-white/40 uppercase">Hyper-Link Active</div>
+<div class="font-technical text-[9px] text-white/40 uppercase tracking-tighter">Hyper-Link Active</div>
 </div>
 </div>
 </section>
-<!-- Integrated Cinematic Services -->
+<!-- Cinematic Services -->
 <section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
 <div class="max-w-7xl mx-auto">
 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
@@ -261,208 +248,269 @@ const db = firebase.firestore();
 <div class="h-px flex-1 bg-outline-variant/20 mx-8 mb-4 hidden md:block"></div>
 <a class="font-technical text-xs text-neon-acid border-b border-neon-acid pb-1 hover:text-white hover:border-white transition-all uppercase" href="directors.html">Browse Catalogue</a>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-outline-variant/20 border border-outline-variant/20">
-<!-- Faceswap Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: NF-001</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">face</span>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Faceswap -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='faceswap.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsat20hOBKSoNqLHIFzG2-zHL_g6WpAGgDxYIEFwST6DecFe_4DTZcX7DpqIoR3zYG8cUnK7Rr4_vlOjHGUqyMCDVtDa6EezcPFzY62qmbRSfb00FbHi-uO1StZ-Dsl0CH0oH1gR9xjaUGKkEW-sUYCIqSL1P6Lo9csos9fop3rHYmIyZj-QBtu_dK5EYi_tf3nRNuKJognh0mhLWBouP6sGD7OE3OzgpdvXNTyEiNHLudnBGb0c_RBnxg')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: NF-001</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Status: Operational // 99.8% Accuracy</div>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Faceswap</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-                        Frame-accurate cranial mapping and facial expression synthesis at native resolution.
-                    </p>
-<button onclick="window.location.href=\'faceswap.html\'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-                        Launch Node
-                    </button>
+<span class="material-symbols-outlined text-neon-acid neon-glow">face</span>
 </div>
-<!-- Relighting Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: RL-024</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">light_mode</span>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Neural Faceswap</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Frame-accurate cranial mapping and facial expression synthesis at native resolution.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Dynamic Relighting</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-                        Real-time recalculation of light paths and global illumination for synthetic actors.
-                    </p>
-<button onclick="window.location.href=\'relighting.html\'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-                        Launch Node
-                    </button>
 </div>
-
-<!-- Stock Reel Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: SR-042</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">video_library</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Stock Reel</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-Browse and download licensed stock footage for your productions. Curated cinematic reels.
-</p>
-<button onclick="window.location.href='stockreel.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
+<!-- Relighting -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='relighting.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsdKpC6xff2VNw45EQ5szABewjLQ1EHPfysMgwawdn-sBFXvvyGOToEsKEk3g5sfJxjZBa99mRw2tGDfWIPj6QSFnKwAcP59YgXJNDChWb7-LKoPCZqcj-U_lD5RtzfKXUDUGNE1mVQ6uvOzUlvbxMtFkOxLmP6L-yjcwcalYWniv0ey96SsoqvJ9sJoG8uEEsI4Q3op2lP-rgixkmwlMU6ZwnPKMB7hCAuGkxD9-rYQcAnaCuGod5skus')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: RL-024</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Status: Cluster_Active // Latency 0.02ms</div>
 </div>
-<!-- BG Remover Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: BG-077</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">auto_fix_high</span>
+<span class="material-symbols-outlined text-neon-acid neon-glow">light_mode</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">BG Remover</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-AI-powered background removal for images and video. Precision edge detection at native resolution.
-</p>
-<button onclick="window.location.href='bgremover.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Dynamic Relighting</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Real-time recalculation of light paths and global illumination for synthetic actors.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
 </div>
-<!-- Neural Audio Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: NA-113</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">music_note</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Audio</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-AI music and soundtrack generation from text prompts. Full compositions at 44.1KHz studio quality.
-</p>
-<button onclick="window.location.href='audio.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
 </div>
-<!-- Neural Clean Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: NC-201</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">cleaning_services</span>
+<!-- Stock Reel -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='stockreel.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLsXOq5D5WXMb2aCi9hEVO384hYToWwsktAv8sdzAP_AMYdpj_FuVJtsJGKAXNfDQh8uHoKsaRO1ckWm9L00-V5y8m333_DY3qu9nwPARbBA4zFCgErVGdWpjI7xhe3TmGnayGFWvVhL3V1Z9GahsSUjD5j2LA8RGqbPI2-DK4MsLEFG2i6SOSMo8dv0M__JG4a-ysMSjEmBoHM0AKNelncVfSKbvd_n9nQ6J2Hy8YL25IymNXHfJfuuhTM')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SR-042</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Library: Synchronized // 4PB Indexed</div>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Clean</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-Perceptual image reconstruction. Removes artifacts, noise and overlays with surgical precision.
-</p>
-<button onclick="window.location.href='clean.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
+<span class="material-symbols-outlined text-neon-acid neon-glow">video_library</span>
 </div>
-<!-- Assembly Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: AS-305</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">movie_edit</span>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Stock Reel</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Browse and download licensed stock footage for your productions. Curated cinematic reels.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Assembly</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-Multi-scene video assembly and editing. Combine AI-generated clips into full cinematic sequences.
-</p>
-<button onclick="window.location.href='assembly.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
 </div>
-
-<!-- Animate Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: AN-401</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">animation</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Animate</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-Transform static images into cinematic video sequences using WAN 2.1 motion synthesis.
-</p>
-<button onclick="window.location.href='animate.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
+<!-- BG Remover -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='bgremover.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvNf0CDyia9U3FLUS27dC-PqmOONgO3py58SWmUEhGzBN5k84l7q2U1Zyy5CTBOuU0YiopyLWov3VmJQggYGCzSf6GnJCX-n2ft9VUFLarz633BCo8uohTM6QHTeswa0JKf-rCpTb7mWsuvXfTBTDP_wUNa1YiOngtnWL8KztTvSCx_9lI9SrMmg2i_lZ3ymfllDGhzJQW8al9TWBT8wfoyalQYWdTBJU7NNOGbu-zMAzmAk-wWCNyiXfw')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: BG-077</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Mask: Neural_Link // High Precision</div>
 </div>
-<!-- Lipsync Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: LS-502</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">record_voice_over</span>
+<span class="material-symbols-outlined text-neon-acid neon-glow">auto_fix_high</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Lipsync</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-Synchronize any audio track to facial movements with frame-perfect neural lipsync technology.
-</p>
-<button onclick="window.location.href='lipsync.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">BG Remover</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI-powered background removal for images and video. Precision edge detection.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
 </div>
-<!-- Deaging Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: DA-603</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">face_retouching_natural</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">De-Aging</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-AI age transformation — forward or reverse. Precise facial timeline manipulation at native resolution.
-</p>
-<button onclick="window.location.href='deaging.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
 </div>
-<!-- Convert Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: CV-704</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">transform</span>
+<!-- Neural Audio -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='audio.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvt1FTcAqGkipjWiVT570lMHjHST8g7JdXLO1dKSX8ZUtxZG0Y2NEsAU9oH-YjtePoWBZj1-hlda4d7T8PmmpR-SoSPtFz4tgEin3SBt8JSlY8XA1hokEeYo-XXosRfjki11QkxjOMiMXSk-CveeFPRbPFvPX4XX9XHioZWeK12P5bPdUj0cISSHkL7ZKWNuafEFJpAbI9OkDcEL8fioX2SlAE5m3NrCHO2VgKbE7LRIi7YVV9zilUZJTw')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: NA-113</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Freq: 44.1kHz // Neural_Synth Active</div>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Convert</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-Image-to-video conversion. Transform any still frame into a dynamic cinematic sequence.
-</p>
-<button onclick="window.location.href='convert.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
+<span class="material-symbols-outlined text-neon-acid neon-glow">music_note</span>
 </div>
-<!-- Semantic Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: SM-805</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">psychology</span>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Neural Audio</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI music and soundtrack generation from text prompts. Full studio compositions.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Semantic</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-AI-powered scene analysis and semantic understanding. Extract meaning and context from any visual.
-</p>
-<button onclick="window.location.href='semantic.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-Launch Node
-</button>
 </div>
-<!-- Upscaling Service -->
-<div class="bg-surface-container p-8 group hover:bg-neon-acid transition-all duration-500 cursor-pointer">
-<div class="flex justify-between items-start mb-12">
-<span class="font-technical text-[10px] text-on-surface-variant group-hover:text-black">ID: UP-888</span>
-<span class="material-symbols-outlined text-neon-acid group-hover:text-black">hd</span>
 </div>
-<h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">8K Ultra-Scan</h3>
-<p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-                        Sub-pixel detail reconstruction using deep neural textures for large-format projection.
-                    </p>
-<button onclick="window.location.href=\'upscale.html\'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-                        Launch Node
-                    </button>
+<!-- Neural Clean -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='clean.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvy8JHg8fN3eZR0RT76EwIiRXYq-y_g0LvRz8Js1JCGa0cTVV_bHhJVRREuQJ4MOgQ2XPvNq11Z742bFmCPFywCBAbjQEx4Iex9w5y7LihBgi98w3Xr36fehsMv8m4zU7UrJCA8ZyNPf7F-UlcV_y2uygb-OaL4aldjNKutyAJGT1hQfXMwTv-5YjeJ6J2uO1HW-5_EuvKhu5ujSx4jA0a_X-X8mgxNino1hQuTCtj6NyJVwFVBnhk1oy0')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: NC-201</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Recon: Sub-pixel // 94% Restoration</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">cleaning_services</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Neural Clean</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Perceptual image reconstruction. Removes artifacts and noise with surgical precision.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- Assembly -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='assembly.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLs8G9xMx6qWBM-QZUo2h2MVMIb523T7rt85A4yXrBO94VP8Yww8-T8-bnoCjTrJ-HYaVIQwF8toE-Hw8XXmp0u6q5ydq7z_x7XQKFlWI0tnfn1hTp9KCiCcnE3MICQa-2VwYANqjJLfJiniEyFgIrL-7kZZnxHLlF6NzqcnRlQOesCBsF8m6XJNZe0gi604cyoxfy17oknYitDOQ0_suUn3S7tFaraLidVkJwHM9ESjbpC9nhoyb2kVzjI')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AS-305</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Engine: NLE_Quantum // Layer_Sync 1.0</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">movie_edit</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Assembly</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Multi-scene video assembly and editing. Combine AI clips into full cinematic sequences.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- Animate -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='animate.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLu66PaF0OwDZymYfjyszqkO6hxStE0E2zYExFQ060i78hYL_cDyKq1Ohizb6KloEX1OmrRFXEMWHKqoaLVQWNQjyiGitU6a_UGSzpkcLmTSHJI_3d0-vqKNt45O3E_QRB7F16RYmox07dVVHjM8dkkrCblYqTes-vC4rkJfv_1LjmJeIkRxO8oRYT9MA0mBcvVVLWCak5JOv78tf6VPEsyQy6C12gcLrPGDKv8l4_S8Exol7TmY3pislQ')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AN-401</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Synth: WAN_2.1 // Motion_Vector Active</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">animation</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Animate</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Transform static images into cinematic video sequences using WAN 2.1 motion synthesis.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- Lipsync -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='lipsync.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLucqORZdKp3P3lnkjUaKEQXfli1CxUhIUi1A6HMDhRba5Gm9gQXdgQg5C2ZUMk1e9xF2TfF2jnsz7SxiLD7UzK_Cfclk6J13Q6eRMBlBgLUnxSHrwbP96l96UU3sSS65eRJbWj7RuDBttQx_vDD5jyv6Z7UI-Ic54vNgIkH75k6GhM6NNoXUmxZRDXzSshBnbK97j1BKemXUD3q2LFoR0S9xUnQwSUvuIbURT8yLDhD5txaFYCdnxJUQw')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: LS-502</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Sync: Phase_Lock // Neural_Vocal Active</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">record_voice_over</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Lipsync</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Synchronize any audio track to facial movements with frame-perfect neural technology.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- De-aging -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='deaging.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvg20CzMXsH1AlkbNwFhbYs-uSFnEtWQGDpOdRgj0BLicV_PfiTDCSpQ9AyUHS8nzQ6ttMHgECylBwthJItDfrpcOHd2xxtr1razCJRG9cV687vSeFq8uFHRWfzvyczLNyeIzcXzvtMoyboKr6T5BkS3oGSatBrfHWNhycU9lPGS77190hKioxxG5DyAH_wJs3q3OvbYZG_oL1Bi1FFkSglXn99r1kQGB1NfYxa4TojRpVAzKVvTerO5qw')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: DA-603</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Timeline: Delta_Shift // Age_Quantize Active</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">face_retouching_natural</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">De-Aging</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI age transformation — forward or reverse. Precise facial timeline manipulation.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- Convert -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='convert.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLu66PaF0OwDZymYfjyszqkO6hxStE0E2zYExFQ060i78hYL_cDyKq1Ohizb6KloEX1OmrRFXEMWHKqoaLVQWNQjyiGitU6a_UGSzpkcLmTSHJI_3d0-vqKNt45O3E_QRB7F16RYmox07dVVHjM8dkkrCblYqTes-vC4rkJfv_1LjmJeIkRxO8oRYT9MA0mBcvVVLWCak5JOv78tf6VPEsyQy6C12gcLrPGDKv8l4_S8Exol7TmY3pislQ')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: CV-704</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Flux: Image_To_Video // Latent_Space Mapping</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">transform</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Convert</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Image-to-video conversion. Transform any still frame into a dynamic cinematic sequence.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- Semantic -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='semantic.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLu_WM_We0JVk2N5_U9O6ymOyVZG5rVOloAmRzO_gp3Cku_O42It_h_24aUxcezhTRIXlQ9_VZj3t_Vs7ukv0FXewyOqYcUWrIhEmYejR6LwKwylV1x3rFQjSGi98LSbfNKhGpRAzHwwCNyMbcrR_vQrkSOnoaNgkwZ89y_IZ060ZvVICBo0uwe8RLsPQ8erBnL-qUC26k-jOfl9O9qvo0tUbZGV_XW4_j_jUJusaQD1X7iKJr6-OGXAgQA')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SM-805</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Logic: Neural_Net // Semantic_Labeling Active</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">psychology</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Semantic</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI-powered scene analysis and semantic understanding. Extract context from any visual.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
+</div>
+<!-- 8K Ultra-Scan -->
+<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 lg:col-start-1 group cursor-pointer" onclick="window.location.href='upscale.html'">
+<div class="service-card-bg absolute inset-0 z-0" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLszK3uNrN_wtaSn78ki72E5xWPx4XN-NREW96h-MJRmoUMnw1Wln2ef2IjI1dZfzIzy0PagHMeMY4YqWDp99Nfu0S_aFIZw2PBMjo9GuSuGv2YChLXwYacZog5QMUirQzUv1vySXUy1HQuCjxEyPBnoBcqWxOKk4ANCEhZdWRrQntYpe3dbldjN11_DuD1Ygbems5jfxcNaK7bp5BWtDmsnFkSLIwln4DI6vxkAb5eiROHFRvrpLYYH6YQ')"></div>
+<div class="service-overlay absolute inset-0 z-10 bg-black/80 backdrop-blur-[4px] transition-all duration-500 group-hover:backdrop-blur-none group-hover:bg-black/40"></div>
+<div class="relative z-20 h-full p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: UP-888</div>
+<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Scan: 8K_Ultra // Deep_Neural_Texture Active</div>
+</div>
+<span class="material-symbols-outlined text-neon-acid neon-glow">hd</span>
+</div>
+<div>
+<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">8K Ultra-Scan</h3>
+<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Sub-pixel detail reconstruction using deep neural textures for large-format projection.</p>
+<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+</div>
+</div>
 </div>
 </div>
 </div>
 </section>
 <!-- Call to Action -->
-<section class="py-32 bg-black relative overflow-hidden border-t border-outline-variant/30 flex items-center justify-center">
-<div class="absolute inset-0 opacity-10 grayscale mix-blend-screen pointer-events-none">
-<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
-<source src="media/hero3.mp4" type="video/mp4"/>
-</video>
+<section class="py-32 bg-black relative overflow-hidden border-t border-outline-variant/30 flex items-center justify-center text-center">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<img alt="Footer Background" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida/AP1WRLs8G9xMx6qWBM-QZUo2h2MVMIb523T7rt85A4yXrBO94VP8Yww8-T8-bnoCjTrJ-HYaVIQwF8toE-Hw8XXmp0u6q5ydq7z_x7XQKFlWI0tnfn1hTp9KCiCcnE3MICQa-2VwYANqjJLfJiniEyFgIrL-7kZZnxHLlF6NzqcnRlQOesCBsF8m6XJNZe0gi604cyoxfy17oknYitDOQ0_suUn3S7tFaraLidVkJwHM9ESjbpC9nhoyb2kVzjI"/>
 </div>
-<div class="relative z-10 px-margin-mobile text-center">
-<h2 class="font-headline text-4xl md:text-6xl text-white mb-8">THE FUTURE IS COMPUTING</h2>
-<p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm opacity-60">Architect your dream. Frame by frame.</p>
-<button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform group relative" id="footer-cta">
+<div class="relative z-10 px-margin-mobile">
+<h2 class="font-headline text-4xl md:text-7xl text-white mb-8 tracking-tighter">THE FUTURE IS COMPUTING</h2>
+<p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm md:text-base opacity-60">Architect your dream. Frame by frame.</p>
+<button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-2xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform group relative" id="footer-cta">
                 INITIALIZE ACCESS
-                <span class="absolute -right-2 -bottom-2 w-4 h-4 border-r-2 border-b-2 border-neon-acid"></span>
-<span class="absolute -left-2 -top-2 w-4 h-4 border-l-2 border-t-2 border-neon-acid"></span>
+                <span class="absolute -right-3 -bottom-3 w-6 h-6 border-r-2 border-b-2 border-neon-acid"></span>
+<span class="absolute -left-3 -top-3 w-6 h-6 border-l-2 border-t-2 border-neon-acid"></span>
 </button>
 </div>
 </section>
@@ -470,30 +518,56 @@ Launch Node
 <footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-margin-mobile md:px-margin-desktop">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
 <div class="text-center md:text-left">
-<div class="font-headline text-xl text-white tracking-widest mb-2">MERCADREAM</div>
-<div class="font-technical text-[10px] text-on-surface-variant uppercase">� 2026 AI CINEMA STUDIO. ALL RIGHTS RESERVED.</div>
+<div class="font-headline text-xl text-white tracking-widest mb-2 uppercase">MercaDream</div>
+<div class="font-technical text-[10px] text-on-surface-variant uppercase tracking-widest">© 2026 AI CINEMA STUDIO. ALL RIGHTS RESERVED.</div>
 </div>
 <div class="flex flex-wrap justify-center gap-8 font-technical text-[10px] uppercase tracking-widest text-on-surface-variant">
-<a class="hover:text-neon-acid transition-colors" href="index.html">Privacy</a>
-<a class="hover:text-neon-acid transition-colors" href="index.html">Terms</a>
+<a class="hover:text-neon-acid transition-colors" href="#">Privacy</a>
+<a class="hover:text-neon-acid transition-colors" href="#">Terms</a>
 <a class="hover:text-neon-acid transition-colors" href="api.html">API Docs</a>
-<a class="hover:text-neon-acid transition-colors" href="index.html">System Status</a>
+<a class="hover:text-neon-acid transition-colors" href="#">System Status</a>
 </div>
 </div>
 </footer>
-<script src="js/app.js"></script>
-<script src="js/navigation.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Video Playback Enforcement
-        const videos = document.querySelectorAll('video');
-        videos.forEach(video => {
-            video.play().catch(error => {
-                console.warn("Autoplay prevented.", error);
+        // Dropdown Logic
+        const moreTrigger = document.getElementById('more-menu-trigger');
+        const moreDropdown = document.getElementById('more-menu-dropdown');
+        
+        if (moreTrigger && moreDropdown) {
+            moreTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                moreDropdown.classList.toggle('hidden');
             });
-        });
+            
+            document.addEventListener('click', () => {
+                moreDropdown.classList.add('hidden');
+            });
+        }
 
-        // Session & Auth UI Sync
+        // Dashboard Telemetry Animations
+        setInterval(() => {
+            const gpuLoad = document.getElementById('gpu-load');
+            const gpuBar = document.getElementById('gpu-bar');
+            const activeClusters = document.getElementById('active-clusters');
+            const renderCount = document.getElementById('render-count');
+            
+            if (gpuLoad && gpuBar) {
+                const newVal = (80 + Math.random() * 8).toFixed(1);
+                gpuLoad.innerText = newVal;
+                gpuBar.style.width = newVal + '%';
+            }
+            if (activeClusters) {
+                activeClusters.innerText = (1400 + Math.floor(Math.random() * 15)).toLocaleString();
+            }
+            if (renderCount) {
+                const current = parseInt(renderCount.innerText.replace(/,/g, '')) || 48291;
+                renderCount.innerText = (current + Math.floor(Math.random() * 3)).toLocaleString();
+            }
+        }, 3000);
+
+        // UI Auth State Simulation
         const updateAuthUI = () => {
             const isLoggedIn = localStorage.getItem('md_user_id');
             const navAuthBtn = document.getElementById('nav-auth-btn');
@@ -501,28 +575,27 @@ Launch Node
             const heroPrimaryCta = document.getElementById('hero-primary-cta');
             const footerCta = document.getElementById('footer-cta');
 
-            const loginText = isLoggedIn ? 'LOG OUT' : 'LOG IN';
-            const actionText = isLoggedIn ? 'ENTER STUDIO' : 'INITIALIZE ACCESS';
-            const actionUrl = isLoggedIn ? 'studio.html' : 'register.html';
-
-            if (navAuthBtn) navAuthBtn.innerText = loginText;
-            [navActionBtn, heroPrimaryCta, footerCta].forEach(btn => {
-                if (btn) {
-                    btn.innerText = actionText;
-                    btn.onclick = () => window.location.href = actionUrl;
-                }
-            });
-
-            const credits = localStorage.getItem('md_credits') || '0';
+            if (isLoggedIn) {
+                if (navAuthBtn) navAuthBtn.innerText = 'LOG OUT';
+                [navActionBtn, heroPrimaryCta, footerCta].forEach(btn => {
+                    if (btn) btn.innerText = 'ENTER STUDIO';
+                });
+            } else {
+                if (navAuthBtn) navAuthBtn.innerText = 'LOG IN';
+                [navActionBtn, heroPrimaryCta, footerCta].forEach(btn => {
+                    if (btn) btn.innerText = 'INITIALIZE ACCESS';
+                });
+            }
+            
+            const credits = localStorage.getItem('md_credits') || '0.00';
             const userCreditsEl = document.getElementById('user-credits');
             if (userCreditsEl) userCreditsEl.innerText = credits + ' GNS';
         };
 
-        const navAuthBtn = document.getElementById('nav-auth-btn');
-        if (navAuthBtn) {
-            navAuthBtn.onclick = function() {
+        if (document.getElementById('nav-auth-btn')) {
+            document.getElementById('nav-auth-btn').onclick = function() {
                 if (localStorage.getItem('md_user_id')) {
-                    ['md_user_id','md_email','md_user','md_credits','md_plan','md_name','is_logged_in'].forEach(k => localStorage.removeItem(k));
+                    localStorage.clear();
                     location.reload();
                 } else {
                     window.location.href = 'login.html';
@@ -531,25 +604,68 @@ Launch Node
         }
 
         updateAuthUI();
-
-        // Simulated Telemetry Animation
-        setInterval(() => {
-            const gpuLoad = document.getElementById('gpu-load');
-            const activeClusters = document.getElementById('active-clusters');
-            const renderCount = document.getElementById('render-count');
-            
-            if (gpuLoad) gpuLoad.innerText = (80 + Math.random() * 5).toFixed(1);
-            if (activeClusters) activeClusters.innerText = (1400 + Math.floor(Math.random() * 10)).toLocaleString();
-            if (renderCount) {
-                const current = parseInt(renderCount.innerText.replace(/,/g, '')) || 48291;
-                renderCount.innerText = (current + Math.floor(Math.random() * 2)).toLocaleString();
-            }
-        }, 3000);
     });
 </script>
+
+<script>
+// ── SERVICE CARD ROUTING ─────────────────────────────
+(function() {
+  var SERVICE_MAP = {
+    'Neural Faceswap': 'faceswap.html',
+    'Dynamic Relighting': 'relighting.html',
+    '8K Ultra-Scan': 'upscale.html',
+    'Stock Reel': 'stockreel.html',
+    'BG Remover': 'bgremover.html',
+    'Neural Audio': 'audio.html',
+    'Neural Clean': 'clean.html',
+    'Assembly': 'assembly.html',
+    'Animate': 'animate.html',
+    'Lipsync': 'lipsync.html',
+    'De-Aging': 'deaging.html',
+    'Convert': 'convert.html',
+    'Semantic': 'semantic.html',
+  };
+
+  document.querySelectorAll('.bg-surface-container').forEach(function(card) {
+    var h3 = card.querySelector('h3');
+    if (!h3) return;
+    var title = h3.textContent.trim();
+    var dest = SERVICE_MAP[title];
+    if (!dest) return;
+    // Make whole card clickable
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      window.location.href = dest;
+    });
+    // Add onclick to Launch Node button
+    var btn = card.querySelector('button');
+    if (btn) {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        window.location.href = dest;
+      };
+    }
+  });
+
+  // ── DROPDOWN FIX ─────────────────────────────────────
+  var trigger = document.getElementById('more-menu-trigger');
+  var dropdown = document.getElementById('more-menu-dropdown');
+  if (trigger && dropdown) {
+    trigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('hidden');
+    });
+    // Keep dropdown open when hovering/clicking inside it
+    dropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    // Close when clicking anywhere outside
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  }
+})();
+</script>
 </body></html>
-
-
-
-
-
