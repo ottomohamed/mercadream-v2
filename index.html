@@ -139,7 +139,17 @@ const db = firebase.firestore();
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">03_Studio</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="market.html">04_Market</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="verify.html">05_Vault</a>
-
+<div class="relative group">
+  <button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1">MORE ▾</button>
+  <div class="absolute top-full left-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-32 hidden group-hover:block z-50">
+    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="assembly.html">Assembly</a>
+    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="stockreel.html">Stock Reel</a>
+    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="bgremover.html">BG Remover</a>
+    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="audio.html">Neural Audio</a>
+    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="clean.html">Neural Clean</a>
+    <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="pricing.html">Pricing</a>
+  </div>
+</div>
 </div>
 <div class="flex items-center gap-4 md:gap-6">
 <div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5 group hover:border-neon-acid transition-colors" id="credit-display">
@@ -262,7 +272,7 @@ const db = firebase.firestore();
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
                         Frame-accurate cranial mapping and facial expression synthesis at native resolution.
                     </p>
-<button onclick="window.location.href='studio.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all" onclick="window.location.href='faceswap.html'">
+<button onclick="window.location.href=\'faceswap.html\'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
                         Launch Node
                     </button>
 </div>
@@ -276,7 +286,7 @@ const db = firebase.firestore();
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
                         Real-time recalculation of light paths and global illumination for synthetic actors.
                     </p>
-<button onclick="window.location.href='studio.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all" onclick="window.location.href='relighting.html'">
+<button onclick="window.location.href=\'relighting.html\'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
                         Launch Node
                     </button>
 </div>
@@ -289,10 +299,10 @@ const db = firebase.firestore();
 </div>
 <h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Stock Reel</h3>
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-  Browse and download licensed stock footage for your productions. Curated cinematic reels.
+Browse and download licensed stock footage for your productions. Curated cinematic reels.
 </p>
 <button onclick="window.location.href='stockreel.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-  Launch Node
+Launch Node
 </button>
 </div>
 <!-- BG Remover Service -->
@@ -303,10 +313,10 @@ const db = firebase.firestore();
 </div>
 <h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">BG Remover</h3>
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-  AI-powered background removal for images and video. Precision edge detection at native resolution.
+AI-powered background removal for images and video. Precision edge detection at native resolution.
 </p>
 <button onclick="window.location.href='bgremover.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-  Launch Node
+Launch Node
 </button>
 </div>
 <!-- Neural Audio Service -->
@@ -317,10 +327,10 @@ const db = firebase.firestore();
 </div>
 <h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Audio</h3>
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-  AI music and soundtrack generation from text prompts. Full compositions at 44.1KHz studio quality.
+AI music and soundtrack generation from text prompts. Full compositions at 44.1KHz studio quality.
 </p>
 <button onclick="window.location.href='audio.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-  Launch Node
+Launch Node
 </button>
 </div>
 <!-- Neural Clean Service -->
@@ -331,10 +341,10 @@ const db = firebase.firestore();
 </div>
 <h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Neural Clean</h3>
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-  Perceptual image reconstruction. Removes artifacts, noise and overlays with surgical precision.
+Perceptual image reconstruction. Removes artifacts, noise and overlays with surgical precision.
 </p>
 <button onclick="window.location.href='clean.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-  Launch Node
+Launch Node
 </button>
 </div>
 <!-- Assembly Service -->
@@ -345,10 +355,10 @@ const db = firebase.firestore();
 </div>
 <h3 class="font-headline text-2xl text-white group-hover:text-black uppercase mb-4">Assembly</h3>
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
-  Multi-scene video assembly and editing. Combine AI-generated clips into full cinematic sequences.
+Multi-scene video assembly and editing. Combine AI-generated clips into full cinematic sequences.
 </p>
 <button onclick="window.location.href='assembly.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
-  Launch Node
+Launch Node
 </button>
 </div>
 <!-- Upscaling Service -->
@@ -361,7 +371,7 @@ const db = firebase.firestore();
 <p class="font-body text-sm text-on-surface-variant group-hover:text-black/70 mb-8 leading-relaxed">
                         Sub-pixel detail reconstruction using deep neural textures for large-format projection.
                     </p>
-<button onclick="window.location.href='studio.html'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all" onclick="window.location.href='upscaling.html'">
+<button onclick="window.location.href=\'upscale.html\'" class="w-full py-4 border border-outline group-hover:border-black group-hover:text-black font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-black hover:text-neon-acid transition-all">
                         Launch Node
                     </button>
 </div>
