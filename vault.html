@@ -246,8 +246,12 @@
 </aside>
 <main class="pt-grid-base lg:ml-64">
 <!-- 01 HERO SECTION -->
-<section class="min-h-screen flex flex-col justify-center px-margin-page relative border-b border-border-muted">
-<div class="max-w-4xl z-10">
+<section class="min-h-screen flex flex-col justify-center px-margin-page relative border-b border-border-muted overflow-hidden">
+<video autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.15;z-index:0;">
+  <source src="media/reel-city.mp4" type="video/mp4"/>
+</video>
+<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(4,4,4,0.5),rgba(4,4,4,0.85));z-index:1;pointer-events:none;"></div>
+<div class="max-w-4xl" style="position:relative;z-index:2;">
 <div class="inline-block px-3 py-1 bg-surface-container-high border border-border-muted text-surface-tint font-label-sm text-label-sm mb-6">
                     SYSTEM_INITIATED // REGISTRY_v1
                 </div>
@@ -285,7 +289,7 @@
 </div>
 </section>
 <!-- 02 WHAT IS GENESIS DNA -->
-<section class="py-24 px-margin-page border-b border-border-muted bg-surface-base">
+<section id="what-is-it" class="py-24 px-margin-page border-b border-border-muted bg-surface-base">
 <div class="mb-16">
 <span class="text-surface-tint font-label-md text-label-md block mb-2">WHAT IS IT.</span>
 <h2 class="font-headline-md text-headline-md text-primary uppercase">A Fingerprint in Every Frame.</h2>
@@ -309,7 +313,7 @@
 </div>
 </section>
 <!-- 03 HOW IT WORKS -->
-<section class="py-24 px-margin-page border-b border-border-muted overflow-hidden">
+<section id="how-it-works" class="py-24 px-margin-page border-b border-border-muted overflow-hidden">
 <div class="mb-16">
 <span class="text-surface-tint font-label-md text-label-md block mb-2">HOW IT WORKS.</span>
 <h2 class="font-headline-md text-headline-md text-primary uppercase">Three Steps. One Immutable Record.</h2>
@@ -365,7 +369,7 @@
 </div>
 </section>
 <!-- 04 WHY IT MATTERS -->
-<section class="py-40 px-margin-page border-b border-border-muted bg-surface-container-lowest text-center">
+<section id="why-it-matters" class="py-40 px-margin-page border-b border-border-muted bg-surface-container-lowest text-center">
 <div class="max-w-4xl mx-auto">
 <h2 class="font-headline-md text-headline-md text-surface-tint mb-12 uppercase">The Age of AI Changed Everything.</h2>
 <blockquote class="font-headline-lg text-[48px] md:text-[64px] leading-tight text-primary uppercase italic mb-8 border-l-8 border-surface-tint pl-8 text-left">
@@ -378,7 +382,7 @@
 </div>
 </section>
 <!-- 05 CLIP DETECTION -->
-<section class="py-24 px-margin-page border-b border-border-muted bg-surface-base">
+<section id="advanced-protection" class="py-24 px-margin-page border-b border-border-muted bg-surface-base">
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 <div>
 <span class="text-surface-tint font-label-md text-label-md block mb-2">ADVANCED PROTECTION.</span>
@@ -425,7 +429,7 @@
 </div>
 </section>
 <!-- 06 OWNERSHIP CHAIN -->
-<section class="py-24 px-margin-page border-b border-border-muted">
+<section id="provenance" class="py-24 px-margin-page border-b border-border-muted">
 <div class="text-center mb-16">
 <span class="text-surface-tint font-label-md text-label-md block mb-2">PROVENANCE.</span>
 <h2 class="font-headline-md text-headline-md text-primary uppercase">Every Transfer. Every Owner. On Record.</h2>
@@ -468,7 +472,7 @@
 </div>
 </section>
 <!-- 07 FAQ SECTION -->
-<section class="py-24 px-margin-page border-b border-border-muted bg-surface-base">
+<section id="faq" class="py-24 px-margin-page border-b border-border-muted bg-surface-base">
 <div class="mb-16">
 <h2 class="font-headline-md text-headline-md text-primary uppercase">REGISTRY_PROTOCOLS // FAQ</h2>
 </div>
@@ -516,7 +520,7 @@
 </div>
 </section>
 <!-- 08 FINAL CTA -->
-<section class="py-40 px-margin-page text-center bg-surface-container-lowest border-b border-border-muted">
+<section id="final-cta" class="py-40 px-margin-page text-center bg-surface-container-lowest border-b border-border-muted">
 <h2 class="font-headline-lg text-headline-lg text-primary uppercase mb-12">Your Content Deserves a Deed.</h2>
 <div class="flex flex-col md:flex-row justify-center items-center gap-6">
 <a class="w-full md:w-auto px-12 py-5 bg-surface-tint text-background font-black font-label-md text-label-md primary-glitch" href="verify.html">
