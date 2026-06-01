@@ -139,9 +139,9 @@ const db = firebase.firestore();
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">03_Studio</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="market.html">04_Market</a>
 <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="verify.html">05_Vault</a>
-<div class="relative group">
-  <button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1">MORE ▾</button>
-  <div class="absolute top-full left-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-32 hidden group-hover:block z-50">
+<div class="relative" id="more-menu-wrap">
+  <button onclick="toggleMoreMenu()" class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1" id="more-menu-btn">MORE ▾</button>
+  <div class="absolute top-full left-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-36 z-50" id="more-menu" style="display:none;">
     <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="assembly.html">Assembly</a>
     <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="stockreel.html">Stock Reel</a>
     <a class="block font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors px-4 py-2" href="bgremover.html">BG Remover</a>
@@ -404,6 +404,27 @@ const db = firebase.firestore();
             }
         }, 3000);
     });
+</script>
+
+<script>
+function toggleMoreMenu() {
+  var menu = document.getElementById('more-menu');
+  var btn = document.getElementById('more-menu-btn');
+  var isOpen = menu.style.display !== 'none';
+  menu.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? 'MORE ▾' : 'MORE ▴';
+}
+
+// Close when clicking outside
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('more-menu-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    var menu = document.getElementById('more-menu');
+    var btn = document.getElementById('more-menu-btn');
+    if (menu) menu.style.display = 'none';
+    if (btn) btn.textContent = 'MORE ▾';
+  }
+});
 </script>
 </body></html>
 
