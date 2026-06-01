@@ -3,195 +3,437 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM — Genesis Market Core</title>
+<title>MERCADREAM | GENESIS MARKET</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=Orbitron:wght@500;600;700;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
-        :root {
-            --acid: #A8D700;
-            --void: #040404;
-            --surface: #0a0a0a;
-            --border: #1a1a1a;
-            --border-highlight: #434933;
-            --text-muted: #4a4a4a;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background: var(--void); color: #e5e2e1; 
-            font-family: 'IBM Plex Mono', monospace; 
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Scanline Animation */
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        .scan-line { 
-            position: fixed; inset: 0; pointer-events: none; z-index: 100;
-            background: linear-gradient(to bottom, transparent, rgba(168, 215, 0, 0.05), transparent);
-            height: 2px; width: 100%; animation: scan 4s linear infinite;
-        }
-
-        /* CRT Grid Overlay */
-        .grid-overlay {
-            position: fixed; inset: 0; pointer-events: none; z-index: 50;
-            background-image: 
-                linear-gradient(rgba(168, 215, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(168, 215, 0, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .terminal-header {
-            border-bottom: 1px solid var(--border);
-            background: rgba(4, 4, 4, 0.95);
-            backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 60;
-        }
-
-        .asset-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .asset-card:hover {
-            border-color: var(--acid);
-            box-shadow: 0 0 15px rgba(168, 215, 0, 0.1);
-        }
-        .asset-card.sold {
-            opacity: 0.5;
-            border-color: #333;
-        }
-        .sold-label {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
-            color: #ff3333; font-family: 'Orbitron', sans-serif; font-weight: 900;
-            font-size: 10px; letter-spacing: 2px; border: 1px solid #ff3333;
-            padding: 1px 4px; background: rgba(0,0,0,0.8);
-            z-index: 10;
-        }
-
-        .flicker { animation: flicker 0.1s infinite; }
-        @keyframes flicker { 0% { opacity: 0.9; } 100% { opacity: 1; } }
-
-        .spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--void); }
-        ::-webkit-scrollbar-thumb { background: var(--border-highlight); }
-    </style>
+@keyframes flicker { 0%{opacity:.97} 5%{opacity:.95} 10%{opacity:.9} 15%{opacity:.98} 100%{opacity:1} }
+.flicker-animation { animation: flicker .15s infinite; }
+.scanlines { background: linear-gradient(to bottom,rgba(18,16,16,0) 50%,rgba(0,0,0,.15) 50%); background-size:100% 4px; pointer-events:none; z-index:100; }
+.grid-bg { background-image: linear-gradient(to right,#1A1A1A 1px,transparent 1px),linear-gradient(to bottom,#1A1A1A 1px,transparent 1px); background-size:40px 40px; }
+.neon-glow { box-shadow:0 0 10px rgba(168,215,0,.4); }
+::-webkit-scrollbar { display:none; }
+.terminal-cursor { display:inline-block;width:8px;height:1.2em;background:#A8D700;animation:blink 1s step-end infinite;vertical-align:middle;margin-left:4px; }
+@keyframes blink { 50%{opacity:0} }
+body { min-height: max(884px, 100dvh); }
+</style>
+<script>
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{colors:{
+    "acid-dim":"#A8D700","void":"#040404","surface":"#0A0A0A","surface-container":"#201f1f",
+    "surface-container-highest":"#353534","outline-variant":"#434933","muted":"#4A4A4A",
+    "on-surface":"#e5e2e1","on-surface-variant":"#c4caac","error":"#FF3333","success":"#00FF88",
+    "primary":"#ffffff","primary-fixed":"#c0f500","primary-fixed-dim":"#a8d700",
+    "demo-orange": "#ffba3f"
+  },borderRadius:{"DEFAULT":"0px","full":"9999px"},
+  spacing:{"grid-unit":"40px","margin-mobile":"20px","margin-desktop":"40px"},
+  fontFamily:{"label-caps":["IBM Plex Mono"],"headline-md":["Orbitron"],"headline-lg":["Orbitron"],"code-sm":["IBM Plex Mono"]},
+  fontSize:{"label-caps":["12px",{lineHeight:"1",letterSpacing:"0.2em",fontWeight:"700"}],
+    "headline-md":["24px",{lineHeight:"1.2",fontWeight:"500"}],
+    "headline-lg":["32px",{lineHeight:"1.2",fontWeight:"600"}],
+    "code-sm":["14px",{lineHeight:"1.4",fontWeight:"400"}]}}}
+}
+</script>
 </head>
-<body class="pb-20">
-<div class="scan-line"></div>
-<div class="grid-overlay"></div>
-<!-- Header -->
-<header class="terminal-header p-4 md:px-8 flex justify-between items-end">
-<div>
-<h1 class="text-2xl md:text-3xl font-black tracking-tighter uppercase font-headline">MERCADREAM <span class="text-[#A8D700]">CORE</span></h1>
-<p class="text-[8px] text-[#4a4a4a] tracking-[2px] mt-1 uppercase">AUTONOMOUS ASSET LIQUIDITY PROTOCOL v.2026.05</p>
+<body class="bg-void text-on-surface font-code-sm overflow-x-hidden">
+<div class="scanlines fixed inset-0 opacity-20 pointer-events-none"></div>
+<!-- HEADER -->
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-margin-mobile md:px-margin-desktop h-grid-unit" style="box-shadow:0 0 15px rgba(168,217,0,.2)">
+<div class="flex items-center gap-4">
+<a class="font-headline-md text-headline-md text-primary tracking-widest uppercase" href="index.html" style="text-decoration:none;">MERCADREAM</a>
 </div>
-<div class="text-right">
-<div class="text-[8px] text-[#4a4a4a] mb-1 tracking-widest">SYSTEM_LOAD</div>
-<div class="text-xl md:text-2xl font-bold text-[#A8D700] font-headline flicker" id="load-val">0.0%</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-surface-container border border-outline-variant px-3 py-1 gap-2">
+<span class="material-symbols-outlined text-acid-dim text-sm" style="font-variation-settings:'FILL' 1;">bolt</span>
+<span class="font-label-caps text-label-caps text-acid-dim" id="header-gns">0 GNS</span>
+</div>
+<a href="profile.html"><span class="material-symbols-outlined text-on-surface-variant" style="font-size:24px;">account_circle</span></a>
 </div>
 </header>
-<!-- Stats Bar -->
-<div class="bg-surface border-b border-[#434933] px-4 md:px-8 py-2 flex justify-between items-center text-[9px] font-label-caps">
-<div class="flex gap-6">
-<span class="text-[#c4caac]">NODE: 0x4F...E1</span>
-<span class="text-[#c4caac] hidden sm:inline">PROTOCOL: GENESIS_OVR</span>
-<span class="text-[#c4caac]">LATENCY: 14ms</span>
+<!-- PAGE TITLE -->
+<main class="pt-grid-unit pb-24 grid-bg min-h-screen">
+<section class="px-margin-mobile pt-8 pb-4">
+<div class="border-l-4 border-acid-dim pl-4">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-lg text-headline-lg text-primary uppercase">GENESIS MARKET</h2>
+<span class="px-2 py-0.5 border border-demo-orange text-demo-orange font-label-caps text-[10px] tracking-widest">BETA</span>
 </div>
-<div class="flex items-center gap-2">
-<div class="w-1.5 h-1.5 rounded-full bg-[#A8D700] animate-pulse"></div>
-<span class="text-[#A8D700] font-bold">LIVE_UPLINK</span>
+<p class="font-code-sm text-muted mt-2 text-[10px] tracking-wider uppercase">⚠ SOME LISTINGS ARE DEMO — MARKET UNDER DEVELOPMENT <span class="terminal-cursor"></span></p>
+<p class="font-code-sm text-muted mt-1 text-xs">BUY · SELL · TRANSFER OWNERSHIP</p>
+</div>
+</section>
+<!-- FILTERS -->
+<div class="sticky top-10 z-40 bg-void/90 backdrop-blur-md border-y border-outline-variant">
+<div class="flex overflow-x-auto py-3 px-margin-mobile gap-3 items-center">
+<button class="filter-btn flex-shrink-0 px-4 py-1 border border-acid-dim bg-acid-dim text-void font-label-caps text-label-caps" data-filter="all" onclick="filterMarket('all')">ALL</button>
+<button class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="drama" onclick="filterMarket('drama')">DRAMA</button>
+<button class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="action" onclick="filterMarket('action')">ACTION</button>
+<button class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="music" onclick="filterMarket('music')">MUSIC</button>
+<button class="filter-btn flex-shrink-0 px-4 py-1 border border-outline-variant font-label-caps text-label-caps hover:border-acid-dim transition-colors" data-filter="doc" onclick="filterMarket('doc')">DOCUMENTARY</button>
 </div>
 </div>
-<!-- Main Grid -->
-<main class="p-2 md:p-4 max-w-[1920px] mx-auto">
-<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3" id="asset-grid">
-<!-- Items injected by JS -->
+<!-- STATIC DEMO GRID — always visible -->
+<section class="grid grid-cols-2 gap-px bg-outline-variant mt-4 border-b border-outline-variant" id="market-grid">
+<article class="bg-surface group relative flex flex-col" data-genre="drama">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="NEON_DRIFT_04" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7sEV5_3leU0a6N39URn7MQz7Iblra-fsG7WQT12xTDei2Bwi2LqncXgRez1f4rwk-p3X1S9u1KvTQXR40J-saF9sil-KuQpDoe3wctYE286KYcJVPcPoR9DhHLBR4K8ga0NsIzr0xl2826d5QweL7nabSuPnHj7R7yVsytDgki6gXWAKCtAUyycUkWJpw6i6Obui1LczyCBDEmfuZKNzKALg5kUkwup7-ZpgJQ5HRooApb_YaTzjxe6drtRc0X_nlrFLpugh6nMHj"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-N3ON-D4FT</span></div>
 </div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">NEON_DRIFT_04</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@MARCO_VISCONTI</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">DRAMA</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">500</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo1','GNS-2026-N3ON-D4FT','NEON_DRIFT_04',500,'https://lh3.googleusercontent.com/aida-public/AB6AXuC7sEV5_3leU0a6N39URn7MQz7Iblra-fsG7WQT12xTDei2Bwi2LqncXgRez1f4rwk-p3X1S9u1KvTQXR40J-saF9sil-KuQpDoe3wctYE286KYcJVPcPoR9DhHLBR4K8ga0NsIzr0xl2826d5QweL7nabSuPnHj7R7yVsytDgki6gXWAKCtAUyycUkWJpw6i6Obui1LczyCBDEmfuZKNzKALg5kUkwup7-ZpgJQ5HRooApb_YaTzjxe6drtRc0X_nlrFLpugh6nMHj')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="action">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="CYBER_PULSE" class="w-full h-full object-cover grayscale opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApba5XhL8BgyAclAdrwfKdrpk_sM0h7TRHAmEmSLiLpVR90TWzSu5N8aVtzbWra3pfei5LUvnBsnLLxEQww7tiTA__b8LlKCrT06p-GelXsVTahIX_QhpFoezn6WGipPc0UyYbIg3M5ptqKgkOBkwM9QYeUZ6UojpjcfK0YiGtvxmcSp-d5Y4kg9X86t0frEPUACohWFZqTaDFEo7LLP5ZTc8HzCffwudAoKHzRK3zvOZS7OXmb2KjR3kUfYhmculBP2FVToeCnaH2"/>
+<div class="absolute inset-0 flex items-center justify-center" style="transform:rotate(-15deg)"><div style="background:#ff3333;color:#040404;font-family:Orbitron;font-size:28px;font-weight:900;padding:8px 16px;border:2px solid #040404;">SOLD</div></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2 opacity-60">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">CYBER_PULSE</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@YUKI_TANAKA</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">ACTION</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">850</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;background:transparent;">PREVIEW</button>
+<div style="text-align:center;padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;">OUT OF STOCK</div>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="drama">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="VOID_CORE_X" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBATr1FIR3c6Y0RFf_YFPBo4m7WOu18Y5BhAIPfjoA6MhddrLJZZUKSS7EP2rFOGQybCt9c9QRFwLSyM-YGzDdiLgClcN9isF_ufuNqBG1TUa7dVRYbY6wf27MH2Dzglnb9tzx6UOBr57fCYjVZd2mIykXQJyQUBz3NVcpXUi2JC0Vy4g7Z9QY2H1GE7PhXCDIuujWnnpcNZjo1m0D4SivRq1HAo5gKpwkoEu6_UdtZgvs7GdUaPDJTeIYLjOeFiUOKdwfzAV22d5ON"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-V01D-C0R3</span></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">VOID_CORE_X</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@ALEX_STORM</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">DRAMA</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">1,200</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo3','GNS-2026-V01D-C0R3','VOID_CORE_X',1200,'https://lh3.googleusercontent.com/aida-public/AB6AXuBATr1FIR3c6Y0RFf_YFPBo4m7WOu18Y5BhAIPfjoA6MhddrLJZZUKSS7EP2rFOGQybCt9c9QRFwLSyM-YGzDdiLgClcN9isF_ufuNqBG1TUa7dVRYbY6wf27MH2Dzglnb9tzx6UOBr57fCYjVZd2mIykXQJyQUBz3NVcpXUi2JC0Vy4g7Z9QY2H1GE7PhXCDIuujWnnpcNZjo1m0D4SivRq1HAo5gKpwkoEu6_UdtZgvs7GdUaPDJTeIYLjOeFiUOKdwfzAV22d5ON')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="music">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="SOLAR_RIFT" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMuDRC9FprmZMUGBjVRwyMehuk0HhsNKQ97eNZ76oHi53YuEzye9e-PGqndEFoQHB4YA1CT_Ga4CUOn_iM6yZR7fbfCwl_wn30L3B0ljBsTCVBplBz-Q79Me-vP_Yy-aeIja8-sKj2omaBMsSbweGLqub9KUe-1iKZbft6ZpRsLMKJqppvYbOulfL20pm5AmMWgoKOeszHXA5JXcowcWUt--QNocc5yx0kKgCNcamVfS1neiLrOIJuyN3OfnN99vS-EEygdy69f0bR"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-S0L4-R1FT</span></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">SOLAR_RIFT</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@NINA_KOVAC</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">MUSIC</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">300</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo4','GNS-2026-S0L4-R1FT','SOLAR_RIFT',300,'https://lh3.googleusercontent.com/aida-public/AB6AXuDMuDRC9FprmZMUGBjVRwyMehuk0HhsNKQ97eNZ76oHi53YuEzye9e-PGqndEFoQHB4YA1CT_Ga4CUOn_iM6yZR7fbfCwl_wn30L3B0ljBsTCVBplBz-Q79Me-vP_Yy-aeIja8-sKj2omaBMsSbweGLqub9KUe-1iKZbft6ZpRsLMKJqppvYbOulfL20pm5AmMWgoKOeszHXA5JXcowcWUt--QNocc5yx0kKgCNcamVfS1neiLrOIJuyN3OfnN99vS-EEygdy69f0bR')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="music">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="AVATAR_GEN_X" class="w-full h-full object-cover grayscale opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeLNfSUo9KYqqvXGsFhMzghzGGphYpnqWPLt6RqM0vaLN5HgS9znqBMJ4V_j96xzv52iYqgkaHGzJqxhjjZ91w8p5s2OG_BlWIs6Myc6EsS1etJrvGERTe4UR-eUKFKSllp3b_9jHYpwtahTArAbt3i3LruicLvOyu_mRd4qR0a4rHA_qczuYlMtyugWKzV4L2DVmX6FtiPrnZZ70fB-BqcheNWCYLU7EEnCZ9uq3uKP2yYSbi-2eHmFMUuItyRAuxZSCFMvjBWLWE"/>
+<div class="absolute inset-0 flex items-center justify-center" style="transform:rotate(-15deg)"><div style="background:#ff3333;color:#040404;font-family:Orbitron;font-size:28px;font-weight:900;padding:8px 16px;border:2px solid #040404;">SOLD</div></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2 opacity-60">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">AVATAR_GEN_X</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@ELITE_MOD</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">MUSIC</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">1,800</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;background:transparent;">PREVIEW</button>
+<div style="text-align:center;padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;">OUT OF STOCK</div>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="action">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="DATA_RAIDER" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArBoK37UqQ1j1SBy4dYjh9KcicZmDHTudVcHh9fTC7DC_G00JDKTQiQ-rLYwVJO6hBE_Y6avLrv4_DWli4PfysJkDibmcLmBfBZ4Wv5N4gWWysRN2mZ1_ifKZcHLKDHng8hOJx8oBHNERBmroTe9d9e_EifV9uEZqQoxHevfNqtf9bzWBwKQ7ujuWMfk9JdQzH657KxY_rooBntvaps3RKtdzUQJK4en1E5tsuNHgadiPdSpaUcf-bgsupPEufezrPDs5eZz3G8WxO"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-D4T4-R4ID</span></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">DATA_RAIDER</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@CYBER_DOC</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">ACTION</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">2,400</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo5','GNS-2026-D4T4-R4ID','DATA_RAIDER',2400,'https://lh3.googleusercontent.com/aida-public/AB6AXuArBoK37UqQ1j1SBy4dYjh9KcicZmDHTudVcHh9fTC7DC_G00JDKTQiQ-rLYwVJO6hBE_Y6avLrv4_DWli4PfysJkDibmcLmBfBZ4Wv5N4gWWysRN2mZ1_ifKZcHLKDHng8hOJx8oBHNERBmroTe9d9e_EifV9uEZqQoxHevfNqtf9bzWBwKQ7ujuWMfk9JdQzH657KxY_rooBntvaps3RKtdzUQJK4en1E5tsuNHgadiPdSpaUcf-bgsupPEufezrPDs5eZz3G8WxO')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="music">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="NEURAL_SYMPHONY" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiqsL8hD3H0QpgG9CAbBRJ3uL9ZwHg471UarRNQajQy33cBQ5OrWt0r0qwFOv0UEteMI3seKrP0R8R9kOd0n_6QLxsuQXvZhTcQ6I-cl18XC5XtWCFo3qph6fBca8B5kOMW3Wo2E9CsbYwZFmdRyiUw3Jp_r9RoWXESf9ffDTxSsiixjR6N0zaDXnKNCbsYKg2MJ14AVB3UTsXKoIKxurjKvm38Nldx6YlbhqQYapEfx6ufBVdmzlkRoJE6jGcVsbRTJeajcsT75H1"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-N3UR-4L5Y</span></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">NEURAL_SYMPHONY</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@ARIA_CHEN</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">MUSIC</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">650</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo7','GNS-2026-N3UR-4L5Y','NEURAL_SYMPHONY',650,'https://lh3.googleusercontent.com/aida-public/AB6AXuCiqsL8hD3H0QpgG9CAbBRJ3uL9ZwHg471UarRNQajQy33cBQ5OrWt0r0qwFOv0UEteMI3seKrP0R8R9kOd0n_6QLxsuQXvZhTcQ6I-cl18XC5XtWCFo3qph6fBca8B5kOMW3Wo2E9CsbYwZFmdRyiUw3Jp_r9RoWXESf9ffDTxSsiixjR6N0zaDXnKNCbsYKg2MJ14AVB3UTsXKoIKxurjKvm38Nldx6YlbhqQYapEfx6ufBVdmzlkRoJE6jGcVsbRTJeajcsT75H1')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="doc">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="GHOST_CITY" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQx5psP1IIuTLDkvMRUvfRE-oqK3kYWVMLQkr1_Mw0GYffYvB_hm6gTrJFEeapZktCvCFn-JOyPz0GI5Rxf3QKRn3VkXRpiehgjRdxjtDrMKWvLbfMATNNV-Zlf9vo7RRbSicHpwNuAD3RrqaksRdyNO2e06V3e926G1gHiYQz1uzuRbawY-m9gfNR1TT9-a0P_JAbXUXt_R4ut6dt8Fmf9xa6gK5OYHes9WaHKn5Yd9Yq44yoffzDkZ7NevcRIkpa6SwNkk0GAH4X"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-GH05T-C1TY</span></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">GHOST_CITY</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@REN_NAKAMURA</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">DOC</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">4,200</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo8','GNS-2026-GH05T-C1TY','GHOST_CITY',4200,'https://lh3.googleusercontent.com/aida-public/AB6AXuAQx5psP1IIuTLDkvMRUvfRE-oqK3kYWVMLQkr1_Mw0GYffYvB_hm6gTrJFEeapZktCvCFn-JOyPz0GI5Rxf3QKRn3VkXRpiehgjRdxjtDrMKWvLbfMATNNV-Zlf9vo7RRbSicHpwNuAD3RrqaksRdyNO2e06V3e926G1gHiYQz1uzuRbawY-m9gfNR1TT9-a0P_JAbXUXt_R4ut6dt8Fmf9xa6gK5OYHes9WaHKn5Yd9Yq44yoffzDkZ7NevcRIkpa6SwNkk0GAH4X')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="drama">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="SILICON_STORM" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMpC5TA1tm063bo2E5XJ7INNkfkIQZtpm7y83SiIk-_45wKvpzlcpFtOn-vKTxd7e6kHvjhGEsD9DUYXSPJpgaI6vpVe6BGIaA75BF9sJKNPbqmmvPGsvJjNeANrBYfwdVguI5GCRDEc6ccHca4VcCSeZ3eBPmCPi6eoUAIhUpnvB6LUPJ3pCKKzIb7Rloot41GFPJAv1S9GJqkQ2QdSANLyPyPBE26BLXBuGGWkpUyHch7pTDg9MY6F27LnFa30Yr8vd5ihydsS6W"/>
+<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #1a1a1a;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#c4caac;">GNS-2026-S1L1-C0N5</span></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">SILICON_STORM</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@MAX_RYDER</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">DRAMA</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">750</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;background:transparent;cursor:pointer;">PREVIEW</button>
+<button onclick="openPurchase('demo9','GNS-2026-S1L1-C0N5','SILICON_STORM',750,'https://lh3.googleusercontent.com/aida-public/AB6AXuDMpC5TA1tm063bo2E5XJ7INNkfkIQZtpm7y83SiIk-_45wKvpzlcpFtOn-vKTxd7e6kHvjhGEsD9DUYXSPJpgaI6vpVe6BGIaA75BF9sJKNPbqmmvPGsvJjNeANrBYfwdVguI5GCRDEc6ccHca4VcCSeZ3eBPmCPi6eoUAIhUpnvB6LUPJ3pCKKzIb7Rloot41GFPJAv1S9GJqkQ2QdSANLyPyPBE26BLXBuGGWkpUyHch7pTDg9MY6F27LnFa30Yr8vd5ihydsS6W')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>
+</div></div></article>
+
+<article class="bg-surface group relative flex flex-col" data-genre="doc">
+<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">
+<img alt="CORE_ARCHIVE" class="w-full h-full object-cover grayscale opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1Bw1NCtS1HUeefmwCuIrI3zKPSN8o4LEPxfCmG-OSnelUvu1g6xKQLJ9zFyUSs_GW-4bp1q7xKmkrcX6KGRx3kI4Svojl2rq3iwBk3GTfaMhinEc6_lJtNp2KuJI1lsNIaL0I3TQY-bGpFcZTu6gtofsEgROcVVmIPPPF1JZgdb8C3QwQnVe3QbDIKTEnrON3qKwwW0VnTG04bDZJAvjfunXw8acUd_EVEBnYvcEZEuhKz7n2LBOH-Ao_EU4X_8eoO8b8JyKmryg"/>
+<div class="absolute inset-0 flex items-center justify-center" style="transform:rotate(-15deg)"><div style="background:#ff3333;color:#040404;font-family:Orbitron;font-size:28px;font-weight:900;padding:8px 16px;border:2px solid #040404;">SOLD</div></div>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-2 opacity-60">
+<div class="font-label-caps text-[9px] text-demo-orange tracking-widest mb-1">DEMO LISTING</div>
+<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">CORE_ARCHIVE</h3>
+<div style="display:flex;justify-content:space-between;margin-top:4px;">
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@VAULT_MASTER</span>
+<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">DOC</span>
+</div>
+<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">3,100</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>
+<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">
+<button style="padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;background:transparent;">PREVIEW</button>
+<div style="text-align:center;padding:8px;border:1px solid #1a1a1a;color:#4a4a4a;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;">OUT OF STOCK</div>
+</div></div></article>
+</section>
 </main>
-<!-- Navigation -->
-<nav class="fixed bottom-0 left-0 w-full z-[70] bg-[#040404] border-t border-[#434933] h-16 flex justify-around items-center px-4">
-<a class="flex flex-col items-center text-[#4a4a4a] hover:text-white transition-colors" href="index.html">
-<span class="material-symbols-outlined text-[20px]">grid_view</span>
-<span class="text-[8px] mt-1 font-bold">EXPLORE</span>
+<!-- BOTTOM NAV -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-void border-t border-outline-variant h-16 flex justify-around items-center px-4">
+<a class="flex flex-col items-center text-muted hover:text-primary transition-all" href="index.html">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-caps text-[10px] mt-1">EXPLORE</span>
 </a>
-<a class="flex flex-col items-center text-[#A8D700]" href="market.html">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">terminal</span>
-<span class="text-[8px] mt-1 font-bold">CORE</span>
+<a class="flex flex-col items-center text-muted hover:text-primary transition-all" href="studio.html">
+<span class="material-symbols-outlined">movie_filter</span>
+<span class="font-label-caps text-[10px] mt-1">STUDIO</span>
 </a>
-<a class="flex flex-col items-center text-[#4a4a4a] hover:text-white transition-colors" href="verify.html">
-<span class="material-symbols-outlined text-[20px]">verified</span>
-<span class="text-[8px] mt-1 font-bold">VAULT</span>
+<a class="flex flex-col items-center text-primary border-t-2 border-primary pt-2 pb-1" href="market.html">
+<span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">storefront</span>
+<span class="font-label-caps text-[10px] mt-1">MARKET</span>
 </a>
-<a class="flex flex-col items-center text-[#4a4a4a] hover:text-white transition-colors" href="profile.html">
-<span class="material-symbols-outlined text-[20px]">account_circle</span>
-<span class="text-[8px] mt-1 font-bold">PROFILE</span>
+<a class="flex flex-col items-center text-muted hover:text-primary transition-all" href="verify.html">
+<span class="material-symbols-outlined">verified</span>
+<span class="font-label-caps text-[10px] mt-1">VAULT</span>
+</a>
+<a class="flex flex-col items-center text-muted hover:text-primary transition-all" href="profile.html">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-caps text-[10px] mt-1">PROFILE</span>
 </a>
 </nav>
+<!-- PURCHASE MODAL -->
+<div id="purchase-modal" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(4,4,4,0.95);backdrop-filter:blur(4px);">
+<div style="width:100%;max-width:480px;margin:16px;border:1px solid #434933;background:#0a0a0a;overflow:hidden;">
+<div style="height:3px;background:#a8d700;"></div>
+<div style="padding:10px 20px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;background:#111;">
+<span style="font-family:IBM Plex Mono;font-size:9px;letter-spacing:3px;color:#a8d700;">SECURE_TRANSFER_PROTOCOL</span>
+<span style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;">AES-256-GCM</span>
+</div>
+<div style="padding:24px;">
+<h2 style="font-family:Orbitron;font-size:18px;font-weight:700;color:#fff;margin-bottom:20px;">CONFIRM OWNERSHIP TRANSFER</h2>
+<div style="border:1px solid #1a1a1a;padding:16px;background:#040404;display:grid;grid-template-columns:100px 1fr;gap:14px;margin-bottom:16px;">
+<img id="modal-thumb" src="" style="width:100px;height:100px;object-fit:cover;border:1px solid #1a1a1a;"/>
+<div style="display:flex;flex-direction:column;gap:10px;">
+<div><div style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;letter-spacing:2px;margin-bottom:3px;">ASSET</div>
+<div id="modal-title" style="font-family:IBM Plex Mono;font-size:12px;color:#e5e2e1;font-weight:700;"></div></div>
+<div><div style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;letter-spacing:2px;margin-bottom:3px;">GENESIS ID</div>
+<div id="modal-genesis" style="font-family:Orbitron;font-size:9px;color:#a8d700;"></div></div>
+<div style="display:flex;align-items:baseline;gap:6px;">
+<span id="modal-price" style="font-family:Orbitron;font-size:22px;font-weight:700;color:#a8d700;"></span>
+<span style="font-family:IBM Plex Mono;font-size:10px;color:#a8d700;">GNS</span></div>
+<div id="modal-balance" style="font-family:IBM Plex Mono;font-size:9px;color:#4a4a4a;"></div>
+</div></div>
+<div style="border-left:3px solid #ff3333;padding:10px 14px;background:rgba(255,51,51,.05);margin-bottom:20px;font-family:IBM Plex Mono;font-size:10px;color:#e5e2e1;line-height:1.6;">
+This transfers the <strong style="color:#ff3333;">Genesis DNA deed</strong> permanently. Cannot be undone.
+</div>
+<div style="display:flex;gap:10px;">
+<button onclick="closePurchase()" style="flex:1;padding:14px;border:1px solid #1a1a1a;background:transparent;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;color:#4a4a4a;cursor:pointer;">CANCEL</button>
+<button id="confirm-btn" onclick="confirmPurchase()" style="flex:2;padding:14px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 15px rgba(168,215,0,.3);">CONFIRM PURCHASE</button>
+</div></div></div></div>
 <script>
-        const grid = document.getElementById('asset-grid');
-        const loadVal = document.getElementById('load-val');
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+var currentUser = null;
+var pendingPurchase = null;
 
-        const generateAsset = (index) => {
-            const id = 8000 + index;
-            const price = (Math.random() * 5000 + 500).toFixed(0);
-            const isSold = Math.random() > 0.85;
-            const type = ['DRAMA', 'ACTION', 'NEURAL', 'AUDIO', 'SYNC', 'LOGIC', 'KERNEL', 'PULSE'][Math.floor(Math.random() * 8)];
-            
-            return `
-                <article class="asset-card p-2 md:p-2.5 ${isSold ? 'sold' : ''}">
-                    <div class="flex justify-between items-start mb-1.5">
-                        <div class="text-[7px] text-[#A8D700] font-bold tracking-tighter">ID: ${id}</div>
-                        <div class="text-[6px] bg-white/5 px-1 py-0.5 border border-white/10 text-[#c4caac]">${type}</div>
-                    </div>
-                    
-                    <div class="aspect-video sm:aspect-square bg-[#040404] border border-white/5 mb-2 relative overflow-hidden group">
-                        <img src="https://picsum.photos/seed/${id}/300/300" class="w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                        ${isSold ? '<div class="sold-label">LOCKED</div>' : ''}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
+firebase.auth().onAuthStateChanged(function(user) {
+  currentUser = user;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (doc.exists) {
+        var gns = doc.data().credits || 0;
+        localStorage.setItem('md_credits', gns);
+        localStorage.setItem('md_user_id', user.uid);
+        localStorage.setItem('md_name', doc.data().name || 'Creator');
+        document.getElementById('header-gns').textContent = gns.toLocaleString() + ' GNS';
+      }
+    });
+  }
+  // Load real listings on top of demo cards
+  loadRealListings();
+});
 
-                    <div class="flex flex-col gap-0.5">
-                        <div class="flex justify-between items-end">
-                            <span class="text-[7px] text-[#4a4a4a] uppercase tracking-widest">Valuation</span>
-                            <span class="text-[10px] md:text-xs font-bold font-headline ${isSold ? 'line-through text-[#4a4a4a]' : 'text-white'}">${Number(price).toLocaleString()} <span class="text-[7px]">GNS</span></span>
-                        </div>
-                        <div class="text-[6px] mt-0.5 flex justify-between">
-                            <span class="${isSold ? 'text-red-900' : 'text-[#4a4a4a]'}">${isSold ? 'ACCESS_DENIED' : 'SYNC_AVAILABLE'}</span>
-                            <span class="text-[#4a4a4a] opacity-50">${(Math.random() * 2).toFixed(1)}s ago</span>
-                        </div>
-                    </div>
-                </article>
-            `;
-        };
+async function loadRealListings() {
+  try {
+    var snap = await firebase.firestore().collection('genesis_vault')
+      .where('status','==','for_sale').orderBy('createdAt','desc').limit(10).get();
+    if (snap.empty) return;
+    var grid = document.getElementById('market-grid');
+    snap.forEach(function(doc) {
+      var d = doc.data();
+      var thumb = d.thumbnail || 'https://picsum.photos/seed/' + doc.id + '/400/700';
+      var card = document.createElement('article');
+      card.className = 'bg-surface group relative flex flex-col';
+      card.setAttribute('data-genre', (d.director||'').toLowerCase());
+      card.innerHTML = '<div class="aspect-[9/16] bg-void overflow-hidden relative border-b border-outline-variant">' +
+        '<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80" src="' + thumb + '" alt="' + (d.title||'') + '"/>' +
+        '<div class="absolute top-2 right-2"><span style="background:rgba(4,4,4,.8);border:1px solid #a8d700;font-family:IBM Plex Mono;font-size:9px;padding:2px 6px;color:#a8d700;">' + (d.genesisId||'—') + '</span></div></div>' +
+        '<div class="p-4 flex-grow flex flex-col gap-2">' +
+        '<div class="font-label-caps text-[9px] text-success tracking-widest mb-1">✓ REAL LISTING</div>' +
+        '<h3 style="font-family:Orbitron;font-size:14px;font-weight:600;text-transform:uppercase;">' + (d.title||'Untitled') + '</h3>' +
+        '<div style="display:flex;justify-content:space-between;margin-top:4px;">' +
+        '<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">@' + (d.ownerName||'').replace(/\s/g,'_').toUpperCase() + '</span>' +
+        '<span style="color:#4a4a4a;font-family:IBM Plex Mono;font-size:9px;letter-spacing:2px;">' + (d.director||'AI').toUpperCase() + '</span></div>' +
+        '<div style="margin-top:12px;"><span style="font-family:Orbitron;font-size:24px;font-weight:600;color:#fff;">' + (d.price||0).toLocaleString() + '</span><span style="font-family:IBM Plex Mono;font-size:10px;color:#fff;margin-left:4px;">GNS</span></div>' +
+        '<div style="margin-top:auto;padding-top:16px;display:flex;flex-direction:column;gap:8px;">' +
+        (d.previewUrl ? '<a href="' + d.previewUrl + '" target="_blank" style="display:block;text-align:center;padding:8px;border:1px solid #a8d700;color:#a8d700;font-family:IBM Plex Mono;font-size:10px;letter-spacing:2px;text-decoration:none;">PREVIEW</a>' : '') +
+        '<button onclick="openPurchase(\'' + doc.id + '\',\'' + (d.genesisId||'') + '\',\'' + (d.title||'').replace(/'/g,'') + '\',' + (d.price||0) + ',\'' + thumb + '\')" style="padding:10px;background:#a8d700;border:none;font-family:IBM Plex Mono;font-size:10px;font-weight:700;letter-spacing:2px;color:#040404;cursor:pointer;box-shadow:0 0 10px rgba(168,215,0,.4);">BUY OWNERSHIP</button>' +
+        '</div></div>';
+      grid.insertBefore(card, grid.firstChild);
+    });
+  } catch(e) { console.log('No real listings:', e.message); }
+}
 
-        const updateGrid = () => {
-            // High density update
-            let items = '';
-            for (let i = 0; i < 48; i++) {
-                items += generateAsset(i);
-            }
-            grid.innerHTML = items;
-            
-            // Randomize load value
-            const load = (Math.random() * 100).toFixed(1);
-            loadVal.textContent = load + '%';
-            
-            if (load > 85) loadVal.style.color = '#ff3333';
-            else loadVal.style.color = '#A8D700';
-        };
+// Filter: show/hide cards by genre
+function filterMarket(filter) {
+  document.querySelectorAll('.filter-btn').forEach(function(b) {
+    b.classList.remove('bg-acid-dim','text-void');
+    b.classList.add('border-outline-variant');
+    b.style.background = '';
+    b.style.color = '';
+  });
+  var active = document.querySelector('[data-filter="' + filter + '"]');
+  if (active) { active.classList.add('bg-acid-dim','text-void'); }
+  document.querySelectorAll('#market-grid article').forEach(function(card) {
+    if (filter === 'all') { card.style.display = ''; return; }
+    var genre = (card.getAttribute('data-genre') || '').toLowerCase();
+    card.style.display = genre.includes(filter) ? '' : 'none';
+  });
+}
 
-        // Initial render
-        updateGrid();
+function openPurchase(docId, genesisId, title, price, thumb) {
+  pendingPurchase = {docId, genesisId, title, price};
+  document.getElementById('modal-thumb').src = thumb;
+  document.getElementById('modal-genesis').textContent = genesisId;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-price').textContent = price.toLocaleString();
+  var bal = parseInt(localStorage.getItem('md_credits')||'0');
+  document.getElementById('modal-balance').textContent = 'YOUR BALANCE: ' + bal.toLocaleString() + ' GNS';
+  document.getElementById('purchase-modal').style.display = 'flex';
+}
 
-        // Live update cycle (simulating high-frequency data refresh)
-        // Reduced frequency for desktop performance/stability while keeping the "live" feel
-        setInterval(updateGrid, 5000);
-    </script>
+function closePurchase() {
+  document.getElementById('purchase-modal').style.display = 'none';
+  pendingPurchase = null;
+}
+
+async function confirmPurchase() {
+  if (!pendingPurchase || !currentUser) { alert('Please login first.'); return; }
+  var bal = parseInt(localStorage.getItem('md_credits')||'0');
+  if (bal < pendingPurchase.price) {
+    alert('Insufficient GNS. Need ' + pendingPurchase.price + ', have ' + bal);
+    window.location.href = 'pricing.html'; return;
+  }
+  var btn = document.getElementById('confirm-btn');
+  btn.textContent = 'PROCESSING...'; btn.disabled = true;
+  try {
+    var newBal = bal - pendingPurchase.price;
+    await firebase.firestore().collection('users').doc(currentUser.uid).update({credits: newBal});
+    localStorage.setItem('md_credits', newBal);
+    document.getElementById('header-gns').textContent = newBal.toLocaleString() + ' GNS';
+    if (!String(pendingPurchase.docId).startsWith('demo')) {
+      await firebase.firestore().collection('genesis_vault').doc(pendingPurchase.docId).update({
+        ownerId: currentUser.uid,
+        ownerName: localStorage.getItem('md_name') || currentUser.email,
+        status: 'owned', price: 0,
+        transferredAt: new Date().toISOString()
+      });
+    }
+    closePurchase();
+    alert('✓ TRANSFER COMPLETE\n' + pendingPurchase.genesisId + ' is now in your collection.');
+    loadRealListings();
+  } catch(e) {
+    alert('Error: ' + e.message);
+    btn.textContent = 'CONFIRM PURCHASE'; btn.disabled = false;
+  }
+}
+</script>
 </body></html>
