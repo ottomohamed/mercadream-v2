@@ -653,12 +653,24 @@ async function verifyRequest(payload) {
 // ── DISPLAY ───────────────────────────────────────────
 function showCertificate(data) {
   document.getElementById('rejected-box').style.display = 'none';
+  currentCertData = data;
+
+  // ── For REGISTRATION: redirect to certificate.html ──
+  if (data.genesisId && currentTab === 'register') {
+    // Show quick success message first
+    setRegStatus('✓ GENESIS DNA REGISTERED — OPENING CERTIFICATE...');
+    setTimeout(function() {
+      window.location.href = 'certificate.html?id=' + encodeURIComponent(data.genesisId);
+    }, 1200);
+    return;
+  }
+
+  // ── For VERIFICATION: show inline certificate ──
   var cert = document.getElementById('certificate');
   cert.style.display = 'block';
 
   document.getElementById('cert-id').textContent = data.genesisId || data.id || '—';
   
-  // Show match type
   var statusHtml = '<span style="color:var(--success);">✓ VERIFIED ORIGINAL</span>';
   if (data.matchType === 'partial') {
     statusHtml = '<span style="color:var(--gold);">⚠ PARTIAL MATCH — ' + (data.matchScore || 0) + '% CLIP DETECTED</span>';
@@ -671,12 +683,24 @@ function showCertificate(data) {
   document.getElementById('cert-date').textContent = data.created || data.createdAt || new Date().toISOString();
   document.getElementById('cert-hash').textContent = data.masterHash || data.videoHash || '—';
   
-  // Add frame count if available
   var frameEl = document.getElementById('cert-frames');
   if (frameEl && data.frameCount) {
     frameEl.textContent = data.frameCount + ' FRAMES INDEXED';
   }
-  currentCertData = data;
+  
+  // Add VIEW FULL CERTIFICATE button
+  var certEl = document.getElementById('certificate');
+  if (!document.getElementById('view-cert-btn')) {
+    var viewBtn = document.createElement('a');
+    viewBtn.id = 'view-cert-btn';
+    viewBtn.href = 'certificate.html?id=' + encodeURIComponent(data.genesisId || '');
+    viewBtn.style.cssText = 'display:block;margin-top:16px;padding:14px;background:#c8ff00;color:#040404;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:700;letter-spacing:3px;text-align:center;text-decoration:none;';
+    viewBtn.textContent = '🏆 VIEW FULL CERTIFICATE';
+    certEl.appendChild(viewBtn);
+  } else {
+    document.getElementById('view-cert-btn').href = 'certificate.html?id=' + encodeURIComponent(data.genesisId || '');
+  }
+  
   cert.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
