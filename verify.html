@@ -664,12 +664,12 @@ function updateLabTerminal(pct, msg, hex) {
   });
 
   // Reveal hex
-  if (hex) {
+  if (hex && typeof hex === "string" && hex.length > 0) {
     const seq = document.getElementById('lab-sequence');
     if (seq) {
       const charCount = Math.floor((pct/100) * hex.length);
-      const visible = hex.substring(0, charCount);
-      const remaining = "-".repeat(hex.length - charCount);
+      const visible = hex.substring(0, charCount) || "";
+      const remaining = "-".repeat(Math.max(0, hex.length - charCount));
       seq.innerHTML = `<span style="color:var(--acid)">${visible}</span><span style="color:var(--muted);opacity:0.2;">${remaining}</span>`;
     }
   }
@@ -798,7 +798,7 @@ async function registerVideo() {
       throw new Error('No file uploaded');
     }
     var frameHashes = await extractLocalHashes(uploadedFile || uploadedDataUrl || "fallback");
-    var masterHash = frameHashes.join('-').substring(0, 64);
+    var masterHash = (frameHashes || []).join('-').substring(0, 64);
 
     var res = await fetch('/api/fingerprint', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -811,7 +811,13 @@ async function registerVideo() {
         title: title
       })
     });
-    var data = await res.json();
+    var data;
+    try {
+      data = await res.json();
+    } catch(jsonErr) {
+      var rawText = await res.text().catch(function(){return 'Server error';});
+      throw new Error(rawText.slice(0, 100));
+    }
 
     // End simulation
     setTimeout(() => {
@@ -876,7 +882,13 @@ async function verifyRequest(payload) {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
-    var data = await res.json();
+    var data;
+    try {
+      data = await res.json();
+    } catch(jsonErr) {
+      var rawText = await res.text().catch(function(){return 'Server error';});
+      throw new Error(rawText.slice(0, 100));
+    }
 
     if (icon) icon.classList.remove('spinner');
     if (btn) btn.disabled = false;
