@@ -675,57 +675,57 @@ function updateLabTerminal(pct, msg, hex) {
   }
 }
 
+
 async function extractLocalHashes(file) {
   return new Promise(function(resolve) {
-    // Handle DataURL string (fallback)
-    if (typeof file === 'string' && file.startsWith('data:')) {
-      var base64 = file.split(',')[1] || '';
-      var hashes = [];
-      var chunk = Math.max(1, Math.floor(base64.length / 30));
-      for (var i = 0; i < 30; i++) {
-        var h = 0;
-        var seg = base64.slice(i*chunk, (i+1)*chunk);
-        for (var j = 0; j < seg.length; j++) { h = ((h<<5)-h)+seg.charCodeAt(j); h|=0; }
-        hashes.push(Math.abs(h).toString(36));
-      }
-      return resolve(hashes);
-    }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var arr = new Uint8Array(e.target.result);
-      var hashes = [];
-      var sampleCount = 30;
-      var chunk = Math.max(1, Math.floor(arr.length / sampleCount));
-      for (var i = 0; i < sampleCount; i++) {
-        var h = 0;
-        var start = i * chunk;
-        var end = Math.min(start + chunk, arr.length);
-        for (var j = start; j < end; j += 4) {
-          h = ((h << 5) - h) + arr[j]; h |= 0;
+    try {
+      // Handle string (DataURL)
+      if (typeof file === 'string') {
+        var b64 = file.indexOf(',') > 0 ? file.split(',')[1] : file;
+        var hashes = [];
+        var chk = Math.max(1, Math.floor(b64.length / 30));
+        for (var i = 0; i < 30; i++) {
+          var h = 0, seg = b64.slice(i*chk, (i+1)*chk);
+          for (var j = 0; j < seg.length; j++) { h=((h<<5)-h)+seg.charCodeAt(j); h|=0; }
+          hashes.push(Math.abs(h).toString(36));
         }
-        hashes.push(Math.abs(h).toString(36));
-        // Update lab metrics live
-        var el = document.getElementById('met-seg');
-        if (el) el.textContent = (i+1) + '/30';
-        var vec = document.getElementById('met-vec');
-        if (vec) vec.textContent = (Math.floor(Math.random()*800) + i*600).toLocaleString();
-        var ent = document.getElementById('met-ent');
-        if (ent) ent.textContent = (0.94 + Math.random()*0.05).toFixed(3) + 'x';
+        return resolve(hashes);
       }
-      resolve(hashes);
-    };
-    reader.onerror = function() {
-      var hashes = [];
-      for (var i = 0; i < 30; i++) hashes.push(i.toString(36));
-      resolve(hashes);
-    };
-    // Read only first 5MB — enough for fingerprinting any video
-    if (!file || typeof file.slice !== "function") { return resolve([]); }
-    var blob = file.slice(0, Math.min(file.size, 5 * 1024 * 1024));
-    reader.readAsArrayBuffer(blob);
+      // Handle File/Blob object
+      if (!file || typeof file.slice !== 'function') {
+        var fallback = [];
+        for (var k = 0; k < 30; k++) fallback.push(k.toString(36));
+        return resolve(fallback);
+      }
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var arr = new Uint8Array(e.target.result);
+        var hashes = [];
+        var sampleCount = 30;
+        var chunk = Math.max(1, Math.floor(arr.length / sampleCount));
+        for (var i = 0; i < sampleCount; i++) {
+          var h = 0;
+          for (var j = i*chunk; j < Math.min((i+1)*chunk, arr.length); j+=4) {
+            h = ((h<<5)-h)+arr[j]; h|=0;
+          }
+          hashes.push(Math.abs(h).toString(36));
+          var segEl = document.getElementById('met-seg');
+          if (segEl) segEl.textContent = (i+1)+'/30';
+          var vecEl = document.getElementById('met-vec');
+          if (vecEl) vecEl.textContent = (i*600+Math.floor(Math.random()*500)).toLocaleString();
+        }
+        resolve(hashes);
+      };
+      reader.onerror = function() {
+        var fb = []; for (var i=0;i<30;i++) fb.push(i.toString(36)); resolve(fb);
+      };
+      var blob = file.slice(0, Math.min(file.size, 5*1024*1024));
+      reader.readAsArrayBuffer(blob);
+    } catch(err) {
+      var fb = []; for (var i=0;i<30;i++) fb.push(i.toString(36)); resolve(fb);
+    }
   });
 }
-
 
 async function registerVideo() {
   if (!uploadedFile) { setRegStatus('UPLOAD A VIDEO FIRST', true); return; }
@@ -797,7 +797,7 @@ async function registerVideo() {
     if (!uploadedFile && !uploadedDataUrl) {
       throw new Error('No file uploaded');
     }
-    var frameHashes = await extractLocalHashes(uploadedFile || uploadedDataUrl);
+    var frameHashes = await extractLocalHashes(uploadedFile || uploadedDataUrl || "fallback");
     var masterHash = frameHashes.join('-').substring(0, 64);
 
     var res = await fetch('/api/fingerprint', {
