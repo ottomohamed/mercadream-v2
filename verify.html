@@ -500,7 +500,7 @@ function triggerVerifyUpload() { document.getElementById('verify-file').click();
 function handleFile(input) {
   var f = input.files[0];
   if (!f) return;
-  uploadedFile = f;
+  uploadedFile = f; // Keep file reference for local processing
   var reader = new FileReader();
   reader.onload = function(e) {
     uploadedDataUrl = e.target.result;
@@ -538,8 +538,108 @@ function handleVerifyFile(input) {
 }
 
 // ── REGISTER ──────────────────────────────────────────
+// ── LOCAL FINGERPRINTING (runs on user device) ────────
+async function extractLocalHashes(file) {
+  return new Promise(function(resolve) {
+    var video = document.createElement('video');
+    video.preload = 'metadata';
+    var url = URL.createObjectURL(file);
+    video.src = url;
+
+    video.onloadedmetadata = function() {
+      var duration = video.duration;
+      var sampleCount = 30;
+      var hashes = [];
+      var canvas = document.createElement('canvas');
+      canvas.width = 64; canvas.height = 36; // tiny = fast
+      var ctx = canvas.getContext('2d');
+      var processed = 0;
+
+      // Distribute 30 samples across entire video
+      for (var i = 0; i < sampleCount; i++) {
+        (function(idx) {
+          var seekTime = (duration / sampleCount) * idx;
+          var v2 = document.createElement('video');
+          v2.preload = 'auto';
+          v2.src = url;
+          v2.currentTime = seekTime;
+          v2.onseeked = function() {
+            try {
+              ctx.drawImage(v2, 0, 0, 64, 36);
+              var pixels = ctx.getImageData(0, 0, 64, 36).data;
+              var hash = 0;
+              for (var p = 0; p < pixels.length; p += 16) {
+                hash = ((hash << 5) - hash) + pixels[p];
+                hash |= 0;
+              }
+              hashes[idx] = Math.abs(hash).toString(36);
+            } catch(e) {
+              hashes[idx] = idx.toString(36);
+            }
+            processed++;
+            // Update mining progress
+            var pct = Math.round((processed / sampleCount) * 60);
+            updateMiningProgress(pct, 'SCANNING FRAME ' + processed + '/' + sampleCount);
+            if (processed === sampleCount) {
+              URL.revokeObjectURL(url);
+              resolve(hashes);
+            }
+          };
+          v2.onerror = function() {
+            hashes[idx] = idx.toString(36);
+            processed++;
+            if (processed === sampleCount) { URL.revokeObjectURL(url); resolve(hashes); }
+          };
+        })(i);
+      }
+    };
+
+    video.onerror = function() {
+      // Fallback: hash the file data
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var arr = new Uint8Array(data.slice(0, 300000));
+        var hashes = [];
+        var chunk = Math.floor(arr.length / 30);
+        for (var i = 0; i < 30; i++) {
+          var h = 0;
+          for (var j = i*chunk; j < Math.min((i+1)*chunk, arr.length); j+=4) {
+            h = ((h << 5) - h) + arr[j]; h |= 0;
+          }
+          hashes.push(Math.abs(h).toString(36));
+        }
+        resolve(hashes);
+      };
+      reader.readAsArrayBuffer(file);
+    };
+  });
+}
+
+function updateMiningProgress(pct, msg) {
+  var bar = document.getElementById('mining-bar');
+  var label = document.getElementById('mining-label');
+  if (bar) bar.style.width = pct + '%';
+  if (label) label.textContent = msg;
+}
+
+function showMiningUI() {
+  var status = document.getElementById('reg-status');
+  if (!status) return;
+  status.innerHTML = 
+    '<div style="margin-top:12px;border:1px solid var(--border2);padding:12px;background:var(--void);">' +
+    '<div style="font-size:9px;color:var(--acid);letter-spacing:2px;margin-bottom:8px;" id="mining-label">INITIALIZING DNA ENGINE...</div>' +
+    '<div style="height:3px;background:#1a1a1a;width:100%;">' +
+    '<div id="mining-bar" style="height:3px;background:var(--acid);width:0%;transition:width 0.3s;box-shadow:0 0 8px var(--acid);"></div>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;margin-top:6px;">' +
+    '<span style="font-size:8px;color:var(--muted);">PROCESSING ON YOUR DEVICE</span>' +
+    '<span style="font-size:8px;color:var(--acid);" id="mining-pct">0%</span>' +
+    '</div></div>';
+}
+
 async function registerVideo() {
-  if (!uploadedDataUrl) { setRegStatus('UPLOAD A VIDEO FIRST', true); return; }
+  if (!uploadedFile) { setRegStatus('UPLOAD A VIDEO FIRST', true); return; }
 
   var gns = parseInt(localStorage.getItem('md_credits') || '0');
   if (gns < COST) {
@@ -553,26 +653,40 @@ async function registerVideo() {
   var text = document.getElementById('reg-text');
   btn.disabled = true;
   icon.classList.add('spinner');
-  text.textContent = 'SCANNING REGISTRY...';
-  setRegStatus('Checking if video is already registered...');
+  text.textContent = 'MINING DNA...';
   hideCertificate();
+
+  // Show mining UI
+  showMiningUI();
+  updateMiningProgress(5, 'LOADING VIDEO METADATA...');
 
   try {
     var uid = localStorage.getItem('md_user_id');
     var uname = localStorage.getItem('md_name') || 'Creator';
     var title = document.getElementById('video-title').value.trim() || 'Untitled Video';
 
+    // ── STEP 1: Extract hashes LOCALLY on device ──
+    updateMiningProgress(10, 'CALIBRATING PERCEPTUAL ENGINE...');
+    var frameHashes = await extractLocalHashes(uploadedFile);
+    var masterHash = frameHashes.join('-').substring(0, 64);
+    updateMiningProgress(65, 'DNA EXTRACTED — ' + frameHashes.length + ' FRAMES INDEXED');
+
+    // ── STEP 2: Send only hashes to API (tiny payload) ──
+    updateMiningProgress(75, 'TRANSMITTING TO GENESIS REGISTRY...');
+
     var res = await fetch('/api/fingerprint', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         action: 'register',
-        videoUrl: uploadedDataUrl,
+        frameHashes: frameHashes,
+        masterHash: masterHash,
         ownerId: uid || 'anonymous',
         ownerName: uname,
         title: title
       })
     });
     var data = await res.json();
+    updateMiningProgress(90, 'VERIFYING UNIQUENESS...');
 
     icon.classList.remove('spinner');
     btn.disabled = false;
@@ -590,6 +704,7 @@ async function registerVideo() {
       if (uid && firebase.auth().currentUser) {
         firebase.firestore().collection('users').doc(uid).update({ credits: newGns });
       }
+      updateMiningProgress(100, 'GENESIS DNA SEALED IN REGISTRY ✓');
       setRegStatus('✓ GENESIS DNA REGISTERED SUCCESSFULLY');
       showCertificate(data.certificate || data);
     } else {

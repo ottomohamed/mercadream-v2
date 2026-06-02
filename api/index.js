@@ -99,10 +99,22 @@ async function handle_fingerprint(req, res) {
   }
 
   if (action==='register') {
-    const { videoUrl, ownerId, ownerName, title } = req.body;
-    if (!videoUrl||!ownerId) return res.status(400).json({ error: 'videoUrl and ownerId required.' });
-    const hashes = await extractHashes(videoUrl);
-    const master = hashes.join('-').slice(0,64);
+    const { videoUrl, frameHashes, masterHash, ownerId, ownerName, title } = req.body;
+    if (!ownerId) return res.status(400).json({ error: 'ownerId required.' });
+    
+    // Use pre-computed hashes from client (local processing) or extract from URL
+    let hashes, master;
+    if (frameHashes && frameHashes.length > 0) {
+      // Client sent pre-computed hashes — no need to process video on server
+      hashes = frameHashes;
+      master = masterHash || hashes.join('-').slice(0,64);
+    } else if (videoUrl) {
+      // Fallback: extract from video URL
+      hashes = await extractHashes(videoUrl);
+      master = hashes.join('-').slice(0,64);
+    } else {
+      return res.status(400).json({ error: 'frameHashes or videoUrl required.' });
+    }
     const exists = await findMatch(hashes, 0.8);
     if (exists) {
       const f = exists.doc.fields;
@@ -329,12 +341,9 @@ async function handle_director(req, res) {
 async function handle_checkout(req, res) {
   if (req.method!=='POST') return res.status(405).json({ error:'POST only.' });
   if (!STRIPE_KEY) return res.status(500).json({ error:'STRIPE_SECRET_KEY not configured.' });
-  const { credits, userId, dollars } = req.body||{};
-  // dollars → GNS: $1 = 10 GNS
-  // If dollars provided: use that. If credits provided: use as GNS directly.
-  const dollarAmount = parseInt(dollars) || Math.round((parseInt(credits)||100) / 10);
-  const creditAmount = dollarAmount * 10; // GNS = dollars × 10
-  const priceInCents = dollarAmount * 100; // cents = dollars × 100
+  const { credits, userId } = req.body||{};
+  const creditAmount = parseInt(credits)||100;
+  const priceInCents = creditAmount * 10;
   try {
     const Stripe = require('stripe');
     const stripe = new Stripe(STRIPE_KEY);
