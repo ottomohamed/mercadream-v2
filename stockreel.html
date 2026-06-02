@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+
+<html lang="en"><head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MERCADREAM — Stock Reel</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM — STOCK REEL TERMINAL</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -23,233 +23,229 @@ firebase.initializeApp(firebaseConfig);
 </script>
 <style>
   :root {
-    --void: #060606;
+    --void: #040404;
     --acid: #c8ff00;
     --acid-dim: #a8d700;
-    --surface: #0e0e0e;
-    --border: #1e1e1e;
+    --surface: #0a0a0a;
+    --border: #1a1a1a;
     --text: #e5e2e1;
-    --muted: #555;
+    --muted: #666;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--void); color: var(--text); font-family: 'IBM Plex Mono', monospace; overflow-x: hidden; }
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }
+  body { 
+    background: var(--void); 
+    color: var(--text); 
+    font-family: 'IBM Plex Mono', monospace; 
+    overflow-x: hidden; 
+    line-height: 1.5;
+  }
   
-  /* Scanline */
+  /* Scanline Overlay */
   body::before {
     content: '';
-    position: fixed; inset: 0; z-index: 100; pointer-events: none;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px);
   }
 
-  /* Hero reel strip */
-  .reel-strip { display: flex; gap: 12px; overflow: hidden; position: relative; }
-  .reel-strip::before, .reel-strip::after {
-    content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+  /* Grid Background */
+  .grid-bg {
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
-  .reel-strip::before { left: 0; background: linear-gradient(90deg, var(--void), transparent); }
-  .reel-strip::after { right: 0; background: linear-gradient(-90deg, var(--void), transparent); }
 
-  .reel-track { display: flex; gap: 12px; animation: scroll-reel 30s linear infinite; }
-  .reel-track:hover { animation-play-state: paused; }
+  /* Hero Reel Strip */
+  .reel-strip { display: flex; overflow: hidden; position: relative; width: 100vw; margin-left: calc(-50vw + 50%); }
+  .reel-track { display: flex; animation: scroll-reel 40s linear infinite; }
   @keyframes scroll-reel { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  .reel-card {
-    position: relative; flex-shrink: 0; width: 200px; height: 320px;
-    overflow: hidden; border: 1px solid var(--border); cursor: pointer;
-    transition: transform 0.3s, border-color 0.3s;
+  .hero-card {
+    position: relative; flex-shrink: 0; width: 160px; height: 280px;
+    overflow: hidden; border-right: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 0.7;
   }
-  .reel-card:hover { transform: scale(1.03); border-color: var(--acid); }
-  .reel-card video { width: 100%; height: 100%; object-fit: cover; }
-  .reel-card .overlay {
-    position: absolute; inset: 0; background: linear-gradient(0deg, rgba(6,6,6,0.8) 0%, transparent 50%);
-    display: flex; flex-direction: column; justify-content: flex-end; padding: 12px;
+  .hero-card:hover { transform: scale(1.02); opacity: 1; z-index: 10; box-shadow: 0 0 30px rgba(200,255,0,0.2); border: 1px solid var(--acid); }
+  .hero-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .hero-card .tag {
+    position: absolute; top: 12px; left: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 8px; font-weight: 700;
+    color: var(--acid); background: var(--void); padding: 2px 6px;
     opacity: 0; transition: opacity 0.3s;
   }
-  .reel-card:hover .overlay { opacity: 1; }
-  .reel-card .tag {
-    font-size: 9px; letter-spacing: 2px; color: var(--acid); text-transform: uppercase;
-    border: 1px solid var(--acid); padding: 2px 8px; display: inline-block; margin-bottom: 6px;
-  }
-  .reel-card .title { font-size: 11px; color: var(--text); }
+  .hero-card:hover .tag { opacity: 1; }
 
-  /* Search */
-  .search-bar {
-    display: flex; gap: 0; border: 1px solid var(--acid); overflow: hidden;
-    box-shadow: 0 0 20px rgba(200,255,0,0.1);
+  /* Search Terminal */
+  .search-terminal {
+    background: var(--surface); border: 1px solid var(--border);
+    position: relative; display: flex; align-items: center;
   }
-  .search-bar input {
-    flex: 1; background: transparent; border: none; outline: none;
-    color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 13px;
-    padding: 14px 20px;
+  .search-terminal:focus-within { border-color: var(--acid); box-shadow: 0 0 15px rgba(200,255,0,0.1); }
+  .search-terminal input {
+    background: transparent; border: none; outline: none; width: 100%;
+    color: var(--text); padding: 20px; font-size: 14px; font-family: 'JetBrains Mono', monospace;
   }
-  .search-bar input::placeholder { color: var(--muted); }
-  .search-bar button {
-    background: var(--acid); color: var(--void); border: none; cursor: pointer;
-    padding: 14px 24px; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-    transition: background 0.2s;
-  }
-  .search-bar button:hover { background: var(--acid-dim); }
-
-  /* Results grid */
-  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
-  .result-card {
-    position: relative; aspect-ratio: 9/16; overflow: hidden;
-    border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s;
-    background: var(--surface);
-  }
-  .result-card:hover { border-color: var(--acid); }
-  .result-card video { width: 100%; height: 100%; object-fit: cover; }
-  .result-card .dl-btn {
-    position: absolute; bottom: 8px; left: 8px; right: 8px;
-    background: var(--acid); color: var(--void);
-    font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 700;
-    letter-spacing: 1px; text-transform: uppercase; border: none; cursor: pointer;
-    padding: 8px; display: flex; align-items: center; justify-content: center; gap-4px;
-    opacity: 0; transition: opacity 0.2s; transform: translateY(4px);
-  }
-  .result-card:hover .dl-btn { opacity: 1; transform: translateY(0); }
-  @media (max-width: 768px) { .dl-btn { opacity: 1 !important; transform: none !important; } }
-  .result-card .music-badge {
-    position: absolute; top: 8px; right: 8px;
-    background: rgba(200,255,0,0.15); border: 1px solid var(--acid);
-    font-size: 8px; color: var(--acid); padding: 2px 6px; letter-spacing: 1px;
+  .search-terminal button {
+    background: var(--acid); color: var(--void); font-weight: 900;
+    padding: 0 30px; height: 100%; font-family: 'Orbitron', sans-serif; font-size: 12px;
+    cursor: pointer; transition: background 0.2s;
   }
 
   /* Chips */
   .chip {
-    display: inline-block; padding: 6px 14px; border: 1px solid var(--border);
-    font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
-    transition: all 0.2s; color: var(--muted);
+    padding: 6px 16px; border: 1px solid var(--border); font-size: 9px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; cursor: pointer;
+    transition: all 0.2s; color: var(--muted); background: var(--surface);
   }
-  .chip:hover, .chip.active { border-color: var(--acid); color: var(--acid); background: rgba(200,255,0,0.05); }
+  .chip.active { background: var(--acid); color: var(--void); border-color: var(--acid); font-weight: 700; }
+  .chip:hover:not(.active) { border-color: var(--acid); color: var(--acid); }
 
-  /* CTA */
-  .cta-generate {
-    background: transparent; border: 1px solid var(--acid);
-    color: var(--acid); font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
-    padding: 18px 40px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 12px;
+  /* Result Cards */
+  .video-card {
+    position: relative; aspect-ratio: 9/16; background: #000; border: 1px solid var(--border);
+    transition: border-color 0.3s; overflow: hidden;
   }
-  .cta-generate:hover {
-    background: var(--acid); color: var(--void);
-    box-shadow: 0 0 30px rgba(200,255,0,0.3);
-  }
+  .video-card:hover { border-color: var(--acid); }
+  .video-card video { width: 100%; height: 100%; object-fit: cover; }
+  
+  /* Corner Brackets */
+  .bracket { position: absolute; width: 4px; height: 4px; border-color: var(--acid); opacity: 0; transition: opacity 0.2s; }
+  .video-card:hover .bracket { opacity: 1; }
+  .br-tl { top: 8px; left: 8px; border-top: 1px solid; border-left: 1px solid; }
+  .br-tr { top: 8px; right: 8px; border-top: 1px solid; border-right: 1px solid; }
+  .br-bl { bottom: 8px; left: 8px; border-bottom: 1px solid; border-left: 1px solid; }
+  .br-br { bottom: 8px; right: 8px; border-bottom: 1px solid; border-right: 1px solid; }
 
-  .cost-badge {
-    font-size: 9px; background: var(--acid); color: var(--void);
-    padding: 4px 10px; font-weight: 700; letter-spacing: 1px;
+  /* Progress Bar */
+  .loader-bar {
+    width: 100%; height: 2px; background: var(--border); position: relative; overflow: hidden;
   }
+  .loader-fill {
+    position: absolute; top: 0; left: 0; height: 100%; width: 30%;
+    background: var(--acid); animation: pulse-progress 1.5s infinite linear;
+  }
+  @keyframes pulse-progress { 0% { left: -30%; } 100% { left: 100%; } }
 
-  /* Loading */
-  .spinner { animation: spin 1s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .recharge-btn {
+    border: 1px solid var(--acid); color: var(--acid); font-size: 9px;
+    padding: 4px 10px; font-weight: 700; transition: all 0.2s;
+  }
+  .recharge-btn:hover { background: var(--acid); color: var(--void); }
+
+  .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 8px; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+  .status-square { width: 6px; height: 6px; background: #00ff00; box-shadow: 0 0 5px #00ff00; }
+
+  /* Spinner for buttons */
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(0,0,0,0.1); border-top-color: currentColor; border-radius: 50% !important; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .results-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  }
 </style>
 </head>
-<body>
-
+<body class="grid-bg">
 <!-- Header -->
-<header style="height:52px;display:flex;align-items:center;justify-between;padding:0 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--void);z-index:50;">
-  <a href="index.html" style="font-family:Orbitron,monospace;font-size:14px;font-weight:900;color:var(--acid);letter-spacing:3px;text-decoration:none;">MERCADREAM</a>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);padding:4px 12px;">
-      <span class="material-symbols-outlined" style="font-size:14px;color:var(--acid);">bolt</span>
-      <span id="top-gns" style="font-size:11px;font-family:IBM Plex Mono,monospace;">0 GNS</span>
+<header style="height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--void);z-index:100;">
+<div style="display:flex;align-items:center;gap:24px;">
+<a href="index.html" style="font-family:Orbitron,monospace;font-size:16px;font-weight:900;color:var(--acid);letter-spacing:4px;text-decoration:none;">MERCADREAM</a>
+<div class="status-indicator">
+<div class="status-square"></div>
+      PEXELS_API — ONLINE
     </div>
-    <a href="profile.html" style="color:var(--muted);text-decoration:none;">
-      <span class="material-symbols-outlined" style="font-size:20px;">account_circle</span>
-    </a>
-  </div>
+</div>
+<div style="display:flex;align-items:center;gap:20px;">
+<div style="display:flex;align-items:center;gap:12px;">
+<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(200,255,0,0.05);border:1px solid var(--border);">
+<span class="material-symbols-outlined" style="font-size:16px;color:var(--acid);">bolt</span>
+<span id="top-gns" style="font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:700;">0 GNS</span><button onclick="window.location.href=\'pricing.html\'" style="margin-left:8px;background:transparent;border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 8px;cursor:pointer;" onmouseover="this.style.background=\'#c8ff00\';this.style.color=\'#040404\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'#c8ff00\'">+</button>
+</div>
+<a class="recharge-btn" href="pricing.html">+ RECHARGE</a>
+</div>
+<a href="profile.html" style="color:var(--muted);"><span class="material-symbols-outlined">account_circle</span></a>
+</div>
 </header>
-
-<!-- Hero Section -->
-<section style="padding:40px 24px 20px;">
-  <div style="max-width:800px;margin:0 auto;text-align:center;">
-    <div style="font-size:9px;color:var(--acid);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;">STOCK REEL — INSTANT CONTENT</div>
-    <h1 style="font-family:Orbitron,monospace;font-size:clamp(24px,5vw,42px);font-weight:900;line-height:1.1;margin-bottom:16px;">
-      READY-MADE<br/><span style="color:var(--acid);">CINEMATIC REELS</span>
-    </h1>
-    <p style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:32px;">
-      Search · Preview · Download · Post — 10 GNS per reel
-    </p>
-  </div>
+<!-- Hero Strip -->
+<section class="reel-strip">
+<div class="reel-track" id="hero-track">
+<!-- Injected by JS -->
+</div>
 </section>
-
-<!-- Auto-scrolling Preview Strip -->
-<section style="margin-bottom:40px;overflow:hidden;">
-  <div class="reel-strip">
-    <div class="reel-track" id="reel-track">
-      <!-- Cards injected by JS -->
-    </div>
-  </div>
+<!-- Search Section -->
+<section style="padding:60px 24px 40px; max-width:900px; margin:0 auto;">
+<div style="text-align:center; margin-bottom:40px;">
+<h2 style="font-family:Orbitron, sans-serif; font-size:32px; font-weight:900; letter-spacing:8px; margin-bottom:10px;">STOCK REEL</h2>
+<p style="font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted); letter-spacing:2px;">[ ACCESSING GLOBAL VISUAL REPOSITORY / PORTRAIT_ONLY ]</p>
+</div>
+<div class="search-terminal">
+<input id="search-input" onkeydown="if(event.key==='Enter') searchReels()" placeholder="ENTER QUERY: SUNSET, CYBERPUNK, OCEAN..." type="text"/>
+<button onclick="searchReels()">EXECUTE_SEARCH</button>
+</div>
+<div id="chips-container" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; justify-content:center;">
+<span class="chip active" onclick="quickSearch(this,'sunset')">SUNSET</span>
+<span class="chip" onclick="quickSearch(this,'ocean')">OCEAN</span>
+<span class="chip" onclick="quickSearch(this,'city night')">CITY</span>
+<span class="chip" onclick="quickSearch(this,'glitch')">GLITCH</span>
+<span class="chip" onclick="quickSearch(this,'minimal')">MINIMAL</span>
+<span class="chip" onclick="quickSearch(this,'forest')">FOREST</span>
+<span class="chip" onclick="quickSearch(this,'people')">HUMAN</span>
+<span class="chip" onclick="quickSearch(this,'space')">SPACE</span>
+</div>
 </section>
-
-<!-- Search Bar -->
-<section style="padding:0 24px 32px;max-width:700px;margin:0 auto;">
-  <div class="search-bar">
-    <input type="text" id="search-input" placeholder="sunset · ocean · city night · dancing · nature · fire..." 
-           onkeydown="if(event.key==='Enter') searchReels()"/>
-    <button onclick="searchReels()">
-      <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">search</span>
-      SEARCH
-    </button>
-  </div>
-  
-  <!-- Quick chips -->
-  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;" id="chips">
-    <span class="chip active" onclick="quickSearch(this,'sunset')">SUNSET</span>
-    <span class="chip" onclick="quickSearch(this,'ocean waves')">OCEAN</span>
-    <span class="chip" onclick="quickSearch(this,'city night')">CITY NIGHT</span>
-    <span class="chip" onclick="quickSearch(this,'nature forest')">NATURE</span>
-    <span class="chip" onclick="quickSearch(this,'dancing people')">DANCING</span>
-    <span class="chip" onclick="quickSearch(this,'fire flames')">FIRE</span>
-    <span class="chip" onclick="quickSearch(this,'abstract motion')">ABSTRACT</span>
-    <span class="chip" onclick="quickSearch(this,'travel adventure')">TRAVEL</span>
-  </div>
-</section>
-
+<!-- Loading State -->
+<div id="loading" style="max-width:900px; margin:0 auto 40px; display:none;">
+<div class="loader-bar"><div class="loader-fill"></div></div>
+<p style="font-size:9px; color:var(--acid); margin-top:8px; font-family:'JetBrains Mono'; text-align:center;">FETCHING DATA PACKETS...</p>
+</div>
 <!-- Results -->
-<section style="padding:0 24px 40px;max-width:1200px;margin:0 auto;">
-  <div id="results-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;display:none;">
-    <div style="font-size:10px;color:var(--muted);letter-spacing:2px;" id="results-count">0 REELS FOUND</div>
-    <div style="font-size:10px;color:var(--acid);">⚡ WITH TIKTOK MUSIC SYNC</div>
-  </div>
-  <div class="results-grid" id="results-grid"></div>
-  <div id="loading" style="text-align:center;padding:40px;display:none;">
-    <span class="material-symbols-outlined spinner" style="font-size:32px;color:var(--acid);">refresh</span>
-    <p style="font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:2px;">SEARCHING REELS...</p>
-  </div>
-  <div id="empty" style="text-align:center;padding:60px;display:none;">
-    <span class="material-symbols-outlined" style="font-size:48px;color:var(--muted);">video_library</span>
-    <p style="font-size:10px;color:var(--muted);margin-top:12px;letter-spacing:2px;">NO REELS FOUND — TRY ANOTHER KEYWORD</p>
-  </div>
+<section style="padding:0 24px 80px; max-width:1440px; margin:0 auto;">
+<div class="results-grid" id="results-grid" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:16px;">
+<!-- Results Injected -->
+</div>
+<!-- Empty State -->
+<div id="empty-state" style="display:none; text-align:center; padding:100px 0; border:1px dashed var(--border);">
+<span class="material-symbols-outlined" style="font-size:48px; color:var(--muted); margin-bottom:16px;">videocam_off</span>
+<h3 style="font-family:Orbitron; font-size:14px; color:var(--muted);">NO_REELS_FOUND_IN_VAULT</h3>
+<p style="font-size:10px; color:var(--muted); margin-top:8px;">TRY BROADER SEARCH PARAMETERS</p>
+</div>
 </section>
-
-<!-- CTA Bottom -->
-<section style="padding:60px 24px;border-top:1px solid var(--border);text-align:center;background:linear-gradient(0deg,rgba(200,255,0,0.03),transparent);">
-  <div style="font-size:9px;color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;">
-    WANT SOMETHING MORE SPECIFIC?
-  </div>
-  <h2 style="font-family:Orbitron,monospace;font-size:clamp(18px,3vw,28px);font-weight:700;margin-bottom:8px;color:var(--text);">
-    GENERATE YOUR OWN CINEMATIC VIDEO
-  </h2>
-  <p style="font-size:11px;color:var(--muted);margin-bottom:28px;letter-spacing:1px;">
-    Full AI production · Your vision · Any style · From 12 GNS per scene
-  </p>
-  <button class="cta-generate" onclick="window.location.href='studio.html'">
-    <span class="material-symbols-outlined" style="font-size:20px;">movie</span>
-    ENTER STUDIO
-    <span class="cost-badge">FROM 12 GNS</span>
-  </button>
-  <div style="margin-top:16px;font-size:9px;color:var(--muted);">
-    Drama · Action · Comedy · Documentary · Music Video · Commercial
-  </div>
-</section>
-
+<!-- Footer CTA -->
+<footer style="border-top:1px solid var(--border); padding:60px 24px; text-align:center; background:var(--surface);">
+<a class="audio-cta" href="audio.html" style="display:inline-flex; align-items:center; gap:20px; text-decoration:none; border:1px solid var(--acid); padding:20px 40px; transition:all 0.3s;">
+<div style="text-align:left;">
+<div style="font-family:'JetBrains Mono'; font-size:9px; color:var(--muted);">SYNC_REEL_AUDIO?</div>
+<div style="font-family:Orbitron; font-size:16px; color:var(--acid); font-weight:700;">TRY NEURAL AUDIO — 25 GNS</div>
+</div>
+<span class="material-symbols-outlined" style="color:var(--acid); font-size:32px;">graphic_eq</span>
+</a>
+</footer>
 <script>
-// ── Firebase credits ──────────────────────────────────
 var COST = 10;
+var DEMO_REELS = [
+  { url:'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4',
+    poster:'https://images.pexels.com/videos/855529/pictures/preview-0.jpg', tag:'SUNSET' },
+  { url:'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4',
+    poster:'https://images.pexels.com/videos/1448735/pictures/preview-0.jpg', tag:'OCEAN' },
+  { url:'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4',
+    poster:'https://images.pexels.com/videos/2098048/pictures/preview-0.jpg', tag:'CITY' },
+  { url:'https://videos.pexels.com/video-files/3571264/3571264-hd_1280_720_30fps.mp4',
+    poster:'https://images.pexels.com/videos/3571264/pictures/preview-0.jpg', tag:'NATURE' },
+  { url:'https://videos.pexels.com/video-files/4812205/4812205-hd_1280_720_25fps.mp4',
+    poster:'https://images.pexels.com/videos/4812205/pictures/preview-0.jpg', tag:'FIRE' },
+  { url:'https://videos.pexels.com/video-files/3129957/3129957-hd_1280_720_30fps.mp4',
+    poster:'https://images.pexels.com/videos/3129957/pictures/preview-0.jpg', tag:'ABSTRACT' },
+  { url:'https://videos.pexels.com/video-files/856074/856074-hd_1280_720_30fps.mp4',
+    poster:'https://images.pexels.com/videos/856074/pictures/preview-0.jpg', tag:'DRONE' },
+  { url:'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4',
+    poster:'https://images.pexels.com/videos/1448735/pictures/preview-0.jpg', tag:'RAIN' },
+  { url:'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4',
+    poster:'https://images.pexels.com/videos/2098048/pictures/preview-0.jpg', tag:'NEON' },
+  { url:'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4',
+    poster:'https://images.pexels.com/videos/855529/pictures/preview-0.jpg', tag:'CROWD' },
+];
+var DEMO_URLS = DEMO_REELS.map(function(r){return r.url;});
 
+// Firebase Balance Sync
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
@@ -263,201 +259,160 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-// ── Demo reel strip (Pexels curated) ─────────────────
-var DEMO_REELS = [
-  { url: 'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4', tag: 'SUNSET', title: 'Golden Hour' },
-  { url: 'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4', tag: 'OCEAN', title: 'Wave Crash' },
-  { url: 'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4', tag: 'CITY', title: 'Night Drive' },
-  { url: 'https://videos.pexels.com/video-files/3571264/3571264-hd_1280_720_30fps.mp4', tag: 'NATURE', title: 'Forest Light' },
-  { url: 'https://videos.pexels.com/video-files/4812205/4812205-hd_1280_720_25fps.mp4', tag: 'FIRE', title: 'Flames Dance' },
-  { url: 'https://videos.pexels.com/video-files/3129957/3129957-hd_1280_720_30fps.mp4', tag: 'ABSTRACT', title: 'Neon Flow' },
-  { url: 'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4', tag: 'TRAVEL', title: 'Aerial Shot' },
-  { url: 'https://videos.pexels.com/video-files/856074/856074-hd_1280_720_25fps.mp4', tag: 'DRONE', title: 'Sky View' },
-];
-
-function buildReelStrip() {
-  var track = document.getElementById('reel-track');
-  var all = DEMO_REELS.concat(DEMO_REELS); // duplicate for infinite scroll
-  track.innerHTML = all.map(function(r) {
-    return '<div class="reel-card" onmouseenter="this.querySelector(\'video\').play()" onmouseleave="this.querySelector(\'video\').pause()">'
-      + '<video src="' + r.url + '" muted loop playsinline preload="none"></video>'
-      + '<div class="overlay">'
-      + '<span class="tag">' + r.tag + '</span>'
-      + '<div class="title">' + r.title + '</div>'
-      + '</div>'
+function buildHeroStrip() {
+  var track = document.getElementById('hero-track');
+  var items = DEMO_REELS.concat(DEMO_REELS).concat(DEMO_REELS);
+  track.innerHTML = items.map(function(r, i) {
+    return '<div class="hero-card" onclick="quickSearch(document.querySelector(\'.chip.active\'), \'' + r.tag.toLowerCase() + '\')" onmouseenter="var v=this.querySelector(\'video\');v.style.display=\'block\';v.play();" onmouseleave="var v=this.querySelector(\'video\');v.pause();">'
+      + '<img src="' + r.poster + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.background=\'#111\'"/>'
+      + '<video src="' + r.url + '" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;"></video>'
+      + '<div class="tag">' + r.tag + '</div>'
       + '</div>';
   }).join('');
 }
 
-// ── Search Pexels ─────────────────────────────────────
 async function searchReels() {
   var query = document.getElementById('search-input').value.trim();
   if (!query) return;
   
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('results-grid').innerHTML = '';
-  document.getElementById('empty').style.display = 'none';
-  document.getElementById('results-header').style.display = 'none';
+  var grid = document.getElementById('results-grid');
+  var loading = document.getElementById('loading');
+  var empty = document.getElementById('empty-state');
+  
+  grid.innerHTML = '';
+  loading.style.display = 'block';
+  empty.style.display = 'none';
 
   try {
+    // Increased per_page for high-volume feel
     var res = await fetch('/api/pexels', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({query: query, per_page: 12, orientation: 'portrait'})
+      body: JSON.stringify({query: query, per_page: 40, orientation: 'portrait'})
     });
     var data = await res.json();
+    loading.style.display = 'none';
     
-    document.getElementById('loading').style.display = 'none';
-    
-    var videos = data.videos || [];
-    if (!videos.length) {
-      document.getElementById('empty').style.display = 'block';
+    if (!data.videos || data.videos.length === 0) {
+      empty.style.display = 'block';
       return;
     }
     
-    document.getElementById('results-header').style.display = 'flex';
-    document.getElementById('results-count').textContent = videos.length + ' REELS FOUND';
-    
-    renderResults(videos);
+    renderResults(data.videos);
   } catch(e) {
-    document.getElementById('loading').style.display = 'none';
-    var emptyEl = document.getElementById('empty');
-    if (emptyEl) {
-      emptyEl.style.display = 'block';
-      emptyEl.innerHTML = '<p style="color:var(--acid);font-family:IBM Plex Mono;font-size:11px;letter-spacing:2px;">API KEY REQUIRED — Add PEXELS_API_KEY to Vercel environment variables</p><p style="color:#4a4a4a;font-size:10px;margin-top:8px;">get free key at pexels.com/api</p>';
-    }
+    loading.style.display = 'none';
+    empty.style.display = 'block';
+    console.error("API Error", e);
   }
 }
 
 function renderResults(videos) {
   var grid = document.getElementById('results-grid');
-  grid.innerHTML = videos.map(function(v, idx) {
-    var file = v.video_files && v.video_files.find(function(f) { return f.quality === 'hd'; }) 
-               || v.video_files && v.video_files[0];
-    var url = file ? file.link : '';
-    var thumb = v.image || '';
-    
-    return '<div class="result-card" onmouseenter="playPreview(this)" onmouseleave="pausePreview(this)" data-url="' + url + '">'
-      + '<video src="' + url + '" muted loop playsinline preload="none" poster="' + thumb + '" style="width:100%;height:100%;object-fit:cover;"></video>'
-      + '<div class="music-badge">🎵 MUSIC SYNC</div>'
-      + '<div style="display:flex;gap:4px;padding:4px;">'
-      + '<button class="dl-btn" style="position:static;opacity:1;transform:none;flex:1;" onclick="downloadReel(event,\'' + url + '\')">'
-      + '<span class="material-symbols-outlined" style="font-size:11px;">download</span>'
-      + 'GET — ' + COST + ' GNS'
-      + '</button>'
-      + '<button class="dl-btn" style="position:static;opacity:1;transform:none;width:40px;background:#1a1a1a;color:var(--acid);border:1px solid var(--acid);" onclick="shareReel(event,\'' + url + '\')">'
-      + '<span class="material-symbols-outlined" style="font-size:14px;">share</span>'
-      + '</button>'
-      + '</div>'
-      + '</div>';
+  grid.innerHTML = videos.map(v => {
+    var file = v.video_files.find(f => f.quality === 'hd') || v.video_files[0];
+    var url = file.link;
+    return `
+      <div class="video-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause()">
+        <video src="${url}" muted loop playsinline poster="${v.image}"></video>
+        <div class="bracket br-tl"></div><div class="bracket br-tr"></div>
+        <div class="bracket br-bl"></div><div class="bracket br-br"></div>
+        <div style="position:absolute; top:8px; left:8px; background:var(--void); border:1px solid var(--border); padding:2px 6px; font-size:7px; font-family:'JetBrains Mono'; color:var(--acid);">HD_VAULT</div>
+        <div style="position:absolute; bottom:0; left:0; right:0; padding:10px; background:linear-gradient(0deg, var(--void) 0%, transparent 100%); display:flex; flex-direction:column; gap:6px;">
+          <button class="get-btn" onclick="handlePurchase(this, '${url}')" style="width:100%; background:var(--acid); color:var(--void); border:none; padding:8px; font-family:'JetBrains Mono'; font-weight:900; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;">GET — 10 GNS</button>
+          <button onclick="shareReel('${url}')" style="width:100%; background:transparent; border:1px solid var(--border); color:var(--text); padding:6px; font-family:'JetBrains Mono'; font-size:9px; cursor:pointer;">SHARE</button>
+        </div>
+      </div>
+    `;
   }).join('');
 }
 
-function playPreview(card) {
-  var video = card.querySelector('video');
-  if (video) video.play();
-}
-
-function pausePreview(card) {
-  var video = card.querySelector('video');
-  if (video) video.pause();
-}
-
-async function shareReel(e, url) {
-  e.stopPropagation();
+async function handlePurchase(btn, url) {
+  var currentBalance = parseInt(localStorage.getItem('md_credits') || '0');
   
-  var gns = parseInt(localStorage.getItem('md_credits') || '0');
-  if (gns < COST) {
-    alert('You need ' + COST + ' GNS to share. Please recharge.');
-    window.location.href = 'pricing.html';
+  // 1. Check GNS balance
+  if (currentBalance < COST) {
+    btn.style.background = '#ff0033';
+    btn.style.color = '#fff';
+    btn.innerHTML = 'INSUFFICIENT GNS';
+    setTimeout(() => {
+      window.location.href = 'pricing.html';
+    }, 1000);
     return;
   }
 
-  // Deduct credits first
-  var uid = localStorage.getItem('md_user_id');
-  var newBalance = gns - COST;
-  localStorage.setItem('md_credits', newBalance);
-  document.getElementById('top-gns').textContent = newBalance.toLocaleString() + ' GNS';
-  if (uid && firebase.auth().currentUser) {
-    firebase.firestore().collection('users').doc(uid).update({ credits: newBalance });
-  }
-
-  // Use Web Share API — opens native share sheet on mobile
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Check this cinematic reel from MercaDream',
-        text: '🎬 Cinematic Stock Reel — Download free at mercadream.com',
-        url: url
-      });
-    } catch(err) {
-      // User cancelled — refund
-      if (err.name === 'AbortError') {
-        localStorage.setItem('md_credits', gns);
-        document.getElementById('top-gns').textContent = gns.toLocaleString() + ' GNS';
-        if (uid && firebase.auth().currentUser) {
-          firebase.firestore().collection('users').doc(uid).update({ credits: gns });
-        }
-      }
-    }
-  } else {
-    // Fallback: copy URL to clipboard
-    navigator.clipboard.writeText(url).then(function() {
-      alert('Video URL copied! Paste it in TikTok, Instagram, or WhatsApp.');
-    });
-  }
-}
-
-async function downloadReel(e, url, author) {
-  e.stopPropagation();
-  
-  var gns = parseInt(localStorage.getItem('md_credits') || '0');
-  if (gns < COST) {
-    alert('You need ' + COST + ' GNS. You have ' + gns + '. Please recharge.');
-    window.location.href = 'pricing.html';
-    return;
-  }
-  
-  var btn = e.currentTarget;
-  btn.textContent = 'DOWNLOADING...';
+  // 2. Visual Feedback: Loading
+  var originalContent = btn.innerHTML;
   btn.disabled = true;
-  
-  // Deduct credits
-  var uid = localStorage.getItem('md_user_id');
-  var newBalance = gns - COST;
-  localStorage.setItem('md_credits', newBalance);
-  document.getElementById('top-gns').textContent = newBalance.toLocaleString() + ' GNS';
-  
-  if (uid && firebase.auth().currentUser) {
-    firebase.firestore().collection('users').doc(uid).update({
-      credits: newBalance
-    });
+  btn.innerHTML = '<span class="spinner"></span> DOWNLOADING...';
+  btn.style.background = '#e5e2e1';
+  btn.style.color = '#000';
+
+  try {
+    // 3. Deduct GNS (Optimistic Update)
+    var uid = localStorage.getItem('md_user_id');
+    var newBalance = currentBalance - COST;
+    localStorage.setItem('md_credits', newBalance);
+    document.getElementById('top-gns').textContent = newBalance.toLocaleString() + ' GNS';
+    
+    // Sync with Firestore if logged in
+    if (uid && firebase.auth().currentUser) {
+      await firebase.firestore().collection('users').doc(uid).update({ credits: newBalance });
+    }
+
+    // 4. Trigger Download Immediately
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = `MERCADREAM_REEL_${Date.now()}.mp4`;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // 5. Success State
+    setTimeout(() => {
+      btn.innerHTML = '✓ DOWNLOADED';
+      btn.style.background = '#00ff00';
+      btn.style.color = '#000';
+      
+      // Reset after a few seconds
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+        btn.style.background = 'var(--acid)';
+        btn.style.color = 'var(--void)';
+      }, 3000);
+    }, 1200);
+
+  } catch (error) {
+    console.error("Purchase Error:", error);
+    btn.disabled = false;
+    btn.style.background = '#ff0033';
+    btn.innerHTML = 'ERROR_RETRY';
+    setTimeout(() => {
+      btn.innerHTML = originalContent;
+      btn.style.background = 'var(--acid)';
+    }, 2000);
   }
-  
-  // Download
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'mercadream_reel.mp4';
-  a.target = '_blank';
-  a.click();
-  
-  setTimeout(function() {
-    btn.textContent = '✓ DOWNLOADED';
-    btn.style.background = '#22c55e';
-  }, 500);
+}
+
+function shareReel(url) {
+  if (navigator.share) {
+    navigator.share({ title: 'MercaDream Reel', url: url });
+  } else {
+    navigator.clipboard.writeText(url);
+    alert('LINK_COPIED_TO_CLIPBOARD');
+  }
 }
 
 function quickSearch(el, query) {
-  document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('active'); });
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('search-input').value = query;
   searchReels();
 }
 
-// Init
-buildReelStrip();
-// Auto-search on load
-setTimeout(function() { quickSearch(document.querySelector('.chip.active'), 'sunset'); }, 500);
+// Initialization
+buildHeroStrip();
+setTimeout(() => { quickSearch(document.querySelector('.chip.active'), 'sunset'); }, 500);
 </script>
-</body>
-</html>
+</body></html>
