@@ -677,6 +677,19 @@ function updateLabTerminal(pct, msg, hex) {
 
 async function extractLocalHashes(file) {
   return new Promise(function(resolve) {
+    // Handle DataURL string (fallback)
+    if (typeof file === 'string' && file.startsWith('data:')) {
+      var base64 = file.split(',')[1] || '';
+      var hashes = [];
+      var chunk = Math.max(1, Math.floor(base64.length / 30));
+      for (var i = 0; i < 30; i++) {
+        var h = 0;
+        var seg = base64.slice(i*chunk, (i+1)*chunk);
+        for (var j = 0; j < seg.length; j++) { h = ((h<<5)-h)+seg.charCodeAt(j); h|=0; }
+        hashes.push(Math.abs(h).toString(36));
+      }
+      return resolve(hashes);
+    }
     var reader = new FileReader();
     reader.onload = function(e) {
       var arr = new Uint8Array(e.target.result);
@@ -707,6 +720,7 @@ async function extractLocalHashes(file) {
       resolve(hashes);
     };
     // Read only first 5MB — enough for fingerprinting any video
+    if (!file || typeof file.slice !== "function") { return resolve([]); }
     var blob = file.slice(0, Math.min(file.size, 5 * 1024 * 1024));
     reader.readAsArrayBuffer(blob);
   });
@@ -779,7 +793,11 @@ async function registerVideo() {
     }, 100);
 
     // Actual Logic
-    var frameHashes = await extractLocalHashes(uploadedFile);
+    // Safety check
+    if (!uploadedFile && !uploadedDataUrl) {
+      throw new Error('No file uploaded');
+    }
+    var frameHashes = await extractLocalHashes(uploadedFile || uploadedDataUrl);
     var masterHash = frameHashes.join('-').substring(0, 64);
 
     var res = await fetch('/api/fingerprint', {
