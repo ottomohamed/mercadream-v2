@@ -329,9 +329,12 @@ async function handle_director(req, res) {
 async function handle_checkout(req, res) {
   if (req.method!=='POST') return res.status(405).json({ error:'POST only.' });
   if (!STRIPE_KEY) return res.status(500).json({ error:'STRIPE_SECRET_KEY not configured.' });
-  const { credits, userId } = req.body||{};
-  const creditAmount = parseInt(credits)||100;
-  const priceInCents = creditAmount * 10;
+  const { credits, userId, dollars } = req.body||{};
+  // dollars → GNS: $1 = 10 GNS
+  // If dollars provided: use that. If credits provided: use as GNS directly.
+  const dollarAmount = parseInt(dollars) || Math.round((parseInt(credits)||100) / 10);
+  const creditAmount = dollarAmount * 10; // GNS = dollars × 10
+  const priceInCents = dollarAmount * 100; // cents = dollars × 100
   try {
     const Stripe = require('stripe');
     const stripe = new Stripe(STRIPE_KEY);
