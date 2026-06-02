@@ -1626,6 +1626,8 @@ const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
 const BASE_URL = 'https://www.mercadream.com';
 
 async function handle_checkout(req, res) {
+  const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
+  const BASE_URL = 'https://www.mercadream.com';
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -1649,7 +1651,7 @@ async function handle_checkout(req, res) {
   console.log('User:', userId);
 
   try {
-    const Stripe = (await import('stripe')).default;
+    const Stripe = require('stripe');
     const stripe = new Stripe(STRIPE_KEY);
 
     const session = await stripe.checkout.sessions.create({
