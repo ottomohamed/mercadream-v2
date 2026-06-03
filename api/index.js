@@ -99,22 +99,10 @@ async function handle_fingerprint(req, res) {
   }
 
   if (action==='register') {
-    const { videoUrl, frameHashes, masterHash, ownerId, ownerName, title } = req.body;
-    if (!ownerId) return res.status(400).json({ error: 'ownerId required.' });
-    
-    // Use pre-computed hashes from client (local processing) or extract from URL
-    let hashes, master;
-    if (frameHashes && frameHashes.length > 0) {
-      // Client sent pre-computed hashes — no need to process video on server
-      hashes = frameHashes;
-      master = masterHash || hashes.join('-').slice(0,64);
-    } else if (videoUrl) {
-      // Fallback: extract from video URL
-      hashes = await extractHashes(videoUrl);
-      master = hashes.join('-').slice(0,64);
-    } else {
-      return res.status(400).json({ error: 'frameHashes or videoUrl required.' });
-    }
+    const { videoUrl, ownerId, ownerName, title } = req.body;
+    if (!videoUrl||!ownerId) return res.status(400).json({ error: 'videoUrl and ownerId required.' });
+    const hashes = await extractHashes(videoUrl);
+    const master = hashes.join('-').slice(0,64);
     const exists = await findMatch(hashes, 0.8);
     if (exists) {
       const f = exists.doc.fields;
@@ -394,6 +382,51 @@ async function handle_webhook(req, res) {
   } catch(e) { return res.status(500).json({ error:e.message }); }
 }
 
+
+async function handle_chat(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const { message, director='Drama', dreamBrief=null } = req.body||{};
+  if (!message) return res.status(400).json({ error: 'message required.' });
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set.' });
+
+  const directorPrompts = {
+    Drama: 'You are a drama film director. Given the story idea, generate ONE unique cinematic scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video generation prompt with shot type, lighting, camera movement, atmosphere"}',
+    Action: 'You are an action film director. Generate ONE unique action scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with fast cuts, high contrast, dynamic camera"}',
+    Comedy: 'You are a comedy director. Generate ONE unique comedic scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with wide shots, natural lighting, comedic timing"}',
+    Documentary: 'You are a documentary director. Generate ONE unique documentary scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with handheld camera, available light, authentic moments"}',
+    Ads: 'You are a commercial director. Generate ONE unique ad scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with product hero, bright lighting, clear message"}',
+    Music: 'You are a music video director. Generate ONE unique visual scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with color gels, choreography, beat-driven editing"}'
+  };
+
+  const system = (directorPrompts[director] || directorPrompts.Drama)
+    + '\n\nIMPORTANT: Each scene must be UNIQUE and different from other scenes. The prompt field must be in English only.';
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        system,
+        messages: [{ role: 'user', content: (dreamBrief || message) + '\n\nScene request: ' + message }]
+      })
+    });
+    const data = await r.json();
+    const text = data.content?.[0]?.text?.trim() || '';
+    const match = text.match(/\{[\s\S]*?\}/);
+    if (match) {
+      try {
+        const scene = JSON.parse(match[0]);
+        return res.json({ scene, reply: null });
+      } catch(e) {}
+    }
+    return res.json({ reply: text, scene: null });
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
+}
+
 // ── ROUTER ────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -405,6 +438,7 @@ module.exports = async function handler(req, res) {
   const service = url.split('/').filter(Boolean).pop()?.split('?')[0];
 
   const routes = {
+    chat:        handle_chat,
     fingerprint: handle_fingerprint,
     pexels:      handle_pexels,
     wavespeed:   handle_wavespeed,
