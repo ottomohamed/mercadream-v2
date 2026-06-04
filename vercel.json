@@ -1,19 +1,76 @@
 {
-  "rewrites": [
-    { "source": "/api/fingerprint", "destination": "/api/index" },
-    { "source": "/api/pexels",      "destination": "/api/index" },
-    { "source": "/api/wavespeed",   "destination": "/api/index" },
-    { "source": "/api/audioforge",  "destination": "/api/index" },
-    { "source": "/api/bgremover",   "destination": "/api/index" },
-    { "source": "/api/faceswap",    "destination": "/api/index" },
-    { "source": "/api/animate",     "destination": "/api/index" },
-    { "source": "/api/lipsync",     "destination": "/api/index" },
-    { "source": "/api/deaging",     "destination": "/api/index" },
-    { "source": "/api/convert",     "destination": "/api/index" },
-    { "source": "/api/upscale",     "destination": "/api/index" },
-    { "source": "/api/semantic",    "destination": "/api/index" },
-    { "source": "/api/director",    "destination": "/api/index" },
-    { "source": "/api/checkout",    "destination": "/api/index" },
-    { "source": "/api/webhook",     "destination": "/api/index" }
-  ]
+    "rewrites":  [
+                     {
+                         "source":  "/api/fingerprint",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/pexels",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/wavespeed",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/audioforge",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/bgremover",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/faceswap",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/animate",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/lipsync",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/deaging",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/convert",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/upscale",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/semantic",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/director",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/checkout",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/webhook",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/video",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/chat",
+                         "destination":  "/api/index"
+                     },
+                     {
+                         "source":  "/api/pixabay",
+                         "destination":  "/api/index"
+                     }
+                 ]
 }
