@@ -194,7 +194,7 @@ async function handle_wavespeed(req, res) {
       body: JSON.stringify({
         prompt: prompt,
         duration: duration||5,
-        size: '480*832',
+        size: '1280x720',
         negative_prompt: 'blurry, low quality, distorted'
       })
     });
@@ -509,4 +509,3 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
-
