@@ -208,46 +208,48 @@ async function handle_wavespeed(req, res) {
 }
 
 async function handle_video(req, res) {
-  // Poll status via GET /api/video?id=xxx
+  // GET: Poll status
   if (req.method === 'GET') {
-    const taskId = req.query?.id;
+    const taskId = (req.query && req.query.id) || (req.url && req.url.split('id=')[1]?.split('&')[0]);
     if (!taskId) return res.status(400).json({ error: 'id required.' });
+    if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
     try {
       const r = await fetch('https://api.wavespeed.ai/api/v3/predictions/' + taskId + '/result', {
         headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY }
       });
       const d = await r.json();
       const status = d?.data?.status;
-      const videoUrl = d?.data?.outputs?.[0] || null;
+      const outputs = d?.data?.outputs;
+      const videoUrl = Array.isArray(outputs) ? outputs[0] : (outputs || null);
       return res.json({
         status: status === 'completed' ? 'completed' : status === 'failed' ? 'failed' : 'generating',
         taskId,
-        videoUrl
+        videoUrl: videoUrl || null
       });
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
   }
-  // POST - submit via video.js logic
-  if (req.method==='GET') {
-    const taskId = req.query?.id;
-    if (!taskId) return res.status(400).json({ error: 'id required.' });
-    const d = await wsPoll(taskId);
-    const status = d?.data?.status;
-    return res.json({ status: status==='completed'?'completed':status==='failed'?'failed':'generating',
-      taskId, videoUrl: d?.data?.outputs?.[0]||null });
-  }
+  // POST: Submit generation
   const { prompt, duration, model } = req.body||{};
   if (!prompt) return res.status(400).json({ error: 'prompt required.' });
-  const models = { fast:'wavespeed-ai/wan-2.1/t2v-480p', regular:'wavespeed-ai/wan-2.2/t2v-720p' };
-  const d = await wsPost(models[model]||models.regular, {
-    prompt, duration:Math.min(parseInt(duration)||10,10),
-    aspect_ratio:'16:9', negative_prompt:'blurry, low quality'
-  });
-  const taskId = d?.data?.id;
-  if (!taskId) return res.status(500).json({ error: 'No task ID' });
-  return res.json({ taskId, status:'queued' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const modelId = model || 'bytedance/seedance-2.0-fast/text-to-video';
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + modelId, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, duration: duration||5, size: '480*832' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message || 'No task ID', raw: d });
+    return res.json({ taskId, status: 'queued' });
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
+
 
 async function handle_audioforge(req, res) {
   const { prompt, duration, genre } = req.body||{};
