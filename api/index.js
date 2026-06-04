@@ -392,29 +392,12 @@ async function handle_chat(req, res) {
   const count = Math.min(parseInt(sceneCount)||3, 6);
   const idea = dreamBrief || message;
 
-  const system = `You are a professional screenplay writer and ${director} film director at MercaDream.
-
-The user gives you a story idea. You must:
-1. Write a complete cinematic screenplay
-2. Divide it into exactly ${count} scenes
-3. Each scene must be UNIQUE, different, and advance the story
-
-Respond ONLY with a valid JSON array. No text before or after:
-[
-  {
-    "scene": 1,
-    "title": "Scene title (3-5 words)",
-    "description": "What happens in this scene (1-2 sentences in user language)",
-    "prompt": "Detailed 80+ word English video generation prompt: SHOT TYPE + subject + environment + camera movement + lighting + color palette + action + atmosphere + emotion"
-  }
-]
-
-CRITICAL RULES:
-- The "prompt" field MUST be in English only (video AI requires English)
-- The "title" and "description" can be in the same language as the user
-- Each scene must have a completely different visual style and moment
-- Scenes must tell a coherent story from beginning to end
-- Director style: ${director}`;
+  const system = 'You are a professional screenplay writer and ' + director + ' film director at MercaDream. ' +
+    'The user gives you a story idea. Write a complete cinematic screenplay divided into exactly ' + count + ' scenes. ' +
+    'Each scene must be UNIQUE, different, and advance the story. ' +
+    'Respond ONLY with a valid JSON array, no text before or after: ' +
+    '[{"scene":1,"title":"Scene title","description":"What happens (in user language)","prompt":"Detailed 80+ word English video prompt: SHOT TYPE + subject + environment + camera movement + lighting + color palette + action + atmosphere"}] ' +
+    'CRITICAL: prompt field must be in English only. Each scene must have completely different visual style. Director style: ' + director + '.';
 
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
