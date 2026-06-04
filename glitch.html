@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM_GLITCH_ENGINE // V1.0</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+window.addEventListener('load', function() {
+  if (typeof firebase === 'undefined') return;
+  firebase.initializeApp({
+    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+    authDomain: "mercadream-4b4b3.firebaseapp.com",
+    projectId: "mercadream-4b4b3",
+    storageBucket: "mercadream-4b4b3.firebasestorage.app",
+    messagingSenderId: "257560928442",
+    appId: "1:257560928442:web:06983f27629a13eeed6283"
+  });
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+        if (doc.exists) {
+          var bal = doc.data().credits || 0;
+          localStorage.setItem('md_credits', bal);
+          document.querySelectorAll('.gns-balance').forEach(function(el) { el.textContent = bal.toLocaleString() + ' GNS'; });
+        }
+      });
+    }
+  });
+});
+</script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary-fixed": "#c0f500",
+        "on-primary-fixed": "#161f00",
+        "surface": "#131313",
+        "surface-container": "#201f1f",
+        "surface-container-low": "#1c1b1b",
+        "surface-container-lowest": "#0e0e0e",
+        "surface-container-high": "#2a2a2a",
+        "surface-container-highest": "#353534",
+        "outline-variant": "#434933",
+        "on-surface": "#e5e2e1",
+        "on-surface-variant": "#c4caac",
+        "secondary-fixed-dim": "#c6c6c7"
+      },
+      borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+      fontFamily: {
+        "headline-md": ["Orbitron"],
+        "headline-sm": ["Orbitron"],
+        "headline-lg": ["Orbitron"],
+        "body-md": ["IBM Plex Mono"],
+        "label-caps": ["IBM Plex Mono"],
+        "terminal-log": ["IBM Plex Mono"]
+      },
+      fontSize: {
+        "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+        "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+        "headline-sm": ["20px", {"lineHeight": "1.2", "fontWeight": "500"}],
+        "body-md": ["14px", {"lineHeight": "1.5"}],
+        "label-caps": ["10px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+        "terminal-log": ["13px", {"lineHeight": "1.4"}]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { background-color: #040404; background-image: radial-gradient(#111 1px, transparent 1px); background-size: 32px 32px; color: #e5e2e1; }
+  .scanlines { position: fixed; inset: 0; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.1) 50%); background-size: 100% 4px; z-index: 999; pointer-events: none; }
+  .corner-bracket { position: absolute; width: 12px; height: 12px; border: 2px solid #c0f500; opacity: 0; transition: opacity 0.2s; }
+  .group:hover .corner-bracket { opacity: 1; }
+  .bracket-tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .bracket-tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+  .bracket-bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+  .bracket-br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #c0f500; }
+  .active-tab { border-bottom: 3px solid #c0f500; color: #c0f500; }
+  .active-effect { border: 2px solid #c0f500 !important; background: rgba(192,245,0,0.05) !important; }
+  input[type="range"] { -webkit-appearance: none; background: #222; height: 4px; width: 100%; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #c0f500; cursor: pointer; }
+</style>
+</head>
+<body class="font-body-md overflow-hidden h-screen flex flex-col">
+<div class="scanlines"></div>
+
+<!-- Hidden elements -->
+<input type="file" id="video-input" accept="video/*" class="hidden"/>
+<canvas id="output-canvas" class="hidden"></canvas>
+<video id="source-video" class="hidden" playsinline muted crossorigin="anonymous"></video>
+
+<!-- Header -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center px-6 py-4 z-50 shrink-0">
+  <div class="flex items-center gap-4">
+    <a href="index.html" class="font-headline-sm text-headline-sm font-bold text-primary-fixed tracking-tighter hover:opacity-80">MERCADREAM</a>
+    <span class="text-outline-variant">|</span>
+    <span class="font-label-caps text-label-caps text-on-surface-variant">GLITCH ENGINE</span>
+    <span class="font-label-caps text-label-caps bg-primary-fixed text-on-primary-fixed px-2 py-1">FREE</span>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary-fixed text-xl">bolt</span>
+      <span class="font-label-caps text-label-caps text-primary-fixed gns-balance">0 GNS</span>
+    </div>
+    <a href="profile.html" class="border border-outline-variant p-2 hover:border-primary-fixed transition-colors">
+      <span class="material-symbols-outlined text-on-surface-variant">account_circle</span>
+    </a>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="flex-1 overflow-hidden flex flex-col md:flex-row min-h-0">
+
+  <!-- LEFT: Upload + Preview (60%) -->
+  <section class="md:w-[60%] h-full flex flex-col p-6 gap-4 overflow-y-auto border-r border-outline-variant">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg text-white uppercase tracking-tighter leading-tight">GLITCH ENGINE</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2 mt-1">
+        <span class="material-symbols-outlined text-primary-fixed text-sm">dynamic_feed</span>
+        Neural Background Compositor — Upload green screen footage. Choose a world. Download cinema.
+      </p>
+    </div>
+
+    <!-- Drop Zone -->
+    <div id="drop-zone" onclick="document.getElementById('video-input').click()"
+      class="group relative min-h-[200px] border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center p-8 cursor-pointer hover:border-primary-fixed transition-colors">
+      <div class="corner-bracket bracket-tl"></div>
+      <div class="corner-bracket bracket-tr"></div>
+      <div class="corner-bracket bracket-bl"></div>
+      <div class="corner-bracket bracket-br"></div>
+      <span class="material-symbols-outlined text-5xl text-on-surface-variant mb-3 group-hover:text-primary-fixed">cloud_upload</span>
+      <span class="font-headline-sm text-headline-sm text-white mb-1">DRAG VIDEO HERE</span>
+      <span class="font-label-caps text-label-caps text-on-surface-variant">MP4 · WEBM · MOV — MAX 500MB</span>
+      <span class="font-label-caps text-label-caps text-primary-fixed mt-2">⚡ PROCESSED IN YOUR BROWSER — NOTHING UPLOADED</span>
+    </div>
+
+    <!-- Preview Canvas -->
+    <div class="relative bg-black w-full aspect-video border border-outline-variant overflow-hidden">
+      <canvas id="preview-canvas" style="width:100%;height:100%;object-fit:contain;display:block;"></canvas>
+      <div id="preview-placeholder" class="absolute inset-0 flex items-center justify-center">
+        <span class="font-label-caps text-label-caps text-on-surface-variant">PREVIEW WILL APPEAR HERE AFTER RENDER</span>
+      </div>
+    </div>
+
+    <!-- Mode + Download -->
+    <div class="flex gap-3 items-center flex-wrap">
+      <button id="btn-greenscreen" onclick="setMode(true)"
+        class="bg-primary-fixed text-on-primary-fixed px-4 py-2 font-label-caps text-label-caps flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">filter_center_focus</span> GREEN SCREEN MODE
+      </button>
+      <button id="btn-normal" onclick="setMode(false)"
+        class="border border-outline-variant text-on-surface-variant px-4 py-2 font-label-caps text-label-caps hover:border-white hover:text-white transition-colors">
+        NORMAL VIDEO MODE
+      </button>
+      <button id="btn-download" onclick="downloadResult()" style="display:none"
+        class="ml-auto bg-white text-black px-6 py-2 font-label-caps text-label-caps flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">download</span> DOWNLOAD WEBM
+      </button>
+    </div>
+  </section>
+
+  <!-- RIGHT: Controls (40%) -->
+  <aside class="md:w-[40%] h-full bg-surface-container-low flex flex-col min-h-0">
+
+    <!-- Tabs -->
+    <nav class="flex border-b border-outline-variant shrink-0">
+      <button onclick="showTab('effects')" id="tab-effects" class="flex-1 py-3 font-label-caps text-label-caps text-primary-fixed active-tab flex flex-col items-center gap-1">
+        <span class="material-symbols-outlined text-sm">auto_fix_high</span>BUILT-IN
+      </button>
+      <button onclick="showTab('stock')" id="tab-stock" class="flex-1 py-3 font-label-caps text-label-caps text-secondary-fixed-dim hover:text-primary-fixed flex flex-col items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-sm">movie</span>STOCK REEL
+      </button>
+      <button onclick="showTab('studio')" id="tab-studio" class="flex-1 py-3 font-label-caps text-label-caps text-secondary-fixed-dim hover:text-primary-fixed flex flex-col items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-sm">settings_input_component</span>STUDIO
+      </button>
+    </nav>
+
+    <!-- Tab: Built-in Effects -->
+    <div id="panel-effects" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div onclick="selectEffect(this,'matrix')" data-effect="matrix" class="effect-card active-effect group relative aspect-square bg-black border border-outline-variant p-4 flex flex-col justify-between cursor-pointer hover:border-primary-fixed transition-colors">
+          <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-br"></div>
+          <h3 class="font-headline-sm text-headline-sm text-white leading-none">MATRIX<br/>RAIN</h3>
+          <span class="font-label-caps text-label-caps text-primary-fixed">ACTIVE</span>
+        </div>
+        <div onclick="selectEffect(this,'ascii')" data-effect="ascii" class="effect-card group relative aspect-square bg-black border border-outline-variant p-4 flex flex-col justify-between cursor-pointer hover:border-primary-fixed transition-colors">
+          <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-br"></div>
+          <h3 class="font-headline-sm text-headline-sm text-white leading-none">ASCII<br/>BUFFER</h3>
+          <span class="font-label-caps text-label-caps text-on-surface-variant">READY</span>
+        </div>
+        <div onclick="selectEffect(this,'neon')" data-effect="neon" class="effect-card group relative aspect-square bg-black border border-outline-variant p-4 flex flex-col justify-between cursor-pointer hover:border-primary-fixed transition-colors">
+          <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-br"></div>
+          <h3 class="font-headline-sm text-headline-sm text-white leading-none">NEON<br/>CITY</h3>
+          <span class="font-label-caps text-label-caps text-on-surface-variant">READY</span>
+        </div>
+        <div onclick="selectEffect(this,'glitch')" data-effect="glitch" class="effect-card group relative aspect-square bg-black border border-outline-variant p-4 flex flex-col justify-between cursor-pointer hover:border-primary-fixed transition-colors">
+          <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-br"></div>
+          <h3 class="font-headline-sm text-headline-sm text-white leading-none">GLITCH<br/>STORM</h3>
+          <span class="font-label-caps text-label-caps text-on-surface-variant">READY</span>
+        </div>
+        <div onclick="selectEffect(this,'void')" data-effect="void" class="effect-card group relative aspect-square bg-black border border-outline-variant p-4 flex flex-col justify-between cursor-pointer hover:border-primary-fixed transition-colors">
+          <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-br"></div>
+          <h3 class="font-headline-sm text-headline-sm text-white leading-none">VOID<br/>BLACK</h3>
+          <span class="font-label-caps text-label-caps text-on-surface-variant">READY</span>
+        </div>
+        <div onclick="selectEffect(this,'grid')" data-effect="grid" class="effect-card group relative aspect-square bg-black border border-outline-variant p-4 flex flex-col justify-between cursor-pointer hover:border-primary-fixed transition-colors">
+          <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-br"></div>
+          <h3 class="font-headline-sm text-headline-sm text-white leading-none">CYBER<br/>GRID</h3>
+          <span class="font-label-caps text-label-caps text-on-surface-variant">READY</span>
+        </div>
+      </div>
+
+      <!-- FX Controls -->
+      <div class="border-t border-outline-variant pt-4 space-y-4">
+        <span class="font-label-caps text-label-caps text-on-surface-variant">FX CONTROLS</span>
+        <div class="space-y-2">
+          <div class="flex justify-between font-label-caps text-label-caps">
+            <span class="text-white">INTENSITY</span>
+            <span class="text-primary-fixed" id="intensity-label">80%</span>
+          </div>
+          <input type="range" min="0" max="100" value="80" id="intensity-slider" oninput="intensityVal=parseInt(this.value);document.getElementById('intensity-label').textContent=intensityVal+'%'"/>
+        </div>
+        <div class="flex gap-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked id="chk-scanlines" class="accent-[#c0f500]" onchange="scanlines=this.checked"/>
+            <span class="font-label-caps text-label-caps text-white">SCAN LINES</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked id="chk-glow" class="accent-[#c0f500]" onchange="neonGlow=this.checked"/>
+            <span class="font-label-caps text-label-caps text-white">NEON GLOW</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Stock Reel -->
+    <div id="panel-stock" class="flex-1 overflow-y-auto p-4 hidden">
+      <div class="flex gap-2 mb-4">
+        <input type="text" id="stock-search" placeholder="SEARCH: OCEAN, CITY, SPACE..." value="neon city"
+          class="flex-1 bg-surface-container border border-outline-variant px-3 py-2 font-label-caps text-label-caps text-white placeholder:text-on-surface-variant focus:border-primary-fixed focus:outline-none"/>
+        <button onclick="loadStock()" class="bg-primary-fixed text-on-primary-fixed px-4 font-label-caps text-label-caps">GO</button>
+      </div>
+      <div id="stock-grid" class="grid grid-cols-2 gap-2">
+        <div class="col-span-2 text-center py-8 font-label-caps text-label-caps text-on-surface-variant">PRESS GO TO SEARCH</div>
+      </div>
+    </div>
+
+    <!-- Tab: Studio -->
+    <div id="panel-studio" class="flex-1 overflow-y-auto p-4 hidden">
+      <div class="space-y-4">
+        <p class="font-body-md text-body-md text-on-surface-variant">Use a video generated in Studio as your background.</p>
+        <div class="border border-outline-variant p-4 space-y-3">
+          <input type="text" id="studio-url" placeholder="PASTE VIDEO URL FROM STUDIO..."
+            class="w-full bg-surface-container border border-outline-variant px-3 py-2 font-label-caps text-label-caps text-white placeholder:text-on-surface-variant focus:border-primary-fixed focus:outline-none"/>
+          <button onclick="useStudioBg()" class="w-full bg-primary-fixed text-on-primary-fixed py-2 font-label-caps text-label-caps">USE AS BACKGROUND</button>
+        </div>
+        <a href="studio.html" class="block border border-outline-variant text-center py-3 font-label-caps text-label-caps text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed transition-colors">
+          → GENERATE NEW VIDEO IN STUDIO
+        </a>
+      </div>
+    </div>
+
+    <!-- Render Button -->
+    <div class="p-4 border-t border-outline-variant shrink-0">
+      <button id="render-btn" onclick="startRender()"
+        class="w-full group relative bg-primary-fixed text-on-primary-fixed py-5 font-headline-sm text-headline-sm flex items-center justify-center gap-3 hover:bg-white transition-all active:scale-[0.98]">
+        <span class="material-symbols-outlined text-2xl">bolt</span>
+        RENDER COMPOSITE — FREE
+      </button>
+    </div>
+  </aside>
+</main>
+
+<!-- Terminal Footer -->
+<footer class="h-[100px] bg-surface-container-lowest border-t border-outline-variant px-6 py-2 flex flex-col shrink-0">
+  <div class="flex justify-between items-center border-b border-outline-variant/30 pb-1 mb-2">
+    <span class="font-label-caps text-label-caps text-on-surface-variant">CONSOLE_LOG</span>
+    <div class="flex gap-4 font-label-caps text-[9px] text-on-surface-variant">
+      <span>SYSTEM_OK</span><span>BROWSER_ENGINE</span><span>ZERO_UPLOAD</span>
+    </div>
+  </div>
+  <div class="flex-1 font-terminal-log text-terminal-log text-primary-fixed/70 space-y-1 overflow-hidden" id="terminal-log">
+    <div>[00:00:01] CANVAS API INITIALIZED</div>
+    <div>[00:00:02] WEBGL CONTEXT READY</div>
+    <div class="text-primary-fixed">[00:00:03] SYSTEM READY — AWAITING INPUT_</div>
+  </div>
+</footer>
+
+<script>
+// ── STATE ──────────────────────────────
+var selectedEffect = 'matrix';
+var selectedBgVideo = null;
+var isGreenScreen = true;
+var intensityVal = 80;
+var scanlines = true;
+var neonGlow = true;
+var animFrameId = null;
+var isRendering = false;
+var recordedChunks = [];
+var mediaRecorder = null;
+var startTime = 0;
+
+// ── TABS ───────────────────────────────
+function showTab(name) {
+  ['effects','stock','studio'].forEach(function(t) {
+    document.getElementById('panel-' + t).classList.add('hidden');
+    var tab = document.getElementById('tab-' + t);
+    tab.classList.remove('active-tab','text-primary-fixed');
+    tab.classList.add('text-secondary-fixed-dim');
+  });
+  document.getElementById('panel-' + name).classList.remove('hidden');
+  var activeTab = document.getElementById('tab-' + name);
+  activeTab.classList.add('active-tab','text-primary-fixed');
+  activeTab.classList.remove('text-secondary-fixed-dim');
+  if (name === 'stock') loadStock();
+}
+
+// ── EFFECT SELECTOR ────────────────────
+function selectEffect(el, effect) {
+  selectedEffect = effect;
+  selectedBgVideo = null;
+  document.querySelectorAll('.effect-card').forEach(function(c) { c.classList.remove('active-effect'); });
+  el.classList.add('active-effect');
+  addLog('EFFECT: ' + effect.toUpperCase() + ' SELECTED');
+}
+
+// ── MODE TOGGLE ────────────────────────
+function setMode(greenScreen) {
+  isGreenScreen = greenScreen;
+  document.getElementById('btn-greenscreen').className = greenScreen
+    ? 'bg-primary-fixed text-on-primary-fixed px-4 py-2 font-label-caps text-label-caps flex items-center gap-2'
+    : 'border border-outline-variant text-on-surface-variant px-4 py-2 font-label-caps text-label-caps hover:border-white hover:text-white transition-colors';
+  document.getElementById('btn-normal').className = !greenScreen
+    ? 'bg-primary-fixed text-on-primary-fixed px-4 py-2 font-label-caps text-label-caps flex items-center gap-2'
+    : 'border border-outline-variant text-on-surface-variant px-4 py-2 font-label-caps text-label-caps hover:border-white hover:text-white transition-colors';
+  addLog('MODE: ' + (greenScreen ? 'GREEN SCREEN' : 'NORMAL VIDEO'));
+}
+
+// ── FILE UPLOAD ────────────────────────
+document.getElementById('video-input').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var url = URL.createObjectURL(file);
+  var vid = document.getElementById('source-video');
+  vid.src = url;
+  vid.load();
+  vid.onloadedmetadata = function() {
+    addLog('VIDEO: ' + file.name + ' (' + Math.round(file.size/1024/1024*10)/10 + 'MB)');
+    addLog('RESOLUTION: ' + vid.videoWidth + 'x' + vid.videoHeight);
+    var dz = document.getElementById('drop-zone');
+    dz.innerHTML = '<video src="' + url + '" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="absolute bottom-2 left-2 font-label-caps text-[9px] bg-black/80 px-2 py-1 text-primary-fixed border border-primary-fixed">' + file.name + '</div>';
+    addLog('GREEN SCREEN DETECTION: READY');
+  };
+});
+
+// Drag & Drop
+var dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('border-primary-fixed'); });
+dz.addEventListener('dragleave', function() { this.classList.remove('border-primary-fixed'); });
+dz.addEventListener('drop', function(e) {
+  e.preventDefault();
+  this.classList.remove('border-primary-fixed');
+  var file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) {
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('video-input').files = dt.files;
+    document.getElementById('video-input').dispatchEvent(new Event('change'));
+  }
+});
+
+// ── STOCK REEL ─────────────────────────
+function loadStock() {
+  var q = document.getElementById('stock-search').value || 'neon city';
+  var grid = document.getElementById('stock-grid');
+  grid.innerHTML = '<div class="col-span-2 text-center py-4 font-label-caps text-label-caps text-primary-fixed animate-pulse">FETCHING...</div>';
+  fetch('/api/pexels', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({query: q, per_page: 6, orientation: 'landscape'})
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (!d.videos) { grid.innerHTML = '<div class="col-span-2 text-center py-4 font-label-caps text-label-caps text-on-surface-variant">NO RESULTS</div>'; return; }
+    grid.innerHTML = '';
+    d.videos.forEach(function(v) {
+      var file = v.video_files.find(function(f) { return f.quality === 'sd'; }) || v.video_files[0];
+      var div = document.createElement('div');
+      div.className = 'aspect-video bg-black border border-outline-variant cursor-pointer hover:border-primary-fixed overflow-hidden relative group';
+      div.innerHTML = '<img src="' + v.image + '" style="width:100%;height:100%;object-fit:cover;"/><div class="absolute inset-0 bg-primary-fixed/0 group-hover:bg-primary-fixed/20 transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity">check_circle</span></div>';
+      div.onclick = function() {
+        selectedEffect = 'stock';
+        selectedBgVideo = file.link;
+        document.querySelectorAll('#stock-grid > div').forEach(function(d2) { d2.classList.remove('border-primary-fixed'); });
+        div.classList.add('border-primary-fixed');
+        addLog('STOCK BG SELECTED: ' + v.url.split('/').pop());
+      };
+      grid.appendChild(div);
+    });
+    addLog('STOCK: ' + d.videos.length + ' VIDEOS LOADED');
+  }).catch(function(e) { addLog('STOCK ERROR: ' + e.message); });
+}
+
+// ── STUDIO BG ──────────────────────────
+function useStudioBg() {
+  var url = document.getElementById('studio-url').value.trim();
+  if (!url) { addLog('ERROR: PASTE VIDEO URL FIRST'); return; }
+  selectedEffect = 'studio';
+  selectedBgVideo = url;
+  addLog('STUDIO BG SET: ' + url.slice(0,50) + '...');
+}
+
+// ── RENDER ENGINE ──────────────────────
+function startRender() {
+  var sourceVid = document.getElementById('source-video');
+  if (!sourceVid.src) { addLog('ERROR: UPLOAD A VIDEO FIRST'); return; }
+  if (isRendering) { stopRender(); return; }
+
+  isRendering = true;
+  startTime = Date.now();
+  document.getElementById('preview-placeholder').style.display = 'none';
+
+  var canvas = document.getElementById('output-canvas');
+  var previewCanvas = document.getElementById('preview-canvas');
+  canvas.width = sourceVid.videoWidth || 640;
+  canvas.height = sourceVid.videoHeight || 360;
+  previewCanvas.width = canvas.width;
+  previewCanvas.height = canvas.height;
+
+  var ctx = canvas.getContext('2d', {willReadFrequently: true});
+  var pCtx = previewCanvas.getContext('2d');
+
+  // Load background video if needed
+  var bgVid = null;
+  if (selectedBgVideo) {
+    bgVid = document.createElement('video');
+    bgVid.src = selectedBgVideo;
+    bgVid.muted = true;
+    bgVid.loop = true;
+    bgVid.crossOrigin = 'anonymous';
+    bgVid.play().catch(function(){});
+  }
+
+  sourceVid.play().catch(function(){});
+  addLog('RENDER: ' + selectedEffect.toUpperCase() + ' COMPOSITING...');
+
+  var btn = document.getElementById('render-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined text-2xl animate-spin">sync</span> STOP RENDER';
+
+  function frame() {
+    if (!isRendering) return;
+    var t = (Date.now() - startTime) / 1000;
+
+    ctx.drawImage(sourceVid, 0, 0, canvas.width, canvas.height);
+    if (isGreenScreen) {
+      var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      removeGreen(imgData.data, intensityVal);
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    pCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw background
+    if (bgVid && !bgVid.paused) {
+      pCtx.drawImage(bgVid, 0, 0, canvas.width, canvas.height);
+    } else {
+      drawBg(pCtx, canvas.width, canvas.height, t);
+    }
+
+    // Composite foreground
+    pCtx.drawImage(canvas, 0, 0);
+
+    // FX overlays
+    if (scanlines) applyScanlines(pCtx, canvas.width, canvas.height);
+    if (neonGlow) applyGlow(pCtx, canvas.width, canvas.height);
+
+    animFrameId = requestAnimationFrame(frame);
+  }
+
+  frame();
+
+  // Start recording
+  recordedChunks = [];
+  try {
+    var stream = previewCanvas.captureStream(30);
+    mediaRecorder = new MediaRecorder(stream, {mimeType: 'video/webm;codecs=vp8'});
+    mediaRecorder.ondataavailable = function(e) { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.start(100);
+    addLog('RECORDING STARTED — PRESS STOP TO DOWNLOAD');
+  } catch(e) { addLog('RECORDER: ' + e.message); }
+}
+
+function stopRender() {
+  isRendering = false;
+  cancelAnimationFrame(animFrameId);
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    mediaRecorder.onstop = function() {
+      document.getElementById('btn-download').style.display = 'flex';
+      addLog('RENDER STOPPED — CLICK DOWNLOAD TO SAVE');
+    };
+  }
+  var btn = document.getElementById('render-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined text-2xl">bolt</span> RENDER COMPOSITE — FREE';
+  document.getElementById('source-video').pause();
+}
+
+function downloadResult() {
+  if (!recordedChunks.length) { addLog('ERROR: NO RECORDING — RENDER FIRST'); return; }
+  var blob = new Blob(recordedChunks, {type: 'video/webm'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'MERCADREAM_GLITCH_' + Date.now() + '.webm'; a.click();
+  addLog('DOWNLOAD: MERCADREAM_GLITCH_' + Date.now() + '.webm');
+}
+
+// ── GREEN SCREEN REMOVAL ───────────────
+function removeGreen(data, sensitivity) {
+  var thresh = (100 - sensitivity) * 0.8 + 40;
+  for (var i = 0; i < data.length; i += 4) {
+    var r = data[i], g = data[i+1], b = data[i+2];
+    if (g > thresh && g > r * 1.15 && g > b * 1.15) {
+      data[i+3] = 0;
+    }
+  }
+}
+
+// ── BACKGROUND EFFECTS ─────────────────
+function drawBg(ctx, w, h, t) {
+  if (selectedEffect === 'matrix') {
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#c0f500'; ctx.font = '14px IBM Plex Mono';
+    for (var x = 0; x < w; x += 16) {
+      var y = ((t * 120 + x * 13.7) % (h + 80));
+      ctx.globalAlpha = 0.7;
+      ctx.fillText(String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96)), x, y);
+      ctx.globalAlpha = 0.2;
+      ctx.fillText(String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96)), x, y - 20);
+    }
+    ctx.globalAlpha = 1;
+  } else if (selectedEffect === 'ascii') {
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+    ctx.font = '11px IBM Plex Mono';
+    var chars = '@#$%&*!?/<>[]{}';
+    for (var y = 0; y < h; y += 13) {
+      for (var x2 = 0; x2 < w; x2 += 9) {
+        ctx.fillStyle = 'rgba(192,245,0,' + (0.1 + Math.sin(t*2 + x2*0.01 + y*0.01) * 0.1) + ')';
+        ctx.fillText(chars[Math.floor((t*10 + x2 + y) % chars.length)], x2, y);
+      }
+    }
+  } else if (selectedEffect === 'neon') {
+    ctx.fillStyle = '#010010'; ctx.fillRect(0, 0, w, h);
+    var neonColors = ['#ff00ff','#00ffff','#c0f500','#ff0099','#0066ff','#ff6600'];
+    for (var i = 0; i < 4; i++) {
+      var gx = w * (0.1 + (i * 0.3) % 0.9 + Math.sin(t * 0.3 + i) * 0.1);
+      var gy = h * (0.2 + Math.sin(t * 0.5 + i * 1.5) * 0.3 + 0.3);
+      var gr = ctx.createRadialGradient(gx, gy, 0, gx, gy, 150);
+      gr.addColorStop(0, neonColors[i % neonColors.length] + 'aa');
+      gr.addColorStop(1, 'transparent');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+    }
+  } else if (selectedEffect === 'glitch') {
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+    if (Math.random() > 0.6) {
+      for (var g = 0; g < 3; g++) {
+        var gy2 = Math.random() * h;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,0,0,0.8)' : 'rgba(0,255,255,0.8)';
+        ctx.fillRect(0, gy2, w, 1 + Math.random() * 5);
+        if (Math.random() > 0.7) {
+          var sliceY = Math.random() * h;
+          var sliceH = 5 + Math.random() * 20;
+          var offset = (Math.random() - 0.5) * 40;
+          ctx.drawImage(ctx.canvas, 0, sliceY, w, sliceH, offset, sliceY, w, sliceH);
+        }
+      }
+    }
+  } else if (selectedEffect === 'void') {
+    ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, w, h);
+  } else if (selectedEffect === 'grid') {
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(192,245,0,0.3)'; ctx.lineWidth = 1;
+    var vanishX = w / 2, vanishY = h * 0.4;
+    var lines = 12;
+    for (var l = 0; l < lines; l++) {
+      var fx = (l / lines) * w;
+      ctx.beginPath(); ctx.moveTo(vanishX, vanishY); ctx.lineTo(fx, h); ctx.stroke();
+    }
+    var hLines = 8;
+    for (var hl = 0; hl < hLines; hl++) {
+      var p = hl / hLines;
+      var py = vanishY + (h - vanishY) * p;
+      var spread = p * w * 0.5;
+      ctx.beginPath(); ctx.moveTo(vanishX - spread, py); ctx.lineTo(vanishX + spread, py); ctx.stroke();
+    }
+    // Moving line
+    var movingP = ((t * 0.5) % 1);
+    var movingY = vanishY + (h - vanishY) * movingP;
+    var movingSpread = movingP * w * 0.5;
+    ctx.strokeStyle = 'rgba(192,245,0,0.8)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(vanishX - movingSpread, movingY); ctx.lineTo(vanishX + movingSpread, movingY); ctx.stroke();
+  }
+}
+
+function applyScanlines(ctx, w, h) {
+  ctx.globalAlpha = 0.07;
+  ctx.fillStyle = '#000';
+  for (var y = 0; y < h; y += 3) { ctx.fillRect(0, y, w, 1); }
+  ctx.globalAlpha = 1;
+}
+
+function applyGlow(ctx, w, h) {
+  ctx.globalAlpha = 0.12;
+  var g = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w * 0.6);
+  g.addColorStop(0, 'transparent');
+  g.addColorStop(1, '#c0f500');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 1;
+}
+
+// ── TERMINAL LOG ───────────────────────
+function addLog(msg) {
+  var log = document.getElementById('terminal-log');
+  var t = new Date().toLocaleTimeString('en-GB', {hour12: false});
+  var div = document.createElement('div');
+  div.textContent = '[' + t + '] ' + msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  while (log.children.length > 6) log.removeChild(log.children[0]);
+}
+
+// Auto log
+setInterval(function() {
+  var msgs = ['BUFFER STABLE','GPU IDLE','CANVAS READY','ENGINE OK','MEMORY: LOW'];
+  addLog(msgs[Math.floor(Math.random() * msgs.length)]);
+}, 5000);
+</script>
+</body></html>
