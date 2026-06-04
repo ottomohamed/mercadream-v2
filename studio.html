@@ -524,7 +524,7 @@
 </div>
 </div>
 <script>
-    let credits = parseInt(localStorage.getItem('md_credits') || '1250');
+    let credits = parseInt(localStorage.getItem('md_credits') || '0');
     let baseCost = 50;
 
     const costTable = { 'Drama': 50, 'Action': 50, 'Comedy': 50, 'Documentary': 50 };
@@ -710,15 +710,47 @@
             removeTyping(typingId);
             const directorEl = document.querySelector('input[name="director"]:checked');
             const director = directorEl ? directorEl.value : 'Drama';
-            const mockScenes = Array.from({length: parseInt(document.getElementById('scene-count').value)}, (_, i) => ({
-                scene: i + 1,
-                title: `Neon Sequence ${i+1}`,
-                prompt: `Cinematic wide shot, cyberpunk aesthetic, rainy docks, directed by ${director}.`
-            }));
-            generatedScenes = mockScenes;
-            renderScriptCards(mockScenes, director, `${director} AI`);
-        }, 1500);
+        }, 0); // placeholder - replaced below
     }
+    // Real sendMessage override
+    (function() {
+        var orig = sendMessage;
+        sendMessage = async function() {
+            const textarea = document.getElementById('chat-input');
+            const text = textarea ? textarea.value.trim() : '';
+            if (!text) return;
+            appendBubble(text, 'user');
+            textarea.value = '';
+            addLogLine('IDEA RECEIVED: ' + text.substring(0, 60));
+            const directorEl = document.querySelector('input[name="director"]:checked');
+            const director = directorEl ? directorEl.value : 'Drama';
+            const sceneCount = parseInt(document.getElementById('scene-count').value) || 3;
+            const typingId = showTyping();
+            fetch('/api/director', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({concept: text, director: director, duration: sceneCount})
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                removeTyping(typingId);
+                if (data.prompts && data.prompts.length > 0) {
+                    generatedScenes = data.prompts.map(function(p, i) {
+                        var pr = typeof p === 'string' ? p : (p.prompt || JSON.stringify(p));
+                        return {scene: i+1, title: 'Scene ' + (i+1), prompt: pr};
+                    });
+                    renderScriptCards(generatedScenes, director, director + ' Director');
+                    addLogLine(generatedScenes.length + ' SCENES GENERATED');
+                } else {
+                    appendBubble('>> ERROR: ' + (data.error || 'No scenes'), 'bot', 'SYSTEM');
+                }
+            })
+            .catch(function(e) {
+                removeTyping(typingId);
+                appendBubble('>> ERROR: ' + e.message, 'bot', 'SYSTEM');
+            });
+        };
+    })();
 
     function renderScriptCards(scenes, director, directorName) {
         const chat = document.getElementById('chat-messages');
@@ -760,97 +792,73 @@
 
         if (credits < cost) {
             appendBubble('>> INSUFFICIENT GNS. Please recharge.', 'bot', 'SYSTEM');
-            window.location.href = 'pricing.html';
             return;
         }
+        
         if (activeGenerations[idx]) return;
         activeGenerations[idx] = true;
 
         const btn = document.getElementById('gen-btn-' + idx);
-        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> GENERATING...'; }
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...'; }
 
         credits -= cost;
         localStorage.setItem('md_credits', credits);
         updateCredits();
-
-        const uid = localStorage.getItem('md_user_id');
-        if (uid && firebase.auth().currentUser) {
-            firebase.firestore().collection('users').doc(uid).update({ credits: credits });
-        }
-
-        addLogLine('SCENE ' + (idx+1) + ' GENERATION INITIATED [' + cost + ' GNS DEDUCTED]');
+        addLogLine(`SCENE ${idx+1} GENERATION INITIATED [${cost} GNS DEDUCTED]`);
         animatePipeline();
 
         const resultDiv = document.getElementById('video-result-' + idx);
-        if (resultDiv) {
-            resultDiv.className = 'mt-sm block';
-            resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-outline-variant flex items-center justify-center gap-2"><span class="material-symbols-outlined text-primary-fixed-dim animate-spin">sync</span><p class="font-label-technical text-primary-fixed-dim text-sm">RENDERING...</p></div>';
-        }
-
+        if (resultDiv) { resultDiv.className = 'mt-sm block'; resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-outline-variant flex items-center justify-center gap-2"><span class="material-symbols-outlined text-primary-fixed-dim animate-spin">sync</span><p class="font-label-technical text-primary-fixed-dim text-sm">RENDERING...</p></div>'; }
         try {
-            // Submit to WaveSpeed
             var prompt = typeof scene.prompt === 'string' ? scene.prompt : JSON.stringify(scene.prompt);
-            var res = await fetch('/api/wavespeed', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: prompt, duration: 5, model: 'wavespeed-ai/seedance-1-lite' })
-            });
+            var res = await fetch('/api/wavespeed', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({prompt: prompt, duration: 5, model: 'wavespeed-ai/seedance-1-lite'}) });
             var data = await res.json();
-            if (!data.taskId) throw new Error(data.error || 'No task ID returned');
-
+            if (!data.taskId) throw new Error(data.error || 'No task ID');
             addLogLine('RENDER JOB: ' + data.taskId);
-
-            // Poll for result
             var attempts = 0;
-            var maxAttempts = 60;
             var pollInterval = setInterval(async function() {
                 attempts++;
-                if (attempts > maxAttempts) {
-                    clearInterval(pollInterval);
-                    if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">TIMEOUT — Please retry</p>';
-                    if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
-                    activeGenerations[idx] = false;
-                    return;
-                }
+                if (attempts > 60) { clearInterval(pollInterval); if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">TIMEOUT</p>'; if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; } activeGenerations[idx] = false; return; }
                 try {
-                    var pollRes = await fetch('/api/video?id=' + data.taskId);
-                    var pollData = await pollRes.json();
-                    addLogLine('POLL ' + attempts + ': ' + (pollData.status || 'checking').toUpperCase());
-
-                    if (pollData.status === 'completed' && pollData.videoUrl) {
+                    var pr = await fetch('/api/video?id=' + data.taskId);
+                    var pd = await pr.json();
+                    addLogLine('POLL ' + attempts + ': ' + (pd.status||'checking').toUpperCase());
+                    if (pd.status === 'completed' && pd.videoUrl) {
                         clearInterval(pollInterval);
-                        if (resultDiv) {
-                            resultDiv.className = 'mt-sm block';
-                            resultDiv.innerHTML =
-                                '<video src="' + pollData.videoUrl + '" controls autoplay muted loop class="w-full border border-primary-fixed-dim mt-2"></video>' +
-                                '<div class="flex gap-2 mt-2">' +
-                                '<a href="' + pollData.videoUrl + '" download class="flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase">DOWNLOAD</a>' +
-                                '</div>';
-                        }
+                        if (resultDiv) { resultDiv.className = 'mt-sm block'; resultDiv.innerHTML = '<video src="' + pd.videoUrl + '" controls autoplay muted loop class="w-full border border-primary-fixed-dim mt-2"></video><div class="flex gap-2 mt-2"><a href="' + pd.videoUrl + '" download class="flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase">DOWNLOAD</a></div>'; }
                         if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
-                        activeGenerations[idx] = false;
-                        addLogLine('SCENE ' + (idx+1) + ' RENDER SUCCESS ✓');
-                    } else if (pollData.status === 'failed') {
-                        clearInterval(pollInterval);
-                        if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">RENDER FAILED — Please retry</p>';
-                        if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
-                        activeGenerations[idx] = false;
-                    }
-                } catch(pollErr) {
-                    console.error('Poll error:', pollErr);
-                }
+                        activeGenerations[idx] = false; addLogLine('SCENE ' + (idx+1) + ' SUCCESS');
+                    } else if (pd.status === 'failed') { clearInterval(pollInterval); if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">FAILED</p>'; if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; } activeGenerations[idx] = false; }
+                } catch(pe) { console.error('poll:', pe); }
             }, 5000);
-
         } catch(e) {
-            addLogLine('ERROR: ' + e.message);
-            credits += cost;
-            localStorage.setItem('md_credits', credits);
-            updateCredits();
-            if (uid && firebase.auth().currentUser) {
-                firebase.firestore().collection('users').doc(uid).update({ credits: credits });
-            }
-            if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">ERROR: ' + e.message + ' — GNS refunded</p>';
-            if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
-            activeGenerations[idx] = false;
+            addLogLine('ERROR: ' + e.message); credits += cost; localStorage.setItem('md_credits', credits); updateCredits();
+            if (uid && firebase.auth().currentUser) firebase.firestore().collection('users').doc(uid).update({credits: credits});
+            if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">ERROR: ' + e.message + '</p>';
+            if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; } activeGenerations[idx] = false;
         }
-    }>
+    }
+
+    function setSceneCount(n) {
+        document.getElementById('scene-count').value = n;
+        document.querySelectorAll('.scene-btn').forEach(btn => {
+            const count = parseInt(btn.getAttribute('data-count'));
+            if (count === n) {
+                btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+                btn.classList.remove('border-outline-variant');
+            } else {
+                btn.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+                btn.classList.add('border-outline-variant');
+            }
+        });
+        addLogLine('SCENE COUNT SET: ' + n + ' scenes');
+    }
+
+    function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
+    function setMode(m) { 
+        addLogLine('MODE: ' + m); 
+        document.getElementById('btn-auto').className = m === 'AUTO' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
+        document.getElementById('btn-manual').className = m === 'MANUAL' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
+    }
+</script>
+</body></html>
