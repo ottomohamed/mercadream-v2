@@ -713,17 +713,20 @@
             const director = directorEl ? directorEl.value : 'Drama';
             const sceneCount = parseInt(document.getElementById('scene-count').value) || 3;
         const userIdea = text;
-        const requests = Array.from({length: sceneCount}, (_, i) =>
-            fetch('/api/chat', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({message: 'Generate scene '+(i+1)+' of '+sceneCount+'. Story: '+userIdea, director: director, phase: 'director', dreamBrief: userIdea})
-            }).then(r => r.json()).catch(() => null)
-        );
-        Promise.all(requests).then(results => {
-            generatedScenes = results.map((data, i) => data && data.scene ? {...data.scene, scene: i+1} : {scene: i+1, title: 'Scene '+(i+1), prompt: director+' scene: '+userIdea});
-            renderScriptCards(generatedScenes, director, director+' Director');
-        });
+        const sceneCount2 = parseInt(document.getElementById('scene-count').value) || 3;
+        fetch('/api/chat', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({message: userIdea, director: director, sceneCount: sceneCount2, dreamBrief: userIdea})
+        }).then(r => r.json()).then(data => {
+            if (data.scenes && data.scenes.length > 0) {
+                generatedScenes = data.scenes;
+                renderScriptCards(data.scenes, director, director + ' Director');
+                addLogLine(data.scenes.length + ' SCENES GENERATED');
+            } else {
+                appendBubble('>> ERROR: ' + (data.error || 'No scenes generated'), 'bot', 'SYSTEM');
+            }
+        }).catch(e => appendBubble('>> ERROR: ' + e.message, 'bot', 'SYSTEM'));
         }, 1500);
     }
 
@@ -817,3 +820,4 @@
     }
 </script>
 </body></html>
+
