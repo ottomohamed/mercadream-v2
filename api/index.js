@@ -385,43 +385,69 @@ async function handle_webhook(req, res) {
 
 async function handle_chat(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
-  const { message, director='Drama', dreamBrief=null } = req.body||{};
+  const { message, director='Drama', sceneCount=3, dreamBrief=null } = req.body||{};
   if (!message) return res.status(400).json({ error: 'message required.' });
   if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set.' });
 
-  const directorPrompts = {
-    Drama: 'You are a drama film director. Given the story idea, generate ONE unique cinematic scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video generation prompt with shot type, lighting, camera movement, atmosphere"}',
-    Action: 'You are an action film director. Generate ONE unique action scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with fast cuts, high contrast, dynamic camera"}',
-    Comedy: 'You are a comedy director. Generate ONE unique comedic scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with wide shots, natural lighting, comedic timing"}',
-    Documentary: 'You are a documentary director. Generate ONE unique documentary scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with handheld camera, available light, authentic moments"}',
-    Ads: 'You are a commercial director. Generate ONE unique ad scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with product hero, bright lighting, clear message"}',
-    Music: 'You are a music video director. Generate ONE unique visual scene. Respond ONLY with JSON: {"scene":1,"title":"short title","prompt":"detailed 60+ word English video prompt with color gels, choreography, beat-driven editing"}'
-  };
+  const count = Math.min(parseInt(sceneCount)||3, 6);
+  const idea = dreamBrief || message;
 
-  const system = (directorPrompts[director] || directorPrompts.Drama)
-    + '\n\nIMPORTANT: Each scene must be UNIQUE and different from other scenes. The prompt field must be in English only.';
+  const system = `You are a professional screenplay writer and ${director} film director at MercaDream.
+
+The user gives you a story idea. You must:
+1. Write a complete cinematic screenplay
+2. Divide it into exactly ${count} scenes
+3. Each scene must be UNIQUE, different, and advance the story
+
+Respond ONLY with a valid JSON array. No text before or after:
+[
+  {
+    "scene": 1,
+    "title": "Scene title (3-5 words)",
+    "description": "What happens in this scene (1-2 sentences in user language)",
+    "prompt": "Detailed 80+ word English video generation prompt: SHOT TYPE + subject + environment + camera movement + lighting + color palette + action + atmosphere + emotion"
+  }
+]
+
+CRITICAL RULES:
+- The "prompt" field MUST be in English only (video AI requires English)
+- The "title" and "description" can be in the same language as the user
+- Each scene must have a completely different visual style and moment
+- Scenes must tell a coherent story from beginning to end
+- Director style: ${director}`;
 
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      headers: {
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json'
+      },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
+        max_tokens: 2000,
         system,
-        messages: [{ role: 'user', content: (dreamBrief || message) + '\n\nScene request: ' + message }]
+        messages: [{ role: 'user', content: idea }]
       })
     });
+
     const data = await r.json();
     const text = data.content?.[0]?.text?.trim() || '';
-    const match = text.match(/\{[\s\S]*?\}/);
+
+    // Parse JSON array
+    const match = text.match(/\[[\s\S]*\]/);
     if (match) {
       try {
-        const scene = JSON.parse(match[0]);
-        return res.json({ scene, reply: null });
-      } catch(e) {}
+        const scenes = JSON.parse(match[0]);
+        return res.json({ scenes, total: scenes.length });
+      } catch(e) {
+        return res.status(500).json({ error: 'Scene parsing failed: ' + e.message, raw: text.slice(0,200) });
+      }
     }
-    return res.json({ reply: text, scene: null });
+
+    return res.status(500).json({ error: 'No JSON array in response', raw: text.slice(0,200) });
+
   } catch(e) {
     return res.status(500).json({ error: e.message });
   }
