@@ -194,7 +194,7 @@ async function handle_wavespeed(req, res) {
       body: JSON.stringify({
         prompt: prompt,
         duration: duration||5,
-        size: '480*832',
+        size: '1280x720',
         negative_prompt: 'blurry, low quality, distorted'
       })
     });
@@ -331,22 +331,64 @@ async function handle_upscale(req, res) {
 }
 
 async function handle_semantic(req, res) {
-  const { imageUrl, videoUrl, question } = req.body||{};
-  const input = videoUrl||imageUrl;
-  if (!input) return res.status(400).json({ error: 'imageUrl or videoUrl required.' });
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{ 'x-api-key':ANTHROPIC_KEY, 'anthropic-version':'2023-06-01', 'content-type':'application/json' },
-    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1024,
-      messages:[{ role:'user', content:[
-        { type:'image', source:{ type:'url', url:input } },
-        { type:'text', text:question||'Analyze this visual content: describe subjects, mood, composition, cinematic qualities.' }
-      ]}]
-    })
-  });
-  const d = await r.json();
-  return res.json({ analysis: d.content?.[0]?.text||'Analysis complete.' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const { text, params } = req.body||{};
+  if (!text) return res.status(400).json({ error: 'text required.' });
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set.' });
+
+  const selectedParams = params || ['SCENE PACING','CHARACTER ARC','DIALOGUE STRENGTH','EMOTIONAL BEATS','PLOT STRUCTURE'];
+
+  const system = 'You are a professional screenplay analyst. Analyze the given script and return ONLY a valid JSON object with scores from 1-10 for each metric. No text before or after the JSON.';
+
+  const prompt = 'Analyze this screenplay/script and score it from 1-10 for each metric:\n\n' +
+    'Script:\n' + text.slice(0, 4000) + '\n\n' +
+    'Return ONLY this JSON (no other text):\n' +
+    '{\n' +
+    '  "pacing": <score 1-10>,\n' +
+    '  "arc": <score 1-10>,\n' +
+    '  "dialogue": <score 1-10>,\n' +
+    '  "emotion": <score 1-10>,\n' +
+    '  "plot": <score 1-10>,\n' +
+    '  "summary": "<2 sentences about the script strengths and weaknesses>",\n' +
+    '  "suggestions": ["<improvement 1>", "<improvement 2>", "<improvement 3>"]\n' +
+    '}';
+
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        system,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const d = await r.json();
+    const replyText = d.content?.[0]?.text?.trim() || '';
+
+    const match = replyText.match(/\{[\s\S]*\}/);
+    if (match) {
+      try {
+        const scores = JSON.parse(match[0]);
+        return res.json(scores);
+      } catch(e) {
+        return res.status(500).json({ error: 'Parse error: ' + e.message, raw: replyText.slice(0,200) });
+      }
+    }
+
+    return res.status(500).json({ error: 'No JSON in response', raw: replyText.slice(0,200) });
+
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
+
 
 async function handle_director(req, res) {
   const { concept, director, genre, duration } = req.body||{};
@@ -511,5 +553,3 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
-
-

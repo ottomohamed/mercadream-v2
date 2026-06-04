@@ -175,7 +175,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="dark selection:bg-neon-acid selection:text-void-black font-body-md text-on-surface"><script src="md-engine.js"></script>
 <!-- TopNavBar -->
@@ -193,7 +193,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-2 bg-surface-container px-3 py-1 surgical-border rounded-none">
 <a href="profile.html" title="My Profile" class="hover:opacity-80 transition-all"><span class="material-symbols-outlined text-neon-acid cursor-pointer">account_circle</span></a>
-<span class="font-label-technical text-technical-sm text-neon-acid" id="header-genesis-val">0 GNS</span>
+<span class="font-label-technical text-technical-sm text-neon-acid" id="header-credits-val">0 CR</span>
 </div>
 <div class="flex items-center gap-4">
 <span class="material-symbols-outlined text-on-surface-variant hover:text-neon-acid cursor-pointer transition-colors rounded-none" data-nav="profile">account_circle</span>
@@ -373,11 +373,11 @@ const db = firebase.firestore();
 </div>
 <button class="h-14 bg-neon-acid px-12 flex items-center gap-4 group hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all neon-glow rounded-none" id="btn-semantic">
 <span class="material-symbols-outlined text-void-black font-bold text-2xl group-hover:rotate-12 transition-transform">bolt</span>
-<span class="btn-text font-headline-md text-headline-md text-void-black font-bold tracking-tight uppercase">ANALYZE � 8 GENESIS</span>
+<span class="btn-text font-headline-md text-headline-md text-void-black font-bold tracking-tight uppercase">ANALYZE � 8 CREDITS</span>
 </button>
 <div class="flex flex-col items-end">
 <span class="font-label-technical text-technical-xs text-on-surface-variant uppercase">REMAINING_BALANCE</span>
-<span class="font-label-technical text-technical-sm text-neon-acid uppercase" id="predicted-balance">9,418 GNS AFTER USE</span>
+<span class="font-label-technical text-technical-sm text-neon-acid uppercase" id="predicted-balance">9,418 CR AFTER USE</span>
 </div>
 </div>
 </footer>
@@ -418,10 +418,10 @@ const db = firebase.firestore();
             if (this.analyzeBtn) {
                 this.analyzeBtn.addEventListener('click', () => this.runAnalysis());
             }
-            window.addEventListener('genesisUpdated', (e) => {
-                const fmt = Number(e.detail.genesis).toLocaleString();
-                document.querySelectorAll('[id="top-genesis"]').forEach(el => {
-                    el.textContent = fmt + ' GNS';
+            window.addEventListener('creditsUpdated', (e) => {
+                const fmt = Number(e.detail.credits).toLocaleString();
+                document.querySelectorAll('[id="top-credits"]').forEach(el => {
+                    el.textContent = fmt + ' CR';
                 });
             });
         },
@@ -464,10 +464,10 @@ const db = firebase.firestore();
                 return;
             }
 
-            // Check genesis
-            const genesis = parseInt(localStorage.getItem('md_genesis') || '0');
-            if (genesis < this.config.cost) {
-                this.notify('INSUFFICIENT GENESIS — REDIRECTING TO RECHARGE', 'err');
+            // Check credits
+            const credits = parseInt(localStorage.getItem('md_credits') || '0');
+            if (credits < this.config.cost) {
+                this.notify('INSUFFICIENT CREDITS — REDIRECTING TO RECHARGE', 'err');
                 setTimeout(() => window.location.href = 'pricing.html', 1500);
                 return;
             }
@@ -494,17 +494,17 @@ const db = firebase.firestore();
                     return;
                 }
 
-                // Deduct genesis
-                const newGenesis = genesis - this.config.cost;
-                localStorage.setItem('md_genesis', newGenesis);
-                if (window.__deductGenesis) window.__deductGenesis(this.config.cost);
+                // Deduct credits
+                const newCredits = credits - this.config.cost;
+                localStorage.setItem('md_credits', newCredits);
+                if (window.__deductCredits) window.__deductCredits(this.config.cost);
 
                 this.renderResults(data.scores || data);
                 this.notify('ANALYSIS COMPLETE', 'ok');
 
             } catch (err) {
                 console.error('Semantic error:', err);
-                this.notify('CONNECTION ERROR — GENESIS PRESERVED', 'err');
+                this.notify('CONNECTION ERROR — CREDITS PRESERVED', 'err');
             } finally {
                 this.setLoading(false);
             }
@@ -541,6 +541,7 @@ const db = firebase.firestore();
                 }, i * 200);
             });
 
+            this.renderSummary(scores);
             if (this.reportId) {
                 this.reportId.textContent = `ANALYSIS REPORT // ID: SEM_${Date.now().toString(36).toUpperCase()}`;
             }
@@ -559,10 +560,28 @@ const db = firebase.firestore();
             if (btnText) {
                 btnText.textContent = active
                     ? 'COMPUTING NEURAL PATHS...'
-                    : `ANALYZE — ${this.config.cost} GNS`;
+                    : `ANALYZE — ${this.config.cost} CR`;
             }
         },
 
+        renderSummary(data) {
+            // Show summary and suggestions if returned
+            if (data.summary) {
+                var existing = document.getElementById('analysis-summary');
+                if (!existing) {
+                    var div = document.createElement('div');
+                    div.id = 'analysis-summary';
+                    div.className = 'surgical-border bg-surface-container p-4 mt-2';
+                    div.innerHTML = '<p class="font-label-technical text-technical-xs text-on-surface-variant uppercase mb-2">SCRIPT SUMMARY</p>' +
+                        '<p class="font-label-technical text-technical-sm text-on-surface">' + data.summary + '</p>' +
+                        (data.suggestions ? '<ul class="mt-2 space-y-1">' + data.suggestions.map(function(s) {
+                            return '<li class="font-label-technical text-technical-xs text-neon-acid">→ ' + s + '</li>';
+                        }).join('') + '</ul>' : '');
+                    var grid = document.getElementById('metricsGrid');
+                    if (grid) grid.appendChild(div);
+                }
+            }
+        },
         notify(msg, type) {
             if (this.reportStatusText) {
                 this.reportStatusText.textContent = msg;
@@ -579,7 +598,23 @@ const db = firebase.firestore();
         }
     };
 
-    window.addEventListener('load', () => SemanticEngine.init());
+    // Firebase balance sync
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+            if (doc.exists) {
+                var bal = doc.data().credits || 0;
+                localStorage.setItem('md_credits', bal);
+                localStorage.setItem('md_user_id', user.uid);
+                var el = document.getElementById('header-genesis-val');
+                if (el) el.textContent = bal.toLocaleString() + ' GNS';
+                var balEl = document.getElementById('predicted-balance');
+                if (balEl) balEl.textContent = (bal - 8).toLocaleString() + ' GNS AFTER USE';
+            }
+        });
+    }
+});
+window.addEventListener('load', () => SemanticEngine.init());
 
 </script>
 </body></html>
