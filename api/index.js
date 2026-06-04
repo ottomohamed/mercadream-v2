@@ -509,4 +509,3 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
-
