@@ -714,15 +714,15 @@
             const sceneCount = parseInt(document.getElementById('scene-count').value) || 3;
         const userIdea = text;
         const sceneCount2 = parseInt(document.getElementById('scene-count').value) || 3;
-        fetch('/api/chat', {
+        fetch('/api/director', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({message: userIdea, director: director, sceneCount: sceneCount2, dreamBrief: userIdea})
+            body: JSON.stringify({concept: userIdea, director: director, duration: sceneCount2})
         }).then(r => r.json()).then(data => {
-            if (data.scenes && data.scenes.length > 0) {
-                generatedScenes = data.scenes;
-                renderScriptCards(data.scenes, director, director + ' Director');
-                addLogLine(data.scenes.length + ' SCENES GENERATED');
+            if (data.prompts && data.prompts.length > 0) {
+                generatedScenes = data.prompts.map(function(p, i) { return {scene: i+1, title: 'Scene '+(i+1), prompt: typeof p === 'string' ? p : p.prompt || p}; });
+                renderScriptCards(generatedScenes, director, director + ' Director');
+                addLogLine(generatedScenes.length + ' SCENES GENERATED');
             } else {
                 appendBubble('>> ERROR: ' + (data.error || 'No scenes generated'), 'bot', 'SYSTEM');
             }
@@ -820,4 +820,6 @@
     }
 </script>
 </body></html>
+
+
 
