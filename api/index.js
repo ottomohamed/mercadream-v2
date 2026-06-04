@@ -183,20 +183,19 @@ async function handle_wavespeed(req, res) {
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
   const modelId = model||'wavespeed-ai/wan-2.1/t2v-480p';
   try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/predictions', {
+    // WaveSpeed API v3 - model-specific endpoint
+    const endpoint = 'https://api.wavespeed.ai/api/v3/' + modelId;
+    const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + WAVESPEED_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: modelId,
-        input: {
-          prompt: prompt,
-          duration: duration||5,
-          aspect_ratio: '9:16',
-          negative_prompt: 'blurry, low quality, distorted'
-        }
+        prompt: prompt,
+        duration: duration||5,
+        size: '1280x720',
+        negative_prompt: 'blurry, low quality, distorted'
       })
     });
     const d = await r.json();
