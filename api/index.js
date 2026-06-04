@@ -181,17 +181,55 @@ async function handle_wavespeed(req, res) {
   const { prompt, duration, model, image_url } = req.body||{};
   if (!prompt) return res.status(400).json({ error: 'prompt required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  const modelId = model||'wavespeed-ai/seedance-1-lite';
-  const input = { prompt, duration:duration||5, size:'1280x720' };
-  if (image_url) input.image_url = image_url;
-  const d = await wsPost(modelId, input);
-  const taskId = d.data?.id;
-  if (!taskId) return res.status(500).json({ error: d.error||'No task ID' });
-  return res.json({ taskId, status:'queued' });
+  const modelId = model||'wavespeed-ai/wan-2.1/t2v-480p';
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + WAVESPEED_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: modelId,
+        input: {
+          prompt: prompt,
+          duration: duration||5,
+          aspect_ratio: '9:16',
+          negative_prompt: 'blurry, low quality, distorted'
+        }
+      })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message || d?.error || 'No task ID', raw: d });
+    return res.json({ taskId, status:'queued' });
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
 
 async function handle_video(req, res) {
-  // Poll or submit via video.js logic
+  // Poll status via GET /api/video?id=xxx
+  if (req.method === 'GET') {
+    const taskId = req.query?.id;
+    if (!taskId) return res.status(400).json({ error: 'id required.' });
+    try {
+      const r = await fetch('https://api.wavespeed.ai/api/v3/predictions/' + taskId + '/result', {
+        headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY }
+      });
+      const d = await r.json();
+      const status = d?.data?.status;
+      const videoUrl = d?.data?.outputs?.[0] || null;
+      return res.json({
+        status: status === 'completed' ? 'completed' : status === 'failed' ? 'failed' : 'generating',
+        taskId,
+        videoUrl
+      });
+    } catch(e) {
+      return res.status(500).json({ error: e.message });
+    }
+  }
+  // POST - submit via video.js logic
   if (req.method==='GET') {
     const taskId = req.query?.id;
     if (!taskId) return res.status(400).json({ error: 'id required.' });
