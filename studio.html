@@ -1,4 +1,4 @@
-<html class="dark" lang="en"><head>
+﻿<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM Studio | Production Suite</title>
@@ -210,7 +210,6 @@
 <span class="material-symbols-outlined text-[#c8ff00] text-[16px]">bolt</span>
 <span class="font-label-technical text-label-technical" id="top-credits">1,250 GNS</span>
 </div>
-<button onclick="window.location.href='pricing.html'" style="background:transparent;border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;letter-spacing:2px;padding:4px 10px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;" onmouseover="this.style.background='#c8ff00';this.style.color='#040404'" onmouseout="this.style.background='transparent';this.style.color='#c8ff00'">+ RECHARGE</button>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" onclick="cycleLang()" title="Switch Language">language</button>
 <a class="w-8 h-8 bg-surface-variant border border-outline-variant flex items-center justify-center hover:border-primary-fixed-dim transition-all" href="profile.html" title="My Profile"><span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim text-[20px]">account_circle</span></a>
 </div>
@@ -304,7 +303,7 @@
 <div class="flex gap-md self-end max-w-[90%] md:max-w-[80%]">
 <div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
 <p class="text-body-md text-on-surface">Initiate screenplay structure for 'CYBERPUNK NEON' series. Focus on Act 1 sequence 4 - The meeting at the rain-soaked docks.</p>
-<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 � USER_MAIN</span>
+<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 — USER_MAIN</span>
 </div>
 <div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0">
 <span class="material-symbols-outlined">person</span>
@@ -328,7 +327,7 @@
 <span class="text-primary-fixed-dim">&gt;&gt;</span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
 <span class="text-primary-fixed-dim">&gt;&gt;</span> Screenplay protocol engaged. Ready for Act 1 details.
                         </p>
-<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 � GEMINI-9</span>
+<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 — GEMINI-9</span>
 </div>
 </div>
 <div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
@@ -348,7 +347,7 @@
 <footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
 <div class="flex gap-md items-end">
 <div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
-<textarea class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" id="chat-input" onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){event.preventDefault();sendMessage()}" placeholder="???? ????? ???... (??? ???)"></textarea>
+<textarea class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" id="chat-input" onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){event.preventDefault();sendMessage()}" placeholder="اكتب فكرتك هنا... (بأي لغة)"></textarea>
 <div class="absolute bottom-2 right-2 flex gap-sm">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
 <button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#c8ff00] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
@@ -440,7 +439,7 @@
 </button>
 <a class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97] hidden md:flex" href="assembly.html">
 <span class="material-symbols-outlined text-[18px]">movie_edit</span>
-                OPEN ASSEMBLY ?
+                OPEN ASSEMBLY →
             </a>
 </div>
 </footer>
@@ -607,7 +606,7 @@
             return;
         }
 
-        addLogLine('GENERATE pressed � requesting scene from ' + director);
+        addLogLine('GENERATE pressed — requesting scene from ' + director);
         animatePipeline();
     }
 
@@ -664,7 +663,7 @@
         if (role === 'user') {
             const msgWrap = document.createElement('div');
             msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
-            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} � USER_MAIN</span>`;
+            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} — USER_MAIN</span>`;
             div.appendChild(msgWrap);
             const icon = document.createElement('div');
             icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
@@ -674,7 +673,7 @@
             div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
             const bubble = document.createElement('div');
             bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
-            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' � ' + (label || 'GEMINI-9') + '</span>';
+            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
             div.appendChild(bubble);
         }
         chat.insertBefore(div, voiceOverlay);
@@ -711,22 +710,13 @@
             removeTyping(typingId);
             const directorEl = document.querySelector('input[name="director"]:checked');
             const director = directorEl ? directorEl.value : 'Drama';
-            const sceneCount = parseInt(document.getElementById('scene-count').value) || 3;
-        const userIdea = text;
-        const sceneCount2 = parseInt(document.getElementById('scene-count').value) || 3;
-        fetch('/api/director', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({concept: userIdea, director: director, duration: sceneCount2})
-        }).then(r => r.json()).then(data => {
-            if (data.prompts && data.prompts.length > 0) {
-                generatedScenes = data.prompts.map(function(p, i) { return {scene: i+1, title: 'Scene '+(i+1), prompt: typeof p === 'string' ? p : p.prompt || p}; });
-                renderScriptCards(generatedScenes, director, director + ' Director');
-                addLogLine(generatedScenes.length + ' SCENES GENERATED');
-            } else {
-                appendBubble('>> ERROR: ' + (data.error || 'No scenes generated'), 'bot', 'SYSTEM');
-            }
-        }).catch(e => appendBubble('>> ERROR: ' + e.message, 'bot', 'SYSTEM'));
+            const mockScenes = Array.from({length: parseInt(document.getElementById('scene-count').value)}, (_, i) => ({
+                scene: i + 1,
+                title: `Neon Sequence ${i+1}`,
+                prompt: `Cinematic wide shot, cyberpunk aesthetic, rainy docks, directed by ${director}.`
+            }));
+            generatedScenes = mockScenes;
+            renderScriptCards(mockScenes, director, `${director} AI`);
         }, 1500);
     }
 
@@ -740,7 +730,7 @@
         header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
             + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
             + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs uppercase">Director: ' + (directorName || director) + '</p>'
-            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes � ' + cost + ' GNS each. Click GENERATE.</p></div>';
+            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' GNS each. Click GENERATE.</p></div>';
         chat.insertBefore(header, voiceOverlay);
 
         scenes.forEach((scene, idx) => {
@@ -770,56 +760,97 @@
 
         if (credits < cost) {
             appendBubble('>> INSUFFICIENT GNS. Please recharge.', 'bot', 'SYSTEM');
+            window.location.href = 'pricing.html';
             return;
         }
-        
         if (activeGenerations[idx]) return;
         activeGenerations[idx] = true;
 
         const btn = document.getElementById('gen-btn-' + idx);
-        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> PROCESSING...'; }
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> GENERATING...'; }
 
         credits -= cost;
         localStorage.setItem('md_credits', credits);
         updateCredits();
-        addLogLine(`SCENE ${idx+1} GENERATION INITIATED [${cost} GNS DEDUCTED]`);
+
+        const uid = localStorage.getItem('md_user_id');
+        if (uid && firebase.auth().currentUser) {
+            firebase.firestore().collection('users').doc(uid).update({ credits: credits });
+        }
+
+        addLogLine('SCENE ' + (idx+1) + ' GENERATION INITIATED [' + cost + ' GNS DEDUCTED]');
         animatePipeline();
 
-        setTimeout(() => {
-            const resultDiv = document.getElementById('video-result-' + idx);
-            if (resultDiv) {
-                resultDiv.className = 'mt-sm block';
-                resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-primary-fixed-dim flex items-center justify-center"><p class="font-label-technical text-primary-fixed-dim">RENDER COMPLETE</p></div><p class="font-label-technical text-[10px] text-primary-fixed-dim mt-xs">? VIDEO READY</p>';
+        const resultDiv = document.getElementById('video-result-' + idx);
+        if (resultDiv) {
+            resultDiv.className = 'mt-sm block';
+            resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-outline-variant flex items-center justify-center gap-2"><span class="material-symbols-outlined text-primary-fixed-dim animate-spin">sync</span><p class="font-label-technical text-primary-fixed-dim text-sm">RENDERING...</p></div>';
+        }
+
+        try {
+            // Submit to WaveSpeed
+            var prompt = typeof scene.prompt === 'string' ? scene.prompt : JSON.stringify(scene.prompt);
+            var res = await fetch('/api/wavespeed', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt, duration: 5, model: 'wavespeed-ai/seedance-1-lite' })
+            });
+            var data = await res.json();
+            if (!data.taskId) throw new Error(data.error || 'No task ID returned');
+
+            addLogLine('RENDER JOB: ' + data.taskId);
+
+            // Poll for result
+            var attempts = 0;
+            var maxAttempts = 60;
+            var pollInterval = setInterval(async function() {
+                attempts++;
+                if (attempts > maxAttempts) {
+                    clearInterval(pollInterval);
+                    if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">TIMEOUT — Please retry</p>';
+                    if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
+                    activeGenerations[idx] = false;
+                    return;
+                }
+                try {
+                    var pollRes = await fetch('/api/video?id=' + data.taskId);
+                    var pollData = await pollRes.json();
+                    addLogLine('POLL ' + attempts + ': ' + (pollData.status || 'checking').toUpperCase());
+
+                    if (pollData.status === 'completed' && pollData.videoUrl) {
+                        clearInterval(pollInterval);
+                        if (resultDiv) {
+                            resultDiv.className = 'mt-sm block';
+                            resultDiv.innerHTML =
+                                '<video src="' + pollData.videoUrl + '" controls autoplay muted loop class="w-full border border-primary-fixed-dim mt-2"></video>' +
+                                '<div class="flex gap-2 mt-2">' +
+                                '<a href="' + pollData.videoUrl + '" download class="flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase">DOWNLOAD</a>' +
+                                '</div>';
+                        }
+                        if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
+                        activeGenerations[idx] = false;
+                        addLogLine('SCENE ' + (idx+1) + ' RENDER SUCCESS ✓');
+                    } else if (pollData.status === 'failed') {
+                        clearInterval(pollInterval);
+                        if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">RENDER FAILED — Please retry</p>';
+                        if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
+                        activeGenerations[idx] = false;
+                    }
+                } catch(pollErr) {
+                    console.error('Poll error:', pollErr);
+                }
+            }, 5000);
+
+        } catch(e) {
+            addLogLine('ERROR: ' + e.message);
+            credits += cost;
+            localStorage.setItem('md_credits', credits);
+            updateCredits();
+            if (uid && firebase.auth().currentUser) {
+                firebase.firestore().collection('users').doc(uid).update({ credits: credits });
             }
-            if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
+            if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm">ERROR: ' + e.message + ' — GNS refunded</p>';
+            if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
             activeGenerations[idx] = false;
-            addLogLine(`SCENE ${idx+1} RENDER SUCCESS`);
-        }, 3000);
-    }
-
-    function setSceneCount(n) {
-        document.getElementById('scene-count').value = n;
-        document.querySelectorAll('.scene-btn').forEach(btn => {
-            const count = parseInt(btn.getAttribute('data-count'));
-            if (count === n) {
-                btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
-                btn.classList.remove('border-outline-variant');
-            } else {
-                btn.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
-                btn.classList.add('border-outline-variant');
-            }
-        });
-        addLogLine('SCENE COUNT SET: ' + n + ' scenes');
-    }
-
-    function cycleLang() { addLogLine('LANGUAGE CYCLED.'); }
-    function setMode(m) { 
-        addLogLine('MODE: ' + m); 
-        document.getElementById('btn-auto').className = m === 'AUTO' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
-        document.getElementById('btn-manual').className = m === 'MANUAL' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
-    }
-</script>
-</body></html>
-
-
-
+        }
+    }>
