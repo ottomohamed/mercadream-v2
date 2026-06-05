@@ -1,0 +1,320 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>MERCADREAM | Cinematic Intros Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+tailwind.config={darkMode:"class",theme:{extend:{colors:{"outline-variant":"#434933","surface-container-lowest":"#0d0e0f","surface-container":"#1f2020","on-surface":"#e3e2e2","primary-fixed":"#c0f500","on-primary":"#273500","primary":"#ffffff","secondary":"#c9c6c5","on-surface-variant":"#c4caac","background":"#040404","acid-green":"#c8ff00","surface":"#121414"},borderRadius:{"DEFAULT":"0px","lg":"0px","xl":"0px","full":"9999px"},fontFamily:{"body-lg":["IBM Plex Mono","monospace"],"body-md":["IBM Plex Mono","monospace"],"orbitron":["Orbitron","sans-serif"],"display-lg":["Space Grotesk","sans-serif"],"code-sm":["IBM Plex Mono","monospace"]}}}}
+</script>
+<style>
+body{background-color:#040404;color:#e3e2e2;font-family:"IBM Plex Mono",monospace;overflow-x:hidden;}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.25) 50%);background-size:100% 2px;pointer-events:none;z-index:100;opacity:0.1;}
+.grid-overlay{position:absolute;inset:0;background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.card-hover:hover .preview-overlay{opacity:1;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:#040404;}::-webkit-scrollbar-thumb{background:#c8ff00;}
+</style>
+</head>
+<body class="bg-background">
+<div class="scanlines"></div>
+
+<nav class="fixed top-0 w-full z-50 bg-[#040404]/80 backdrop-blur-xl border-b border-[#434933]">
+  <div class="flex justify-between items-center px-10 h-20 w-full max-w-[1440px] mx-auto">
+    <a href="index.html" class="font-bold text-2xl text-white tracking-tighter uppercase" style="font-family:Space Grotesk,sans-serif;">MERCADREAM</a>
+    <div class="flex items-center gap-4">
+      <span class="text-[#c8ff00] font-mono text-xs" id="gns-display">0 GNS</span>
+      <a href="assembly.html" class="px-4 py-2 border border-[#c8ff00] text-[#c8ff00] font-mono text-xs uppercase tracking-widest hover:bg-[#c8ff00] hover:text-black transition-all">ASSEMBLY</a>
+    </div>
+  </div>
+</nav>
+
+<main class="relative pt-20">
+
+  <!-- HERO -->
+  <section class="relative h-[70vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden border-b border-[#434933]">
+    <div class="grid-overlay"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#c8ff00]/5 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="relative z-10 space-y-6 max-w-4xl">
+      <div class="inline-block px-4 py-1 border border-[#c8ff00]/30 text-[#c8ff00] font-mono text-xs tracking-[0.2em] uppercase">FREE ASSETS // NO GNS REQUIRED</div>
+      <h1 style="font-family:Orbitron,sans-serif;font-size:clamp(48px,10vw,110px);line-height:1;color:#c8ff00;font-weight:900;text-transform:uppercase;filter:drop-shadow(0 0 20px rgba(200,255,0,0.4));">CINEMATIC<br>INTROS</h1>
+      <p class="font-mono text-[#c9c6c5] uppercase tracking-wide max-w-xl mx-auto">Free Video Intros for Your Productions. No GNS. No Signup. Download instantly.</p>
+    </div>
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+      <span class="text-[#c8ff00]/40 font-mono text-[10px] tracking-widest uppercase">SCROLL TO EXPLORE</span>
+      <div class="w-px h-12 bg-gradient-to-b from-[#c8ff00] to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- SEARCH + FILTER -->
+  <section class="sticky top-20 z-40 bg-[#040404] border-b border-[#434933]">
+    <div class="max-w-[1440px] mx-auto px-10 py-4 flex flex-col lg:flex-row items-center gap-4">
+      <div class="relative w-full lg:w-1/3">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#c9c6c5]">search</span>
+        <input id="search-input" class="w-full bg-[#0d0e0f] border-b border-[#434933] focus:border-[#c8ff00] focus:ring-0 text-white font-mono pl-10 py-3 uppercase placeholder:text-[#434933] transition-all outline-none" placeholder="SEARCH INTROS..." type="text">
+      </div>
+      <div class="flex flex-wrap items-center gap-2" id="category-tabs">
+        <button data-cat="cinematic" class="cat-btn px-4 py-1 bg-[#c8ff00] text-black font-bold font-mono text-xs uppercase">CINEMATIC</button>
+        <button data-cat="gaming" class="cat-btn px-4 py-1 border border-[#434933] text-[#c9c6c5] hover:text-[#c8ff00] hover:border-[#c8ff00] font-mono text-xs uppercase transition-all">GAMING</button>
+        <button data-cat="minimal" class="cat-btn px-4 py-1 border border-[#434933] text-[#c9c6c5] hover:text-[#c8ff00] hover:border-[#c8ff00] font-mono text-xs uppercase transition-all">MINIMAL</button>
+        <button data-cat="glitch" class="cat-btn px-4 py-1 border border-[#434933] text-[#c9c6c5] hover:text-[#c8ff00] hover:border-[#c8ff00] font-mono text-xs uppercase transition-all">GLITCH</button>
+        <button data-cat="dark" class="cat-btn px-4 py-1 border border-[#434933] text-[#c9c6c5] hover:text-[#c8ff00] hover:border-[#c8ff00] font-mono text-xs uppercase transition-all">DARK</button>
+        <button data-cat="energy" class="cat-btn px-4 py-1 border border-[#434933] text-[#c9c6c5] hover:text-[#c8ff00] hover:border-[#c8ff00] font-mono text-xs uppercase transition-all">ENERGY</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRID -->
+  <section class="px-10 py-16 max-w-[1440px] mx-auto">
+    <div class="flex items-end justify-between mb-8 border-l-4 border-[#c8ff00] pl-4">
+      <div>
+        <h2 style="font-family:Space Grotesk,sans-serif;font-size:28px;color:white;text-transform:uppercase;">FEATURED OPENERS</h2>
+        <p class="text-[#c9c6c5] font-mono text-xs uppercase tracking-widest" id="results-count">LOADING...</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="intros-grid">
+      <div class="col-span-3 text-center py-16 text-[#c8ff00] font-mono text-xs tracking-widest animate-pulse">SCANNING VAULT...</div>
+    </div>
+    <div class="mt-12 flex justify-center">
+      <button id="load-more-btn" onclick="loadMore()" class="px-12 py-4 border border-[#c8ff00] text-[#c8ff00] font-bold font-mono hover:bg-[#c8ff00] hover:text-black transition-all uppercase tracking-widest hidden">
+        LOAD MORE ASSETS
+      </button>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative py-24 border-t border-[#434933] overflow-hidden">
+    <div class="grid-overlay opacity-20"></div>
+    <div class="max-w-[1440px] mx-auto px-10 flex flex-col items-center text-center space-y-6 relative z-10">
+      <h2 style="font-family:Space Grotesk,sans-serif;font-size:clamp(32px,5vw,64px);color:white;text-transform:uppercase;line-height:1.1;">CREATED YOUR FILM?<br><span style="color:#c8ff00;">ADD YOUR INTRO IN ASSEMBLY</span></h2>
+      <p class="font-mono text-[#c9c6c5] uppercase tracking-widest max-w-xl">Seamlessly integrate your chosen intro into the MercaDream Assembly editor.</p>
+      <a href="assembly.html" class="inline-block px-16 py-5 bg-[#c8ff00] text-black font-black hover:bg-white hover:scale-105 transition-all uppercase" style="font-family:Space Grotesk,sans-serif;font-size:18px;">[ OPEN ASSEMBLY ]</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="w-full py-8 bg-[#0d0e0f] border-t border-[#434933]">
+  <div class="flex flex-col md:flex-row justify-between items-center px-10 gap-4 max-w-[1440px] mx-auto">
+    <div style="font-family:Space Grotesk,sans-serif;" class="text-xl text-white font-bold tracking-tighter uppercase">MERCADREAM</div>
+    <div class="flex gap-6 font-mono text-xs uppercase tracking-widest text-[#c9c6c5]">
+      <a href="index.html" class="hover:text-white">HOME</a>
+      <a href="studio.html" class="hover:text-white">STUDIO</a>
+      <a href="assembly.html" class="hover:text-white">ASSEMBLY</a>
+      <a href="stockreel.html" class="hover:text-white">STOCK REEL</a>
+    </div>
+    <div class="font-mono text-xs text-[#434933] uppercase">FREE SERVICE — POWERED BY PEXELS</div>
+  </div>
+</footer>
+
+<!-- Preview Modal -->
+<div id="preview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;">
+  <div style="max-width:900px;width:100%;padding:24px;">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+      <button onclick="closePreview()" style="background:transparent;border:1px solid #c8ff00;color:#c8ff00;padding:6px 16px;font-family:IBM Plex Mono,monospace;font-size:10px;cursor:pointer;letter-spacing:2px;">CLOSE ✕</button>
+    </div>
+    <video id="preview-video" controls style="width:100%;border:1px solid #434933;"></video>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────
+var currentCategory = 'cinematic';
+var currentPage = 1;
+var isLoading = false;
+var totalResults = 0;
+
+var QUERIES = {
+  cinematic: 'cinematic intro opener title sequence',
+  gaming: 'gaming intro neon energy',
+  minimal: 'minimal clean intro logo reveal',
+  glitch: 'glitch digital intro transition',
+  dark: 'dark cinematic dramatic intro',
+  energy: 'energy dynamic fast intro'
+};
+
+// ── BALANCE ────────────────────────────
+document.getElementById('gns-display').textContent =
+  (parseInt(localStorage.getItem('md_credits')||'0')).toLocaleString() + ' GNS';
+
+// ── CATEGORY TABS ──────────────────────
+document.querySelectorAll('.cat-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-btn').forEach(function(b) {
+      b.className = 'cat-btn px-4 py-1 border border-[#434933] text-[#c9c6c5] hover:text-[#c8ff00] hover:border-[#c8ff00] font-mono text-xs uppercase transition-all';
+    });
+    this.className = 'cat-btn px-4 py-1 bg-[#c8ff00] text-black font-bold font-mono text-xs uppercase';
+    currentCategory = this.getAttribute('data-cat');
+    currentPage = 1;
+    loadIntros(true);
+  });
+});
+
+// ── SEARCH ─────────────────────────────
+var searchTimer;
+document.getElementById('search-input').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function() { currentPage = 1; loadIntros(true); }, 700);
+});
+
+// ── LOAD INTROS ────────────────────────
+async function loadIntros(reset) {
+  if (isLoading) return;
+  isLoading = true;
+
+  var searchVal = document.getElementById('search-input').value.trim();
+  var query = searchVal || QUERIES[currentCategory] || 'cinematic intro';
+  var grid = document.getElementById('intros-grid');
+
+  if (reset) {
+    grid.innerHTML = '<div class="col-span-3 text-center py-16 text-[#c8ff00] font-mono text-xs tracking-widest animate-pulse">SCANNING VAULT...</div>';
+    document.getElementById('load-more-btn').classList.add('hidden');
+  }
+
+  try {
+    var res = await fetch('/api/pexels', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: query, per_page: 9, page: currentPage, orientation: 'landscape' })
+    });
+    var data = await res.json();
+
+    if (reset) grid.innerHTML = '';
+
+    if (!data.videos || !data.videos.length) {
+      if (reset) grid.innerHTML = '<div class="col-span-3 text-center py-16 text-[#c9c6c5] font-mono text-xs">NO RESULTS — TRY ANOTHER SEARCH</div>';
+      isLoading = false; return;
+    }
+
+    totalResults = data.total_results || 0;
+    document.getElementById('results-count').textContent =
+      'SHOWING ' + Math.min(currentPage * 9, totalResults) + ' OF ' + totalResults.toLocaleString() + ' RESULTS';
+
+    data.videos.forEach(function(v) {
+      var sdFile = v.video_files.find(function(f){ return f.quality==='sd'; }) || v.video_files[0];
+      var hdFile = v.video_files.find(function(f){ return f.quality==='hd'; }) || v.video_files[0];
+      var dur = v.duration || 0;
+      var durStr = dur < 60 ? dur + 's' : Math.floor(dur/60) + 'm ' + (dur%60) + 's';
+
+      var card = document.createElement('div');
+      card.className = 'group relative bg-[#0d0e0f] border border-[#434933] overflow-hidden transition-all duration-500 hover:border-[#c8ff00]';
+      card.innerHTML =
+        '<div class="aspect-video relative overflow-hidden bg-black cursor-pointer" onclick="previewVideo(''+sdFile.link+'')">' +
+        '<img src="'+v.image+'" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700" loading="lazy"/>' +
+        '<video class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none" src="'+sdFile.link+'" muted loop playsinline preload="none"></video>' +
+        '<div class="absolute inset-0 bg-gradient-to-t from-[#040404] to-transparent opacity-60"></div>' +
+        '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">' +
+        '<span class="material-symbols-outlined text-[#c8ff00]" style="font-size:48px;">play_circle</span></div>' +
+        '<div class="absolute top-3 right-3 px-2 py-1 bg-black/80 border border-white/10 font-mono text-white text-xs">'+durStr+'</div>' +
+        '</div>' +
+        '<div class="p-4 space-y-3">' +
+        '<div><h3 class="text-white uppercase group-hover:text-[#c8ff00] transition-colors font-bold text-sm">' + truncate(v.user.name || 'CINEMATIC INTRO', 30).toUpperCase() + '</h3>' +
+        '<p class="text-[#c9c6c5] font-mono text-[10px] uppercase tracking-widest mt-1">BY '+v.user.name.toUpperCase()+' · PEXELS FREE</p></div>' +
+        '<div class="flex gap-2">' +
+        '<button onclick="previewVideo(''+sdFile.link+'')" class="flex-1 py-2 border border-[#434933] hover:bg-white hover:text-black font-bold text-xs uppercase transition-all">PREVIEW</button>' +
+        '<a href="'+hdFile.link+'" download target="_blank" class="flex-1 py-2 border border-[#434933] hover:bg-white hover:text-black font-bold text-xs uppercase transition-all text-center">DOWNLOAD FREE</a>' +
+        '</div>' +
+        '<button onclick="useInAssembly(''+sdFile.link+'',''+v.user.name+'')" class="w-full py-3 bg-white text-black font-black text-sm hover:bg-[#c8ff00] transition-all uppercase">USE IN ASSEMBLY</button>' +
+        '</div>';
+
+      // Hover video
+      var vid = card.querySelector('video');
+      card.addEventListener('mouseenter', function(){ vid.load(); vid.play().catch(function(){}); });
+      card.addEventListener('mouseleave', function(){ vid.pause(); vid.currentTime=0; });
+
+      grid.appendChild(card);
+    });
+
+    // Show load more
+    if (totalResults > currentPage * 9) {
+      document.getElementById('load-more-btn').classList.remove('hidden');
+    } else {
+      document.getElementById('load-more-btn').classList.add('hidden');
+    }
+
+  } catch(e) {
+    if (reset) grid.innerHTML = '<div class="col-span-3 text-center py-16 text-red-400 font-mono text-xs">ERROR: ' + e.message + '</div>';
+  }
+  isLoading = false;
+}
+
+function loadMore() { currentPage++; loadIntros(false); }
+
+// ── PREVIEW ────────────────────────────
+function previewVideo(url) {
+  document.getElementById('preview-video').src = url;
+  document.getElementById('preview-modal').style.display = 'flex';
+}
+function closePreview() {
+  document.getElementById('preview-modal').style.display = 'none';
+  document.getElementById('preview-video').pause();
+  document.getElementById('preview-video').src = '';
+}
+document.getElementById('preview-modal').addEventListener('click', function(e) {
+  if (e.target === this) closePreview();
+});
+
+// ── USE IN ASSEMBLY ───────────────────
+function useInAssembly(url, name) {
+  var scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+  scenes.unshift({ videoUrl: url, title: 'INTRO: ' + name, sceneNumber: 0 });
+  localStorage.setItem('md_6scenes', JSON.stringify(scenes));
+  window.location.href = 'assembly.html';
+}
+
+// ── HELPERS ───────────────────────────
+function truncate(str, n) { return str.length > n ? str.slice(0,n) + '...' : str; }
+
+
+// ── PAID DOWNLOAD ─────────────────────
+function downloadIntro(e, url, name) {
+  e.stopPropagation();
+  var gns = parseInt(localStorage.getItem('md_credits') || '0');
+  if (gns < 50) {
+    alert('INSUFFICIENT GNS — Need 50 GNS\nVisit pricing.html to top up.');
+    return;
+  }
+  // Deduct
+  var newGns = gns - 50;
+  localStorage.setItem('md_credits', newGns);
+  document.getElementById('gns-display').textContent = newGns.toLocaleString() + ' GNS';
+  // Deduct from Firebase if logged in
+  try {
+    var uid = localStorage.getItem('md_user_id');
+    if (uid && typeof firebase !== 'undefined') {
+      firebase.firestore().collection('users').doc(uid).update({ credits: newGns });
+      firebase.firestore().collection('intro_downloads').add({
+        uid: uid, url: url, name: name,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  } catch(e) {}
+  // Download
+  var a = document.createElement('a');
+  a.href = url; a.download = 'MERCADREAM_INTRO_' + Date.now() + '.mp4';
+  a.target = '_blank'; a.click();
+}
+
+// ── PAID USE IN ASSEMBLY ──────────────
+function paidUseInAssembly(url, name) {
+  var gns = parseInt(localStorage.getItem('md_credits') || '0');
+  if (gns < 50) {
+    alert('INSUFFICIENT GNS — Need 50 GNS\nVisit pricing.html to top up.');
+    return;
+  }
+  var newGns = gns - 50;
+  localStorage.setItem('md_credits', newGns);
+  document.getElementById('gns-display').textContent = newGns.toLocaleString() + ' GNS';
+  try {
+    var uid = localStorage.getItem('md_user_id');
+    if (uid && typeof firebase !== 'undefined') {
+      firebase.firestore().collection('users').doc(uid).update({ credits: newGns });
+    }
+  } catch(e) {}
+  useInAssembly(url, name);
+}
+
+// ── INIT ──────────────────────────────
+window.addEventListener('load', function() { loadIntros(true); });
+</script>
+</body></html>
