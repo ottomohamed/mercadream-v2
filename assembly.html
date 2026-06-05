@@ -70,7 +70,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-
+<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
 </head>
 <body class="h-screen w-screen flex flex-col select-none overflow-hidden"><script src="md-engine.js"></script>
 
@@ -176,131 +176,6 @@ const db = firebase.firestore();
             </button>
         </div>
 
-        <!-- NEURAL SCORE -->
-        <div class="p-panel-padding border-b border-outline-variant/30 bg-amber-950/30">
-            <h3 class="font-code-data text-xs text-amber-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">music_note</span> Neural Score
-                <span class="text-[8px] bg-amber-500/20 text-amber-400 px-1 rounded border border-amber-500/30">FREE</span>
-            </h3>
-        </div>
-        <div class="p-3 space-y-2 text-xs border-b border-outline-variant/20">
-            <select id="scoreMood" class="w-full bg-surface border border-outline-variant/40 rounded p-1.5 text-white text-xs focus:border-amber-500 focus:ring-0">
-                <option value="epic cinematic orchestral, dramatic strings, powerful drums">EPIC CINEMATIC</option>
-                <option value="dark noir jazz, mysterious, slow tempo, saxophone">DARK NOIR</option>
-                <option value="cyberpunk electronic, synth, dark beats, neon atmosphere">CYBERPUNK</option>
-                <option value="emotional piano, sad, slow, melancholic strings">EMOTIONAL</option>
-                <option value="action adventure, fast tempo, intense percussion, heroic">ACTION</option>
-                <option value="ambient documentary, subtle, calm, piano and strings">DOCUMENTARY</option>
-                <option value="comedy upbeat, fun, light, playful instruments">COMEDY</option>
-                <option value="horror suspense, creepy, tense, dark atmosphere">HORROR</option>
-            </select>
-            <div class="flex gap-2">
-                <button id="generateScoreBtn" onclick="generateNeuralScore()"
-                    class="flex-1 py-2 rounded bg-amber-500/80 hover:bg-amber-400 text-black font-bold transition-all text-xs flex items-center justify-center gap-1">
-                    <span class="material-symbols-outlined text-sm">music_note</span> GENERATE
-                </button>
-                <button id="addScoreBtn" onclick="addScoreToTimeline()"
-                    class="flex-1 py-2 rounded bg-surface-container-high border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 font-bold transition-all text-xs hidden">
-                    ADD TO A1
-                </button>
-            </div>
-            <div id="scoreStatus" class="text-[10px] text-on-surface-variant font-code-data hidden">GENERATING...</div>
-            <audio id="scorePreview" controls class="w-full hidden" style="height:28px;"></audio>
-        </div>
-
-        <!-- NEURAL IMAGE -->
-        <div class="p-panel-padding border-b border-outline-variant/30 bg-blue-950/30">
-            <h3 class="font-code-data text-xs text-blue-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">image</span> Neural Image
-                <span class="text-[8px] bg-blue-500/20 text-blue-400 px-1 rounded border border-blue-500/30">FREE</span>
-            </h3>
-        </div>
-        <div class="p-3 space-y-2 text-xs border-b border-outline-variant/20">
-            <input id="imagePrompt" type="text" placeholder="Describe the image..."
-                class="w-full bg-surface border border-outline-variant/40 rounded p-1.5 text-white text-xs focus:border-blue-500 focus:ring-0 placeholder:text-on-surface-variant/40"/>
-            <div class="grid grid-cols-2 gap-1">
-                <select id="imageModel" class="bg-surface border border-outline-variant/40 rounded p-1 text-white text-[10px] focus:ring-0">
-                    <option value="flux">FLUX</option>
-                    <option value="flux-realism">FLUX REALISM</option>
-                    <option value="flux-cinematic">FLUX CINEMATIC</option>
-                    <option value="turbo">TURBO</option>
-                </select>
-                <select id="imageRatio" class="bg-surface border border-outline-variant/40 rounded p-1 text-white text-[10px] focus:ring-0">
-                    <option value="1280x720">16:9</option>
-                    <option value="720x1280">9:16</option>
-                    <option value="1024x1024">1:1</option>
-                </select>
-            </div>
-            <button onclick="generateNeuralImage()" id="generateImageBtn"
-                class="w-full py-2 rounded bg-blue-500/80 hover:bg-blue-400 text-black font-bold transition-all text-xs flex items-center justify-center gap-1">
-                <span class="material-symbols-outlined text-sm">auto_awesome</span> GENERATE IMAGE
-            </button>
-            <div id="imageResult" class="hidden space-y-2">
-                <img id="generatedImage" class="w-full rounded border border-blue-500/30" src="" alt="Generated"/>
-                <div class="flex gap-1">
-                    <button onclick="downloadGeneratedImage()" class="flex-1 py-1 rounded bg-surface-container-high border border-blue-500/30 text-blue-400 text-[10px] font-bold">DOWNLOAD</button>
-                    <button onclick="useImageAsOverlay()" class="flex-1 py-1 rounded bg-blue-500/80 text-black text-[10px] font-bold">USE AS BG</button>
-                </div>
-            </div>
-            <div id="imageStatus" class="text-[10px] font-code-data text-on-surface-variant hidden"></div>
-        </div>
-
-        <!-- NEURAL TRANSFORM -->
-        <div class="p-panel-padding border-b border-outline-variant/30 bg-pink-950/30">
-            <h3 class="font-code-data text-xs text-pink-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">auto_fix_high</span> Neural Transform
-                <span class="text-[8px] bg-pink-500/20 text-pink-400 px-1 rounded border border-pink-500/30">FREE</span>
-            </h3>
-        </div>
-        <div class="p-3 space-y-2 text-xs border-b border-outline-variant/20">
-            <input type="file" id="transformImageInput" accept="image/*"
-                class="w-full bg-surface border border-outline-variant/40 rounded p-1 text-white text-[10px] file:bg-surface-container-high file:border-0 file:text-pink-400 file:text-[9px] file:mr-2 file:px-2 file:py-1"/>
-            <div id="transformPreviewWrap" class="hidden">
-                <img id="transformSourcePreview" class="w-full rounded border border-outline-variant/30 mb-1" src="" alt="source"/>
-            </div>
-            <select id="transformStyle" class="w-full bg-surface border border-outline-variant/40 rounded p-1 text-white text-[10px] focus:ring-0"
-                onchange="if(this.value) document.getElementById('transformInstruction').value=this.value;">
-                <option value="">Custom Instruction</option>
-                <option value="make it look like a cinematic film still, dramatic lighting">Cinematic Film</option>
-                <option value="transform to cyberpunk aesthetic, neon lights, dark city">Cyberpunk</option>
-                <option value="convert to black and white noir style, high contrast">Noir B&W</option>
-                <option value="make it look like golden hour sunset, warm tones">Golden Hour</option>
-                <option value="add dramatic rain and storm atmosphere">Storm & Rain</option>
-                <option value="convert to anime art style">Anime Style</option>
-            </select>
-            <input id="transformInstruction" type="text" placeholder="or type instruction..."
-                class="w-full bg-surface border border-outline-variant/40 rounded p-1.5 text-white text-[10px] focus:border-pink-500 focus:ring-0 placeholder:text-on-surface-variant/40"/>
-            <button onclick="generateTransform()" id="transformBtn"
-                class="w-full py-2 rounded bg-pink-500/80 hover:bg-pink-400 text-black font-bold transition-all text-xs flex items-center justify-center gap-1">
-                <span class="material-symbols-outlined text-sm">transform</span> TRANSFORM
-            </button>
-            <div id="transformStatus" class="text-[10px] font-code-data text-on-surface-variant hidden"></div>
-            <div id="transformResult" class="hidden space-y-1">
-                <img id="transformedImage" class="w-full rounded border border-pink-500/30" src="" alt="transformed"/>
-                <div class="flex gap-1">
-                    <button onclick="downloadTransformed()" class="flex-1 py-1 rounded bg-surface-container-high border border-pink-500/30 text-pink-400 text-[10px] font-bold">SAVE</button>
-                    <button onclick="addTransformedToTimeline()" class="flex-1 py-1 rounded bg-pink-500/80 text-black text-[10px] font-bold">TO V2</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3D TEXT -->
-        <div class="p-panel-padding border-b border-outline-variant/30 bg-purple-950/30">
-            <h3 class="font-code-data text-xs text-purple-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">format_size</span> 3D Text Title
-                <span class="text-[8px] bg-purple-500/20 text-purple-400 px-1 rounded border border-purple-500/30">FREE</span>
-            </h3>
-        </div>
-        <div class="p-3 space-y-2 text-xs border-b border-outline-variant/20">
-            <p class="text-on-surface-variant text-[10px]">Generate cinematic 3D title text</p>
-            <a href="text3d.html" target="_blank"
-                class="w-full py-2 rounded bg-purple-500/80 hover:bg-purple-400 text-black font-bold transition-all text-xs flex items-center justify-center gap-1 no-underline">
-                <span class="material-symbols-outlined text-sm">open_in_new</span> OPEN 3D TEXT STUDIO
-            </a>
-            <p class="text-[9px] text-on-surface-variant/60">Create your title → Download PNG → Drag to V2 track</p>
-        </div>
-
-        <!-- EXPORT -->
         <div class="p-panel-padding border-b border-outline-variant/30 bg-surface-container-high/60">
             <h3 class="font-code-data text-xs text-primary-fixed font-bold uppercase tracking-wider flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">download_for_offline</span> Export Video
@@ -460,7 +335,6 @@ const db = firebase.firestore();
         syncUserCredits();
         loadScenesFromStudio();
         checkActiveStudioStream();
-        checkIncomingAsset();
         setupExportButton();
         setupVolumeControls();
         window.addEventListener('storage', (e) => {
@@ -1147,484 +1021,225 @@ const db = firebase.firestore();
         if (!document.fullscreenElement) { mainVideoPlayer.requestFullscreen().catch(()=>{}); }
     });
 
-
-
-    // ==========================================
-    // NEURAL TRANSFORM - Image Style Transfer
-    // via HuggingFace Inference API (free)
-    // ==========================================
-    var transformSourceDataUrl = null;
-    var transformedBlobUrl = null;
-
-    document.getElementById('transformImageInput').addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-            transformSourceDataUrl = ev.target.result;
-            var preview = document.getElementById('transformSourcePreview');
-            preview.src = transformSourceDataUrl;
-            document.getElementById('transformPreviewWrap').classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-    });
-
-    document.getElementById('transformStyle').addEventListener('change', function() {
-        if (this.value) {
-            document.getElementById('transformInstruction').value = this.value;
+    // ── FIREBASE BALANCE SYNC ─────────────────────────
+    try {
+        if (typeof firebase !== 'undefined') {
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+                        if (doc.exists) {
+                            var bal = doc.data().credits || 0;
+                            localStorage.setItem('md_credits', bal);
+                            localStorage.setItem('md_user_id', user.uid);
+                            document.getElementById('editorCreditsDisplay').textContent = bal.toLocaleString();
+                        }
+                    });
+                }
+            });
         }
-    });
+    } catch(e) {}
 
-    async function generateTransform() {
-        if (!transformSourceDataUrl) {
-            showTransformStatus('ERROR: UPLOAD AN IMAGE FIRST', '#f472b6');
-            return;
-        }
-        var instruction = document.getElementById('transformInstruction').value.trim();
-        if (!instruction) {
-            showTransformStatus('ERROR: ENTER INSTRUCTION', '#f472b6');
-            return;
-        }
-        var btn = document.getElementById('transformBtn');
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span>';
-        btn.disabled = true;
-        document.getElementById('transformResult').classList.add('hidden');
-        showTransformStatus('CALLING HF INFERENCE API...', '#f9a8d4');
-
+    // ── STUDIO SCENES AUTO-LOAD ───────────────────────
+    function loadScenesFromStudio() {
         try {
-            // Convert base64 to blob
-            var base64Data = transformSourceDataUrl.split(',')[1];
-            var mimeType = transformSourceDataUrl.split(';')[0].split(':')[1];
-            var byteChars = atob(base64Data);
-            var byteArr = new Uint8Array(byteChars.length);
-            for (var i = 0; i < byteChars.length; i++) byteArr[i] = byteChars.charCodeAt(i);
-            var imageBlob = new Blob([byteArr], { type: mimeType });
-
-            // Use Pollinations image API with the instruction as style prompt
-            // This uses the instruct approach: describe what to do to the image
-            var stylePrompt = encodeURIComponent(instruction + ', high quality, detailed, professional');
-            var transformedUrl = 'https://image.pollinations.ai/prompt/' + stylePrompt
-                + '?width=1280&height=720&model=flux-realism&nologo=true&seed=' + Math.floor(Math.random() * 99999);
-
-            showTransformStatus('GENERATING TRANSFORMED IMAGE...', '#f9a8d4');
-
-            // Load the transformed image
-            var img = document.getElementById('transformedImage');
-            img.onload = function() {
-                transformedBlobUrl = transformedUrl;
-                document.getElementById('transformResult').classList.remove('hidden');
-                showTransformStatus('TRANSFORM COMPLETE', '#f472b6');
-                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span> NEURAL TRANSFORM COMPLETE';
-                setTimeout(function() {
-                    connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-                }, 3000);
-            };
-            img.onerror = function() {
-                showTransformStatus('ERROR: TRANSFORM FAILED', '#ef4444');
-            };
-            img.src = transformedUrl;
-
-        } catch(e) {
-            showTransformStatus('ERROR: ' + e.message, '#ef4444');
-        } finally {
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm">transform</span> TRANSFORM';
-            btn.disabled = false;
-        }
+            var scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+            if (!scenes.length) return;
+            scenes.sort((a,b) => (a.sceneNumber||0)-(b.sceneNumber||0));
+            var offset = 0;
+            scenes.forEach(function(scene) {
+                if (scene.videoUrl && scene.videoUrl.length > 10) {
+                    var name = (scene.title || 'Scene_' + scene.sceneNumber) + '.mp4';
+                    handleMediaImport(scene.videoUrl, 'video', name, true);
+                    createClipOnTrack(v1Track, scene.videoUrl, name, 'video', 10, offset);
+                    offset += 10;
+                }
+            });
+            if (offset > 0) {
+                document.getElementById('connectionStatus').innerHTML = '<span class="w-2 h-2 bg-acid animate-pulse"></span> ' + (offset/10) + ' SCENES_LOADED';
+                setTimeout(() => { document.getElementById('connectionStatus').innerHTML = '<span class="w-2 h-2 bg-acid animate-pulse"></span> PIPELINE_STABLE'; }, 3000);
+            }
+        } catch(e) { console.error(e); }
     }
 
-    function showTransformStatus(msg, color) {
-        var el = document.getElementById('transformStatus');
-        el.textContent = msg;
-        el.style.color = color || '#f9a8d4';
-        el.classList.remove('hidden');
-    }
-
-    function downloadTransformed() {
-        if (!transformedBlobUrl) return;
-        var a = document.createElement('a');
-        a.href = transformedBlobUrl;
-        a.download = 'MERCADREAM_TRANSFORM_' + Date.now() + '.jpg';
-        a.target = '_blank';
-        a.click();
-    }
-
-    function addTransformedToTimeline() {
-        if (!transformedBlobUrl) return;
-        var instruction = document.getElementById('transformInstruction').value || 'Transform';
-        createClipOnTrack(v2Track, transformedBlobUrl, 'TRANSFORM_' + instruction.slice(0,15) + '.jpg', 'video', 5, globalTime);
-        connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span> TRANSFORM ADDED TO V2';
-        setTimeout(function() {
-            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-        }, 2000);
-    }
-
-    // ==========================================
-    // NEURAL IMAGE - Free Image Generator
-    // via Pollinations.AI (no key required)
-    // ==========================================
-    var currentImageUrl = null;
-
-    async function generateNeuralImage() {
-        var btn = document.getElementById('generateImageBtn');
-        var status = document.getElementById('imageStatus');
-        var result = document.getElementById('imageResult');
-        var prompt = document.getElementById('imagePrompt').value.trim();
-        var model = document.getElementById('imageModel').value;
-        var ratio = document.getElementById('imageRatio').value.split('x');
-        var width = parseInt(ratio[0]);
-        var height = parseInt(ratio[1]);
-
-        if (!prompt) {
-            status.textContent = 'ERROR: ENTER A PROMPT';
-            status.style.color = '#ef4444';
-            status.classList.remove('hidden');
-            return;
-        }
-
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> GENERATING...';
-        btn.disabled = true;
-        status.textContent = 'CALLING POLLINATIONS IMAGE ENGINE...';
-        status.style.color = '#93c5fd';
-        status.classList.remove('hidden');
-        result.classList.add('hidden');
-
-        try {
-            // Pollinations.AI - FREE, no key needed
-            var encodedPrompt = encodeURIComponent(prompt + ', cinematic, high quality, 8k');
-            var imageUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt
-                + '?width=' + width
-                + '&height=' + height
-                + '&model=' + model
-                + '&nologo=true'
-                + '&seed=' + Math.floor(Math.random() * 999999);
-
-            // Load image
-            var img = document.getElementById('generatedImage');
-            img.onload = function() {
-                currentImageUrl = imageUrl;
-                result.classList.remove('hidden');
-                status.textContent = 'IMAGE READY';
-                status.style.color = '#93c5fd';
-                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> NEURAL IMAGE GENERATED';
-                setTimeout(function() {
-                    connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-                }, 3000);
-            };
-            img.onerror = function() {
-                status.textContent = 'ERROR: IMAGE FAILED — TRY AGAIN';
-                status.style.color = '#ef4444';
-            };
-            img.src = imageUrl;
-
-        } catch(e) {
-            status.textContent = 'ERROR: ' + e.message;
-            status.style.color = '#ef4444';
-        } finally {
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm">auto_awesome</span> GENERATE IMAGE';
-            btn.disabled = false;
-        }
-    }
-
-    function downloadGeneratedImage() {
-        if (!currentImageUrl) return;
-        var a = document.createElement('a');
-        a.href = currentImageUrl;
-        a.download = 'MERCADREAM_IMAGE_' + Date.now() + '.jpg';
-        a.target = '_blank';
-        a.click();
-    }
-
-    function useImageAsOverlay() {
-        if (!currentImageUrl) return;
-        var prompt = document.getElementById('imagePrompt').value || 'Image';
-        // Add as video clip on V2 track (background/overlay)
-        createClipOnTrack(v2Track, currentImageUrl, 'IMG_' + prompt.slice(0,20) + '.jpg', 'video', 5, globalTime);
-        connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> IMAGE ADDED TO V2 TRACK';
-        setTimeout(function() {
-            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-        }, 2000);
-    }
-
-
-    // ==========================================
-    // RECEIVE FROM OTHER PAGES
-    // Stockreel, Glitch Engine etc use:
-    // localStorage.setItem('md_send_to_assembly', JSON.stringify({url, type, name}))
-    // ==========================================
+    // ── INCOMING ASSET ────────────────────────────────
     function checkIncomingAsset() {
         try {
-            var incoming = localStorage.getItem('md_send_to_assembly');
-            if (!incoming) return;
+            var raw = localStorage.getItem('md_send_to_assembly');
+            if (!raw) return;
             localStorage.removeItem('md_send_to_assembly');
-            var asset = JSON.parse(incoming);
+            var asset = JSON.parse(raw);
             if (!asset.url) return;
-            if (asset.type === 'audio') {
-                createClipOnTrack(a1Track, asset.url, asset.name || 'Audio.mp3', 'audio', asset.duration || 30, globalTime);
-            } else {
-                createClipOnTrack(v1Track, asset.url, asset.name || 'Video.mp4', 'video', asset.duration || 10, globalTime);
-            }
-            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ASSET LOADED: ' + (asset.name || 'Media');
-            setTimeout(function() {
-                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-            }, 3000);
+            var track = asset.type === 'audio' ? a1Track : v1Track;
+            handleMediaImport(asset.url, asset.type||'video', asset.name||'Asset', false);
+            createClipOnTrack(track, asset.url, asset.name||'Asset', asset.type||'video', asset.duration||10, globalTime);
         } catch(e) {}
     }
 
-    // ==========================================
-    // NEURAL SCORE - Cinematic Music Generator
-    // ==========================================
-    var currentScoreBlobUrl = null;
+    // ── RENDER TO CANVAS ──────────────────────────────
+    function renderClipToCanvas(url, canvas, ctx, audioCtx, dest) {
+        return new Promise(resolve => {
+            var vid = document.createElement('video');
+            vid.crossOrigin = 'anonymous';
+            vid.src = url; vid.muted = true;
+            try {
+                var src = audioCtx.createMediaElementSource(vid);
+                src.connect(dest); src.connect(audioCtx.destination);
+                vid.muted = false;
+            } catch(e) {}
+            vid.addEventListener('canplay', function() {
+                vid.play().catch(()=>{});
+                function draw() {
+                    if (vid.ended || vid.paused) { resolve(); return; }
+                    ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }, {once:true});
+            vid.addEventListener('ended', resolve, {once:true});
+            vid.addEventListener('error', resolve, {once:true});
+            vid.load();
+        });
+    }
 
-    async function generateNeuralScore() {
-        var btn = document.getElementById('generateScoreBtn');
-        var status = document.getElementById('scoreStatus');
-        var preview = document.getElementById('scorePreview');
-        var addBtn = document.getElementById('addScoreBtn');
-        var mood = document.getElementById('scoreMood').value;
-
-        btn.textContent = 'GENERATING...';
+    // ── EXPORT BUTTON ─────────────────────────────────
+    document.getElementById('startExportBtn').addEventListener('click', async function() {
+        var btn = this;
+        btn.textContent = 'SCANNING_TIMELINE...';
         btn.disabled = true;
-        status.classList.remove('hidden');
-        status.textContent = 'CALLING NEURAL MUSIC ENGINE...';
-        preview.classList.add('hidden');
-        addBtn.classList.add('hidden');
 
-        try {
-            // Generate music description via Pollinations TTS with musical voice
-            var prompt = 'Compose and perform this music description as an instrumental piece: ' + mood + '. Duration: 30 seconds. No vocals, pure instrumental.';
-
-            var res = await fetch('https://api.pollinations.ai/v1/audio/speech', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: 'tts-1',
-                    input: prompt,
-                    voice: 'onyx',
-                    speed: 0.8
-                })
-            });
-
-            if (!res.ok) {
-                // Fallback to text.pollinations.ai
-                status.textContent = 'TRYING FALLBACK ENGINE...';
-                var r2 = await fetch('https://text.pollinations.ai/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: 'openai-audio',
-                        voice: 'onyx',
-                        modalities: ['audio'],
-                        audio: { voice: 'onyx', format: 'mp3' },
-                        messages: [{ role: 'user', content: 'Describe this cinematic music scene in an atmospheric, dramatic way: ' + mood }]
-                    })
+        var allClips = [];
+        ['v1Track','v2Track','a1Track','a2Track','t1Track'].forEach(function(id) {
+            var track = document.getElementById(id);
+            if (!track) return;
+            Array.from(track.querySelectorAll('.timeline-clip')).forEach(function(clip) {
+                allClips.push({
+                    src: clip.dataset.src||'',
+                    type: clip.dataset.type||'video',
+                    start: parseFloat(clip.dataset.startSeconds)||0,
+                    duration: parseFloat(clip.dataset.duration)||5,
+                    trackId: id
                 });
-                if (!r2.ok) throw new Error('Score generation failed');
-                var d = await r2.json();
-                var b64 = d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.audio && d.choices[0].message.audio.data;
-                if (!b64) throw new Error('No audio data');
-                var bin = atob(b64);
-                var bytes = new Uint8Array(bin.length);
-                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-                currentScoreBlobUrl = URL.createObjectURL(new Blob([bytes], { type: 'audio/mp3' }));
-            } else {
-                var blob = await res.blob();
-                currentScoreBlobUrl = URL.createObjectURL(blob);
-            }
-
-            preview.src = currentScoreBlobUrl;
-            preview.classList.remove('hidden');
-            addBtn.classList.remove('hidden');
-            status.textContent = 'SCORE READY - PREVIEW OR ADD TO TIMELINE';
-            status.style.color = '#c3f432';
-
-            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> NEURAL SCORE GENERATED';
-            setTimeout(function() {
-                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-            }, 3000);
-
-        } catch(e) {
-            status.textContent = 'ERROR: ' + e.message;
-            status.style.color = '#ef4444';
-        } finally {
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm">music_note</span> GENERATE';
-            btn.disabled = false;
-        }
-    }
-
-    function addScoreToTimeline() {
-        if (!currentScoreBlobUrl) return;
-        var mood = document.getElementById('scoreMood');
-        var moodName = mood.options[mood.selectedIndex].text;
-        createClipOnTrack(a1Track, currentScoreBlobUrl, 'NEURAL_SCORE_' + moodName + '.mp3', 'audio', 30, globalTime);
-        connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> SCORE ADDED TO A1 TRACK';
-        setTimeout(function() {
-            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-        }, 2000);
-    }
-
-
-    // ==========================================
-    // RECEIVE FROM OTHER PAGES
-    // Stockreel, Glitch Engine etc use:
-    // localStorage.setItem('md_send_to_assembly', JSON.stringify({url, type, name}))
-    // ==========================================
-    function checkIncomingAsset() {
-        try {
-            var incoming = localStorage.getItem('md_send_to_assembly');
-            if (!incoming) return;
-            localStorage.removeItem('md_send_to_assembly');
-            var asset = JSON.parse(incoming);
-            if (!asset.url) return;
-            if (asset.type === 'audio') {
-                createClipOnTrack(a1Track, asset.url, asset.name || 'Audio.mp3', 'audio', asset.duration || 30, globalTime);
-            } else {
-                createClipOnTrack(v1Track, asset.url, asset.name || 'Video.mp4', 'video', asset.duration || 10, globalTime);
-            }
-            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ASSET LOADED: ' + (asset.name || 'Media');
-            setTimeout(function() {
-                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
-            }, 3000);
-        } catch(e) {}
-    }
-
-    // ==========================================
-    // NEURAL SCORE
-    // ==========================================
-    var currentScoreBlobUrl = null;
-    async function generateNeuralScore() {
-        var btn = document.getElementById('generateScoreBtn');
-        var status = document.getElementById('scoreStatus');
-        var mood = document.getElementById('scoreMood').value;
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">sync</span> ...';
-        btn.disabled = true;
-        status.textContent = 'CALLING POLLINATIONS...';
-        status.classList.remove('hidden');
-        try {
-            var res = await fetch('https://api.pollinations.ai/v1/audio/speech', {
-                method: 'POST', headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({model:'tts-1', input: mood, voice:'onyx', speed:0.8})
             });
-            if (!res.ok) throw new Error('API ' + res.status);
-            var blob = await res.blob();
-            currentScoreBlobUrl = URL.createObjectURL(blob);
-            var preview = document.getElementById('scorePreview');
-            preview.src = currentScoreBlobUrl;
-            preview.classList.remove('hidden');
-            document.getElementById('addScoreBtn').classList.remove('hidden');
-            status.textContent = 'SCORE READY';
-            status.style.color = '#c3f432';
+        });
+
+        var videoClips = allClips.filter(c => c.type==='video' && c.src).sort((a,b)=>a.start-b.start);
+        if (!videoClips.length) {
+            alert('NO VIDEO CLIPS — Add clips to timeline first.');
+            btn.textContent = 'RENDER_MASTER_SEQUENCE';
+            btn.disabled = false;
+            return;
+        }
+
+        btn.textContent = 'RENDERING ' + videoClips.length + ' CLIPS...';
+        try {
+            var canvas = document.createElement('canvas');
+            canvas.width = 1280; canvas.height = 720;
+            var ctx = canvas.getContext('2d');
+            var audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+            var dest = audioCtx.createMediaStreamDestination();
+            var stream = canvas.captureStream(30);
+            stream.addTrack(dest.stream.getAudioTracks()[0]);
+            var mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : 'video/webm';
+            var rec = new MediaRecorder(stream, {mimeType: mime, videoBitsPerSecond: 5000000});
+            var chunks = [];
+            rec.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+            rec.onstop = function() {
+                var blob = new Blob(chunks, {type:'video/webm'});
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'MERCADREAM_' + Date.now() + '.webm';
+                a.click();
+                btn.textContent = 'RENDER_MASTER_SEQUENCE';
+                btn.disabled = false;
+                document.getElementById('connectionStatus').innerHTML = '<span class="w-2 h-2 bg-acid animate-pulse"></span> EXPORT_COMPLETE ✓';
+            };
+            rec.start(100);
+            for (var i=0; i<videoClips.length; i++) {
+                btn.textContent = 'RENDERING ' + (i+1) + '/' + videoClips.length + '...';
+                await renderClipToCanvas(videoClips[i].src, canvas, ctx, audioCtx, dest);
+            }
+            rec.stop();
         } catch(e) {
-            status.textContent = 'ERROR: ' + e.message;
-            status.style.color = '#ef4444';
-        } finally {
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm">music_note</span> GENERATE';
+            alert('RENDER ERROR: ' + e.message);
+            btn.textContent = 'RENDER_MASTER_SEQUENCE';
             btn.disabled = false;
         }
-    }
-    function addScoreToTimeline() {
-        if (!currentScoreBlobUrl) return;
-        var mood = document.getElementById('scoreMood');
-        var name = mood.options[mood.selectedIndex].text;
-        createClipOnTrack(a1Track, currentScoreBlobUrl, 'SCORE_' + name + '.mp3', 'audio', 30, globalTime);
-    }
+    });
 
-    // ==========================================
-    // NEURAL IMAGE
-    // ==========================================
-    var currentImageUrl = null;
-    async function generateNeuralImage() {
-        var btn = document.getElementById('generateImageBtn');
-        var status = document.getElementById('imageStatus');
-        var result = document.getElementById('imageResult');
-        var prompt = document.getElementById('imagePrompt').value.trim();
-        var model = document.getElementById('imageModel').value;
-        var ratio = document.getElementById('imageRatio').value.split('x');
-        if (!prompt) { status.textContent = 'ENTER A PROMPT'; status.style.color='#ef4444'; status.classList.remove('hidden'); return; }
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">sync</span> GENERATING...';
-        btn.disabled = true;
-        status.textContent = 'CALLING POLLINATIONS IMAGE...';
-        status.style.color = '#93c5fd';
-        status.classList.remove('hidden');
-        result.classList.add('hidden');
-        var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt + ', cinematic, high quality')
-            + '?width=' + ratio[0] + '&height=' + ratio[1] + '&model=' + model + '&nologo=true&seed=' + Math.floor(Math.random()*99999);
-        var img = document.getElementById('generatedImage');
-        img.onload = function() {
-            currentImageUrl = url;
-            result.classList.remove('hidden');
-            status.textContent = 'IMAGE READY';
-            status.style.color = '#93c5fd';
-        };
-        img.onerror = function() { status.textContent = 'ERROR — TRY AGAIN'; status.style.color = '#ef4444'; };
-        img.src = url;
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">auto_awesome</span> GENERATE IMAGE';
-        btn.disabled = false;
-    }
-    function downloadGeneratedImage() {
-        if (!currentImageUrl) return;
-        var a = document.createElement('a'); a.href = currentImageUrl;
-        a.download = 'MERCADREAM_IMAGE_' + Date.now() + '.jpg';
-        a.target = '_blank'; a.click();
-    }
-    function useImageAsOverlay() {
-        if (!currentImageUrl) return;
-        var p = document.getElementById('imagePrompt').value || 'Image';
-        createClipOnTrack(v2Track, currentImageUrl, 'IMG_' + p.slice(0,15) + '.jpg', 'video', 5, globalTime);
-    }
-
-    // ==========================================
-    // NEURAL TRANSFORM
-    // ==========================================
-    var transformSourceDataUrl = null;
-    var transformedBlobUrl = null;
+    // ── NEURAL TRANSFORM ──────────────────────────────
     document.getElementById('transformImageInput').addEventListener('change', function(e) {
         var file = e.target.files[0];
         if (!file) return;
         var reader = new FileReader();
         reader.onload = function(ev) {
-            transformSourceDataUrl = ev.target.result;
-            var preview = document.getElementById('transformSourcePreview');
-            preview.src = transformSourceDataUrl;
+            document.getElementById('transformSourcePreview').src = ev.target.result;
             document.getElementById('transformPreviewWrap').classList.remove('hidden');
         };
         reader.readAsDataURL(file);
     });
+
     async function generateTransform() {
-        var instruction = document.getElementById('transformInstruction').value.trim();
-        if (!instruction) { showTransformStatus('ENTER INSTRUCTION', '#f472b6'); return; }
+        var instruction = document.getElementById('transformStyle').value;
         var btn = document.getElementById('transformBtn');
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">sync</span>';
+        btn.textContent = 'PROCESSING...';
         btn.disabled = true;
         document.getElementById('transformResult').classList.add('hidden');
-        showTransformStatus('GENERATING...', '#f9a8d4');
-        var stylePrompt = encodeURIComponent(instruction + ', high quality, professional');
-        var url = 'https://image.pollinations.ai/prompt/' + stylePrompt
+        document.getElementById('transformStatus').textContent = 'CALLING_NEURAL_ENGINE...';
+        document.getElementById('transformStatus').classList.remove('hidden');
+        var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(instruction + ', high quality, cinematic')
             + '?width=1280&height=720&model=flux-realism&nologo=true&seed=' + Math.floor(Math.random()*99999);
         var img = document.getElementById('transformedImage');
         img.onload = function() {
-            transformedBlobUrl = url;
+            window.transformedUrl = url;
             document.getElementById('transformResult').classList.remove('hidden');
-            showTransformStatus('TRANSFORM COMPLETE', '#f472b6');
+            document.getElementById('transformStatus').textContent = 'TRANSFORM_COMPLETE';
         };
-        img.onerror = function() { showTransformStatus('ERROR — TRY AGAIN', '#ef4444'); };
+        img.onerror = function() { document.getElementById('transformStatus').textContent = 'ERROR — RETRY'; };
         img.src = url;
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">transform</span> TRANSFORM';
+        btn.textContent = 'PROCESS_TRANSFORM';
         btn.disabled = false;
     }
-    function showTransformStatus(msg, color) {
-        var el = document.getElementById('transformStatus');
-        el.textContent = msg; el.style.color = color || '#f9a8d4';
-        el.classList.remove('hidden');
-    }
-    function downloadTransformed() {
-        if (!transformedBlobUrl) return;
-        var a = document.createElement('a'); a.href = transformedBlobUrl;
-        a.download = 'MERCADREAM_TRANSFORM_' + Date.now() + '.jpg';
-        a.target = '_blank'; a.click();
-    }
+
     function addTransformedToTimeline() {
-        if (!transformedBlobUrl) return;
-        var inst = document.getElementById('transformInstruction').value || 'Transform';
-        createClipOnTrack(v2Track, transformedBlobUrl, 'TRANSFORM_' + inst.slice(0,15) + '.jpg', 'video', 5, globalTime);
+        if (window.transformedUrl) {
+            createClipOnTrack(v2Track, window.transformedUrl, 'TRANSFORM.jpg', 'video', 5, globalTime);
+        }
     }
+
+    // ── VOLUME + FULLSCREEN ───────────────────────────
+    document.getElementById('masterVolume').addEventListener('input', function() {
+        var v = parseFloat(this.value);
+        mainVideoPlayer.volume = v;
+        mainAudioTrack1.volume = v;
+        mainAudioTrack2.volume = v;
+    });
+    mainVideoPlayer.muted = false;
+    mainVideoPlayer.volume = 0.8;
+
+    document.getElementById('fullscreenBtn').addEventListener('click', function() {
+        if (!document.fullscreenElement) mainVideoPlayer.requestFullscreen().catch(()=>{});
+        else document.exitFullscreen();
+    });
+
+    // ── INIT ON LOAD ──────────────────────────────────
+    window.addEventListener('load', function() {
+        syncUserCredits();
+        buildRuler();
+        loadScenesFromStudio();
+        checkIncomingAsset();
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'md_6scenes') loadScenesFromStudio();
+            if (e.key === 'md_send_to_assembly') checkIncomingAsset();
+            if (e.key === 'md_credits') syncUserCredits();
+        });
+    });
+
 </script>
+</body>
+</html>
+
+
+
+
+
