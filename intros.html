@@ -218,7 +218,6 @@ async function loadIntros(reset) {
         '</div>';
 
       // Hover video
-      var vid = card.querySelector('video');
       card.addEventListener('mouseenter', function(){ vid.load(); vid.play().catch(function(){}); });
       card.addEventListener('mouseleave', function(){ vid.pause(); vid.currentTime=0; });
 
