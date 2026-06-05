@@ -6,6 +6,19 @@
 <title>MERCADREAM — STOCK REEL TERMINAL</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=IBM+Plex+Mono:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain: "mercadream-4b4b3.firebaseapp.com",
+  projectId: "mercadream-4b4b3",
+  storageBucket: "mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId: "257560928442",
+  appId: "1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -158,7 +171,7 @@ firebase.initializeApp(firebaseConfig);
 <div style="display:flex;align-items:center;gap:12px;">
 <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(200,255,0,0.05);border:1px solid var(--border);">
 <span class="material-symbols-outlined" style="font-size:16px;color:var(--acid);">bolt</span>
-<span id="top-gns" style="font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:700;">0 GNS</span><button onclick="window.location.href=\'pricing.html\'" style="margin-left:8px;background:transparent;border:1px solid #c8ff00;color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 8px;cursor:pointer;" onmouseover="this.style.background=\'#c8ff00\';this.style.color=\'#040404\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'#c8ff00\'">+</button>
+<span id="top-gns" style="font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:700;">0 GNS</span>
 </div>
 <a class="recharge-btn" href="pricing.html">+ RECHARGE</a>
 </div>
@@ -221,29 +234,15 @@ firebase.initializeApp(firebaseConfig);
 </footer>
 <script>
 var COST = 10;
-var DEMO_REELS = [
-  { url:'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4',
-    poster:'https://images.pexels.com/videos/855529/pictures/preview-0.jpg', tag:'SUNSET' },
-  { url:'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4',
-    poster:'https://images.pexels.com/videos/1448735/pictures/preview-0.jpg', tag:'OCEAN' },
-  { url:'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4',
-    poster:'https://images.pexels.com/videos/2098048/pictures/preview-0.jpg', tag:'CITY' },
-  { url:'https://videos.pexels.com/video-files/3571264/3571264-hd_1280_720_30fps.mp4',
-    poster:'https://images.pexels.com/videos/3571264/pictures/preview-0.jpg', tag:'NATURE' },
-  { url:'https://videos.pexels.com/video-files/4812205/4812205-hd_1280_720_25fps.mp4',
-    poster:'https://images.pexels.com/videos/4812205/pictures/preview-0.jpg', tag:'FIRE' },
-  { url:'https://videos.pexels.com/video-files/3129957/3129957-hd_1280_720_30fps.mp4',
-    poster:'https://images.pexels.com/videos/3129957/pictures/preview-0.jpg', tag:'ABSTRACT' },
-  { url:'https://videos.pexels.com/video-files/856074/856074-hd_1280_720_30fps.mp4',
-    poster:'https://images.pexels.com/videos/856074/pictures/preview-0.jpg', tag:'DRONE' },
-  { url:'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4',
-    poster:'https://images.pexels.com/videos/1448735/pictures/preview-0.jpg', tag:'RAIN' },
-  { url:'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4',
-    poster:'https://images.pexels.com/videos/2098048/pictures/preview-0.jpg', tag:'NEON' },
-  { url:'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4',
-    poster:'https://images.pexels.com/videos/855529/pictures/preview-0.jpg', tag:'CROWD' },
+var DEMO_URLS = [
+  'https://videos.pexels.com/video-files/855529/855529-hd_1280_720_25fps.mp4',
+  'https://videos.pexels.com/video-files/1448735/1448735-hd_1280_720_25fps.mp4',
+  'https://videos.pexels.com/video-files/2098048/2098048-hd_1280_720_30fps.mp4',
+  'https://videos.pexels.com/video-files/3571264/3571264-hd_1280_720_30fps.mp4',
+  'https://videos.pexels.com/video-files/4812205/4812205-hd_1280_720_25fps.mp4',
+  'https://videos.pexels.com/video-files/3129957/3129957-hd_1280_720_30fps.mp4',
+  'https://videos.pexels.com/video-files/856074/856074-hd_1280_720_30fps.mp4'
 ];
-var DEMO_URLS = DEMO_REELS.map(function(r){return r.url;});
 
 // Firebase Balance Sync
 firebase.auth().onAuthStateChanged(function(user) {
@@ -261,14 +260,13 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 function buildHeroStrip() {
   var track = document.getElementById('hero-track');
-  var items = DEMO_REELS.concat(DEMO_REELS).concat(DEMO_REELS);
-  track.innerHTML = items.map(function(r, i) {
-    return '<div class="hero-card" onclick="quickSearch(document.querySelector(\'.chip.active\'), \'' + r.tag.toLowerCase() + '\')" onmouseenter="var v=this.querySelector(\'video\');v.style.display=\'block\';v.play();" onmouseleave="var v=this.querySelector(\'video\');v.pause();">'
-      + '<img src="' + r.poster + '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.style.background=\'#111\'"/>'
-      + '<video src="' + r.url + '" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;"></video>'
-      + '<div class="tag">' + r.tag + '</div>'
-      + '</div>';
-  }).join('');
+  var items = [...DEMO_URLS, ...DEMO_URLS, ...DEMO_URLS];
+  track.innerHTML = items.map((url, i) => `
+    <div class="hero-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause()">
+      <video src="${url}" muted loop playsinline preload="metadata"></video>
+      <div class="tag">REEL_${i+100}</div>
+    </div>
+  `).join('');
 }
 
 async function searchReels() {
@@ -414,5 +412,12 @@ function quickSearch(el, query) {
 // Initialization
 buildHeroStrip();
 setTimeout(() => { quickSearch(document.querySelector('.chip.active'), 'sunset'); }, 500);
+
+function sendToAssembly(url, name, type, duration) {
+    localStorage.setItem('md_send_to_assembly', JSON.stringify({
+        url: url, name: name, type: type || 'video', duration: duration || 10
+    }));
+    window.location.href = 'assembly.html';
+}
 </script>
 </body></html>

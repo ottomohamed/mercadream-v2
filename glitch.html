@@ -3,33 +3,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM_GLITCH_ENGINE // V1.0</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script>
-window.addEventListener('load', function() {
-  if (typeof firebase === 'undefined') return;
-  firebase.initializeApp({
-    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-    authDomain: "mercadream-4b4b3.firebaseapp.com",
-    projectId: "mercadream-4b4b3",
-    storageBucket: "mercadream-4b4b3.firebasestorage.app",
-    messagingSenderId: "257560928442",
-    appId: "1:257560928442:web:06983f27629a13eeed6283"
-  });
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
-        if (doc.exists) {
-          var bal = doc.data().credits || 0;
-          localStorage.setItem('md_credits', bal);
-          document.querySelectorAll('.gns-balance').forEach(function(el) { el.textContent = bal.toLocaleString() + ' GNS'; });
-        }
-      });
-    }
-  });
-});
-</script>
+
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -109,7 +83,7 @@ tailwind.config = {
   <div class="flex items-center gap-6">
     <div class="flex items-center gap-2">
       <span class="material-symbols-outlined text-primary-fixed text-xl">bolt</span>
-      <span class="font-label-caps text-label-caps text-primary-fixed gns-balance">0 GNS</span>
+      <span class="font-label-caps text-label-caps text-primary-fixed" id="gns-display">0 GNS</span>
     </div>
     <a href="profile.html" class="border border-outline-variant p-2 hover:border-primary-fixed transition-colors">
       <span class="material-symbols-outlined text-on-surface-variant">account_circle</span>
@@ -164,6 +138,10 @@ tailwind.config = {
       <button id="btn-download" onclick="downloadResult()" style="display:none"
         class="ml-auto bg-white text-black px-6 py-2 font-label-caps text-label-caps flex items-center gap-2">
         <span class="material-symbols-outlined text-sm">download</span> DOWNLOAD WEBM
+      </button>
+      <button id="btn-send-assembly" onclick="sendToAssemblyFromGlitch()" style="display:none"
+        class="bg-[#c8ff00] text-black px-6 py-2 font-label-caps text-label-caps flex items-center gap-2 hover:bg-white transition-all">
+        <span class="material-symbols-outlined text-sm">movie_edit</span> SEND TO ASSEMBLY
       </button>
     </div>
   </section>
@@ -503,6 +481,7 @@ function stopRender() {
     mediaRecorder.stop();
     mediaRecorder.onstop = function() {
       document.getElementById('btn-download').style.display = 'flex';
+      document.getElementById('btn-send-assembly').style.display = 'flex';
       addLog('RENDER STOPPED — CLICK DOWNLOAD TO SAVE');
     };
   }
@@ -523,9 +502,10 @@ function downloadResult() {
 // ── GREEN SCREEN REMOVAL ───────────────
 function removeGreen(data, sensitivity) {
   var thresh = (100 - sensitivity) * 0.8 + 40;
+  // Process every pixel (optimized)
   for (var i = 0; i < data.length; i += 4) {
-    var r = data[i], g = data[i+1], b = data[i+2];
-    if (g > thresh && g > r * 1.15 && g > b * 1.15) {
+    var g = data[i+1];
+    if (g > thresh && g > data[i] * 1.15 && g > data[i+2] * 1.15) {
       data[i+3] = 0;
     }
   }
@@ -634,10 +614,32 @@ function addLog(msg) {
   while (log.children.length > 6) log.removeChild(log.children[0]);
 }
 
+// Load balance from localStorage
+var bal = parseInt(localStorage.getItem('md_credits') || '0');
+var gnsEl = document.getElementById('gns-display');
+if (gnsEl) gnsEl.textContent = bal.toLocaleString() + ' GNS';
+
 // Auto log
 setInterval(function() {
   var msgs = ['BUFFER STABLE','GPU IDLE','CANVAS READY','ENGINE OK','MEMORY: LOW'];
   addLog(msgs[Math.floor(Math.random() * msgs.length)]);
 }, 5000);
+
+function sendToAssembly(url, name, type, duration) {
+    localStorage.setItem('md_send_to_assembly', JSON.stringify({
+        url: url, name: name, type: type || 'video', duration: duration || 10
+    }));
+    window.location.href = 'assembly.html';
+}
+
+function sendToAssemblyFromGlitch() {
+    if (!recordedChunks || !recordedChunks.length) {
+        addLog('RENDER FIRST — THEN SEND TO ASSEMBLY');
+        return;
+    }
+    var blob = new Blob(recordedChunks, {type:'video/webm'});
+    var url = URL.createObjectURL(blob);
+    sendToAssembly(url, 'Glitch_Composite.webm', 'video', 10);
+}
 </script>
 </body></html>
