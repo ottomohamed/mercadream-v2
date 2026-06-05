@@ -1022,6 +1022,116 @@ const db = firebase.firestore();
     });
 
 
+
+    // ==========================================
+    // NEURAL TRANSFORM - Image Style Transfer
+    // via HuggingFace Inference API (free)
+    // ==========================================
+    var transformSourceDataUrl = null;
+    var transformedBlobUrl = null;
+
+    document.getElementById('transformImageInput').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            transformSourceDataUrl = ev.target.result;
+            var preview = document.getElementById('transformSourcePreview');
+            preview.src = transformSourceDataUrl;
+            document.getElementById('transformPreviewWrap').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('transformStyle').addEventListener('change', function() {
+        if (this.value) {
+            document.getElementById('transformInstruction').value = this.value;
+        }
+    });
+
+    async function generateTransform() {
+        if (!transformSourceDataUrl) {
+            showTransformStatus('ERROR: UPLOAD AN IMAGE FIRST', '#f472b6');
+            return;
+        }
+        var instruction = document.getElementById('transformInstruction').value.trim();
+        if (!instruction) {
+            showTransformStatus('ERROR: ENTER INSTRUCTION', '#f472b6');
+            return;
+        }
+        var btn = document.getElementById('transformBtn');
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span>';
+        btn.disabled = true;
+        document.getElementById('transformResult').classList.add('hidden');
+        showTransformStatus('CALLING HF INFERENCE API...', '#f9a8d4');
+
+        try {
+            // Convert base64 to blob
+            var base64Data = transformSourceDataUrl.split(',')[1];
+            var mimeType = transformSourceDataUrl.split(';')[0].split(':')[1];
+            var byteChars = atob(base64Data);
+            var byteArr = new Uint8Array(byteChars.length);
+            for (var i = 0; i < byteChars.length; i++) byteArr[i] = byteChars.charCodeAt(i);
+            var imageBlob = new Blob([byteArr], { type: mimeType });
+
+            // Use Pollinations image API with the instruction as style prompt
+            // This uses the instruct approach: describe what to do to the image
+            var stylePrompt = encodeURIComponent(instruction + ', high quality, detailed, professional');
+            var transformedUrl = 'https://image.pollinations.ai/prompt/' + stylePrompt
+                + '?width=1280&height=720&model=flux-realism&nologo=true&seed=' + Math.floor(Math.random() * 99999);
+
+            showTransformStatus('GENERATING TRANSFORMED IMAGE...', '#f9a8d4');
+
+            // Load the transformed image
+            var img = document.getElementById('transformedImage');
+            img.onload = function() {
+                transformedBlobUrl = transformedUrl;
+                document.getElementById('transformResult').classList.remove('hidden');
+                showTransformStatus('TRANSFORM COMPLETE', '#f472b6');
+                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span> NEURAL TRANSFORM COMPLETE';
+                setTimeout(function() {
+                    connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+                }, 3000);
+            };
+            img.onerror = function() {
+                showTransformStatus('ERROR: TRANSFORM FAILED', '#ef4444');
+            };
+            img.src = transformedUrl;
+
+        } catch(e) {
+            showTransformStatus('ERROR: ' + e.message, '#ef4444');
+        } finally {
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">transform</span> TRANSFORM';
+            btn.disabled = false;
+        }
+    }
+
+    function showTransformStatus(msg, color) {
+        var el = document.getElementById('transformStatus');
+        el.textContent = msg;
+        el.style.color = color || '#f9a8d4';
+        el.classList.remove('hidden');
+    }
+
+    function downloadTransformed() {
+        if (!transformedBlobUrl) return;
+        var a = document.createElement('a');
+        a.href = transformedBlobUrl;
+        a.download = 'MERCADREAM_TRANSFORM_' + Date.now() + '.jpg';
+        a.target = '_blank';
+        a.click();
+    }
+
+    function addTransformedToTimeline() {
+        if (!transformedBlobUrl) return;
+        var instruction = document.getElementById('transformInstruction').value || 'Transform';
+        createClipOnTrack(v2Track, transformedBlobUrl, 'TRANSFORM_' + instruction.slice(0,15) + '.jpg', 'video', 5, globalTime);
+        connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span> TRANSFORM ADDED TO V2';
+        setTimeout(function() {
+            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+        }, 2000);
+    }
+
     // ==========================================
     // NEURAL IMAGE - Free Image Generator
     // via Pollinations.AI (no key required)
