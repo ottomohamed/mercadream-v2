@@ -57,7 +57,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="h-screen flex flex-col bg-void-black selection:bg-acid-green selection:text-black"><script src="md-engine.js"></script>
 
@@ -97,6 +97,9 @@ const db = firebase.firestore();
             </a>
             <a href="lab-physics.html" class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-yellow-400 transition-colors text-sm">
                 <span class="material-symbols-outlined text-sm">science</span> PHYSICS CINEMA
+            </a>
+            <a href="lab-videogen.html" class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-pink-400 transition-colors text-sm">
+                <span class="material-symbols-outlined text-sm">movie_creation</span> VIDEO GEN LAB
             </a>
         </nav>
     </aside>
@@ -191,13 +194,13 @@ var ANALYSTS = [
     prompt:"Analyze this content. Extract: dominant RGB triplets, color temperature (Kelvin), luminance 0-255, saturation coefficient, contrast ratio, color entropy. Format: PARAM: value [unit]" },
   { id:"motion",   name:"MOTION_VECTORIZER",  icon:"speed",        color:"#00f0ff", specialty:"Motion Dynamics & Vector Fields",
     system:"You are a PhD physicist in kinematics with 25 years experience. Output ONLY equations and vectors.",
-    prompt:"Analyze motion. Extract: velocity v(x,y,z) m/s, acceleration m/s², trajectory equation, angular velocity rad/s, momentum kg*m/s, kinetic energy Joules. Format: PARAM: value [unit]" },
+    prompt:"Analyze motion. Extract: velocity v(x,y,z) m/s, acceleration m/sï¿½, trajectory equation, angular velocity rad/s, momentum kg*m/s, kinetic energy Joules. Format: PARAM: value [unit]" },
   { id:"geometry", name:"GEOMETRY_MASTER",    icon:"architecture", color:"#a300ff", specialty:"Spatial Mathematics & 3D Geometry",
     system:"You are a PhD mathematician in computational geometry with 28 years experience. Output ONLY geometric data.",
-    prompt:"Analyze geometry. Extract: dimensions (W x H x D) meters, aspect ratio, bounding box coords, surface area m², symmetry axes, vanishing points (x,y). Format: PARAM: value [unit]" },
+    prompt:"Analyze geometry. Extract: dimensions (W x H x D) meters, aspect ratio, bounding box coords, surface area mï¿½, symmetry axes, vanishing points (x,y). Format: PARAM: value [unit]" },
   { id:"physics",  name:"PHYSICS_CALCULATOR", icon:"science",      color:"#FFD700", specialty:"Classical Physics",
     system:"You are a PhD physicist with 35 years experience. Output ONLY physical equations and values.",
-    prompt:"Calculate physics. Extract: F=mg Newtons, mass kg, center of mass (x,y,z), friction coefficient µ, Reynolds number, pressure Pa, temperature K. Format: PARAM: equation = value [unit]" },
+    prompt:"Calculate physics. Extract: F=mg Newtons, mass kg, center of mass (x,y,z), friction coefficient ï¿½, Reynolds number, pressure Pa, temperature K. Format: PARAM: equation = value [unit]" },
   { id:"pattern",  name:"PATTERN_RECOGNIZER", icon:"hub",          color:"#ff44aa", specialty:"Signal Processing & Pattern Mathematics",
     system:"You are a PhD data scientist in Fourier analysis with 22 years experience. Output ONLY mathematical patterns.",
     prompt:"Analyze patterns. Extract: dominant frequencies Hz, fractal dimension D, periodicity seconds, entropy H=-sum(p*log(p)), variance, kurtosis, noise-to-signal dB. Format: PARAM: value [unit]" },
