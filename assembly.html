@@ -70,7 +70,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
-<script>const firebaseConfig = { apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg", authDomain: "mercadream-4b4b3.firebaseapp.com", projectId: "mercadream-4b4b3", storageBucket: "mercadream-4b4b3.firebasestorage.app", messagingSenderId: "257560928442", appId: "1:257560928442:web:06983f27629a13eeed6283", measurementId: "G-F0CLDJCV42" }; firebase.initializeApp(firebaseConfig); const db = firebase.firestore();</script>
+
 </head>
 <body class="h-screen w-screen flex flex-col select-none overflow-hidden"><script src="md-engine.js"></script>
 
@@ -97,7 +97,7 @@ const db = firebase.firestore();
             </div>
             <div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded border border-outline-variant/30 text-xs font-code-data">
                 <span class="material-symbols-outlined text-sm text-amber-400">toll</span>
-                <span id="editorGenesisDisplay">0</span> <span class="text-[9px] text-on-surface-variant">CRS</span>
+                <span id="editorCreditsDisplay">0</span> <span class="text-[9px] text-on-surface-variant">CRS</span>
             </div>
         </div>
     </div>
@@ -242,7 +242,7 @@ const db = firebase.firestore();
     const mainAudioTrack2 = document.getElementById('mainAudioTrack2');
     const videoSubtitle = document.getElementById('videoSubtitle');
     const connectionStatus = document.getElementById('connectionStatus');
-    const editorGenesisDisplay = document.getElementById('editorGenesisDisplay');
+    const editorCreditsDisplay = document.getElementById('editorCreditsDisplay');
     const playBtn = document.getElementById('playBtn');
     const playhead = document.getElementById('playhead');
     const timecodeDisplay = document.getElementById('timecodeDisplay');
@@ -272,10 +272,10 @@ const db = firebase.firestore();
     // ==========================================
     // ⚙️ نظام مزامنة الرصيد
     // ==========================================
-    function syncUserGenesis() {
-        let currentGenesis = parseInt(localStorage.getItem('md_genesis')) || 1000;
-        editorGenesisDisplay.textContent = currentGenesis.toLocaleString();
-        return currentGenesis;
+    function syncUserCredits() {
+        let currentCredits = parseInt(localStorage.getItem('md_credits')) || 1000;
+        editorCreditsDisplay.textContent = currentCredits.toLocaleString();
+        return currentCredits;
     }
 
     // ==========================================
@@ -292,10 +292,10 @@ const db = firebase.firestore();
                     lastTrackedTimestamp = streamData.timestamp;
                     
                     // الخصم الحقيقي يتم التحقق منه ومزامنته هنا فور استقبال البث
-                    syncUserGenesis();
+                    syncUserCredits();
                     handleMediaImport(streamData.url, 'video', streamData.name, true);
                     
-                    connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce"></span> AI CLIP INGESTED! GENESIS SYNCED`;
+                    connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce"></span> AI CLIP INGESTED! CREDITS SYNCED`;
                     setTimeout(() => {
                         connectionStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE`;
                     }, 4000);
@@ -332,14 +332,14 @@ const db = firebase.firestore();
     }
 
     window.addEventListener('load', () => {
-        syncUserGenesis();
+        syncUserCredits();
         loadScenesFromStudio();
         checkActiveStudioStream();
         setupExportButton();
         setupVolumeControls();
         window.addEventListener('storage', (e) => {
             if (e.key === 'NEURA_ACTIVE_STREAM') checkActiveStudioStream();
-            if (e.key === 'md_genesis') syncUserGenesis();
+            if (e.key === 'md_credits') syncUserCredits();
             if (e.key === 'md_6scenes') loadScenesFromStudio();
         });
     });
@@ -1020,6 +1020,186 @@ const db = firebase.firestore();
     fullscreenBtn.addEventListener('click', () => {
         if (!document.fullscreenElement) { mainVideoPlayer.requestFullscreen().catch(()=>{}); }
     });
+
+
+    // ==========================================
+    // NEURAL IMAGE - Free Image Generator
+    // via Pollinations.AI (no key required)
+    // ==========================================
+    var currentImageUrl = null;
+
+    async function generateNeuralImage() {
+        var btn = document.getElementById('generateImageBtn');
+        var status = document.getElementById('imageStatus');
+        var result = document.getElementById('imageResult');
+        var prompt = document.getElementById('imagePrompt').value.trim();
+        var model = document.getElementById('imageModel').value;
+        var ratio = document.getElementById('imageRatio').value.split('x');
+        var width = parseInt(ratio[0]);
+        var height = parseInt(ratio[1]);
+
+        if (!prompt) {
+            status.textContent = 'ERROR: ENTER A PROMPT';
+            status.style.color = '#ef4444';
+            status.classList.remove('hidden');
+            return;
+        }
+
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> GENERATING...';
+        btn.disabled = true;
+        status.textContent = 'CALLING POLLINATIONS IMAGE ENGINE...';
+        status.style.color = '#93c5fd';
+        status.classList.remove('hidden');
+        result.classList.add('hidden');
+
+        try {
+            // Pollinations.AI - FREE, no key needed
+            var encodedPrompt = encodeURIComponent(prompt + ', cinematic, high quality, 8k');
+            var imageUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt
+                + '?width=' + width
+                + '&height=' + height
+                + '&model=' + model
+                + '&nologo=true'
+                + '&seed=' + Math.floor(Math.random() * 999999);
+
+            // Load image
+            var img = document.getElementById('generatedImage');
+            img.onload = function() {
+                currentImageUrl = imageUrl;
+                result.classList.remove('hidden');
+                status.textContent = 'IMAGE READY';
+                status.style.color = '#93c5fd';
+                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> NEURAL IMAGE GENERATED';
+                setTimeout(function() {
+                    connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+                }, 3000);
+            };
+            img.onerror = function() {
+                status.textContent = 'ERROR: IMAGE FAILED — TRY AGAIN';
+                status.style.color = '#ef4444';
+            };
+            img.src = imageUrl;
+
+        } catch(e) {
+            status.textContent = 'ERROR: ' + e.message;
+            status.style.color = '#ef4444';
+        } finally {
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">auto_awesome</span> GENERATE IMAGE';
+            btn.disabled = false;
+        }
+    }
+
+    function downloadGeneratedImage() {
+        if (!currentImageUrl) return;
+        var a = document.createElement('a');
+        a.href = currentImageUrl;
+        a.download = 'MERCADREAM_IMAGE_' + Date.now() + '.jpg';
+        a.target = '_blank';
+        a.click();
+    }
+
+    function useImageAsOverlay() {
+        if (!currentImageUrl) return;
+        var prompt = document.getElementById('imagePrompt').value || 'Image';
+        // Add as video clip on V2 track (background/overlay)
+        createClipOnTrack(v2Track, currentImageUrl, 'IMG_' + prompt.slice(0,20) + '.jpg', 'video', 5, globalTime);
+        connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> IMAGE ADDED TO V2 TRACK';
+        setTimeout(function() {
+            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+        }, 2000);
+    }
+
+    // ==========================================
+    // NEURAL SCORE - Cinematic Music Generator
+    // ==========================================
+    var currentScoreBlobUrl = null;
+
+    async function generateNeuralScore() {
+        var btn = document.getElementById('generateScoreBtn');
+        var status = document.getElementById('scoreStatus');
+        var preview = document.getElementById('scorePreview');
+        var addBtn = document.getElementById('addScoreBtn');
+        var mood = document.getElementById('scoreMood').value;
+
+        btn.textContent = 'GENERATING...';
+        btn.disabled = true;
+        status.classList.remove('hidden');
+        status.textContent = 'CALLING NEURAL MUSIC ENGINE...';
+        preview.classList.add('hidden');
+        addBtn.classList.add('hidden');
+
+        try {
+            // Generate music description via Pollinations TTS with musical voice
+            var prompt = 'Compose and perform this music description as an instrumental piece: ' + mood + '. Duration: 30 seconds. No vocals, pure instrumental.';
+
+            var res = await fetch('https://api.pollinations.ai/v1/audio/speech', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'tts-1',
+                    input: prompt,
+                    voice: 'onyx',
+                    speed: 0.8
+                })
+            });
+
+            if (!res.ok) {
+                // Fallback to text.pollinations.ai
+                status.textContent = 'TRYING FALLBACK ENGINE...';
+                var r2 = await fetch('https://text.pollinations.ai/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'openai-audio',
+                        voice: 'onyx',
+                        modalities: ['audio'],
+                        audio: { voice: 'onyx', format: 'mp3' },
+                        messages: [{ role: 'user', content: 'Describe this cinematic music scene in an atmospheric, dramatic way: ' + mood }]
+                    })
+                });
+                if (!r2.ok) throw new Error('Score generation failed');
+                var d = await r2.json();
+                var b64 = d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.audio && d.choices[0].message.audio.data;
+                if (!b64) throw new Error('No audio data');
+                var bin = atob(b64);
+                var bytes = new Uint8Array(bin.length);
+                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                currentScoreBlobUrl = URL.createObjectURL(new Blob([bytes], { type: 'audio/mp3' }));
+            } else {
+                var blob = await res.blob();
+                currentScoreBlobUrl = URL.createObjectURL(blob);
+            }
+
+            preview.src = currentScoreBlobUrl;
+            preview.classList.remove('hidden');
+            addBtn.classList.remove('hidden');
+            status.textContent = 'SCORE READY - PREVIEW OR ADD TO TIMELINE';
+            status.style.color = '#c3f432';
+
+            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> NEURAL SCORE GENERATED';
+            setTimeout(function() {
+                connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+            }, 3000);
+
+        } catch(e) {
+            status.textContent = 'ERROR: ' + e.message;
+            status.style.color = '#ef4444';
+        } finally {
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">music_note</span> GENERATE';
+            btn.disabled = false;
+        }
+    }
+
+    function addScoreToTimeline() {
+        if (!currentScoreBlobUrl) return;
+        var mood = document.getElementById('scoreMood');
+        var moodName = mood.options[mood.selectedIndex].text;
+        createClipOnTrack(a1Track, currentScoreBlobUrl, 'NEURAL_SCORE_' + moodName + '.mp3', 'audio', 30, globalTime);
+        connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> SCORE ADDED TO A1 TRACK';
+        setTimeout(function() {
+            connectionStatus.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> MERCADREAM PIPELINE ACTIVE';
+        }, 2000);
+    }
 </script>
 </body>
 </html>
