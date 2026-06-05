@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Neural Voice | MercaDream Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{
+    colors:{
+      "surface-container-high":"#2a2a2a","primary":"#ffffff","surface-dim":"#131313",
+      "outline-variant":"#434933","surface-container":"#201f1f","surface":"#131313",
+      "inverse-surface":"#e5e2e1","secondary":"#c6c6c7","on-tertiary":"#303030",
+      "error-container":"#93000a","secondary-fixed-dim":"#c6c6c7","secondary-fixed":"#e2e2e2",
+      "primary-fixed-dim":"#a8d700","surface-container-low":"#1c1b1b",
+      "surface-container-lowest":"#0e0e0e","secondary-container":"#454747",
+      "on-surface-variant":"#c4caac","on-background":"#e5e2e1","background":"#040404",
+      "surface-container-highest":"#353534","primary-fixed":"#c8ff00",
+      "on-surface":"#e5e2e1","on-primary-container":"#546d00","surface-variant":"#353534",
+      "primary-container":"#c8ff00","surface-bright":"#3a3939","on-secondary":"#2f3131",
+      "on-primary":"#273500","on-error":"#690005","error":"#ffb4ab","outline":"#222222",
+      "on-primary-fixed":"#161f00"
+    },
+    borderRadius:{"DEFAULT":"0px","lg":"0px","xl":"0px","full":"9999px"},
+    fontFamily:{
+      "headline-lg":["Orbitron"],"body-lg":["IBM Plex Mono"],"body-sm":["IBM Plex Mono"],
+      "headline-sm":["Orbitron"],"terminal-log":["IBM Plex Mono"],"body-md":["IBM Plex Mono"],
+      "label-caps":["IBM Plex Mono"],"headline-md":["Orbitron"]
+    },
+    fontSize:{
+      "headline-lg":["48px",{"lineHeight":"1.1","letterSpacing":"0.05em","fontWeight":"700"}],
+      "body-lg":["16px",{"lineHeight":"1.6","fontWeight":"400"}],
+      "body-sm":["12px",{"lineHeight":"1.4","fontWeight":"400"}],
+      "headline-sm":["20px",{"lineHeight":"1.2","letterSpacing":"0.02em","fontWeight":"500"}],
+      "terminal-log":["13px",{"lineHeight":"1.4","fontWeight":"400"}],
+      "body-md":["14px",{"lineHeight":"1.5","fontWeight":"400"}],
+      "label-caps":["10px",{"lineHeight":"1","letterSpacing":"0.1em","fontWeight":"700"}],
+      "headline-md":["32px",{"lineHeight":"1.2","letterSpacing":"0.02em","fontWeight":"600"}]
+    }
+  }}
+}
+</script>
+<style>
+body{background-color:#040404;background-image:linear-gradient(#111 1px,transparent 1px),linear-gradient(90deg,#111 1px,transparent 1px);background-size:32px 32px;color:#e5e2e1;overflow-x:hidden;}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.2) 50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03));background-size:100% 3px,3px 100%;pointer-events:none;z-index:50;}
+.corner-bracket{position:absolute;width:10px;height:10px;border-color:#c8ff00;opacity:0;transition:opacity 0.2s ease;}
+.hover-trigger:hover .corner-bracket{opacity:1;}
+.bracket-tl{top:-2px;left:-2px;border-top:2px solid;border-left:2px solid;}
+.bracket-tr{top:-2px;right:-2px;border-top:2px solid;border-right:2px solid;}
+.bracket-bl{bottom:-2px;left:-2px;border-bottom:2px solid;border-left:2px solid;}
+.bracket-br{bottom:-2px;right:-2px;border-bottom:2px solid;border-right:2px solid;}
+.custom-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:#c8ff00;cursor:pointer;border:2px solid #000;}
+.waveform-bar{animation:wave 1.2s ease-in-out infinite alternate;}
+@keyframes wave{0%{height:4px;}100%{height:24px;}}
+.voice-card-selected{border-color:#c8ff00!important;box-shadow:0 0 15px rgba(200,255,0,0.2);}
+.terminal-scroll::-webkit-scrollbar{width:4px;}
+.terminal-scroll::-webkit-scrollbar-thumb{background:#333;}
+</style>
+</head>
+<body class="font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<div class="scanlines"></div>
+
+<header class="w-full h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-gutter sticky top-0 z-40">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="font-headline-sm text-headline-sm font-bold text-primary-fixed tracking-wider uppercase hover:opacity-80">MERCADREAM</a>
+    <span class="text-outline-variant">|</span>
+    <span class="font-label-caps text-label-caps text-on-surface-variant">NEURAL VOICE</span>
+    <span class="bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps px-2 py-1">FREE</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <span class="text-primary-fixed font-body-md" id="gns-balance">0 GNS</span>
+    <a href="profile.html"><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-fixed">account_circle</span></a>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-6 py-12">
+  <section class="mb-12 border-l-4 border-primary-fixed pl-6">
+    <div class="flex items-center gap-4 mb-2">
+      <h1 class="font-headline-lg text-headline-lg uppercase text-white">NEURAL VOICE</h1>
+      <span class="bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps px-2 py-1">FREE — NO GNS</span>
+    </div>
+    <p class="font-headline-sm text-headline-sm text-on-surface-variant">Cinematic Text-to-Speech Engine. Type your script. Choose your voice. Download cinema audio.</p>
+  </section>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- LEFT: Script Input -->
+    <div class="lg:col-span-7 space-y-6">
+      <div class="relative bg-surface-container-low border border-outline p-6 hover-trigger">
+        <div class="corner-bracket bracket-tl"></div><div class="corner-bracket bracket-tr"></div>
+        <div class="corner-bracket bracket-bl"></div><div class="corner-bracket bracket-br"></div>
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-label-caps text-label-caps text-on-surface-variant">SCRIPT INPUT</h3>
+          <span class="font-terminal-log text-terminal-log text-on-surface-variant" id="char-count">0/5000</span>
+        </div>
+        <textarea id="script-input" oninput="document.getElementById('char-count').textContent=this.value.length+'/5000'"
+          class="w-full h-80 bg-black border-0 border-b border-outline focus:border-primary-fixed focus:ring-0 text-primary font-body-md resize-none placeholder:text-surface-container-highest"
+          placeholder="ENTER SCRIPT DATA HERE... _"></textarea>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div>
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">SPEED</label>
+            <div class="flex items-center gap-3">
+              <span class="font-label-caps text-label-caps text-on-surface-variant text-[9px]">SLOW</span>
+              <input id="speed-slider" class="flex-1 h-1 bg-surface-container-high appearance-none custom-slider" type="range" min="0.5" max="2.0" step="0.1" value="1.0" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(1)+'x'"/>
+              <span class="font-label-caps text-label-caps text-on-surface-variant text-[9px]">FAST</span>
+              <span class="font-label-caps text-label-caps text-primary-fixed" id="speed-val">1.0x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button onclick="setPreset('MONOLOGUE')" class="px-4 py-2 bg-outline hover:bg-primary-fixed hover:text-black font-label-caps text-label-caps transition-colors">MONOLOGUE</button>
+          <button onclick="setPreset('DIALOGUE')" class="px-4 py-2 bg-outline hover:bg-primary-fixed hover:text-black font-label-caps text-label-caps transition-colors">DIALOGUE</button>
+          <button onclick="setPreset('NARRATION')" class="px-4 py-2 bg-outline hover:bg-primary-fixed hover:text-black font-label-caps text-label-caps transition-colors">NARRATION</button>
+        </div>
+
+        <div class="mt-8">
+          <button id="generate-btn" onclick="startGenerate()"
+            class="w-full py-4 bg-primary-fixed text-black font-headline-sm font-bold hover:bg-white transition-all active:scale-[0.98]">
+            GENERATE NEURAL AUDIO
+          </button>
+        </div>
+      </div>
+
+      <!-- Audio Player -->
+      <div id="audio-player" class="bg-surface-container border border-primary-fixed p-6 hidden">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary-fixed">audio_file</span>
+            <span class="font-terminal-log text-primary-fixed" id="audio-filename">VOICE_OUTPUT.MP3</span>
+          </div>
+          <button id="dl-btn" class="text-on-surface-variant hover:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">download</span>
+            <span class="font-label-caps text-label-caps">DOWNLOAD MP3</span>
+          </button>
+        </div>
+        <div class="flex items-end justify-center gap-1 h-12 mb-4">
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.1s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.3s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.5s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.2s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.4s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.6s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.1s"></div>
+          <div class="waveform-bar w-1 bg-primary-fixed" style="animation-delay:0.3s"></div>
+        </div>
+        <div class="flex items-center gap-4">
+          <button id="play-btn" class="material-symbols-outlined text-primary-fixed text-4xl">play_circle</button>
+          <div class="flex-grow h-1 bg-surface-container-highest relative">
+            <div id="progress-bar" class="absolute left-0 top-0 h-full bg-primary-fixed transition-all" style="width:0%"></div>
+          </div>
+          <span id="time-display" class="font-terminal-log text-on-surface-variant">0:00</span>
+        </div>
+        <audio id="audio-el" class="hidden"></audio>
+      </div>
+    </div>
+
+    <!-- RIGHT: Voice Selector -->
+    <div class="lg:col-span-5 space-y-6">
+      <div class="bg-surface-container-low border border-outline p-6">
+        <h3 class="font-label-caps text-label-caps text-on-surface-variant mb-6 flex items-center gap-2">
+          <span class="w-2 h-2 bg-primary-fixed"></span> SELECT VOICE PROFILE
+        </h3>
+        <div class="grid grid-cols-2 gap-4" id="voice-grid">
+          <!-- Cards generated by JS -->
+        </div>
+      </div>
+
+      <!-- Coming Soon -->
+      <div class="border-2 border-dashed border-outline p-8 flex flex-col items-center text-center">
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-4">record_voice_over</span>
+        <h4 class="font-headline-sm text-white mb-2">VOICE CLONE</h4>
+        <p class="font-body-sm text-on-surface-variant mb-6">Upload 10 seconds of any voice. Generate speech in that exact voice. Coming soon.</p>
+        <button class="px-6 py-2 border border-primary-fixed text-primary-fixed font-label-caps text-label-caps hover:bg-primary-fixed hover:text-black transition-all">JOIN WAITLIST</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="mt-20 border-t border-outline bg-surface-container-lowest h-36">
+  <div class="max-w-screen-2xl mx-auto px-6 py-4 h-full flex flex-col">
+    <div class="flex items-center gap-4 mb-2">
+      <span class="w-2 h-2 bg-red-600 animate-pulse"></span>
+      <span class="font-label-caps text-label-caps text-on-surface-variant">LIVE ENGINE LOGS</span>
+    </div>
+    <div class="flex-grow terminal-scroll overflow-y-auto font-terminal-log text-terminal-log text-on-surface-variant opacity-70" id="terminal-log">
+      <div>[00:00:01] NEURAL VOICE ENGINE INITIALIZED</div>
+      <div>[00:00:02] TTS: POLLINATIONS.AI CONNECTED — NO KEY REQUIRED</div>
+      <div>[00:00:03] VOICES: ALLOY / ECHO / FABLE / NOVA / ONYX / SHIMMER</div>
+      <div class="text-primary-fixed">[00:00:04] SYSTEM READY — AWAITING INPUT_</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// --- BALANCE ---
+document.getElementById('gns-balance').textContent = (parseInt(localStorage.getItem('md_credits')||'0')).toLocaleString() + ' GNS';
+
+// --- VOICES ---
+var VOICES = [
+  {id:'alloy',  name:'ALLOY',   desc:'NEUTRAL / PROFESSIONAL'},
+  {id:'echo',   name:'ECHO',    desc:'DEEP / CINEMATIC MALE'},
+  {id:'fable',  name:'FABLE',   desc:'STORYTELLER / BRITISH'},
+  {id:'nova',   name:'NOVA',    desc:'CLEAR / CONFIDENT FEMALE'},
+  {id:'onyx',   name:'ONYX',    desc:'DARK / AUTHORITATIVE'},
+  {id:'shimmer',name:'SHIMMER', desc:'WARM / EMOTIONAL'},
+];
+var selectedVoice = 'echo';
+var currentBlobUrl = null;
+var audioEl = document.getElementById('audio-el');
+
+// Build voice cards
+var grid = document.getElementById('voice-grid');
+VOICES.forEach(function(v) {
+  var card = document.createElement('div');
+  card.className = 'bg-black border border-outline p-4 cursor-pointer hover:border-primary-fixed transition-all group voice-card' + (v.id === 'echo' ? ' voice-card-selected' : '');
+  card.setAttribute('data-voice', v.id);
+  card.innerHTML =
+    '<div class="flex justify-between items-start mb-2">' +
+    '<h4 class="font-headline-sm text-primary group-hover:text-primary-fixed">' + v.name + '</h4>' +
+    '<span class="material-symbols-outlined text-on-surface-variant text-sm">volume_up</span></div>' +
+    '<p class="font-body-sm text-on-surface-variant text-[10px] mb-4">' + v.desc + '</p>' +
+    '<button class="preview-btn w-full border border-outline py-1 text-[10px] font-label-caps hover:bg-white hover:text-black transition-colors">PREVIEW</button>';
+  card.addEventListener('click', function() {
+    document.querySelectorAll('.voice-card').forEach(function(c){ c.classList.remove('voice-card-selected'); });
+    card.classList.add('voice-card-selected');
+    selectedVoice = v.id;
+    addLog('VOICE: ' + v.name + ' SELECTED');
+  });
+  card.querySelector('.preview-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    var btn = this;
+    btn.textContent = 'LOADING...';
+    generateAudio('Hello, I am ' + v.name + '. MercaDream Neural Voice engine is ready.', v.id, 1.0)
+      .then(function(url) {
+        new Audio(url).play();
+        btn.textContent = 'PREVIEW';
+        addLog('PREVIEW: ' + v.name);
+      }).catch(function(e){ btn.textContent = 'PREVIEW'; addLog('PREVIEW ERROR'); });
+  });
+  grid.appendChild(card);
+});
+
+// --- PRESETS ---
+function setPreset(type) {
+  var presets = {
+    MONOLOGUE: 'I had one idea. Just one. And MercaDream turned it into cinema. No crew. No budget. Just imagination — and the most powerful AI production platform ever built.',
+    DIALOGUE: 'DIRECTOR: What is your vision?
+CREATOR: A story without limits. A dream without boundaries.
+DIRECTOR: Then let us begin. This is MercaDream.',
+    NARRATION: 'In a world where imagination has no boundaries, one platform dares to dream. MercaDream — where your words become worlds. Generate, create, own your vision.'
+  };
+  document.getElementById('script-input').value = presets[type] || '';
+  document.getElementById('char-count').textContent = (presets[type]||'').length + '/5000';
+}
+
+// --- GENERATE ---
+async function startGenerate() {
+  var text = document.getElementById('script-input').value.trim();
+  if (!text) { addLog('ERROR: NO TEXT INPUT'); return; }
+  var btn = document.getElementById('generate-btn');
+  var speed = parseFloat(document.getElementById('speed-slider').value);
+  btn.textContent = 'SYNTHESIZING...';
+  btn.disabled = true;
+  addLog('SYNTHESIS: ' + selectedVoice.toUpperCase() + ' — ' + text.length + ' CHARS');
+  try {
+    var url = await generateAudio(text, selectedVoice, speed);
+    currentBlobUrl = url;
+    // Show player
+    var player = document.getElementById('audio-player');
+    player.classList.remove('hidden');
+    audioEl.src = url;
+    audioEl.play();
+    document.getElementById('play-btn').textContent = 'pause_circle';
+    document.getElementById('audio-filename').textContent = 'MERCADREAM_' + selectedVoice.toUpperCase() + '_' + Date.now() + '.MP3';
+    addLog('RENDER COMPLETE — PLAYING');
+    player.scrollIntoView({behavior:'smooth'});
+  } catch(e) {
+    addLog('ERROR: ' + e.message);
+  } finally {
+    btn.textContent = 'GENERATE NEURAL AUDIO';
+    btn.disabled = false;
+  }
+}
+
+// Play/pause
+document.getElementById('play-btn').addEventListener('click', function() {
+  if (audioEl.paused) { audioEl.play(); this.textContent = 'pause_circle'; }
+  else { audioEl.pause(); this.textContent = 'play_circle'; }
+});
+audioEl.addEventListener('ended', function() { document.getElementById('play-btn').textContent = 'play_circle'; });
+audioEl.addEventListener('timeupdate', function() {
+  if (audioEl.duration) {
+    document.getElementById('progress-bar').style.width = (audioEl.currentTime/audioEl.duration*100) + '%';
+    var s = Math.floor(audioEl.currentTime);
+    document.getElementById('time-display').textContent = Math.floor(s/60) + ':' + ('0'+s%60).slice(-2);
+  }
+});
+
+// Download
+document.getElementById('dl-btn').addEventListener('click', function() {
+  if (!currentBlobUrl) return;
+  var a = document.createElement('a');
+  a.href = currentBlobUrl;
+  a.download = 'MERCADREAM_VOICE_' + Date.now() + '.mp3';
+  a.click();
+  addLog('DOWNLOAD: SAVED');
+});
+
+// --- TTS API ---
+async function generateAudio(text, voice, speed) {
+  // Try Pollinations OpenAI-compatible endpoint
+  var res = await fetch('https://api.pollinations.ai/v1/audio/speech', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({model:'tts-1', input:text, voice:voice, speed:speed||1.0})
+  });
+  if (res.ok) {
+    addLog('TTS: POLLINATIONS API OK');
+    return URL.createObjectURL(await res.blob());
+  }
+  // Fallback: text.pollinations.ai chat audio
+  addLog('TTS: TRYING FALLBACK...');
+  var r2 = await fetch('https://text.pollinations.ai/', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'openai-audio', voice:voice,
+      modalities:['audio'], audio:{voice:voice, format:'mp3'},
+      messages:[{role:'user', content:text}]
+    })
+  });
+  if (!r2.ok) throw new Error('TTS failed: ' + r2.status);
+  var d = await r2.json();
+  var b64 = d.choices?.[0]?.message?.audio?.data;
+  if (!b64) throw new Error('No audio data');
+  var bin = atob(b64);
+  var bytes = new Uint8Array(bin.length);
+  for (var i=0; i<bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  addLog('TTS: FALLBACK OK');
+  return URL.createObjectURL(new Blob([bytes], {type:'audio/mp3'}));
+}
+
+// --- LOG ---
+function addLog(msg) {
+  var log = document.getElementById('terminal-log');
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  var div = document.createElement('div');
+  div.textContent = '['+t+'] '+msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  while(log.children.length > 8) log.removeChild(log.children[0]);
+}
+</script>
+</body></html>
