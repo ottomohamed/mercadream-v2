@@ -705,19 +705,31 @@
         textarea.value = '';
         addLogLine('IDEA RECEIVED: ' + text.substring(0, 60));
 
+        const directorEl = document.querySelector('input[name="director"]:checked');
+        const director = directorEl ? directorEl.value : 'Drama';
+        const sceneCount = parseInt(document.getElementById('scene-count').value) || 3;
         const typingId = showTyping();
-        setTimeout(() => {
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: text, director: director, sceneCount: sceneCount})
+            });
+            const data = await res.json();
             removeTyping(typingId);
-            const directorEl = document.querySelector('input[name="director"]:checked');
-            const director = directorEl ? directorEl.value : 'Drama';
-            const mockScenes = Array.from({length: parseInt(document.getElementById('scene-count').value)}, (_, i) => ({
-                scene: i + 1,
-                title: `Neon Sequence ${i+1}`,
-                prompt: `Cinematic wide shot, cyberpunk aesthetic, rainy docks, directed by ${director}.`
-            }));
-            generatedScenes = mockScenes;
-            renderScriptCards(mockScenes, director, `${director} AI`);
-        }, 1500);
+            if (data.scenes && data.scenes.length > 0) {
+                generatedScenes = data.scenes;
+                renderScriptCards(data.scenes, director, director + ' AI Director');
+                addLogLine(data.scenes.length + ' SCENES GENERATED');
+            } else {
+                appendBubble('>> ERROR: ' + (data.error || 'No scenes generated'), 'bot', 'SYSTEM');
+            }
+        } catch(e) {
+            removeTyping(typingId);
+            appendBubble('>> ERROR: ' + e.message, 'bot', 'SYSTEM');
+            addLogLine('ERROR: ' + e.message);
+        }
     }
 
     function renderScriptCards(scenes, director, directorName) {
@@ -817,13 +829,34 @@
                             if (el) el.textContent = scenes.length;
                         } catch(e) {}
                         if (resultDiv) {
-                            resultDiv.innerHTML =
-                                '<video src="'+pd.videoUrl+'" controls autoplay muted loop class="w-full border border-primary-fixed-dim mt-1"></video>'
-                                +'<div class="flex gap-2 mt-2">'
-                                +'<a href="'+pd.videoUrl+'" download class="flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase">DOWNLOAD</a>'
-                                +'<button onclick="openInAssembly(''+pd.videoUrl+'','+idx+')" class="flex-1 border border-primary-fixed-dim text-primary-fixed-dim py-2 font-label-technical text-xs uppercase hover:bg-primary-fixed-dim hover:text-black transition-all">ASSEMBLY</button>'
-                                +'</div>'
-                                +'<p class="font-label-technical text-[9px] text-primary-fixed-dim/60 mt-1">✓ Auto-saved to Assembly</p>';
+                            resultDiv.innerHTML = '';
+                            var vid = document.createElement('video');
+                            vid.src = pd.videoUrl; vid.controls = true; vid.autoplay = true;
+                            vid.muted = true; vid.loop = true;
+                            vid.className = 'w-full border border-primary-fixed-dim mt-1';
+                            resultDiv.appendChild(vid);
+
+                            var row = document.createElement('div');
+                            row.className = 'flex gap-2 mt-2';
+
+                            var dlBtn = document.createElement('a');
+                            dlBtn.href = pd.videoUrl; dlBtn.download = 'scene_'+(idx+1)+'.mp4';
+                            dlBtn.className = 'flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase';
+                            dlBtn.textContent = 'DOWNLOAD';
+                            row.appendChild(dlBtn);
+
+                            var asmBtn = document.createElement('button');
+                            asmBtn.className = 'flex-1 border border-primary-fixed-dim text-primary-fixed-dim py-2 font-label-technical text-xs uppercase hover:bg-primary-fixed-dim hover:text-black transition-all';
+                            asmBtn.textContent = 'ASSEMBLY';
+                            (function(url, i){ asmBtn.onclick = function(){ openInAssembly(url, i); }; })(pd.videoUrl, idx);
+                            row.appendChild(asmBtn);
+                            resultDiv.appendChild(row);
+
+                            var note = document.createElement('p');
+                            note.className = 'font-label-technical text-primary-fixed-dim/60 mt-1';
+                            note.style.fontSize = '9px';
+                            note.textContent = '✓ Auto-saved to Assembly';
+                            resultDiv.appendChild(note);
                         }
                         if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
                         activeGenerations[idx] = false;
