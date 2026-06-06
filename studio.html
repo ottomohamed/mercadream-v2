@@ -711,17 +711,21 @@
         const typingId = showTyping();
 
         try {
-            const res = await fetch('/api/chat', {
+            const res = await fetch('/api/director', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message: text, director: director, sceneCount: sceneCount})
+                body: JSON.stringify({concept: text, director: director, duration: sceneCount})
             });
             const data = await res.json();
             removeTyping(typingId);
-            if (data.scenes && data.scenes.length > 0) {
-                generatedScenes = data.scenes;
-                renderScriptCards(data.scenes, director, director + ' AI Director');
-                addLogLine(data.scenes.length + ' SCENES GENERATED');
+            if (data.prompts && data.prompts.length > 0) {
+                const scenes = data.prompts.map(function(p, i) {
+                    const pr = typeof p === 'string' ? p : (p.prompt || JSON.stringify(p));
+                    return {scene: i+1, title: 'Scene ' + (i+1), prompt: pr};
+                });
+                generatedScenes = scenes;
+                renderScriptCards(scenes, director, director + ' AI Director');
+                addLogLine(scenes.length + ' SCENES GENERATED');
             } else {
                 appendBubble('>> ERROR: ' + (data.error || 'No scenes generated'), 'bot', 'SYSTEM');
             }
