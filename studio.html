@@ -524,7 +524,7 @@
 </div>
 </div>
 <script>
-    let credits = parseInt(localStorage.getItem('md_credits') || '1250');
+    let credits = parseInt(localStorage.getItem('md_credits') || '0');
     let baseCost = 15;
 
     const costTable = { 'Drama': 15, 'Action': 15, 'Comedy': 15, 'Documentary': 15 };
@@ -598,7 +598,7 @@
     async function startGeneration() {
         const directorEl = document.querySelector('input[name="director"]:checked');
         const director = directorEl ? directorEl.value : 'Drama';
-        const cost = costTable[director] || 15;
+        const cost = costTable[director] || 50;
 
         if (credits < cost) {
             addLogLine('ERROR: INSUFFICIENT GNS FOR SYNC.');
@@ -723,7 +723,7 @@
     function renderScriptCards(scenes, director, directorName) {
         const chat = document.getElementById('chat-messages');
         const voiceOverlay = document.getElementById('voice-overlay');
-        const cost = costTable[director] || 15;
+        const cost = costTable[director] || 50;
 
         const header = document.createElement('div');
         header.className = 'flex gap-md max-w-full w-full';
@@ -756,7 +756,7 @@
     async function generateSceneVideo(idx) {
         const scene = generatedScenes[idx];
         if (!scene) return;
-        const cost = costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 15;
+        const cost = costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 50;
 
         if (credits < cost) {
             appendBubble('>> INSUFFICIENT GNS. Please recharge.', 'bot', 'SYSTEM');
@@ -775,90 +775,77 @@
         addLogLine(`SCENE ${idx+1} GENERATION INITIATED [${cost} GNS DEDUCTED]`);
         animatePipeline();
 
-        // Real WaveSpeed API call
+        // Real WaveSpeed API
         const resultDiv = document.getElementById('video-result-' + idx);
         if (resultDiv) {
             resultDiv.className = 'mt-sm block';
-            resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-outline-variant flex items-center justify-center gap-2"><span class="material-symbols-outlined text-primary-fixed-dim animate-spin">sync</span><p class="font-label-technical text-primary-fixed-dim text-sm">RENDERING...</p></div>';
+            resultDiv.innerHTML = '<div class="w-full h-48 bg-black border border-outline-variant flex items-center justify-center gap-2"><span class="material-symbols-outlined text-primary-fixed-dim" style="animation:spin 1s linear infinite">sync</span><p class="font-label-technical text-primary-fixed-dim text-sm">RENDERING...</p></div>';
         }
-
         try {
-            var prompt = typeof scene.prompt === 'string' ? scene.prompt : JSON.stringify(scene.prompt);
-            var res = await fetch('/api/wavespeed', {
+            const prompt = typeof scene.prompt === 'string' ? scene.prompt : JSON.stringify(scene.prompt);
+            const res = await fetch('/api/wavespeed', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({prompt: prompt, duration: 5, model: 'bytedance/seedance-2.0-fast/text-to-video'})
+                body: JSON.stringify({prompt, duration: 5, model: 'bytedance/seedance-2.0-fast/text-to-video'})
             });
-            var data = await res.json();
+            const data = await res.json();
             if (!data.taskId) throw new Error(data.error || 'No task ID');
-            addLogLine('RENDER JOB: ' + data.taskId);
+            addLogLine('JOB: ' + data.taskId);
 
-            var attempts = 0;
-            var pollInterval = setInterval(async function() {
+            let attempts = 0;
+            const poll = setInterval(async () => {
                 attempts++;
                 if (attempts > 80) {
-                    clearInterval(pollInterval);
-                    if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm p-2">TIMEOUT — TRY AGAIN</p>';
+                    clearInterval(poll);
+                    if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error p-2">TIMEOUT</p>';
                     if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
                     activeGenerations[idx] = false;
                     return;
                 }
                 try {
-                    var pr = await fetch('/api/video?id=' + data.taskId);
-                    var pd = await pr.json();
-                    addLogLine('POLL ' + attempts + ': ' + (pd.status || 'checking').toUpperCase());
-
+                    const pr = await fetch('/api/video?id=' + data.taskId);
+                    const pd = await pr.json();
+                    addLogLine('POLL ' + attempts + ': ' + (pd.status||'').toUpperCase());
                     if (pd.status === 'completed' && pd.videoUrl) {
-                        clearInterval(pollInterval);
-
-                        // ── SAVE TO md_6scenes FOR ASSEMBLY ──
+                        clearInterval(poll);
+                        // Save to Assembly
                         try {
-                            var allScenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-                            allScenes = allScenes.filter(function(s){ return s.sceneNumber !== (idx+1); });
-                            allScenes.push({
-                                videoUrl: pd.videoUrl,
-                                title: 'Scene_' + (idx+1),
-                                sceneNumber: idx+1,
-                                generatedAt: new Date().toISOString()
-                            });
-                            localStorage.setItem('md_6scenes', JSON.stringify(allScenes));
-                            updateAssemblyCount();
-                            addLogLine('SCENE ' + (idx+1) + ' SAVED TO ASSEMBLY');
+                            const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]').filter(s => s.sceneNumber !== idx+1);
+                            scenes.push({ videoUrl: pd.videoUrl, title: 'Scene_'+(idx+1), sceneNumber: idx+1 });
+                            localStorage.setItem('md_6scenes', JSON.stringify(scenes));
+                            const el = document.getElementById('assembly-count');
+                            if (el) el.textContent = scenes.length;
                         } catch(e) {}
-
                         if (resultDiv) {
-                            resultDiv.className = 'mt-sm block';
                             resultDiv.innerHTML =
-                                '<video src="' + pd.videoUrl + '" controls autoplay muted loop class="w-full border border-primary-fixed-dim mt-1"></video>'
-                                + '<div class="flex gap-2 mt-2">'
-                                + '<a href="' + pd.videoUrl + '" download class="flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase hover:brightness-110">DOWNLOAD</a>'
-                                + '<button onclick="sendSceneToAssembly('' + pd.videoUrl + '',' + idx + ')" class="flex-1 border border-primary-fixed-dim text-primary-fixed-dim py-2 font-label-technical text-xs text-center uppercase hover:bg-primary-fixed-dim hover:text-black transition-all">OPEN IN ASSEMBLY</button>'
-                                + '</div>'
-                                + '<div class="mt-1 font-label-technical text-[9px] text-primary-fixed-dim/60">✓ Auto-saved to Assembly pipeline</div>';
+                                '<video src="'+pd.videoUrl+'" controls autoplay muted loop class="w-full border border-primary-fixed-dim mt-1"></video>'
+                                +'<div class="flex gap-2 mt-2">'
+                                +'<a href="'+pd.videoUrl+'" download class="flex-1 bg-primary-fixed-dim text-on-primary py-2 font-label-technical text-xs text-center uppercase">DOWNLOAD</a>'
+                                +'<button onclick="openInAssembly(''+pd.videoUrl+'','+idx+')" class="flex-1 border border-primary-fixed-dim text-primary-fixed-dim py-2 font-label-technical text-xs uppercase hover:bg-primary-fixed-dim hover:text-black transition-all">ASSEMBLY</button>'
+                                +'</div>'
+                                +'<p class="font-label-technical text-[9px] text-primary-fixed-dim/60 mt-1">✓ Auto-saved to Assembly</p>';
                         }
                         if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
                         activeGenerations[idx] = false;
-                        addLogLine('SCENE ' + (idx+1) + ' SUCCESS ✓');
-
+                        addLogLine('SCENE ' + (idx+1) + ' READY ✓');
                     } else if (pd.status === 'failed') {
-                        clearInterval(pollInterval);
-                        if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm p-2">RENDER FAILED — RETRY</p>';
+                        clearInterval(poll);
+                        if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error p-2">FAILED</p>';
                         if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
                         activeGenerations[idx] = false;
                     }
                 } catch(pe) { addLogLine('POLL ERR: ' + pe.message); }
             }, 5000);
-
         } catch(e) {
             addLogLine('ERROR: ' + e.message);
             credits += cost;
             localStorage.setItem('md_credits', credits);
             updateCredits();
             try {
-                var uid = localStorage.getItem('md_user_id');
-                if (uid && typeof firebase !== 'undefined') firebase.firestore().collection('users').doc(uid).update({credits: credits});
+                const uid = localStorage.getItem('md_user_id');
+                if (uid) firebase.firestore().collection('users').doc(uid).update({credits});
             } catch(fe) {}
-            if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error text-sm p-2">ERROR: ' + e.message + '</p>';
+            if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error p-2">ERROR: ' + e.message + '</p>';
             if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
             activeGenerations[idx] = false;
         }
@@ -886,51 +873,41 @@
         document.getElementById('btn-manual').className = m === 'MANUAL' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
     }
 
-    // ── ASSEMBLY HELPERS ─────────────────────────────
-    function sendSceneToAssembly(videoUrl, idx) {
+    // ── FIREBASE BALANCE SYNC ─────────────────────────
+    try {
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) return;
+            localStorage.setItem('md_user_id', user.uid);
+            firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+                if (!doc.exists) return;
+                credits = doc.data().credits || 0;
+                localStorage.setItem('md_credits', credits);
+                updateCredits();
+                addLogLine('BALANCE SYNCED: ' + credits + ' GNS');
+            });
+        });
+    } catch(e) { console.error('Firebase:', e); }
+
+    // ── ASSEMBLY HELPERS ──────────────────────────────
+    function openInAssembly(videoUrl, idx) {
         localStorage.setItem('md_send_to_assembly', JSON.stringify({
-            url: videoUrl,
-            name: 'Scene_' + (idx+1) + '.mp4',
-            type: 'video',
-            duration: 5
+            url: videoUrl, name: 'Scene_'+(idx+1)+'.mp4', type: 'video', duration: 5
         }));
         window.location.href = 'assembly.html';
     }
 
-    function sendAllToAssembly() {
-        var scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-        if (!scenes.length) {
-            addLogLine('NO SCENES GENERATED YET — Generate scenes first');
-            return;
-        }
-        addLogLine(scenes.length + ' SCENES READY — OPENING ASSEMBLY');
+    function openAssembly() {
+        const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+        if (!scenes.length) { addLogLine('NO SCENES YET — Generate first'); return; }
         window.location.href = 'assembly.html';
     }
 
-    function updateAssemblyCount() {
-        var scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-        var el = document.getElementById('assembly-scene-count');
+    // Init assembly count
+    (function() {
+        const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
+        const el = document.getElementById('assembly-count');
         if (el) el.textContent = scenes.length;
-    }
-
-    // Firebase balance sync
-    try {
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                localStorage.setItem('md_user_id', user.uid);
-                firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
-                    if (doc.exists) {
-                        credits = doc.data().credits || 0;
-                        localStorage.setItem('md_credits', credits);
-                        updateCredits();
-                    }
-                });
-            }
-        });
-    } catch(e) {}
-
-    // Init
-    updateAssemblyCount();
+    })();
 
 </script>
 </body></html>
