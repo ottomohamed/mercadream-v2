@@ -1,480 +1,249 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM | CONVERT</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&amp;family=IBM+Plex+Mono:wght@400;500;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "inverse-surface": "#e5e2e1",
-                        "inverse-primary": "#4f6600",
-                        "surface": "#131313",
-                        "surface-container": "#201f1f",
-                        "on-primary": "#273500",
-                        "on-secondary-fixed-variant": "#604100",
-                        "tertiary-fixed": "#d0e5f5",
-                        "neon-acid": "#c8ff00",
-                        "tertiary-container": "#d0e5f5",
-                        "on-primary-fixed-variant": "#3b4d00",
-                        "cyber-gold": "#ffba3f",
-                        "surface-tint": "#a8d700",
-                        "secondary-fixed": "#ffdeae",
-                        "error": "#ffb4ab",
-                        "surface-container-high": "#2a2a2a",
-                        "on-surface-variant": "#c4caac",
-                        "tertiary-fixed-dim": "#b5c9d9",
-                        "on-primary-fixed": "#161f00",
-                        "primary-fixed": "#c0f500",
-                        "inverse-on-surface": "#313030",
-                        "surface-bright": "#3a3939",
-                        "primary-fixed-dim": "#a8d700",
-                        "on-tertiary-fixed": "#081e29",
-                        "on-primary-container": "#546d00",
-                        "surface-container-highest": "#353534",
-                        "on-error-container": "#ffdad6",
-                        "surface-variant": "#353534",
-                        "on-secondary": "#432c00",
-                        "on-tertiary-container": "#536774",
-                        "outline": "#8e9479",
-                        "on-background": "#e5e2e1",
-                        "on-secondary-fixed": "#281900",
-                        "on-error": "#690005",
-                        "background": "#131313",
-                        "silver-technical": "#a1a1a1",
-                        "outline-variant": "#434933",
-                        "surface-container-lowest": "#0e0e0e",
-                        "error-container": "#93000a",
-                        "on-surface": "#e5e2e1",
-                        "secondary-container": "#c48800",
-                        "primary-container": "#c0f500",
-                        "primary": "#ffffff",
-                        "on-tertiary": "#1f333f",
-                        "slate-data": "#242424",
-                        "secondary-fixed-dim": "#ffba3f",
-                        "void-black": "#060606",
-                        "tertiary": "#ffffff",
-                        "surface-dim": "#131313",
-                        "on-tertiary-fixed-variant": "#364956",
-                        "secondary": "#ffba3f",
-                        "on-secondary-container": "#3e2800",
-                        "surface-container-low": "#1c1b1b"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "unit": "4px",
-                        "margin-mobile": "16px",
-                        "gutter": "16px",
-                        "margin-desktop": "40px",
-                        "module-padding": "12px"
-                    },
-                    "fontFamily": {
-                        "label-caps": ["IBM Plex Mono"],
-                        "headline-xl": ["Sora"],
-                        "label-technical": ["IBM Plex Mono"],
-                        "body-md": ["Inter"],
-                        "headline-lg-mobile": ["Sora"],
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Sora"]
-                    },
-                    "fontSize": {
-                        "label-caps": ["10px", {"lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700"}],
-                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
-                        "label-technical": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
-                    }
-                }
-            }
-        }
-    </script>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>MERCADREAM | Convert — Image to Video</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .scanning-line {
-            background: linear-gradient(to bottom, transparent 0%, rgba(200, 255, 0, 0.05) 50%, transparent 100%);
-            height: 100px;
-            width: 100%;
-            position: absolute;
-            top: -100px;
-            left: 0;
-            pointer-events: none;
-        }
-        .technical-border {
-            border: 1px solid #434933;
-        }
-        .technical-grid {
-            background-size: 8px 8px;
-            background-image: radial-gradient(circle, #ffffff05 1px, transparent 1px);
-        }
-    </style>
-<script>
+body{background:#040404;color:#e3e2e2;font-family:"IBM Plex Mono",monospace;overflow-x:hidden;}
+.grid-bg{background-image:linear-gradient(rgba(200,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.03) 1px,transparent 1px);background-size:40px 40px;}
+.scanlines{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0) 50%,rgba(0,0,0,0.15) 50%);background-size:100% 4px;pointer-events:none;z-index:100;opacity:0.1;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#c8ff00;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite;display:inline-block;}
+</style>
+</head>
+<body class="grid-bg">
+<div class="scanlines"></div>
 
-</script>
+<nav class="fixed top-0 w-full z-50 bg-[#040404]/90 backdrop-blur-xl border-b border-[#434933] h-16 flex items-center justify-between px-10">
+  <a href="index.html" style="font-family:Orbitron,sans-serif;" class="text-[#c8ff00] font-black text-lg uppercase tracking-widest">MERCADREAM</a>
+  <div class="flex items-center gap-4">
+    <span id="gns-display" class="text-[#c8ff00] font-mono text-xs">0 GNS</span>
+    <span class="px-3 py-1 bg-[#c8ff00]/10 border border-[#c8ff00]/30 text-[#c8ff00] font-mono text-xs">CONVERT ENGINE</span>
+  </div>
+</nav>
+
+<section class="pt-16 py-10 text-center border-b border-[#434933]">
+  <div class="max-w-2xl mx-auto px-4">
+    <div class="inline-block px-4 py-1 border border-[#c8ff00]/30 text-[#c8ff00] font-mono text-xs tracking-[0.2em] uppercase mb-4">LATENT SPACE MAPPING — FLUX I2V</div>
+    <h1 style="font-family:Orbitron,sans-serif;font-size:clamp(36px,7vw,72px);line-height:1;color:#c8ff00;font-weight:900;text-shadow:0 0 40px rgba(200,255,0,0.4);">CONVERT</h1>
+    <p class="font-mono text-[#c9c6c5] text-sm uppercase tracking-wide mt-3">Transform any still frame into a dynamic cinematic sequence.</p>
+  </div>
+</section>
+
+<div class="max-w-5xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+  <!-- LEFT -->
+  <div class="space-y-5">
+
+    <!-- URL Input OR Upload -->
+    <div class="border border-[#434933] p-5 space-y-3">
+      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest">01 — IMAGE SOURCE</div>
+      <div>
+        <div class="font-mono text-[9px] text-[#c9c6c5] mb-1 uppercase">Paste Image URL</div>
+        <div class="flex gap-2">
+          <input id="img-url" type="text" placeholder="https://..."
+            class="flex-1 bg-[#0d0e0f] border-b-2 border-[#434933] focus:border-[#c8ff00] text-white font-mono text-xs py-2 px-2 outline-none transition-all placeholder:text-[#434933]">
+          <button onclick="loadFromUrl()" class="px-4 py-2 border border-[#434933] text-[#c9c6c5] font-mono text-xs uppercase hover:border-[#c8ff00] hover:text-[#c8ff00] transition-all">LOAD</button>
+        </div>
+      </div>
+      <div class="text-center font-mono text-[9px] text-[#434933]">— OR —</div>
+      <label class="flex items-center justify-center gap-2 px-4 py-3 border border-[#434933] text-[#c9c6c5] font-mono text-xs uppercase cursor-pointer hover:border-[#c8ff00] hover:text-[#c8ff00] transition-all">
+        <span class="material-symbols-outlined text-sm">upload</span> UPLOAD FROM PC
+        <input type="file" id="img-input" accept="image/*" class="hidden" onchange="handleUpload(this)">
+      </label>
+      <div id="img-preview-wrap" class="hidden">
+        <img id="img-preview" class="w-full border border-[#434933]" style="max-height:160px;object-fit:cover;">
+        <div class="font-mono text-[9px] text-[#c8ff00] mt-1 uppercase" id="img-status">IMAGE LOADED</div>
+      </div>
+    </div>
+
+    <div class="border border-[#434933] p-5 space-y-3">
+      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest">02 — SCENE DESCRIPTION</div>
+      <textarea id="prompt" rows="3" placeholder="Describe the motion and atmosphere..."
+        class="w-full bg-[#0d0e0f] border-b-2 border-[#434933] focus:border-[#c8ff00] text-white font-mono text-xs py-2 px-2 outline-none resize-none placeholder:text-[#434933] transition-all"></textarea>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="setPrompt('Cinematic drone shot, smooth motion, epic atmosphere')" class="px-2 py-1 border border-[#434933] text-[#c9c6c5] font-mono text-[9px] uppercase hover:border-[#c8ff00] hover:text-[#c8ff00] transition-all">DRONE</button>
+        <button onclick="setPrompt('Time-lapse clouds moving, dramatic sky, golden hour')" class="px-2 py-1 border border-[#434933] text-[#c9c6c5] font-mono text-[9px] uppercase hover:border-[#c8ff00] hover:text-[#c8ff00] transition-all">TIME-LAPSE</button>
+        <button onclick="setPrompt('Portrait animation, subtle breathing, realistic motion')" class="px-2 py-1 border border-[#434933] text-[#c9c6c5] font-mono text-[9px] uppercase hover:border-[#c8ff00] hover:text-[#c8ff00] transition-all">PORTRAIT</button>
+      </div>
+    </div>
+
+    <div class="border border-[#434933] p-4 flex justify-between items-center">
+      <div>
+        <div style="font-family:Orbitron,sans-serif;" class="text-[#c8ff00] text-xl font-black">50 GNS</div>
+        <div class="font-mono text-[9px] text-[#434933]">per conversion</div>
+      </div>
+      <button id="gen-btn" onclick="generateVideo()"
+        class="px-8 py-4 bg-[#c8ff00] text-black font-black font-mono text-sm uppercase hover:bg-white transition-all flex items-center gap-2">
+        <span class="material-symbols-outlined">transform</span> CONVERT
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="space-y-4">
+    <div class="border border-[#434933] p-4">
+      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest mb-3">OUTPUT</div>
+      <div id="output-area" class="bg-black border border-[#434933] flex items-center justify-center" style="aspect-ratio:16/9;">
+        <div id="placeholder" class="text-center">
+          <span class="material-symbols-outlined text-5xl text-[#434933] block mb-2">transform</span>
+          <p class="font-mono text-[10px] text-[#434933] uppercase">LOAD IMAGE → CONVERT</p>
+        </div>
+        <video id="output-video" class="hidden w-full h-full object-contain" controls></video>
+      </div>
+      <div id="status-bar" class="mt-2 font-mono text-[10px] text-[#c9c6c5] uppercase">READY</div>
+    </div>
+
+    <div id="progress-section" class="hidden border border-[#c8ff00]/30 p-4 space-y-2">
+      <div class="flex justify-between font-mono text-[10px]">
+        <span class="text-[#c8ff00] uppercase" id="progress-label">PROCESSING...</span>
+        <span class="text-[#c8ff00]" id="progress-pct">0%</span>
+      </div>
+      <div class="h-1 bg-[#434933]"><div id="progress-bar" class="h-full bg-[#c8ff00] transition-all" style="width:0%"></div></div>
+    </div>
+
+    <div id="download-section" class="hidden space-y-2">
+      <a id="download-btn" href="#" download="mercadream_converted.mp4"
+        class="w-full py-3 bg-[#c8ff00] text-black font-black font-mono text-xs uppercase flex items-center justify-center gap-2 hover:bg-white transition-all">
+        <span class="material-symbols-outlined text-sm">download</span> DOWNLOAD VIDEO
+      </a>
+      <button onclick="sendToAssembly()" class="w-full py-3 bg-white text-black font-black font-mono text-xs uppercase hover:bg-[#c8ff00] transition-all">
+        USE IN ASSEMBLY — 20 GNS
+      </button>
+    </div>
+
+    <div class="border border-[#434933] p-3">
+      <div class="font-mono text-[9px] text-[#c8ff00] uppercase mb-2">LOG</div>
+      <div id="gen-log" class="space-y-1 font-mono text-[10px] max-h-28 overflow-y-auto">
+        <div class="text-[#c8ff00]">> CONVERT ENGINE READY</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-    authDomain: "mercadream-4b4b3.firebaseapp.com",
-    projectId: "mercadream-4b4b3",
-    storageBucket: "mercadream-4b4b3.firebasestorage.app",
-    messagingSenderId: "257560928442",
-    appId: "1:257560928442:web:06983f27629a13eeed6283",
-    measurementId: "G-F0CLDJCV42"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
+firebase.initializeApp({apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",authDomain:"mercadream-4b4b3.firebaseapp.com",projectId:"mercadream-4b4b3"});
 
-</head>
-<body class="bg-void-black text-on-surface font-body-md overflow-x-hidden"><script src="md-engine.js"></script>
-<!-- TopAppBar -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
-<div class="flex items-center gap-4">
-<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-neon-acid tracking-tighter">MERCADREAM | CONVERT</span>
-</div>
-<div class="flex items-center gap-6">
-<div class="hidden md:flex flex-col items-end">
-<span class="font-label-caps text-label-caps text-silver-technical uppercase">User Wallet</span>
-<span class="font-label-technical text-label-technical text-neon-acid">9,400 GENESIS</span>
-</div>
-<button class="flex items-center gap-2 font-label-technical text-label-technical text-neon-acid border border-neon-acid px-4 py-2 hover:bg-neon-acid/10 transition-colors duration-75 active:scale-95">
-<span class="material-symbols-outlined">arrow_back</span>
-<span>Back</span>
-</button>
-</div>
-</header>
-<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-10 relative">
-<!-- Hero Section -->
-<section class="space-y-2 border-l-2 border-neon-acid pl-6">
-<div class="flex items-center gap-3">
-<span class="font-label-caps text-label-caps bg-neon-acid text-on-primary px-2 py-0.5">3 GENESIS / TRANS</span>
-<span class="font-label-caps text-label-caps text-silver-technical">CORE_ENGINE: FFmpeg_V.4.4</span>
-</div>
-<h1 class="font-headline-xl text-headline-xl text-primary tracking-tighter uppercase">Universal Format Converter</h1>
-<p class="font-body-md text-body-md text-silver-technical max-w-2xl">Surgical-grade file transformation powered by ffmpeg.wasm. Lossless conversion across legacy and future-ready codecs with hyper-optimized bitstream processing.</p>
-</section>
-<!-- Main Workspace -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
-<!-- Upload Zone -->
-<div class="lg:col-span-12 relative">
-<div class="technical-grid technical-border bg-surface p-12 flex flex-col items-center justify-center text-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-bright border-dashed border-2 border-outline/50 hover:border-neon-acid">
-<div class="absolute top-2 left-2 font-label-caps text-label-caps text-outline-variant">MODULE_ID: UPLOAD_01</div>
-<div class="w-20 h-20 rounded-full border border-outline flex items-center justify-center group-hover:border-neon-acid group-hover:scale-110 transition-all">
-<span class="material-symbols-outlined text-4xl text-silver-technical group-hover:text-neon-acid">upload_file</span>
-</div>
-<div class="space-y-1">
-<h3 class="font-headline-lg text-headline-lg text-primary tracking-tight">UPLOAD SOURCE</h3>
-<p class="font-body-sm text-body-sm text-silver-technical">Drag &amp; drop video file here or click to browse (MP4, MOV, AVI, MKV)</p>
-</div>
-<div class="font-label-technical text-label-technical text-outline-variant">MAX FILE SIZE: 2.0GB // THREAD_SYNC: ACTIVE</div>
-</div>
-</div>
-<!-- Config Parameters -->
-<div class="lg:col-span-12 space-y-6">
-<div class="technical-border bg-surface">
-<div class="h-2 bg-outline-variant w-full flex">
-<div class="h-full bg-neon-acid w-1/4"></div>
-</div>
-<div class="p-module-padding md:p-6 space-y-10">
-<div class="flex justify-between items-center">
-<h2 class="font-label-caps text-label-caps text-neon-acid">CONFIGURATION PARAMETERS</h2>
-<span class="font-label-technical text-label-technical text-outline-variant">SYSTEM_READY</span>
-</div>
-<!-- Output Format Chips -->
-<div class="space-y-4">
-<label class="font-label-technical text-label-technical text-silver-technical uppercase">Output Format</label>
-<div class="flex flex-wrap gap-3">
-<button class="font-label-technical text-label-technical px-6 py-3 bg-neon-acid text-on-primary border border-neon-acid active:scale-95 transition-all">MP4</button>
-<button class="font-label-technical text-label-technical px-6 py-3 technical-border text-silver-technical hover:text-neon-acid hover:border-neon-acid active:scale-95 transition-all">MOV</button>
-<button class="font-label-technical text-label-technical px-6 py-3 technical-border text-silver-technical hover:text-neon-acid hover:border-neon-acid active:scale-95 transition-all">AVI</button>
-<button class="font-label-technical text-label-technical px-6 py-3 technical-border text-silver-technical hover:text-neon-acid hover:border-neon-acid active:scale-95 transition-all">MKV</button>
-<button class="font-label-technical text-label-technical px-6 py-3 technical-border text-silver-technical hover:text-neon-acid hover:border-neon-acid active:scale-95 transition-all">WEBM</button>
-<button class="font-label-technical text-label-technical px-6 py-3 technical-border text-silver-technical hover:text-neon-acid hover:border-neon-acid active:scale-95 transition-all">GIF</button>
-<button class="font-label-technical text-label-technical px-6 py-3 technical-border text-silver-technical hover:text-neon-acid hover:border-neon-acid active:scale-95 transition-all">MP3</button>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-<!-- Quality Slider -->
-<div class="space-y-6">
-<div class="flex justify-between">
-<label class="font-label-technical text-label-technical text-silver-technical uppercase">Quality Profile</label>
-<span class="font-label-technical text-label-technical text-neon-acid">ULTRA 4K</span>
-</div>
-<div class="relative pt-1">
-<input class="w-full h-1.5 bg-outline-variant appearance-none cursor-pointer accent-neon-acid" max="4" min="1" step="1" type="range" value="4"/>
-<div class="flex justify-between mt-4 font-label-caps text-label-caps text-outline">
-<span>LOW</span>
-<span>MEDIUM</span>
-<span>HIGH</span>
-<span>ULTRA 4K</span>
-</div>
-</div>
-</div>
-<!-- Resolution Dropdown -->
-<div class="space-y-6">
-<label class="font-label-technical text-label-technical text-silver-technical uppercase">Target Resolution</label>
-<div class="relative group">
-<div class="technical-border bg-surface-container-low px-4 py-4 flex justify-between items-center cursor-pointer hover:border-neon-acid transition-colors">
-<span class="font-label-technical text-label-technical text-primary">4K (3840x2160)</span>
-<span class="material-symbols-outlined text-silver-technical">expand_more</span>
-</div>
-<!-- Simplified pseudo-dropdown look -->
-<div class="absolute top-full left-0 w-full technical-border bg-surface-container hidden group-hover:block z-10">
-<div class="px-4 py-3 hover:bg-neon-acid/10 cursor-pointer text-body-sm">480p</div>
-<div class="px-4 py-3 hover:bg-neon-acid/10 cursor-pointer text-body-sm">720p</div>
-<div class="px-4 py-3 hover:bg-neon-acid/10 cursor-pointer text-body-sm border-t border-outline-variant">1080p</div>
-<div class="px-4 py-3 hover:bg-neon-acid/10 cursor-pointer text-body-sm border-t border-outline-variant">2K (1440p)</div>
-<div class="px-4 py-3 bg-neon-acid/20 text-neon-acid cursor-pointer text-body-sm border-t border-outline-variant">4K (2160p)</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- Bottom Conversion Bar -->
-<div class="fixed bottom-0 left-0 w-full bg-void-black/90 backdrop-blur-xl border-t border-outline-variant z-40 p-4">
-<div class="max-w-7xl mx-auto flex items-center justify-between gap-6">
-<div class="hidden md:flex flex-col">
-<span class="font-label-caps text-label-caps text-outline uppercase">Queue Status</span>
-<span class="font-label-technical text-label-technical text-silver-technical">READY FOR OPERATION</span>
-</div>
-<button class="flex-1 max-w-2xl bg-neon-acid text-on-primary py-5 px-8 font-label-technical text-label-technical font-bold text-center flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
-<span class="text-lg">CONVERT � 3 GENESIS</span>
-</button>
-<div class="hidden md:flex flex-col items-end">
-<span class="font-label-caps text-label-caps text-outline uppercase">Est. Time</span>
-<span class="font-label-technical text-label-technical text-neon-acid">04:22 SEC</span>
-</div>
-</div>
-</div>
-<!-- Footer -->
-<footer class="w-full flex justify-between items-center px-margin-mobile md:px-margin-desktop py-unit bg-void-black border-t border-outline-variant">
-<div class="flex items-center gap-6">
-<span class="font-label-caps text-label-caps text-silver-technical">GPU_LOAD: 84%</span>
-<span class="font-label-caps text-label-caps text-silver-technical">THREAD_SYNC: OPTIMAL</span>
-<span class="hidden md:block font-label-caps text-label-caps text-neon-acid font-bold uppercase">�2024 MERCADREAM OPERATING SYSTEM // CORE_V.2.0.4</span>
-</div>
-<div class="flex gap-4">
-<a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors cursor-pointer" href="#">TERMINAL</a>
-<a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors cursor-pointer" href="#">DOCS</a>
-<a class="font-label-caps text-label-caps text-silver-technical hover:text-neon-acid transition-colors cursor-pointer uppercase" href="#">STATUS: OPTIMAL</a>
-</div>
-</footer>
-<!-- Decorative HUD Element -->
-<div class="fixed top-24 right-4 hidden xl:block w-48 space-y-4 pointer-events-none opacity-50">
-<div class="technical-border bg-surface p-3 space-y-2">
-<div class="flex justify-between border-b border-outline-variant pb-1">
-<span class="font-label-caps text-label-caps text-outline">BITRATE</span>
-<span class="font-label-technical text-label-technical text-neon-acid">18.4 Mbps</span>
-</div>
-<div class="flex justify-between border-b border-outline-variant pb-1">
-<span class="font-label-caps text-label-caps text-outline">CODEC</span>
-<span class="font-label-technical text-label-technical text-neon-acid">H.265</span>
-</div>
-<div class="flex justify-between">
-<span class="font-label-caps text-label-caps text-outline">MEM</span>
-<span class="font-label-technical text-label-technical text-neon-acid">1.2 GB</span>
-</div>
-</div>
-<div class="text-right">
-<span class="font-label-caps text-[8px] text-outline-variant uppercase">Telemetry Signal Strong</span>
-</div>
-</div>
-<script src="/js/navigation.js"></script><script>
-var sf = null, sfUrl = null, fmt = "MP4", COST = 8, quality = "HIGH";
+var currentImageUrl = null;
+var generatedVideoUrl = null;
 
-// Drop zone
-var uz = document.querySelector(".technical-grid.technical-border");
-if (uz) {
-    uz.style.cursor = "pointer";
-    uz.onclick = function() {
-        var i = document.createElement("input");
-        i.type = "file";
-        i.accept = "video/*,audio/*";
-        i.onchange = function(e) {
-            var f = e.target.files[0];
-            if (!f) return;
-            sf = f;
-            sfUrl = URL.createObjectURL(f);
-            uz.innerHTML = '<div style="padding:24px;text-align:center"><div style="color:#c8ff00;font-family:IBM Plex Mono,monospace;font-size:12px;margin-bottom:8px">✓ FILE LOADED</div><div style="color:#a1a1a1;font-family:IBM Plex Mono,monospace;font-size:10px">' + f.name.substring(0, 40) + '</div><div style="color:#434933;font-family:IBM Plex Mono,monospace;font-size:9px;margin-top:4px">' + (f.size/1024/1024).toFixed(1) + ' MB</div></div>';
-        };
-        i.click();
-    };
+document.getElementById('gns-display').textContent = parseInt(localStorage.getItem('md_credits')||'0').toLocaleString() + ' GNS';
+try {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (doc.exists) { var b=doc.data().credits||0; localStorage.setItem('md_credits',b); localStorage.setItem('md_user_id',user.uid); document.getElementById('gns-display').textContent=b.toLocaleString()+' GNS'; }
+    });
+  });
+} catch(e) {}
+
+function loadFromUrl() {
+  var url = document.getElementById('img-url').value.trim();
+  if (!url) return;
+  currentImageUrl = url;
+  document.getElementById('img-preview').src = url;
+  document.getElementById('img-preview-wrap').classList.remove('hidden');
+  document.getElementById('img-status').textContent = 'URL LOADED';
+  addLog('IMAGE URL SET');
 }
 
-// URL input
-var urlInput = document.querySelector('input[placeholder*="URL"], input[placeholder*="url"], input[placeholder*="http"]');
-var connectBtn = document.querySelector('button[onclick*="connect"], .connect-btn');
-
-// Format buttons
-document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(btn) {
-    btn.onclick = function() {
-        fmt = btn.textContent.trim();
-        document.querySelectorAll(".flex.flex-wrap.gap-3 button").forEach(function(b) {
-            b.style.background = ""; b.style.color = ""; b.style.borderColor = "";
-        });
-        btn.style.background = "#c8ff00";
-        btn.style.color = "#060606";
-        btn.style.borderColor = "#c8ff00";
-    };
-});
-
-// Quality slider
-var ql = document.querySelector("input[type=range]");
-var qd = document.querySelector(".text-neon-acid.font-label-technical");
-var qlabels = ["LOW", "MEDIUM", "HIGH", "ULTRA 4K"];
-if (ql) ql.oninput = function() {
-    quality = qlabels[this.value-1] || "HIGH";
-    if (qd) qd.textContent = quality;
-};
-
-function log(msg) {
-    var t = document.getElementById("terminal-log");
-    if (!t) {
-        t = document.createElement("div");
-        t.id = "terminal-log";
-        t.style.cssText = "position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:90%;max-width:600px;background:#0a0a0a;border:1px solid #434933;padding:12px;max-height:200px;overflow-y:auto;z-index:9999;font-family:IBM Plex Mono,monospace;font-size:10px;";
-        document.body.appendChild(t);
-    }
-    t.innerHTML += '<div style="color:#c8ff00;margin:2px 0">$ ' + msg + '</div>';
-    t.scrollTop = t.scrollHeight;
+function handleUpload(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    currentImageUrl = e.target.result;
+    document.getElementById('img-preview').src = e.target.result;
+    document.getElementById('img-preview-wrap').classList.remove('hidden');
+    document.getElementById('img-status').textContent = file.name.substring(0,30);
+    addLog('IMAGE LOADED: ' + file.name);
+  };
+  reader.readAsDataURL(file);
 }
 
-async function go() {
-    // Get input URL
-    var inputUrl = sfUrl;
-    if (!inputUrl && urlInput && urlInput.value.trim()) {
-        inputUrl = urlInput.value.trim();
-    }
-    
-    if (!inputUrl) { alert("Please upload a file or enter a URL first."); return; }
+async function generateVideo() {
+  if (!currentImageUrl) { addLog('ERROR: LOAD AN IMAGE FIRST', '#ef4444'); return; }
+  var gns = parseInt(localStorage.getItem('md_credits')||'0');
+  if (gns < 50) { addLog('ERROR: NEED 50 GNS', '#ef4444'); return; }
+  var prompt = document.getElementById('prompt').value.trim() || 'Cinematic motion, smooth camera movement';
+  var btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin material-symbols-outlined">sync</span> CONVERTING...';
+  document.getElementById('progress-section').classList.remove('hidden');
+  document.getElementById('download-section').classList.add('hidden');
+  document.getElementById('placeholder').classList.add('hidden');
+  setStatus('SUBMITTING...', 5);
+  try {
+    var res = await fetch('/api/convert', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageUrl:currentImageUrl,prompt:prompt})});
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error||'No task ID');
+    addLog('TASK: ' + data.taskId);
+    await pollResult(data.taskId);
+  } catch(e) {
+    addLog('ERROR: ' + e.message, '#ef4444');
+    setStatus('ERROR', 0);
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined">transform</span> CONVERT';
+  }
+}
 
-    // Check genesis
-    var currentGenesis = parseInt(localStorage.getItem("md_genesis") || "0");
-    if (currentGenesis < COST) {
-        alert("Need " + COST + " genesis. You have " + currentGenesis + ".");
-        window.location.href = "pricing.html";
-        return;
-    }
-
-    var btn = document.getElementById("btn-convert");
-    if (btn) { btn.disabled = true; btn.textContent = "CONVERTING..."; }
-
-    log("STARTING CONVERSION: " + fmt + " / " + quality);
-    log("INPUT: " + inputUrl.substring(0, 60));
-
+async function pollResult(taskId) {
+  var btn = document.getElementById('gen-btn');
+  for (var i=0;i<120;i++) {
+    await sleep(3000);
+    setStatus('PROCESSING... ' + (i*3) + 's', Math.min(10+i*2,95));
     try {
-        var res = await fetch("/api/convert", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ video_url: inputUrl, format: fmt, quality: quality })
-        });
-        var data = await res.json();
-
-        if (data.error) {
-            log("ERROR: " + data.error);
-            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
-            return;
-        }
-
-        // Deduct genesis
-        localStorage.setItem("md_genesis", currentGenesis - COST);
-        if (window.__deductGenesis) window.__deductGenesis(COST);
-        log("GENESIS DEDUCTED: " + COST + " GNS");
-
-        // If already completed (fallback)
-        if (data.status === "completed" && data.url) {
-            log("CONVERSION COMPLETE: " + data.url.substring(0, 60));
-            showConvertResult(data.url, fmt);
-            if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
-            return;
-        }
-
-        // Poll
-        log("JOB ID: " + data.id + " — polling...");
-        var attempts = 0;
-        var poll = setInterval(async function() {
-            attempts++;
-            if (attempts > 60) {
-                clearInterval(poll);
-                log("TIMEOUT — please try again");
-                if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
-                return;
-            }
-            try {
-                var pr = await fetch("/api/convert", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ action: "poll", id: data.id })
-                });
-                var pd = await pr.json();
-                log("POLL [" + attempts + "]: " + pd.status);
-                if ((pd.status === "completed" || pd.status === "succeeded") && pd.url) {
-                    clearInterval(poll);
-                    log("DONE: " + pd.url.substring(0, 60));
-                    showConvertResult(pd.url, fmt);
-                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
-                } else if (pd.status === "failed") {
-                    clearInterval(poll);
-                    log("FAILED — please try again");
-                    if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
-                }
-            } catch(e) { log("POLL ERROR: " + e.message); }
-        }, 3000);
-
-    } catch(e) {
-        log("NETWORK ERROR: " + e.message);
-        if (btn) { btn.disabled = false; btn.textContent = "CONVERT — " + COST + " GNS"; }
-    }
+      var r = await fetch('/api/video?id='+taskId);
+      var d = await r.json();
+      if (d.status==='completed' && d.videoUrl) {
+        generatedVideoUrl = d.videoUrl;
+        var gns = parseInt(localStorage.getItem('md_credits')||'0');
+        var newGns = gns - 50;
+        localStorage.setItem('md_credits', newGns);
+        document.getElementById('gns-display').textContent = newGns.toLocaleString() + ' GNS';
+        try { var uid=localStorage.getItem('md_user_id'); if(uid) firebase.firestore().collection('users').doc(uid).update({credits:newGns}); } catch(e){}
+        document.getElementById('output-video').src = d.videoUrl;
+        document.getElementById('output-video').classList.remove('hidden');
+        document.getElementById('download-btn').href = d.videoUrl;
+        document.getElementById('download-section').classList.remove('hidden');
+        setStatus('COMPLETE ✓', 100);
+        addLog('VIDEO READY', '#c8ff00');
+        btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">transform</span> CONVERT';
+        return;
+      } else if (d.status==='failed') throw new Error('Failed');
+    } catch(e) { addLog('POLLING: ' + e.message, '#f59e0b'); }
+  }
+  throw new Error('Timeout');
 }
 
-function showConvertResult(url, format) {
-    var existing = document.getElementById("convert-result");
-    if (existing) existing.remove();
-    var div = document.createElement("div");
-    div.id = "convert-result";
-    div.style.cssText = "position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0a0a0a;border:1px solid #c8ff00;padding:20px;z-index:9999;text-align:center;font-family:IBM Plex Mono,monospace;min-width:300px;";
-    div.innerHTML = '<div style="color:#c8ff00;font-size:12px;margin-bottom:12px">✓ CONVERSION COMPLETE — ' + format + '</div>'
-        + '<a href="' + url + '" download style="background:#c8ff00;color:#060606;padding:10px 24px;font-family:IBM Plex Mono,monospace;font-size:11px;font-weight:bold;text-decoration:none;display:inline-block;margin-right:8px;">⬇ DOWNLOAD</a>'
-        + '<a href="assembly.html" style="background:transparent;color:#c8ff00;padding:10px 24px;font-family:IBM Plex Mono,monospace;font-size:11px;border:1px solid #c8ff00;text-decoration:none;display:inline-block;">OPEN IN ASSEMBLY</a>'
-        + '<div onclick="document.getElementById('convert-result').remove()" style="color:#434933;font-size:10px;margin-top:12px;cursor:pointer;">✕ CLOSE</div>';
-    document.body.appendChild(div);
-    var t = document.getElementById("terminal-log");
-    if (t) t.remove();
+function sendToAssembly() {
+  if (!generatedVideoUrl) return;
+  var gns=parseInt(localStorage.getItem('md_credits')||'0');
+  if (gns<20) { addLog('NEED 20 GNS','#ef4444'); return; }
+  localStorage.setItem('md_credits', gns-20);
+  localStorage.setItem('md_send_to_assembly', JSON.stringify({url:generatedVideoUrl,name:'Converted.mp4',type:'video',duration:10}));
+  window.location.href='assembly.html';
 }
-</script><script src="/js/pipeline.js"></script></body></html>
 
-
-
-
-
-
-
-
-
-
-
+function setStatus(msg, pct) {
+  document.getElementById('status-bar').textContent = msg;
+  document.getElementById('progress-label').textContent = msg;
+  document.getElementById('progress-pct').textContent = Math.floor(pct)+'%';
+  document.getElementById('progress-bar').style.width = pct+'%';
+}
+function addLog(msg, color) {
+  var log=document.getElementById('gen-log'); var div=document.createElement('div');
+  div.style.color=color||'#c8ff00'; div.textContent='> '+msg; log.appendChild(div); log.scrollTop=log.scrollHeight;
+}
+function setPrompt(t) { document.getElementById('prompt').value=t; }
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+</script>
+</body>
+</html>
