@@ -1,7 +1,7 @@
-// ═══════════════════════════════════════════════════════
-// MERCADREAM — api/index.js
-// UNIFIED ROUTER v3 — Clean, no duplicates
-// ═══════════════════════════════════════════════════════
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// MERCADREAM â€” api/index.js
+// UNIFIED ROUTER v3 â€” Clean, no duplicates
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 'use strict';
 
 const WAVESPEED_KEY  = process.env.WAVESPEED_API_KEY;
@@ -10,13 +10,14 @@ const STRIPE_KEY     = process.env.STRIPE_SECRET_KEY;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const FIREBASE_KEY   = process.env.FIREBASE_API_KEY;
 const PEXELS_KEY     = process.env.PEXELS_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const FIREBASE_PROJECT = 'mercadream-4b4b3';
 const FIREBASE_URL     = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 const BASE_URL         = 'https://www.mercadream.com';
 const WAVESPEED_BASE   = 'https://api.wavespeed.ai/api/v3';
 
-// ── FIRESTORE ─────────────────────────────────────────
+// â”€â”€ FIRESTORE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function fsWrite(col, docId, fields) {
   const url = docId
     ? `${FIREBASE_URL}/${col}/${docId}?key=${FIREBASE_KEY}`
@@ -38,7 +39,7 @@ async function fsGet(col, docId) {
   return r.json();
 }
 
-// ── WAVESPEED ─────────────────────────────────────────
+// â”€â”€ WAVESPEED â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function wsPost(model, input) {
   const r = await fetch(`${WAVESPEED_BASE}/predictions`, {
     method: 'POST',
@@ -54,7 +55,7 @@ async function wsPoll(taskId) {
   return r.json();
 }
 
-// ── GENESIS VAULT ─────────────────────────────────────
+// â”€â”€ GENESIS VAULT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function makeGenesisId(uid) {
   return `GNS-${Date.now().toString(36).toUpperCase()}-${(uid||'ANON').slice(0,6).toUpperCase()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
 }
@@ -88,7 +89,7 @@ async function findMatch(hashes, threshold) {
   return bestScore >= threshold ? best : null;
 }
 
-// ── HANDLERS ──────────────────────────────────────────
+// â”€â”€ HANDLERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function handle_fingerprint(req, res) {
   const { action } = req.body||{};
@@ -420,7 +421,7 @@ async function handle_checkout(req, res) {
       payment_method_types:['card'],
       line_items:[{ price_data:{
         currency:'usd',
-        product_data:{ name:`MercaDream — ${creditAmount.toLocaleString()} GNS Credits`, description:`${creditAmount} GNS · AI Cinema Credits` },
+        product_data:{ name:`MercaDream â€” ${creditAmount.toLocaleString()} GNS Credits`, description:`${creditAmount} GNS Â· AI Cinema Credits` },
         unit_amount: priceInCents
       }, quantity:1 }],
       mode:'payment',
@@ -517,7 +518,13 @@ async function handle_chat(req, res) {
   }
 }
 
-// ── ROUTER ────────────────────────────────────────────
+// â”€â”€ ROUTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+async function handle_analyze(req, res) {
+  const analyzeApi = require('./analyze');
+  return await analyzeApi(req, res);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
@@ -545,6 +552,7 @@ module.exports = async function handler(req, res) {
     director:    handle_director,
     checkout:    handle_checkout,
     webhook:     handle_webhook,
+    analyze:     handle_analyze,
   };
 
   const fn = routes[service];
@@ -553,3 +561,5 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
+
+
