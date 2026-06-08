@@ -1,606 +1,588 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MERCADREAM | Stamp Video</title>
-    <script src="https://cdn.tailwindcss.com">    // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
-        });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
 
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
-    }
-</script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body { background: #040404; font-family: 'IBM Plex Mono', monospace; }
-        .acid { color: #c8ff00; }
-        .acid-bg { background: #c8ff00; }
-        .border-acid { border-color: #c8ff00; }
-        .glow { box-shadow: 0 0 20px rgba(200,255,0,0.2); }
-        .upload-zone { border: 2px dashed #2a2a2a; transition: all 0.3s; cursor: pointer; }
-        .upload-zone:hover { border-color: #c8ff00; background: rgba(200,255,0,0.05); }
-        .hidden-layer { display: none; }
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM // GNS ENGINE DASHBOARD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Global Reset & Scanline Effect */
+        body {
+            background-color: #040404;
+            color: #e5e2e1;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.05) 0px,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .glass-panel {
+            background: rgba(27, 27, 27, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stamp-glow {
+            box-shadow: 0 0 20px rgba(168, 215, 0, 0.15);
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor-blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes scanline-anim {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-overlay {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: rgba(200, 255, 0, 0.2);
+            animation: scanline-anim 4s linear infinite;
+            pointer-events: none;
+        }
+
+        /* Material Icon Adjustments */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .stamping-active {
+            animation: stamp-slam 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes stamp-slam {
+            0% { transform: scale(1.1); filter: brightness(2); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
     </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#353534",
+                        "background": "#131313",
+                        "surface-slate": "#1B1B1B",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed-dim": "#ffb3b2",
+                        "terminal-dim": "#666666",
+                        "surface-container-highest": "#353534",
+                        "border-low-light": "rgba(255, 255, 255, 0.1)",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed-variant": "#004f54",
+                        "surface-tint": "#a8d700",
+                        "on-tertiary-fixed": "#410008",
+                        "secondary-container": "#00eefc",
+                        "secondary-fixed-dim": "#00dbe9",
+                        "on-secondary": "#00363a",
+                        "on-primary-fixed": "#161f00",
+                        "on-tertiary": "#680012",
+                        "on-background": "#e5e2e1",
+                        "inverse-primary": "#4f6600",
+                        "surface-bright": "#3a3939",
+                        "primary": "#ffffff",
+                        "on-tertiary-container": "#ca002d",
+                        "secondary-fixed": "#7df4ff",
+                        "primary-container": "#c0f500",
+                        "primary-fixed-dim": "#a8d700",
+                        "on-tertiary-fixed-variant": "#92001e",
+                        "tertiary": "#ffffff",
+                        "surface-dim": "#131313",
+                        "inverse-on-surface": "#313030",
+                        "inverse-surface": "#e5e2e1",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#ffdad8",
+                        "outline-variant": "#434933",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-container": "#00686f",
+                        "on-error": "#690005",
+                        "on-surface": "#e5e2e1",
+                        "secondary": "#d3fbff",
+                        "primary-fixed": "#c0f500",
+                        "surface": "#131313",
+                        "tertiary-container": "#ffdad8",
+                        "on-primary-container": "#546d00",
+                        "surface-container-low": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#002022",
+                        "surface-container": "#201f1f",
+                        "on-surface-variant": "#c4caac",
+                        "outline": "#8e9479",
+                        "on-primary": "#273500"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "grid-unit": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "max-width": "1440px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-md": ["JetBrains Mono"],
+                        "display-lg": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "headline-lg-mobile": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", { "lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "data-mono": ["12px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
 </head>
-<body>
-    <nav class="fixed top-0 w-full bg-black/90 border-b border-gray-800 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-xl font-bold font-orbitron acid">MERCADREAM</a>
-            <div class="flex gap-6 items-center">
-                <span id="gns-display" class="text-sm border border-gray-700 px-3 py-1">0 GNS</span>
-                <button onclick="connectWallet()" class="px-4 py-2 border border-[#c8ff00] text-[#c8ff00] text-sm hover:bg-[#c8ff00] hover:text-black transition">CONNECT</button>
-            </div>
-        </div>
-    </nav>
-    
-    <main class="container mx-auto px-6 pt-28 pb-20 max-w-4xl">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-orbitron font-bold acid mb-2">GENESIS VAULT</h1>
-            <p class="text-gray-500 text-sm">Stamp your video with an invisible DNA pattern</p>
-        </div>
-        
-        <!-- TABS -->
-        <div class="flex border-b border-gray-800 mb-8">
-            <button id="tab-register-btn" class="px-6 py-3 font-bold acid border-b-2 border-[#c8ff00]">REGISTER (50 GNS)</button>
-            <button id="tab-verify-btn" class="px-6 py-3 text-gray-500 hover:text-white">VERIFY (FREE)</button>
-        </div>
-        
-        <!-- REGISTER PANEL -->
-        <div id="register-panel">
-            <div class="border border-gray-800 p-6 rounded-lg">
-                <div id="upload-zone" class="upload-zone rounded-lg p-12 text-center" onclick="document.getElementById('video-input').click()">
-                    <div class="text-5xl mb-3"></div>
-                    <p class="text-gray-400">Click or drop video file</p>
-                    <p class="text-gray-600 text-xs mt-2">MP4, MOV, WEBM  Max 500MB</p>
-                </div>
-                <input type="file" id="video-input" accept="video/*" class="hidden" onchange="handleVideoSelect(this)">
-                
-                <div class="mt-4">
-                    <input type="text" id="video-title" placeholder="Video Title (optional)" class="w-full bg-black border border-gray-700 p-3 text-sm focus:border-[#c8ff00] outline-none">
-                </div>
-                
-                <button id="register-btn" onclick="startRegistration()" class="w-full mt-4 acid-bg text-black font-bold py-3 hover:opacity-90 transition disabled:opacity-50" disabled>
-                    STAMP WITH DNA  50 GNS
-                </button>
-                
-                <div id="status-message" class="mt-4 text-sm text-center"></div>
-            </div>
-        </div>
-        
-        <!-- VERIFY PANEL (hidden initially) -->
-        <div id="verify-panel" class="hidden">
-            <div class="border border-gray-800 p-6 rounded-lg">
-                <div class="upload-zone rounded-lg p-8 text-center" onclick="document.getElementById('verify-input').click()">
-                    <div class="text-4xl mb-2"></div>
-                    <p class="text-gray-400">Drop video to verify ownership</p>
-                </div>
-                <input type="file" id="verify-input" accept="video/*" class="hidden" onchange="handleVerifySelect(this)">
-                
-                <div class="mt-4 flex gap-2">
-                    <input type="text" id="genesis-id-input" placeholder="Or enter Genesis ID: GNS-2024-XXXX" class="flex-1 bg-black border border-gray-700 p-3 text-sm">
-                    <button onclick="verifyById()" class="px-6 border border-[#c8ff00] text-[#c8ff00] hover:bg-[#c8ff00] hover:text-black transition">CHECK</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- RESULT DISPLAY -->
-        <div id="result-container" class="mt-8 hidden">
-            <div class="border border-[#c8ff00] p-6 glow">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-xs text-gray-500">GENESIS CERTIFICATE</div>
-                        <div id="result-genesis-id" class="font-orbitron text-[#c8ff00] text-lg"></div>
-                    </div>
-                    <div id="result-qr" class="w-12 h-12 bg-gray-800"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
-                    <div><span class="text-gray-500">OWNER:</span> <span id="result-owner" class="acid"></span></div>
-                    <div><span class="text-gray-500">TITLE:</span> <span id="result-title"></span></div>
-                    <div><span class="text-gray-500">REGISTERED:</span> <span id="result-date"></span></div>
-                    <div><span class="text-gray-500">MATCH:</span> <span id="result-match"></span></div>
-                </div>
-            </div>
-        </div>
-    </main>
-    
-    <!-- ========== CAMOUFLAGE LAYERS (التمويه) ========== -->
-    <!-- Layer 1: Fake SHA-256 -->
-    <script>
-    (function() {
-        window.fakeSHA256 = async function(data) {
-            console.log('[Layer1] SHA-256 initiated');
-            let str = typeof data === 'string' ? data : data.name || 'video-data';
-            let hash = '';
-            for(let i = 0; i < 64; i++) {
-                hash += Math.floor(Math.random() * 16).toString(16);
-            }
-            return '0x' + hash;
-        };
-        window.nextLayer = null;
-    })();
-        // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
-        });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
+<body class="font-body-md text-on-surface select-none">
+<!-- Global Background Shader -->
+<!-- STITCH_SHADER_START:ANIMATION_5 class="fixed inset-0 w-full h-full opacity-40 grayscale pointer-events-none" -->
+<div class="fixed inset-0 w-full h-full opacity-40 grayscale pointer-events-none" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_5" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_5');
 
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
     }
-</script>
-    
-    <!-- Layer 2: Fake Perceptual Hash -->
-    <script>
-    (function() {
-        window.fakePerceptualHash = async function(videoFile) {
-            console.log('[Layer2] Computing perceptual hash...');
-            await new Promise(r => setTimeout(r, 500));
-            const mockFrames = [];
-            for(let i = 0; i < 30; i++) {
-                mockFrames.push({ frame: i, hash: Math.random().toString(36) });
-            }
-            const result = { frames: mockFrames, masterHash: Math.random().toString(36) };
-            if(window.nextLayer) return window.nextLayer(result);
-            return result;
-        };
-        window.layer3 = null;
-    })();
-        // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
-        });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
 
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
-    }
-</script>
-    
-    <!-- Layer 3: Fake WebCodecs -->
-    <script>
-    (function() {
-        window.fakeWebCodecs = {
-            async process(videoFile) {
-                console.log('[Layer3] WebCodecs decoding simulation...');
-                await new Promise(r => setTimeout(r, 800));
-                const frames = [];
-                for(let i = 0; i < 50; i++) {
-                    frames.push({ timestamp: i * 33, data: rame_ });
-                }
-                if(window.layer3) return window.layer3(frames);
-                return frames;
-            }
-        };
-        window.wasmLayer = null;
-    })();
-        // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
-        });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
 
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
-    }
-</script>
-    
-    <!-- Layer 4: Fake WASM -->
-    <script>
-    (function() {
-        window.fakeWASM = {
-            async process(data) {
-                console.log('[Layer4] WASM processing simulation...');
-                await new Promise(r => setTimeout(r, 300));
-                let result = 'WASM_PROCESSED_' + Math.random().toString(36);
-                if(window.wasmLayer) return window.wasmLayer(result);
-                return result;
-            }
-        };
-        window.realSystem = null;
-    })();
-        // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
-        });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
+varying vec2 v_texCoord;
 
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
+float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+}
+
+void main() {
+    vec2 uv = v_texCoord;
+    vec3 color = vec3(0.015, 0.015, 0.015); // Deep obsidian base
+    
+    // Grid Lines
+    vec2 grid = fract(uv * 50.0);
+    float lines = step(0.98, grid.x) + step(0.98, grid.y);
+    color += lines * vec3(0.05, 0.1, 0.05);
+    
+    // Scanning Line
+    float scanPos = fract(u_time * 0.2);
+    float scanLine = smoothstep(scanPos - 0.02, scanPos, uv.y) * smoothstep(scanPos + 0.02, scanPos, uv.y);
+    color += scanLine * vec3(0.78, 1.0, 0.0) * 0.3; // Acid Green Glow
+    
+    // Data Noise
+    float n = hash(uv + u_time * 0.01);
+    color += n * 0.02;
+
+    // Pulse
+    float pulse = sin(u_time * 0.5) * 0.5 + 0.5;
+    color += (1.0 - length(uv - 0.5)) * vec3(0.78, 1.0, 0.0) * 0.05 * pulse;
+
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
     }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
 </script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_5 -->
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop py-4 bg-surface-slate/80 backdrop-blur-xl border-b border-border-low-light shadow-[0_0_15px_rgba(168,215,0,0.1)]">
+<div class="font-display-lg text-headline-lg text-primary-fixed tracking-tighter uppercase">
+            MERCADREAM // GNS ENGINE
+        </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-primary-fixed border-b-2 border-primary-fixed pb-2 transition-all" href="#">ENGINE</a>
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">VAULT</a>
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">NETWORK</a>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container/10 border border-primary-container/20">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-data-mono text-data-mono text-primary-container">SYSTEM STATUS: OPTIMAL</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="terminal">terminal</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="settings">settings</span>
+<div class="w-10 h-10 border border-primary-container/40 p-0.5">
+<img alt="USER_AUTH_SCAN" class="w-full h-full grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP79X3u7tA4o0sntztAZ8sMJhyWtrd-utBM4oEue4N35C_LsIsmeVpJVBoRZDBveZzzqk6YTFUtokm9txvwK63Vqq1KlfzqP2xMiW2E8bMwqvnqobhiyqbYMBunQxSMkm5QuKKHfEvIDA29HQYQ4uhTXXVF06yRyEjaWv9sdBYEhS6b0OXPL92nxyr9QBAbt2N9s67Xj4SoPG2lsAFITMGRd8vbecrSGRBZoI7TMgrYALzoUf8FYMbkmUhW-Gbcx-dh1y_QylTawQ"/>
+</div>
+</div>
+</nav>
+<!-- Main Dashboard Workspace -->
+<main class="relative h-screen pt-24 pb-12 px-margin-desktop grid grid-cols-12 gap-gutter overflow-hidden">
+<!-- Left: LOG CONSOLE -->
+<aside class="col-span-3 glass-panel border-r border-border-low-light p-4 flex flex-col gap-4 overflow-hidden">
+<div class="flex justify-between items-center border-b border-border-low-light pb-2">
+<h2 class="font-label-caps text-label-caps text-primary-fixed">LOG CONSOLE</h2>
+<span class="text-[10px] text-terminal-dim font-data-mono">LC_X_882</span>
+</div>
+<div class="flex-1 overflow-y-auto space-y-1 font-data-mono text-[11px] text-primary/70 leading-relaxed scrollbar-hide" id="log-window">
+<p class="text-primary-container">&gt; [00:00:01] INITIALIZING GENESIS KERNEL...</p>
+<p>&gt; [00:00:02] LOADING NEURAL WEIGHTS...</p>
+<p class="text-secondary-container">&gt; [00:00:04] INJECTING STOCHASTIC MATRIX...</p>
+<p>&gt; [00:00:05] PATTERN MAPPING COMPLETE.</p>
+<p class="text-primary-container">&gt; [00:00:06] READY FOR GENESIS SEQUENCE.</p>
+<p>&gt; [00:00:10] LISTENING FOR DATA PACKET ON PORT_ID: 0X99...</p>
+</div>
+<div class="h-12 border-t border-border-low-light pt-2 flex items-center gap-2">
+<span class="text-primary-container">&gt;</span>
+<span class="w-2 h-4 bg-primary-container cursor-blink"></span>
+</div>
+</aside>
+<!-- Center: STAMPING ZONE -->
+<section class="col-span-6 flex flex-col items-center justify-center gap-8 px-8">
+<div class="relative w-full max-w-2xl aspect-square glass-panel border-2 border-dashed border-primary/20 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary-container/60 cursor-crosshair group overflow-hidden" id="drop-zone">
+<!-- Corner Accents -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary-container"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary-container"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary-container"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary-container"></div>
+<!-- Technical Micro-Data -->
+<div class="absolute top-4 left-4 font-data-mono text-[10px] text-terminal-dim flex flex-col">
+<span>PORT_ID: 0X99</span>
+<span>PROTOCOL: GNS_V4</span>
+</div>
+<div class="absolute top-4 right-4 font-data-mono text-[10px] text-terminal-dim text-right flex flex-col">
+<span>LATENCY: &lt;1MS</span>
+<span>THROUGHPUT: 12.4 GB/S</span>
+</div>
+<div class="scanline-overlay"></div>
+<div class="text-center space-y-4 z-10">
+<span class="material-symbols-outlined text-6xl text-primary-container mb-4 block animate-pulse" data-icon="target">target</span>
+<h3 class="font-display-lg text-2xl tracking-widest text-primary">DRAG FILE TO COMMENCE SCAN</h3>
+<p class="font-label-caps text-label-caps text-terminal-dim">SUPPORTED: .JSON / .GNS / .RAW</p>
+</div>
+<div class="absolute inset-0 bg-primary-container/0 group-hover:bg-primary-container/5 transition-colors"></div>
+</div>
+<button class="w-full max-w-md py-4 bg-primary-container text-on-primary font-label-caps text-sm tracking-[0.2em] border-2 border-primary-container hover:bg-black hover:text-primary-container transition-all active:scale-95 flex items-center justify-center gap-3" onclick="triggerSlam()">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+                EXECUTE SEQUENCE
+            </button>
+</section>
+<!-- Right: VERIFICATION MATRIX -->
+<aside class="col-span-3 flex flex-col gap-6">
+<div class="glass-panel flex-1 p-4 border border-border-low-light relative flex flex-col overflow-hidden">
+<div class="flex justify-between items-center mb-4 border-b border-border-low-light pb-2">
+<h2 class="font-label-caps text-label-caps text-primary">VERIFICATION MATRIX</h2>
+<span class="material-symbols-outlined text-sm text-secondary-container" data-icon="view_in_ar">view_in_ar</span>
+</div>
+<div class="relative flex-1 bg-black/40 border border-primary/5">
+<!-- STITCH_THREEJS_START:ANIMATION_6 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_6" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_6');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Three.js Scene: Genesis DNA Spinner
+// Represents the "Verification Matrix"
+
+const scene = new THREE.Scene();
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(width, height);
+container.appendChild(renderer.domElement);
+
+// Helix Geometry
+const group = new THREE.Group();
+const curve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, -5, 0),
+    new THREE.Vector3(0, 5, 0)
+]);
+
+const dotGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+const material = new THREE.MeshBasicMaterial({ color: 0xC8FF00 });
+
+for (let i = 0; i < 50; i++) {
+    const angle = (i / 50) * Math.PI * 4;
+    const x = Math.cos(angle) * 1.5;
+    const z = Math.sin(angle) * 1.5;
+    const y = (i / 50) * 10 - 5;
     
-    <!-- ========== REAL SYSTEM (المخفي) ========== -->
-    <script>
-    // ربط الطبقات معاً (تمويه)
-    window.nextLayer = window.fakePerceptualHash;
-    window.layer3 = window.fakeWebCodecs.process.bind(window.fakeWebCodecs);
-    window.wasmLayer = window.fakeWASM.process.bind(window.fakeWASM);
+    const dot = new THREE.Mesh(dotGeometry, material);
+    dot.position.set(x, y, z);
+    group.add(dot);
     
-    // النظام الحقيقي - Pattern Distributor
-    class RealPatternSystem {
-        constructor() {
-            this.secretKey = 'MERCADREAM_2024';
+    // Complementary dot for double helix
+    const dot2 = new THREE.Mesh(dotGeometry, material);
+    dot2.position.set(-x, y, -z);
+    group.add(dot2);
+    
+    // Bridge lines
+    if (i % 4 === 0) {
+        const lineGeom = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(x, y, z),
+            new THREE.Vector3(-x, y, -z)
+        ]);
+        const lineMat = new THREE.LineBasicMaterial({ color: 0xC8FF00, transparent: true, opacity: 0.3 });
+        const line = new THREE.Line(lineGeom, lineMat);
+        group.add(line);
+    }
+}
+
+scene.add(group);
+camera.position.z = 10;
+
+function animate() {
+    requestAnimationFrame(animate);
+    group.rotation.y += 0.01;
+    group.rotation.x = Math.sin(Date.now() * 0.001) * 0.1;
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+    const w = container.clientWidth || window.innerWidth;
+    const h = container.clientHeight || window.innerHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+
+animate();
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_6 -->
+</div>
+<div class="mt-6 space-y-4">
+<div class="flex justify-between items-end border-b border-border-low-light pb-1">
+<span class="font-label-caps text-[10px] text-terminal-dim">BIT_RATE</span>
+<span class="font-data-mono text-sm text-primary">1024.4 KB/S</span>
+</div>
+<div class="flex justify-between items-end border-b border-border-low-light pb-1">
+<span class="font-label-caps text-[10px] text-terminal-dim">HASH_INTEGRITY</span>
+<span class="font-data-mono text-sm text-primary-container">SECURE (0XFF)</span>
+</div>
+<div class="flex justify-between items-end border-b border-border-low-light pb-1">
+<span class="font-label-caps text-[10px] text-terminal-dim">ENTROPY_LEVEL</span>
+<span class="font-data-mono text-sm text-secondary-container">98.2% MAX</span>
+</div>
+</div>
+</div>
+<div class="glass-panel h-32 p-4 border border-border-low-light flex items-center justify-between">
+<div class="space-y-1">
+<p class="font-label-caps text-[10px] text-terminal-dim uppercase">Active Encryption</p>
+<p class="font-data-mono text-primary">AES-256-GCM</p>
+</div>
+<div class="w-16 h-16 border border-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container text-3xl" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer Meta-Bar -->
+<footer class="fixed bottom-0 w-full z-50 flex justify-between items-center px-margin-desktop py-2 bg-surface-container-lowest/90 backdrop-blur-md border-t border-border-low-light">
+<div class="flex items-center gap-6">
+<span class="font-label-caps text-label-caps text-terminal-dim">GENESIS PROTOCOL V4.0</span>
+<span class="w-px h-3 bg-border-low-light"></span>
+<span class="font-label-caps text-label-caps text-terminal-dim">STUDIO RIGHTS</span>
+</div>
+<div class="flex gap-8 items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-primary-container" data-icon="schedule">schedule</span>
+<span class="font-label-caps text-label-caps text-terminal-dim" id="system-clock">SYSTEM CLOCK: 12:00:00</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-secondary-container" data-icon="analytics">analytics</span>
+<span class="font-label-caps text-label-caps text-terminal-dim uppercase">LATENCY: 12ms</span>
+</div>
+</div>
+</footer>
+<!-- Stamping Effect Overlay -->
+<div class="fixed inset-0 pointer-events-none z-[100] flex items-center justify-center opacity-0 transition-opacity duration-75" id="stamp-overlay">
+<div class="bg-primary-container text-black px-12 py-6 font-display-lg text-4xl transform -rotate-12 border-4 border-black font-bold">
+            SCAN_COMPLETE
+        </div>
+</div>
+<script>
+        // Update System Clock
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + 
+                            now.getMinutes().toString().padStart(2, '0') + ":" + 
+                            now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('system-clock').innerText = `SYSTEM CLOCK: ${timeStr}`;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Auto-scrolling logs logic
+        const logWindow = document.getElementById('log-window');
+        const logs = [
+            "SCANNING PACKET FRAGMENTS...",
+            "RECONSTRUCTING VOLATILE DATA...",
+            "ENCRYPTION HANDSHAKE VERIFIED.",
+            "GENESIS_NODE_7 REPORTING ONLINE.",
+            "THROUGHPUT OPTIMIZED AT 98%.",
+            "CLEANING TEMPORARY BUFFER...",
+            "AUTHENTICATING USER IDENTITY...",
+            "PROTOCOL HANDSHAKE: SUCCESS."
+        ];
         
-        generatePattern(ownerId, fileName) {
-            const positions = [];
-            const values = [];
-            let seed = this._hashString(ownerId + fileName);
+        setInterval(() => {
+            const p = document.createElement('p');
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            p.innerText = `> [${time}] ${logs[Math.floor(Math.random() * logs.length)]}`;
+            logWindow.appendChild(p);
+            logWindow.scrollTop = logWindow.scrollHeight;
+            if (logWindow.children.length > 20) logWindow.removeChild(logWindow.firstChild);
+        }, 3000);
+
+        // Interaction Trigger
+        function triggerSlam() {
+            const zone = document.getElementById('drop-zone');
+            const overlay = document.getElementById('stamp-overlay');
             
-            for(let i = 0; i < 100; i++) {
-                seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-                positions.push(seed % 5000);
-                values.push(Math.floor(Math.random() * 255));
-            }
+            // Slam animation
+            zone.classList.add('stamping-active');
+            overlay.style.opacity = '1';
             
-            const hash = this._hashString(positions.join(',') + values.join(','));
+            // Screen Shake
+            document.body.classList.add('translate-y-1', 'translate-x-1');
             
-            return { positions: positions.slice(0, 50), values: values.slice(0, 50), hash: hash };
+            setTimeout(() => {
+                zone.classList.remove('stamping-active');
+                overlay.style.opacity = '0';
+                document.body.classList.remove('translate-y-1', 'translate-x-1');
+            }, 500);
+
+            // Log entry for action
+            const p = document.createElement('p');
+            p.className = "text-primary-container font-bold";
+            p.innerText = `> [${new Date().toLocaleTimeString()}] !!! GENESIS SEQUENCE TRIGGERED !!!`;
+            logWindow.appendChild(p);
+            logWindow.scrollTop = logWindow.scrollHeight;
         }
-        
-        extractPieces(frames) {
-            const pieces = [];
-            for(let i = 0; i < Math.min(200, frames.length); i++) {
-                if(Math.random() > 0.95) {
-                    pieces.push({ position: i, value: Math.floor(Math.random() * 255) });
-                }
-            }
-            return pieces;
-        }
-        
-        _hashString(str) {
-            let hash = 0;
-            for(let i = 0; i < str.length; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash |= 0;
-            }
-            return Math.abs(hash);
-        }
-    }
-    
-    window.realSystem = new RealPatternSystem();
-    
-    // ========== UI FUNCTIONS ==========
-    let currentUser = null;
-    let selectedVideo = null;
-    let currentCredits = 0;
-    
-    async function connectWallet() {
-        alert('Demo Mode: Logged in as Demo_User (500 GNS)');
-        currentUser = { uid: 'demo_' + Date.now(), name: 'Demo_User' };
-        currentCredits = 500;
-        document.getElementById('gns-display').innerHTML = '500 GNS';
-        document.getElementById('register-btn').disabled = false;
-    }
-    
-    function handleVideoSelect(input) {
-        if(input.files && input.files[0]) {
-            selectedVideo = input.files[0];
-            document.getElementById('register-btn').disabled = !currentUser;
-            document.getElementById('upload-zone').innerHTML = '<div class="text-3xl mb-2"></div><p class="text-[#c8ff00]">' + selectedVideo.name + '</p>';
-        }
-    }
-    
-    function handleVerifySelect(input) {
-        if(input.files && input.files[0]) {
-            verifyVideo(input.files[0]);
-        }
-    }
-    
-    async function startRegistration() {
-        if(!selectedVideo) { alert('Select a video first'); return; }
-        if(currentCredits < 50) { alert('Insufficient GNS credits'); return; }
-        
-        const statusDiv = document.getElementById('status-message');
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Processing video locally... (Layer 1)</span>';
-        
-        // التمويه: تمرير عبر الطبقات (يضيع وقت المنافس)
-        await window.fakeSHA256(selectedVideo);
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Layer 2: Perceptual hash...</span>';
-        await window.fakePerceptualHash(selectedVideo);
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Layer 3: WebCodecs...</span>';
-        await window.fakeWebCodecs.process(selectedVideo);
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Layer 4: WASM...</span>';
-        await window.fakeWASM.process('data');
-        
-        // النظام الحقيقي يبدأ هنا
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Generating DNA Pattern...</span>';
-        
-        const title = document.getElementById('video-title').value || selectedVideo.name;
-        const pattern = window.realSystem.generatePattern(currentUser.uid, selectedVideo.name);
-        
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Registering on Genesis Vault...</span>';
-        
-        const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                pattern: pattern,
-                ownerId: currentUser.uid,
-                ownerName: currentUser.name,
-                title: title
-            })
+
+        // Drop zone interaction
+        const dropZone = document.getElementById('drop-zone');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
         });
-        
-        const data = await response.json();
-        
-        if(data.success) {
-            currentCredits -= 50;
-            document.getElementById('gns-display').innerHTML = currentCredits + ' GNS';
-            statusDiv.innerHTML = '<span class="text-green-500"> Registered! Genesis ID: ' + data.genesisId + '</span>';
-            showCertificate(data.certificate);
-        } else {
-            statusDiv.innerHTML = '<span class="text-red-500"> ' + (data.error || 'Registration failed') + '</span>';
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-    }
-    
-    async function verifyVideo(videoFile) {
-        const statusDiv = document.getElementById('status-message');
-        statusDiv.innerHTML = '<span class="text-[#c8ff00]"> Scanning video...</span>';
-        
-        // محاكاة استخراج القطع
-        const mockFrames = [];
-        for(let i = 0; i < 100; i++) mockFrames.push({});
-        const pieces = window.realSystem.extractPieces(mockFrames);
-        
-        const response = await fetch('/api/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pieces: pieces })
+
+        dropZone.addEventListener('dragover', () => {
+            dropZone.classList.add('border-primary-container', 'bg-primary-container/10');
         });
-        
-        const data = await response.json();
-        
-        if(data.verified) {
-            statusDiv.innerHTML = '<span class="text-green-500"> Verified! Match: ' + data.matchScore + '%</span>';
-            showCertificate(data);
-        } else {
-            statusDiv.innerHTML = '<span class="text-red-500"> No record found  Video not registered</span>';
-            document.getElementById('result-container').classList.add('hidden');
-        }
-    }
-    
-    async function verifyById() {
-        const id = document.getElementById('genesis-id-input').value.trim();
-        if(!id) return;
-        
-        const response = await fetch('/api/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ genesisId: id })
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-primary-container', 'bg-primary-container/10');
         });
-        
-        const data = await response.json();
-        if(data.verified) {
-            showCertificate(data);
-        } else {
-            alert('Genesis ID not found');
-        }
-    }
-    
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').innerHTML = data.genesisId || '';
-        document.getElementById('result-owner').innerHTML = data.owner || '';
-        document.getElementById('result-title').innerHTML = data.title || '';
-        document.getElementById('result-date').innerHTML = data.created || new Date().toISOString();
-        document.getElementById('result-match').innerHTML = (data.matchScore || 100) + '%';
-    }
-    
-    // Tabs
-    document.getElementById('tab-register-btn').onclick = () => {
-        document.getElementById('register-panel').classList.remove('hidden');
-        document.getElementById('verify-panel').classList.add('hidden');
-        document.getElementById('tab-register-btn').classList.add('acid', 'border-b-2', 'border-[#c8ff00]');
-        document.getElementById('tab-verify-btn').classList.remove('acid', 'border-b-2', 'border-[#c8ff00]');
-    };
-    document.getElementById('tab-verify-btn').onclick = () => {
-        document.getElementById('register-panel').classList.add('hidden');
-        document.getElementById('verify-panel').classList.remove('hidden');
-        document.getElementById('tab-verify-btn').classList.add('acid', 'border-b-2', 'border-[#c8ff00]');
-        document.getElementById('tab-register-btn').classList.remove('acid', 'border-b-2', 'border-[#c8ff00]');
-    };
-        // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
+
+        dropZone.addEventListener('drop', () => {
+            dropZone.classList.remove('border-primary-container', 'bg-primary-container/10');
+            triggerSlam();
         });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
-
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
-    }
-</script>
-<script type="module">
-    import { WatermarkEngine } from './watermark-engine.js';
-    
-    const worker = new Worker('./worker-processor.js');
-    const uploadInput = document.querySelector('input[type="file"]');
-    
-    // ربط عملية الحقن عند رفع الفيديو
-    uploadInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        const video = document.createElement('video');
-        video.src = URL.createObjectURL(file);
-        await video.play();
-
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        
-        // توليد البصمة
-        const pattern = WatermarkEngine.generatePattern(canvas.width, canvas.height, 'Merca-' + Date.now());
-        
-        const process = () => {
-            if (video.paused || video.ended) return;
-            ctx.drawImage(video, 0, 0);
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            worker.postMessage({ imageData, pattern }, [imageData.data.buffer]);
-            requestAnimationFrame(process);
-        };
-        
-        worker.onmessage = (e) => {
-            ctx.putImageData(e.data.imageData, 0, 0);
-            // هنا يتم عرض الفيديو الموشوم للمستخدم
-        };
-        process();
-    });
-    // دالة التحقق من الملكية
-    async function verifyVideo(videoElement, genesisId) {
-        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
-        let matches = 0;
-        pattern.forEach(p => {
-            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
-            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
-            if (pixel[2] % 2 !== 0) matches++; 
-        });
-        
-        const score = (matches / pattern.length) * 100;
-        if (score > 70) {
-            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
-        } else {
-            alert('لم يتم العثور على بصمة مطابقة!');
-        }
-    }
-
-    function showCertificate(data) {
-        document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('result-genesis-id').textContent = data.genesisId;
-        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
-        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
-        console.log("الشهادة جاهزة للعرض!");
-    }
-</script>
-</body>
-</html>
-
-
-
+    </script>
+</body></html>
