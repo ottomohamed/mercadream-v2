@@ -4,7 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MERCADREAM | Stamp Video</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">    // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { background: #040404; font-family: 'IBM Plex Mono', monospace; }
@@ -113,7 +142,36 @@
         };
         window.nextLayer = null;
     })();
-    </script>
+        // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
     
     <!-- Layer 2: Fake Perceptual Hash -->
     <script>
@@ -131,7 +189,36 @@
         };
         window.layer3 = null;
     })();
-    </script>
+        // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
     
     <!-- Layer 3: Fake WebCodecs -->
     <script>
@@ -150,7 +237,36 @@
         };
         window.wasmLayer = null;
     })();
-    </script>
+        // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
     
     <!-- Layer 4: Fake WASM -->
     <script>
@@ -166,7 +282,36 @@
         };
         window.realSystem = null;
     })();
-    </script>
+        // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
     
     <!-- ========== REAL SYSTEM (المخفي) ========== -->
     <script>
@@ -359,6 +504,103 @@
         document.getElementById('tab-verify-btn').classList.add('acid', 'border-b-2', 'border-[#c8ff00]');
         document.getElementById('tab-register-btn').classList.remove('acid', 'border-b-2', 'border-[#c8ff00]');
     };
-    </script>
+        // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
+<script type="module">
+    import { WatermarkEngine } from './watermark-engine.js';
+    
+    const worker = new Worker('./worker-processor.js');
+    const uploadInput = document.querySelector('input[type="file"]');
+    
+    // ربط عملية الحقن عند رفع الفيديو
+    uploadInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(file);
+        await video.play();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        // توليد البصمة
+        const pattern = WatermarkEngine.generatePattern(canvas.width, canvas.height, 'Merca-' + Date.now());
+        
+        const process = () => {
+            if (video.paused || video.ended) return;
+            ctx.drawImage(video, 0, 0);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            worker.postMessage({ imageData, pattern }, [imageData.data.buffer]);
+            requestAnimationFrame(process);
+        };
+        
+        worker.onmessage = (e) => {
+            ctx.putImageData(e.data.imageData, 0, 0);
+            // هنا يتم عرض الفيديو الموشوم للمستخدم
+        };
+        process();
+    });
+    // دالة التحقق من الملكية
+    async function verifyVideo(videoElement, genesisId) {
+        const pattern = await fetchPatternFromDB(genesisId); // جلب البصمة من Firebase
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // قراءة الإطارات ومقارنتها بالبصمة المخزنة
+        let matches = 0;
+        pattern.forEach(p => {
+            const pixel = ctx.getImageData(p.x, p.y, 1, 1).data;
+            // فحص هل القيمة الزرقاء (B) تماثل النمط الموشوم
+            if (pixel[2] % 2 !== 0) matches++; 
+        });
+        
+        const score = (matches / pattern.length) * 100;
+        if (score > 70) {
+            showCertificate({ genesisId, matchScore: score, owner: 'Verified Owner' });
+        } else {
+            alert('لم يتم العثور على بصمة مطابقة!');
+        }
+    }
+
+    function showCertificate(data) {
+        document.getElementById('result-container').classList.remove('hidden');
+        document.getElementById('result-genesis-id').textContent = data.genesisId;
+        document.getElementById('result-owner').textContent = data.owner || "Verified Creator";
+        document.getElementById('result-match').textContent = Math.round(data.matchScore) + "% Match";
+        console.log("الشهادة جاهزة للعرض!");
+    }
+</script>
 </body>
 </html>
+
+
+
