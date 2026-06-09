@@ -42,14 +42,14 @@
       "use": "@vercel/static"
     },
     {
-      "src": "api/bgremover.js",
+      "src": "api/audioforge.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/bgremover",
-      "dest": "/api/bgremover.js"
+      "src": "/api/audioforge",
+      "dest": "/api/audioforge.js"
     },
     {
       "src": "/api/chat",
