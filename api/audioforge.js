@@ -1,10 +1,10 @@
-module.exports = async function(req, res) {
+﻿module.exports = async function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if(req.method === "OPTIONS") return res.status(200).end();
 
-  var KEY  = process.env.WAVESPEED_KEY;
+  var KEY = process.env.WAVESPEED_KEY; console.log('KEY exists:', !!KEY, 'KEY prefix:', KEY ? KEY.substring(0,8) : 'MISSING');
   var BASE = "https://api.wavespeed.ai/api/v3";
   var body = req.body || {};
 
@@ -58,3 +58,4 @@ module.exports = async function(req, res) {
     res.status(500).json({error:e.message});
   }
 };
+
