@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
 <meta charset="utf-8">
@@ -77,7 +77,7 @@ body{background:#040404;color:#e3e2e2;font-family:"IBM Plex Mono",monospace;over
 
     <div class="border border-[#434933] p-4 flex justify-between items-center">
       <div>
-        <div style="font-family:Orbitron,sans-serif;" class="text-[#c8ff00] text-xl font-black">50 GNS</div>
+        <div style="font-family:Orbitron,sans-serif;" class="text-[#c8ff00] text-xl font-black">5 GNS</div>
         <div class="font-mono text-[9px] text-[#434933]">per removal</div>
       </div>
       <button id="gen-btn" onclick="removeBackground()"
@@ -190,7 +190,7 @@ dz.addEventListener('drop', function(e) {
 async function removeBackground() {
   if (!uploadedUrl) { addLog('ERROR: UPLOAD A FILE FIRST', '#ef4444'); return; }
   var gns = parseInt(localStorage.getItem('md_credits')||'0');
-  if (gns < 50) { addLog('ERROR: NEED 50 GNS', '#ef4444'); return; }
+  if (gns < 5) { addLog('ERROR: NEED 5 GNS', '#ef4444'); return; }
 
   var btn = document.getElementById('gen-btn');
   btn.disabled = true;
@@ -230,7 +230,7 @@ async function pollResult(taskId) {
         resultUrl = d.url;
         // Deduct GNS
         var gns=parseInt(localStorage.getItem('md_credits')||'0');
-        var newGns=gns-50;
+        var newGns=gns-5;
         localStorage.setItem('md_credits',newGns);
         document.getElementById('gns-display').textContent=newGns.toLocaleString()+' GNS';
         try { var uid=localStorage.getItem('md_user_id'); if(uid) firebase.firestore().collection('users').doc(uid).update({credits:newGns}); } catch(e){}
@@ -273,4 +273,5 @@ function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 </script>
 </body>
 </html>
+
 
