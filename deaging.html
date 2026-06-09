@@ -120,7 +120,7 @@ const db = firebase.firestore();
 </head>
 <body class="bg-void-black text-on-surface"><script src="md-engine.js"></script>
 <!-- TopAppBar -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-4 md:px-margin-desktop h-16 bg-void-black/80 backdrop-blur-md border-b border-outline-variant">
 <div class="flex items-center gap-4">
 <span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-neon-acid tracking-tighter">MERCADREAM | DE-AGING</span>
 </div>
@@ -134,7 +134,7 @@ const db = firebase.firestore();
             </button>
 </div>
 </header>
-<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-12">
+<main class="pt-24 pb-32 px-margin-mobile md:px-4 md:px-margin-desktop max-w-7xl mx-auto space-y-12">
 <!-- Hero Section -->
 <section class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-outline-variant pb-8">
 <div class="space-y-2">
@@ -246,7 +246,7 @@ const db = firebase.firestore();
 </main>
 <!-- Footer: GENERATE BAR -->
 <footer class="fixed bottom-0 left-0 w-full z-50 bg-void-black border-t border-outline-variant">
-<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between px-margin-mobile md:px-margin-desktop py-4 gap-4">
+<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between px-margin-mobile md:px-4 md:px-margin-desktop py-4 gap-4">
 <!-- Telemetry -->
 <div class="flex items-center gap-6 overflow-x-auto whitespace-nowrap">
 <div class="flex flex-col">
@@ -283,7 +283,7 @@ const db = firebase.firestore();
 </div>
 </div>
 <!-- Sub-footer copyright -->
-<div class="w-full flex justify-between items-center px-margin-mobile md:px-margin-desktop py-2 bg-surface-dim border-t border-outline-variant">
+<div class="w-full flex justify-between items-center px-margin-mobile md:px-4 md:px-margin-desktop py-2 bg-surface-dim border-t border-outline-variant">
 <span class="font-label-caps text-[8px] text-silver-technical">�2024 MERCADREAM OPERATING SYSTEM // CORE_V.2.0.4</span>
 <div class="flex gap-4">
 <span class="font-label-caps text-[8px] text-on-surface-variant hover:text-neon-acid cursor-pointer">TERMINAL</span>
@@ -423,6 +423,7 @@ window.addEventListener("load", function() {
     if (window.MD) window.MD.updateGenesis();
 });
 </script><script src="/js/pipeline.js"></script></body></html>
+
 
 
 

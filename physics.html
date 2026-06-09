@@ -124,7 +124,7 @@ const db = firebase.firestore();
 </head>
 <body class="bg-void-black text-on-surface font-body-md selection:bg-neon-acid selection:text-void-black min-h-screen overflow-hidden flex flex-col"><script src="md-engine.js"></script>
 <!-- TopAppBar -->
-<header class="bg-void-black text-neon-acid font-label-technical border-b border-slate-data flex justify-between items-center h-16 px-margin-desktop w-full shrink-0">
+<header class="bg-void-black text-neon-acid font-label-technical border-b border-slate-data flex justify-between items-center h-16 px-4 md:px-margin-desktop w-full shrink-0">
 <div class="flex items-center gap-6">
 <button class="flex items-center gap-2 group hover:text-primary transition-colors">
 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -148,7 +148,7 @@ const db = firebase.firestore();
 </div>
 </header>
 <!-- Compact Neural Interface Main -->
-<main class="main-container-calc px-margin-desktop py-4 max-w-container-max mx-auto w-full grid grid-cols-12 gap-gutter overflow-y-auto">
+<main class="main-container-calc px-4 md:px-margin-desktop py-4 max-w-container-max mx-auto w-full grid grid-cols-12 gap-gutter overflow-y-auto">
 <!-- Hero Section -->
 <section class="col-span-12 border-l-2 border-neon-acid pl-4 mb-2">
 <div class="flex justify-between items-center">
@@ -268,7 +268,7 @@ const db = firebase.firestore();
 </aside>
 </main>
 <!-- High-Efficiency Bottom Bar -->
-<footer class="fixed bottom-0 left-0 w-full h-16 bg-void-black border-t border-slate-data px-margin-desktop flex items-center justify-between z-50">
+<footer class="fixed bottom-0 left-0 w-full h-16 bg-void-black border-t border-slate-data px-4 md:px-margin-desktop flex items-center justify-between z-50">
 <div class="flex flex-col gap-0.5 min-w-[200px]">
 <div class="flex items-center gap-3 text-silver-technical font-label-technical">
 <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-neon-acid rounded-full animate-pulse" id="gpu-dot"></span> GPU <span id="gpu-val">84</span>%</span>
@@ -525,6 +525,7 @@ const db = firebase.firestore();
     }, 2000);
 </script>
 </body></html>
+
 
 
 

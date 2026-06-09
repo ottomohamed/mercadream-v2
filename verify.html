@@ -1,588 +1,377 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM // GNS ENGINE DASHBOARD</title>
+<title>MERCADREAM // STAMPING ZONE</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
-        /* Global Reset & Scanline Effect */
+        :root {
+            --acid-green: #c0f500;
+        }
         body {
             background-color: #040404;
             color: #e5e2e1;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+            overflow-x: hidden;
+            font-family: 'JetBrains Mono', monospace;
         }
-        
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
+        .scanline {
             width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.05) 0px,
-                rgba(0, 0, 0, 0.05) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        .glass-panel {
-            background: rgba(27, 27, 27, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stamp-glow {
-            box-shadow: 0 0 20px rgba(168, 215, 0, 0.15);
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .cursor-blink {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes scanline-anim {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        .scanline-overlay {
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(192, 245, 0, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
             position: absolute;
-            width: 100%;
-            height: 4px;
-            background: rgba(200, 255, 0, 0.2);
-            animation: scanline-anim 4s linear infinite;
-            pointer-events: none;
+            bottom: 100%;
+            animation: scanline 8s linear infinite;
         }
-
-        /* Material Icon Adjustments */
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
         }
-
-        .stamping-active {
-            animation: stamp-slam 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .stamping-flash {
+            animation: flash 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
-
-        @keyframes stamp-slam {
-            0% { transform: scale(1.1); filter: brightness(2); }
-            100% { transform: scale(1); filter: brightness(1); }
+        @keyframes flash {
+            0% { background-color: var(--acid-green); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0; }
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 2px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: var(--acid-green);
+        }
+        .glitch-text:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
     </style>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-variant": "#353534",
-                        "background": "#131313",
-                        "surface-slate": "#1B1B1B",
-                        "error": "#ffb4ab",
-                        "tertiary-fixed-dim": "#ffb3b2",
-                        "terminal-dim": "#666666",
-                        "surface-container-highest": "#353534",
-                        "border-low-light": "rgba(255, 255, 255, 0.1)",
-                        "surface-container-lowest": "#0e0e0e",
-                        "on-secondary-fixed-variant": "#004f54",
-                        "surface-tint": "#a8d700",
-                        "on-tertiary-fixed": "#410008",
-                        "secondary-container": "#00eefc",
-                        "secondary-fixed-dim": "#00dbe9",
-                        "on-secondary": "#00363a",
-                        "on-primary-fixed": "#161f00",
-                        "on-tertiary": "#680012",
-                        "on-background": "#e5e2e1",
-                        "inverse-primary": "#4f6600",
-                        "surface-bright": "#3a3939",
-                        "primary": "#ffffff",
-                        "on-tertiary-container": "#ca002d",
-                        "secondary-fixed": "#7df4ff",
-                        "primary-container": "#c0f500",
-                        "primary-fixed-dim": "#a8d700",
-                        "on-tertiary-fixed-variant": "#92001e",
-                        "tertiary": "#ffffff",
-                        "surface-dim": "#131313",
-                        "inverse-on-surface": "#313030",
-                        "inverse-surface": "#e5e2e1",
-                        "on-primary-fixed-variant": "#3b4d00",
-                        "error-container": "#93000a",
-                        "tertiary-fixed": "#ffdad8",
-                        "outline-variant": "#434933",
-                        "surface-container-high": "#2a2a2a",
-                        "on-secondary-container": "#00686f",
-                        "on-error": "#690005",
-                        "on-surface": "#e5e2e1",
-                        "secondary": "#d3fbff",
-                        "primary-fixed": "#c0f500",
-                        "surface": "#131313",
-                        "tertiary-container": "#ffdad8",
-                        "on-primary-container": "#546d00",
-                        "surface-container-low": "#1c1b1b",
-                        "on-error-container": "#ffdad6",
-                        "on-secondary-fixed": "#002022",
-                        "surface-container": "#201f1f",
-                        "on-surface-variant": "#c4caac",
-                        "outline": "#8e9479",
-                        "on-primary": "#273500"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0px",
-                        "lg": "0px",
-                        "xl": "0px",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "margin-desktop": "32px",
-                        "grid-unit": "4px",
-                        "margin-mobile": "16px",
-                        "gutter": "16px",
-                        "max-width": "1440px"
-                    },
-                    "fontFamily": {
-                        "label-caps": ["JetBrains Mono"],
-                        "data-mono": ["JetBrains Mono"],
-                        "body-md": ["JetBrains Mono"],
-                        "display-lg": ["Space Grotesk"],
-                        "headline-lg": ["Space Grotesk"],
-                        "headline-lg-mobile": ["Space Grotesk"]
-                    },
-                    "fontSize": {
-                        "label-caps": ["11px", { "lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "700" }],
-                        "data-mono": ["12px", { "lineHeight": "1.2", "fontWeight": "500" }],
-                        "body-md": ["14px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
-                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }]
-                    }
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#00eefc",
+                    "surface-dim": "#131313",
+                    "surface-container-low": "#1c1b1b",
+                    "border-low-light": "rgba(255, 255, 255, 0.1)",
+                    "primary-fixed-dim": "#a8d700",
+                    "on-primary-container": "#546d00",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "surface-container-high": "#2a2a2a",
+                    "on-secondary": "#00363a",
+                    "secondary": "#d3fbff",
+                    "primary-container": "#c0f500",
+                    "on-secondary-fixed-variant": "#004f54",
+                    "surface-bright": "#3a3939",
+                    "outline": "#8e9479",
+                    "inverse-on-surface": "#313030",
+                    "tertiary-fixed-dim": "#ffb3b2",
+                    "primary-fixed": "#c0f500",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#92001e",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-tertiary-container": "#ca002d",
+                    "inverse-primary": "#4f6600",
+                    "on-surface-variant": "#c4caac",
+                    "tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffdad8",
+                    "on-secondary-fixed": "#002022",
+                    "on-surface": "#e5e2e1",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#00dbe9",
+                    "error": "#ffb4ab",
+                    "surface-variant": "#353534",
+                    "surface-slate": "#1B1B1B",
+                    "primary": "#ffffff",
+                    "terminal-dim": "#666666",
+                    "outline-variant": "#434933",
+                    "surface-tint": "#a8d700",
+                    "on-primary": "#273500",
+                    "tertiary-container": "#ffdad8",
+                    "surface-container-highest": "#353534",
+                    "on-primary-fixed": "#161f00",
+                    "surface-container": "#201f1f",
+                    "background": "#131313",
+                    "on-tertiary": "#680012",
+                    "on-secondary-container": "#00686f",
+                    "inverse-surface": "#e5e2e1",
+                    "error-container": "#93000a",
+                    "on-background": "#e5e2e1",
+                    "secondary-fixed": "#7df4ff",
+                    "on-tertiary-fixed": "#410008",
+                    "surface": "#131313"
             },
-        }
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "max-width": "1440px",
+                    "margin-desktop": "32px",
+                    "grid-unit": "4px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Space Grotesk"],
+                    "display-lg": ["Space Grotesk"],
+                    "label-caps": ["JetBrains Mono"],
+                    "data-mono": ["JetBrains Mono"],
+                    "body-md": ["JetBrains Mono"],
+                    "headline-lg": ["Space Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["11px", {"lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                    "data-mono": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
     </script>
 </head>
-<body class="font-body-md text-on-surface select-none">
-<!-- Global Background Shader -->
-<!-- STITCH_SHADER_START:ANIMATION_5 class="fixed inset-0 w-full h-full opacity-40 grayscale pointer-events-none" -->
-<div class="fixed inset-0 w-full h-full opacity-40 grayscale pointer-events-none" style="display:block;">
-<canvas id="shader-canvas-ANIMATION_5" style="display:block;width:100%;height:100%"></canvas>
-<script>
-(function() {
-  const canvas = document.getElementById('shader-canvas-ANIMATION_5');
-
-  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
-  // This fires on initial layout and whenever the element is resized.
-  function syncSize() {
-    const w = canvas.clientWidth  || 1280;
-    const h = canvas.clientHeight || 720;
-    if (canvas.width !== w || canvas.height !== h) {
-      canvas.width  = w;
-      canvas.height = h;
-    }
-  }
-  if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(syncSize).observe(canvas);
-  }
-  syncSize();
-
-  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-  if (!gl) return;
-  const vs = `attribute vec2 a_position;
-varying vec2 v_texCoord;
-void main() {
-  v_texCoord = a_position * 0.5 + 0.5;
-  gl_Position = vec4(a_position, 0.0, 1.0);
-}`;
-  const fs = `precision highp float;
-uniform float u_time;
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-
-varying vec2 v_texCoord;
-
-float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
-}
-
-void main() {
-    vec2 uv = v_texCoord;
-    vec3 color = vec3(0.015, 0.015, 0.015); // Deep obsidian base
-    
-    // Grid Lines
-    vec2 grid = fract(uv * 50.0);
-    float lines = step(0.98, grid.x) + step(0.98, grid.y);
-    color += lines * vec3(0.05, 0.1, 0.05);
-    
-    // Scanning Line
-    float scanPos = fract(u_time * 0.2);
-    float scanLine = smoothstep(scanPos - 0.02, scanPos, uv.y) * smoothstep(scanPos + 0.02, scanPos, uv.y);
-    color += scanLine * vec3(0.78, 1.0, 0.0) * 0.3; // Acid Green Glow
-    
-    // Data Noise
-    float n = hash(uv + u_time * 0.01);
-    color += n * 0.02;
-
-    // Pulse
-    float pulse = sin(u_time * 0.5) * 0.5 + 0.5;
-    color += (1.0 - length(uv - 0.5)) * vec3(0.78, 1.0, 0.0) * 0.05 * pulse;
-
-    gl_FragColor = vec4(color, 1.0);
-}`;
-  function cs(type, src) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    return s;
-  }
-  const prog = gl.createProgram();
-  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
-  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
-  gl.linkProgram(prog);
-  gl.useProgram(prog);
-  const buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-  const pos = gl.getAttribLocation(prog, 'a_position');
-  gl.enableVertexAttribArray(pos);
-  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
-  const uTime = gl.getUniformLocation(prog, 'u_time');
-  const uRes = gl.getUniformLocation(prog, 'u_resolution');
-  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
-
-  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
-  // Shaders that need normalized coords should use: u_mouse / u_resolution.
-  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-  window.addEventListener('mousemove', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width && rect.height) {
-      const nx = (event.clientX - rect.left) / rect.width;
-      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
-      mouse.x = nx * canvas.width;
-      mouse.y = ny * canvas.height;
-    }
-  });
-
-  function render(t) {
-    if (typeof ResizeObserver === 'undefined') syncSize();
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    if (uTime) gl.uniform1f(uTime, t * 0.001);
-    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
-    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    requestAnimationFrame(render);
-  }
-  render(0);
-})();
-</script>
+<body class="bg-surface-dim selection:bg-primary-container selection:text-on-primary-container">
+<!-- Global Background Elements -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(192,245,0,0.03)_0%,transparent_70%)]"></div>
+<div class="absolute inset-0 opacity-[0.03]" style="background-image: repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 20px);"></div>
+<div class="scanline"></div>
 </div>
-<!-- STITCH_SHADER_END:ANIMATION_5 -->
-<!-- Top Navigation -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop py-4 bg-surface-slate/80 backdrop-blur-xl border-b border-border-low-light shadow-[0_0_15px_rgba(168,215,0,0.1)]">
-<div class="font-display-lg text-headline-lg text-primary-fixed tracking-tighter uppercase">
-            MERCADREAM // GNS ENGINE
-        </div>
-<div class="hidden md:flex gap-8 items-center">
-<a class="font-data-mono text-data-mono uppercase tracking-widest text-primary-fixed border-b-2 border-primary-fixed pb-2 transition-all" href="#">ENGINE</a>
-<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">VAULT</a>
-<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">NETWORK</a>
-<div class="flex items-center gap-2 px-3 py-1 bg-primary-container/10 border border-primary-container/20">
-<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
-<span class="font-data-mono text-data-mono text-primary-container">SYSTEM STATUS: OPTIMAL</span>
-</div>
-</div>
-<div class="flex items-center gap-6">
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="terminal">terminal</span>
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="settings">settings</span>
-<div class="w-10 h-10 border border-primary-container/40 p-0.5">
-<img alt="USER_AUTH_SCAN" class="w-full h-full grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP79X3u7tA4o0sntztAZ8sMJhyWtrd-utBM4oEue4N35C_LsIsmeVpJVBoRZDBveZzzqk6YTFUtokm9txvwK63Vqq1KlfzqP2xMiW2E8bMwqvnqobhiyqbYMBunQxSMkm5QuKKHfEvIDA29HQYQ4uhTXXVF06yRyEjaWv9sdBYEhS6b0OXPL92nxyr9QBAbt2N9s67Xj4SoPG2lsAFITMGRd8vbecrSGRBZoI7TMgrYALzoUf8FYMbkmUhW-Gbcx-dh1y_QylTawQ"/>
-</div>
-</div>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface-slate/80 backdrop-blur-xl border-b border-border-low-light shadow-[0_0_15px_rgba(168,215,0,0.1)] flex justify-between items-center px-4 md:px-margin-desktop py-4">
+<div class="flex items-center gap-8">
+<div class="font-display-lg text-headline-lg-mobile text-primary tracking-tighter flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">terminal</span>
+                MERCADREAM // GNS ENGINE
+            </div>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-primary-fixed border-b-2 border-primary-fixed pb-2 cursor-pointer active:scale-95 duration-75" href="#">ENGINE</a>
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-75" href="#">VAULT</a>
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-75" href="#">NETWORK</a>
+<a class="font-data-mono text-data-mono uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95 duration-75" href="#">SYSTEM STATUS</a>
 </nav>
-<!-- Main Dashboard Workspace -->
-<main class="relative h-screen pt-24 pb-12 px-margin-desktop grid grid-cols-12 gap-gutter overflow-hidden">
-<!-- Left: LOG CONSOLE -->
-<aside class="col-span-3 glass-panel border-r border-border-low-light p-4 flex flex-col gap-4 overflow-hidden">
-<div class="flex justify-between items-center border-b border-border-low-light pb-2">
-<h2 class="font-label-caps text-label-caps text-primary-fixed">LOG CONSOLE</h2>
-<span class="text-[10px] text-terminal-dim font-data-mono">LC_X_882</span>
 </div>
-<div class="flex-1 overflow-y-auto space-y-1 font-data-mono text-[11px] text-primary/70 leading-relaxed scrollbar-hide" id="log-window">
-<p class="text-primary-container">&gt; [00:00:01] INITIALIZING GENESIS KERNEL...</p>
-<p>&gt; [00:00:02] LOADING NEURAL WEIGHTS...</p>
-<p class="text-secondary-container">&gt; [00:00:04] INJECTING STOCHASTIC MATRIX...</p>
-<p>&gt; [00:00:05] PATTERN MAPPING COMPLETE.</p>
-<p class="text-primary-container">&gt; [00:00:06] READY FOR GENESIS SEQUENCE.</p>
-<p>&gt; [00:00:10] LISTENING FOR DATA PACKET ON PORT_ID: 0X99...</p>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 transition-all cursor-pointer">settings</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-variant/50 p-2 transition-all cursor-pointer">terminal</button>
+<div class="w-8 h-8 rounded bg-surface-container-high border border-border-low-light overflow-hidden">
+<img alt="USER_AUTH_SCAN" class="w-full h-full opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCggpXOUxZLVXvqxw3Jr80SFJdU2HjTdVh8ZPMYF6tEsVzJX_D47avSwRQn8CcxCutwBseb5ZIzKzxG3M_SdWDOEQUc-aPizIqWSSvLTPRaV4BYgKGTJIA8Rv9elEsuzQiOaEpZiw28knR3CQCdSUa6K2bfja1X0lUyikZHyoCb9yzgQ2ipEhkdmJxyDbgsLP5Ha36zNyQpevEfI7rADG7ps9EGIV99BoOLrYVhcnsZDt7cJs-x5BLf8YxS8YxnK5Lvw24Q2WpEEaQ"/>
 </div>
-<div class="h-12 border-t border-border-low-light pt-2 flex items-center gap-2">
-<span class="text-primary-container">&gt;</span>
-<span class="w-2 h-4 bg-primary-container cursor-blink"></span>
+</div>
+</header>
+<main class="relative z-10 pt-24 pb-16 px-4 md:px-margin-desktop min-h-screen grid grid-cols-12 gap-6">
+<!-- Left: Terminal Log (Glassmorphic) -->
+<aside class="col-span-12 lg:col-span-3 flex flex-col gap-4">
+<div class="bg-surface-slate/80 backdrop-blur-xl border border-border-low-light p-4 h-[calc(100vh-160px)] flex flex-col">
+<div class="flex justify-between items-center mb-4 border-b border-border-low-light pb-2">
+<span class="font-label-caps text-label-caps text-primary-fixed-dim uppercase">Live Terminal Log</span>
+<span class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></span>
+</div>
+<div class="flex-1 font-data-mono text-[10px] text-on-surface-variant overflow-y-auto terminal-scroll space-y-2 leading-relaxed" id="terminal-content">
+<div class="text-primary-fixed-dim">[08:42:01] SYS_INIT: PROTOCOL V4.0 ACTIVATED</div>
+<div>[08:42:02] KERNEL: SECURE ENCLAVE SECURED</div>
+<div>[08:42:05] NETWORK: HANDSHAKE SUCCESSFUL</div>
+<div>[08:42:10] IO_MANAGER: PORT 8080 LISTENING...</div>
+<div class="opacity-50">---------------------------------</div>
+<div class="text-secondary-fixed-dim">[08:44:22] WAITING_FOR_INPUT...</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-border-low-light p-4">
+<div class="font-label-caps text-label-caps text-terminal-dim mb-2 uppercase">System Health</div>
+<div class="flex justify-between items-center text-primary-fixed">
+<span class="font-data-mono text-data-mono">CPU: 12.4%</span>
+<div class="flex gap-1">
+<div class="w-1 h-3 bg-primary-fixed"></div>
+<div class="w-1 h-3 bg-primary-fixed"></div>
+<div class="w-1 h-3 bg-primary-fixed/20"></div>
+<div class="w-1 h-3 bg-primary-fixed/20"></div>
+</div>
+</div>
 </div>
 </aside>
-<!-- Center: STAMPING ZONE -->
-<section class="col-span-6 flex flex-col items-center justify-center gap-8 px-8">
-<div class="relative w-full max-w-2xl aspect-square glass-panel border-2 border-dashed border-primary/20 flex flex-col items-center justify-center transition-all duration-300 hover:border-primary-container/60 cursor-crosshair group overflow-hidden" id="drop-zone">
+<!-- Center: Industrial Entry Port -->
+<section class="col-span-12 lg:col-span-6 flex flex-col items-center justify-center relative">
+<div class="w-full max-w-lg aspect-square flex flex-col items-center justify-center p-8 bg-surface-container-low border border-border-low-light relative group">
 <!-- Corner Accents -->
-<div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary-container"></div>
-<div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary-container"></div>
-<div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary-container"></div>
-<div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary-container"></div>
-<!-- Technical Micro-Data -->
-<div class="absolute top-4 left-4 font-data-mono text-[10px] text-terminal-dim flex flex-col">
-<span>PORT_ID: 0X99</span>
-<span>PROTOCOL: GNS_V4</span>
+<div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary-fixed"></div>
+<div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary-fixed"></div>
+<div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary-fixed"></div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary-fixed"></div>
+<!-- Industrial Port Visual -->
+<div class="w-full h-full border-2 border-dashed border-border-low-light flex flex-col items-center justify-center gap-6 cursor-pointer hover:bg-surface-variant/20 transition-all group-active:scale-[0.98]" id="drop-zone">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<span class="material-symbols-outlined text-[64px] text-primary transition-all group-hover:scale-110 group-hover:text-primary-fixed">upload_file</span>
+<div class="absolute inset-0 border-4 border-primary-fixed/20 rounded-full animate-[spin_10s_linear_infinite]"></div>
 </div>
-<div class="absolute top-4 right-4 font-data-mono text-[10px] text-terminal-dim text-right flex flex-col">
-<span>LATENCY: &lt;1MS</span>
-<span>THROUGHPUT: 12.4 GB/S</span>
+<div class="text-center">
+<h2 class="font-display-lg text-headline-lg-mobile text-primary uppercase tracking-tighter mb-2">Engage Stamping Port</h2>
+<p class="font-body-md text-on-surface-variant max-w-xs">Drop encrypted packages here for high-velocity Genesis stamping.</p>
 </div>
-<div class="scanline-overlay"></div>
-<div class="text-center space-y-4 z-10">
-<span class="material-symbols-outlined text-6xl text-primary-container mb-4 block animate-pulse" data-icon="target">target</span>
-<h3 class="font-display-lg text-2xl tracking-widest text-primary">DRAG FILE TO COMMENCE SCAN</h3>
-<p class="font-label-caps text-label-caps text-terminal-dim">SUPPORTED: .JSON / .GNS / .RAW</p>
+<div class="flex gap-4">
+<button class="bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps px-8 py-3 uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">Manual Upload</button>
 </div>
-<div class="absolute inset-0 bg-primary-container/0 group-hover:bg-primary-container/5 transition-colors"></div>
 </div>
-<button class="w-full max-w-md py-4 bg-primary-container text-on-primary font-label-caps text-sm tracking-[0.2em] border-2 border-primary-container hover:bg-black hover:text-primary-container transition-all active:scale-95 flex items-center justify-center gap-3" onclick="triggerSlam()">
-<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
-                EXECUTE SEQUENCE
-            </button>
+<!-- Background WebGL/Animation placeholder -->
+
+</div>
+<div class="mt-8 flex flex-col items-center gap-2">
+<div class="font-label-caps text-label-caps text-terminal-dim">PORT STATUS</div>
+<div class="px-6 py-1 bg-primary-fixed/10 border border-primary-fixed text-primary-fixed font-data-mono text-data-mono animate-pulse">OPTIMAL // READY FOR SEQUENCE</div>
+</div>
 </section>
-<!-- Right: VERIFICATION MATRIX -->
-<aside class="col-span-3 flex flex-col gap-6">
-<div class="glass-panel flex-1 p-4 border border-border-low-light relative flex flex-col overflow-hidden">
-<div class="flex justify-between items-center mb-4 border-b border-border-low-light pb-2">
-<h2 class="font-label-caps text-label-caps text-primary">VERIFICATION MATRIX</h2>
-<span class="material-symbols-outlined text-sm text-secondary-container" data-icon="view_in_ar">view_in_ar</span>
-</div>
-<div class="relative flex-1 bg-black/40 border border-primary/5">
-<!-- STITCH_THREEJS_START:ANIMATION_6 class="absolute inset-0 w-full h-full" -->
-<div class="absolute inset-0 w-full h-full" style="display:block;">
-<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
-<div id="threejs-container-ANIMATION_6" style="width:100%;height:100%"></div>
-<script>
-(function() {
-  const container = document.getElementById('threejs-container-ANIMATION_6');
-  const devicePixelRatio = window.devicePixelRatio || 1;
-  // Three.js Scene: Genesis DNA Spinner
-// Represents the "Verification Matrix"
+<!-- Right: Holographic Matrix & Status -->
+<aside class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+<div class="bg-surface-slate/50 backdrop-blur-xl border border-border-low-light p-6 relative overflow-hidden h-[400px]">
+<div class="font-label-caps text-label-caps text-secondary-fixed-dim uppercase mb-4 border-b border-border-low-light pb-2">Verification Matrix</div>
 
-const scene = new THREE.Scene();
-const width = container.clientWidth || window.innerWidth;
-const height = container.clientHeight || window.innerHeight;
-const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setSize(width, height);
-container.appendChild(renderer.domElement);
-
-// Helix Geometry
-const group = new THREE.Group();
-const curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, -5, 0),
-    new THREE.Vector3(0, 5, 0)
-]);
-
-const dotGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-const material = new THREE.MeshBasicMaterial({ color: 0xC8FF00 });
-
-for (let i = 0; i < 50; i++) {
-    const angle = (i / 50) * Math.PI * 4;
-    const x = Math.cos(angle) * 1.5;
-    const z = Math.sin(angle) * 1.5;
-    const y = (i / 50) * 10 - 5;
-    
-    const dot = new THREE.Mesh(dotGeometry, material);
-    dot.position.set(x, y, z);
-    group.add(dot);
-    
-    // Complementary dot for double helix
-    const dot2 = new THREE.Mesh(dotGeometry, material);
-    dot2.position.set(-x, y, -z);
-    group.add(dot2);
-    
-    // Bridge lines
-    if (i % 4 === 0) {
-        const lineGeom = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(x, y, z),
-            new THREE.Vector3(-x, y, -z)
-        ]);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xC8FF00, transparent: true, opacity: 0.3 });
-        const line = new THREE.Line(lineGeom, lineMat);
-        group.add(line);
-    }
-}
-
-scene.add(group);
-camera.position.z = 10;
-
-function animate() {
-    requestAnimationFrame(animate);
-    group.rotation.y += 0.01;
-    group.rotation.x = Math.sin(Date.now() * 0.001) * 0.1;
-    renderer.render(scene, camera);
-}
-
-window.addEventListener('resize', () => {
-    const w = container.clientWidth || window.innerWidth;
-    const h = container.clientHeight || window.innerHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-});
-
-animate();
-})();
-</script>
+<div class="relative z-10 space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-fixed-dim">verified_user</span>
+<div>
+<div class="text-[10px] text-on-surface-variant uppercase">Encryption Level</div>
+<div class="font-data-mono text-primary">AES-512-GNS</div>
 </div>
-<!-- STITCH_THREEJS_END:ANIMATION_6 -->
 </div>
-<div class="mt-6 space-y-4">
-<div class="flex justify-between items-end border-b border-border-low-light pb-1">
-<span class="font-label-caps text-[10px] text-terminal-dim">BIT_RATE</span>
-<span class="font-data-mono text-sm text-primary">1024.4 KB/S</span>
-</div>
-<div class="flex justify-between items-end border-b border-border-low-light pb-1">
-<span class="font-label-caps text-[10px] text-terminal-dim">HASH_INTEGRITY</span>
-<span class="font-data-mono text-sm text-primary-container">SECURE (0XFF)</span>
-</div>
-<div class="flex justify-between items-end border-b border-border-low-light pb-1">
-<span class="font-label-caps text-[10px] text-terminal-dim">ENTROPY_LEVEL</span>
-<span class="font-data-mono text-sm text-secondary-container">98.2% MAX</span>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-fixed-dim">hub</span>
+<div>
+<div class="text-[10px] text-on-surface-variant uppercase">Node Distribution</div>
+<div class="font-data-mono text-primary">12 ACTIVE SEGMENTS</div>
 </div>
 </div>
 </div>
-<div class="glass-panel h-32 p-4 border border-border-low-light flex items-center justify-between">
-<div class="space-y-1">
-<p class="font-label-caps text-[10px] text-terminal-dim uppercase">Active Encryption</p>
-<p class="font-data-mono text-primary">AES-256-GCM</p>
 </div>
-<div class="w-16 h-16 border border-primary-container/20 flex items-center justify-center">
-<span class="material-symbols-outlined text-primary-container text-3xl" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<!-- Stamped History Glass Cards -->
+<div class="space-y-3">
+<div class="font-label-caps text-label-caps text-terminal-dim uppercase mb-2">Recent Success</div>
+<div class="bg-surface-container-high/40 border-l-4 border-primary-fixed p-3 flex justify-between items-center hover:bg-surface-container-high/60 transition-all cursor-pointer group">
+<div>
+<div class="font-data-mono text-[11px] text-primary">DNA_SEQ_772.ENC</div>
+<div class="text-[9px] text-on-surface-variant">0.12ms LATENCY</div>
 </div>
+<span class="material-symbols-outlined text-primary-fixed text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="bg-surface-container-high/40 border-l-4 border-primary-fixed p-3 flex justify-between items-center hover:bg-surface-container-high/60 transition-all cursor-pointer group">
+<div>
+<div class="font-data-mono text-[11px] text-primary">PROTOCOL_X_V1.DAT</div>
+<div class="text-[9px] text-on-surface-variant">0.08ms LATENCY</div>
+</div>
+<span class="material-symbols-outlined text-primary-fixed text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+<div class="mt-auto bg-surface-container-highest/20 border border-dashed border-border-low-light p-4 text-center">
+<div class="font-label-caps text-[9px] text-terminal-dim mb-2">SECURITY PROTOCOL</div>
+<img alt="SECURITY_PROTOCOL_VISUAL" class="w-full h-12 opacity-30 invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGIx-zwuRbQn1qzX76SWFu-k8Bb6hIeAd1L1GRCtiGIRMrwt8D2-ci-7eRJMptuM-ggEEmM1G613pxWU5laHlxKT5UQAt9HlBwqDxjcwJzq8RMCVRW7mSq1bO866xHijnKRY-6BY8x8Ll7wnaut-WrK4ePkmSt386oHzDBdaZGn6NDe21g_7LSvRvNcL7bXh7LaYMOfuyhrBpe_er79sTE5aKZ-2jtEMrmeNifXOGOc-Avab-lfvOgV1hZvDiujvaayzGvVbxp9AA"/>
 </div>
 </aside>
 </main>
-<!-- Footer Meta-Bar -->
-<footer class="fixed bottom-0 w-full z-50 flex justify-between items-center px-margin-desktop py-2 bg-surface-container-lowest/90 backdrop-blur-md border-t border-border-low-light">
-<div class="flex items-center gap-6">
-<span class="font-label-caps text-label-caps text-terminal-dim">GENESIS PROTOCOL V4.0</span>
-<span class="w-px h-3 bg-border-low-light"></span>
-<span class="font-label-caps text-label-caps text-terminal-dim">STUDIO RIGHTS</span>
-</div>
-<div class="flex gap-8 items-center">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-xs text-primary-container" data-icon="schedule">schedule</span>
-<span class="font-label-caps text-label-caps text-terminal-dim" id="system-clock">SYSTEM CLOCK: 12:00:00</span>
-</div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-xs text-secondary-container" data-icon="analytics">analytics</span>
-<span class="font-label-caps text-label-caps text-terminal-dim uppercase">LATENCY: 12ms</span>
-</div>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-md border-t border-border-low-light flex justify-between items-center px-4 md:px-margin-desktop py-2">
+<div class="font-label-caps text-label-caps text-terminal-dim">GENESIS PROTOCOL V4.0</div>
+<div class="flex gap-8">
+<span class="font-label-caps text-label-caps text-terminal-dim transition-all duration-150 hover:text-primary-fixed">STUDIO RIGHTS</span>
+<span class="font-label-caps text-label-caps text-primary transition-all duration-150">SYSTEM CLOCK: <span id="clock">12:00:00</span></span>
+<span class="font-label-caps text-label-caps text-terminal-dim transition-all duration-150 hover:text-primary-fixed">LATENCY: 12ms</span>
 </div>
 </footer>
-<!-- Stamping Effect Overlay -->
-<div class="fixed inset-0 pointer-events-none z-[100] flex items-center justify-center opacity-0 transition-opacity duration-75" id="stamp-overlay">
-<div class="bg-primary-container text-black px-12 py-6 font-display-lg text-4xl transform -rotate-12 border-4 border-black font-bold">
-            SCAN_COMPLETE
-        </div>
+<!-- Overlay Success Stamp (Hidden by default) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300" id="stamping-overlay">
+<div class="absolute inset-0 bg-primary-fixed/5"></div>
+<div class="bg-primary-fixed text-on-primary-fixed px-12 py-6 border-[8px] border-on-primary-fixed shadow-[0_0_50px_rgba(192,245,0,0.5)] transform -rotate-12 flex flex-col items-center">
+<div class="font-display-lg text-[64px] font-black tracking-tighter uppercase leading-none">STAMPED</div>
+<div class="font-label-caps text-sm tracking-[0.3em] font-bold">GENESIS_VERIFIED</div>
+</div>
 </div>
 <script>
-        // Update System Clock
+        // Clock Update
         function updateClock() {
             const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + 
-                            now.getMinutes().toString().padStart(2, '0') + ":" + 
-                            now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('system-clock').innerText = `SYSTEM CLOCK: ${timeStr}`;
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Auto-scrolling logs logic
-        const logWindow = document.getElementById('log-window');
-        const logs = [
-            "SCANNING PACKET FRAGMENTS...",
-            "RECONSTRUCTING VOLATILE DATA...",
-            "ENCRYPTION HANDSHAKE VERIFIED.",
-            "GENESIS_NODE_7 REPORTING ONLINE.",
-            "THROUGHPUT OPTIMIZED AT 98%.",
-            "CLEANING TEMPORARY BUFFER...",
-            "AUTHENTICATING USER IDENTITY...",
-            "PROTOCOL HANDSHAKE: SUCCESS."
+        // Terminal Log Injection
+        const terminal = document.getElementById('terminal-content');
+        const logEntries = [
+            "SCANNING_PACKET_INTEGRITY...",
+            "HEURISTIC_ANALYSIS_COMPLETED",
+            "MAPPING_NETWORK_TOPOLOGY",
+            "UPDATING_GENESIS_LEDGER",
+            "ENCRYPTING_METADATA_CHUNKS",
+            "SIGNAL_STRENGTH_98%",
+            "AUTH_TOKEN_VALIDATED"
         ];
         
-        setInterval(() => {
-            const p = document.createElement('p');
+        function addLog() {
+            const entry = document.createElement('div');
             const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            p.innerText = `> [${time}] ${logs[Math.floor(Math.random() * logs.length)]}`;
-            logWindow.appendChild(p);
-            logWindow.scrollTop = logWindow.scrollHeight;
-            if (logWindow.children.length > 20) logWindow.removeChild(logWindow.firstChild);
-        }, 3000);
+            const msg = logEntries[Math.floor(Math.random() * logEntries.length)];
+            entry.innerHTML = `<span class="opacity-40">[${time}]</span> <span class="text-secondary-fixed-dim">GNS:</span> ${msg}`;
+            terminal.appendChild(entry);
+            terminal.scrollTop = terminal.scrollHeight;
+            if(terminal.children.length > 50) terminal.removeChild(terminal.firstChild);
+        }
+        setInterval(addLog, 3000);
 
-        // Interaction Trigger
-        function triggerSlam() {
-            const zone = document.getElementById('drop-zone');
-            const overlay = document.getElementById('stamp-overlay');
+        // Stamp Action Simulation
+        const dropZone = document.getElementById('drop-zone');
+        const overlay = document.getElementById('stamping-overlay');
+
+        dropZone.addEventListener('click', () => {
+            // Trigger Visual "Stamping"
+            overlay.classList.remove('opacity-0');
+            overlay.classList.add('opacity-100');
+            document.body.classList.add('stamping-flash');
             
-            // Slam animation
-            zone.classList.add('stamping-active');
-            overlay.style.opacity = '1';
-            
-            // Screen Shake
-            document.body.classList.add('translate-y-1', 'translate-x-1');
+            // Shake effect
+            document.main.style.transform = "translate(2px, 2px)";
             
             setTimeout(() => {
-                zone.classList.remove('stamping-active');
-                overlay.style.opacity = '0';
-                document.body.classList.remove('translate-y-1', 'translate-x-1');
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0');
+                document.body.classList.remove('stamping-flash');
+                document.main.style.transform = "translate(0, 0)";
             }, 500);
 
-            // Log entry for action
-            const p = document.createElement('p');
-            p.className = "text-primary-container font-bold";
-            p.innerText = `> [${new Date().toLocaleTimeString()}] !!! GENESIS SEQUENCE TRIGGERED !!!`;
-            logWindow.appendChild(p);
-            logWindow.scrollTop = logWindow.scrollHeight;
-        }
-
-        // Drop zone interaction
-        const dropZone = document.getElementById('drop-zone');
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
+            // Log entry
+            const logEntry = document.createElement('div');
+            logEntry.className = "text-primary-fixed bg-primary-fixed/10 p-1";
+            logEntry.innerHTML = `[${new Date().toLocaleTimeString()}] SUCCESS: PACKAGE_STAMPED_&_SEALED`;
+            terminal.appendChild(logEntry);
+            terminal.scrollTop = terminal.scrollHeight;
         });
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        dropZone.addEventListener('dragover', () => {
-            dropZone.classList.add('border-primary-container', 'bg-primary-container/10');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('border-primary-container', 'bg-primary-container/10');
-        });
-
-        dropZone.addEventListener('drop', () => {
-            dropZone.classList.remove('border-primary-container', 'bg-primary-container/10');
-            triggerSlam();
+        // Pointer micro-interaction for depth
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 10;
+            const y = (e.clientY / window.innerHeight - 0.5) * 10;
+            // Subtle parallax logic can be added here if needed
         });
     </script>
 </body></html>

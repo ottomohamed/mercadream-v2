@@ -184,7 +184,7 @@ const db = firebase.firestore();
 </div>
 </div>
 </header>
-<main class="pt-20 pb-32 px-margin-desktop max-w-7xl mx-auto space-y-12">
+<main class="pt-20 pb-32 px-4 md:px-margin-desktop max-w-7xl mx-auto space-y-12">
 <!-- HERO SECTION -->
 <section class="flex flex-col md:flex-row justify-between items-end gap-8 border-l-2 border-neon-acid pl-gutter py-4">
 <div>
@@ -377,6 +377,7 @@ document.querySelectorAll(".flex.border.border-outline-variant button").forEach(
 async function go(){if(!sf){alert("Upload a background first.");return;}var c=parseInt(await MDEngine.deduct(COST);if(c<COST){alert("Need "+COST+" genesis.");window.location.href="pricing.html";return;}var btn=document.getElementById("btn-crowd");if(btn){btn.disabled=true;btn.style.background="#8aad00";}var p=0,iv=setInterval(function(){p+=3;if(btn)btn.textContent="GENERATING CROWD... "+p+"%";if(p>=100){clearInterval(iv);await MDEngine.deduct(COST);if(window.MD)window.MD.updateGenesis();if(btn){btn.disabled=false;btn.style.background="#c8ff00";btn.textContent=" COMPLETE  SEND TO ASSEMBLY";btn.onclick=function(){window.location.href="assembly.html";};}}},200);}
 window.addEventListener("load",function(){var btn=document.querySelector(".fixed.bottom-0 button.bg-neon-acid");if(btn){btn.id="btn-crowd";btn.onclick=go;}var bb=document.querySelector("header .material-symbols-outlined");if(bb)bb.onclick=function(){window.location.href="directors.html";};if(window.MD)window.MD.updateGenesis();});
 </script><script src="/js/pipeline.js"></script></body></html>
+
 
 
 

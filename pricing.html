@@ -146,7 +146,7 @@ const db = firebase.firestore();
 <body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen font-body-md relative overflow-x-hidden"><script src="md-engine.js"></script>
 <div class="fixed inset-0 scanline-overlay z-[100] opacity-30 pointer-events-none"></div>
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center h-16 px-margin-desktop">
+<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center h-16 px-4 md:px-margin-desktop">
 <div class="flex items-center gap-gutter">
 <button class="active:scale-95 transition-transform flex items-center gap-2 group">
 <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-container">arrow_back</span>
@@ -163,7 +163,7 @@ const db = firebase.firestore();
 <a href="profile.html" title="My Profile" class="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-all"><span class="material-symbols-outlined text-primary text-3xl">account_circle</span></a>
 </div>
 </header>
-<main class="pt-24 pb-16 px-margin-desktop max-w-container-max mx-auto space-y-12">
+<main class="pt-24 pb-16 px-4 md:px-margin-desktop max-w-container-max mx-auto space-y-12">
 <!-- SECTION 1: RECHARGE -->
 <section class="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant">
 <!-- LEFT: CREDIT CALCULATOR -->
@@ -434,7 +434,7 @@ const db = firebase.firestore();
 </section>
 </main>
 <!-- Footer -->
-<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center h-8 px-margin-desktop">
+<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center h-8 px-4 md:px-margin-desktop">
 <div class="flex items-center gap-6">
 <span class="font-technical-sm text-label-xs text-primary uppercase">SYSTEM STATUS: OPTIMAL</span>
 <div class="h-3 w-[1px] bg-outline-variant"></div>
@@ -594,6 +594,7 @@ window.addEventListener("load",function(){
   }
 });
 </script></body></html>
+
 
 
 

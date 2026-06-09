@@ -179,7 +179,7 @@ const db = firebase.firestore();
 </head>
 <body class="dark selection:bg-neon-acid selection:text-void-black font-body-md text-on-surface"><script src="md-engine.js"></script>
 <!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-full fixed top-0 z-50 bg-surface border-b border-surface-variant rounded-none">
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-4 md:px-margin-desktop py-4 max-w-full fixed top-0 z-50 bg-surface border-b border-surface-variant rounded-none">
 <div class="flex items-center gap-6">
 <button class="flex items-center gap-2 font-headline-md text-headline-md font-bold tracking-tighter text-neon-acid rounded-none" data-nav="directors">
 <span class="material-symbols-outlined">chevron_left</span>
@@ -201,7 +201,7 @@ const db = firebase.firestore();
 </div>
 </div>
 </header>
-<main class="h-screen w-full pt-20 pb-24 overflow-hidden micro-grid flex flex-col px-margin-desktop">
+<main class="h-screen w-full pt-20 pb-24 overflow-hidden micro-grid flex flex-col px-4 md:px-margin-desktop">
 <!-- Hero Section -->
 <div class="mb-6 flex flex-col gap-1">
 <div class="flex items-center gap-2">
@@ -359,7 +359,7 @@ const db = firebase.firestore();
 </div>
 </main>
 <!-- Footer Action Bar -->
-<footer class="fixed bottom-0 left-0 w-full h-20 bg-void-black/90 backdrop-blur-xl border-t border-surface-variant z-50 flex items-center px-margin-desktop rounded-none">
+<footer class="fixed bottom-0 left-0 w-full h-20 bg-void-black/90 backdrop-blur-xl border-t border-surface-variant z-50 flex items-center px-4 md:px-margin-desktop rounded-none">
 <div class="max-w-full w-full flex justify-between items-center">
 <div class="flex gap-8">
 <div class="flex flex-col">
@@ -618,6 +618,7 @@ window.addEventListener('load', () => SemanticEngine.init());
 
 </script>
 </body></html>
+
 
 
 

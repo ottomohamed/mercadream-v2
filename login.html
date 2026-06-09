@@ -175,7 +175,7 @@ const db = firebase.firestore();
 </video>
 </div>
 <div class="scanning-line"></div>
-<header class="bg-surface/80 backdrop-blur-sm top-0 border-b border-surface-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 z-50">
+<header class="bg-surface/80 backdrop-blur-sm top-0 border-b border-surface-variant flex justify-between items-center w-full px-margin-mobile md:px-4 md:px-margin-desktop py-4 z-50">
 <div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-fixed dark:text-primary-fixed-dim">
             MercaDream
         </div>
@@ -185,7 +185,7 @@ const db = firebase.firestore();
 </header>
 <main class="flex-grow flex items-center justify-center md:justify-end p-margin-mobile md:p-margin-desktop relative overflow-hidden">
 <div class="absolute inset-0 overflow-hidden pointer-events-none">
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-fixed/5 rounded-full blur-[120px]" id="glowEffect"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[calc(100vh-160px)] bg-primary-fixed/5 rounded-full blur-[120px]" id="glowEffect"></div>
 </div>
 <!-- Moved to center-right on desktop using justify-end and max-w/margin -->
 <div class="w-full max-w-[420px] z-10 md:mr-16 lg:mr-32">
@@ -251,7 +251,7 @@ const db = firebase.firestore();
 </div>
 </div>
 </main>
-<footer class="w-full px-margin-mobile md:px-margin-desktop py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant z-10">
+<footer class="w-full px-margin-mobile md:px-4 md:px-margin-desktop py-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant z-10">
 <div class="font-technical-sm text-technical-sm text-primary-fixed uppercase tracking-wider">
              2024 MERCADREAM // SYSTEM_STATUS: OPERATIONAL
         </div>
@@ -347,6 +347,7 @@ const db = firebase.firestore();
     });
     </script>
 </body></html>
+
 
 
 

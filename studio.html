@@ -1,4 +1,4 @@
-﻿<html class="dark" lang="en"><head>
+<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM Studio | Production Suite</title>
@@ -303,7 +303,7 @@
 <div class="flex gap-md self-end max-w-[90%] md:max-w-[80%]">
 <div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
 <p class="text-body-md text-on-surface">Initiate screenplay structure for 'CYBERPUNK NEON' series. Focus on Act 1 sequence 4 - The meeting at the rain-soaked docks.</p>
-<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 — USER_MAIN</span>
+<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 � USER_MAIN</span>
 </div>
 <div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0">
 <span class="material-symbols-outlined">person</span>
@@ -327,7 +327,7 @@
 <span class="text-primary-fixed-dim">&gt;&gt;</span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
 <span class="text-primary-fixed-dim">&gt;&gt;</span> Screenplay protocol engaged. Ready for Act 1 details.
                         </p>
-<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 — GEMINI-9</span>
+<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 � GEMINI-9</span>
 </div>
 </div>
 <div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
@@ -347,7 +347,7 @@
 <footer class="bg-surface-container border border-outline-variant p-md flex flex-col gap-sm relative shrink-0">
 <div class="flex gap-md items-end">
 <div class="flex-grow bg-surface-container-lowest border border-outline-variant p-sm relative">
-<textarea class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" id="chat-input" onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){event.preventDefault();sendMessage()}" placeholder="اكتب فكرتك هنا... (بأي لغة)"></textarea>
+<textarea class="w-full h-32 bg-transparent border-none focus:ring-0 text-on-surface font-label-technical resize-none placeholder:text-outline-variant" id="chat-input" onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){event.preventDefault();sendMessage()}" placeholder="???? ????? ???... (??? ???)"></textarea>
 <div class="absolute bottom-2 right-2 flex gap-sm">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed-dim transition-colors p-sm" onclick="toggleVoice()">mic</button>
 <button class="material-symbols-outlined bg-primary-fixed-dim text-on-primary p-sm hover:shadow-[0_0_12px_#c8ff00] transition-all active:scale-[0.97]" onclick="sendMessage()">send</button>
@@ -439,7 +439,7 @@
 </button>
 <a class="border border-primary-fixed-dim text-primary-fixed-dim px-lg py-2 font-label-technical text-sm flex items-center gap-xs hover:bg-primary-fixed-dim/10 transition-all active:scale-[0.97] hidden md:flex" href="assembly.html">
 <span class="material-symbols-outlined text-[18px]">movie_edit</span>
-                OPEN ASSEMBLY →
+                OPEN ASSEMBLY ?
             </a>
 </div>
 </footer>
@@ -606,7 +606,7 @@
             return;
         }
 
-        addLogLine('GENERATE pressed — requesting scene from ' + director);
+        addLogLine('GENERATE pressed � requesting scene from ' + director);
         animatePipeline();
     }
 
@@ -663,7 +663,7 @@
         if (role === 'user') {
             const msgWrap = document.createElement('div');
             msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
-            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} — USER_MAIN</span>`;
+            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} � USER_MAIN</span>`;
             div.appendChild(msgWrap);
             const icon = document.createElement('div');
             icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
@@ -673,7 +673,7 @@
             div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
             const bubble = document.createElement('div');
             bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
-            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
+            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' � ' + (label || 'GEMINI-9') + '</span>';
             div.appendChild(bubble);
         }
         chat.insertBefore(div, voiceOverlay);
@@ -746,7 +746,7 @@
         header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
             + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
             + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs uppercase">Director: ' + (directorName || director) + '</p>'
-            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' GNS each. Click GENERATE.</p></div>';
+            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes � ' + cost + ' GNS each. Click GENERATE.</p></div>';
         chat.insertBefore(header, voiceOverlay);
 
         scenes.forEach((scene, idx) => {
@@ -859,12 +859,12 @@
                             var note = document.createElement('p');
                             note.className = 'font-label-technical text-primary-fixed-dim/60 mt-1';
                             note.style.fontSize = '9px';
-                            note.textContent = '✓ Auto-saved to Assembly';
+                            note.textContent = '? Auto-saved to Assembly';
                             resultDiv.appendChild(note);
                         }
                         if (btn) { btn.disabled = false; btn.innerHTML = 'REGENERATE (' + cost + ' GNS)'; }
                         activeGenerations[idx] = false;
-                        addLogLine('SCENE ' + (idx+1) + ' READY ✓');
+                        addLogLine('SCENE ' + (idx+1) + ' READY ?');
                     } else if (pd.status === 'failed') {
                         clearInterval(poll);
                         if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error p-2">FAILED</p>';
@@ -910,7 +910,7 @@
         document.getElementById('btn-manual').className = m === 'MANUAL' ? 'px-md py-1 bg-primary-fixed-dim text-on-primary text-[10px] font-bold font-label-technical' : 'px-md py-1 text-on-surface-variant text-[10px] font-bold font-label-technical hover:text-white transition-colors';
     }
 
-    // ── FIREBASE BALANCE SYNC ─────────────────────────
+    // -- FIREBASE BALANCE SYNC -------------------------
     try {
         firebase.auth().onAuthStateChanged(function(user) {
             if (!user) return;
@@ -925,7 +925,7 @@
         });
     } catch(e) { console.error('Firebase:', e); }
 
-    // ── ASSEMBLY HELPERS ──────────────────────────────
+    // -- ASSEMBLY HELPERS ------------------------------
     function openInAssembly(videoUrl, idx) {
         localStorage.setItem('md_send_to_assembly', JSON.stringify({
             url: videoUrl, name: 'Scene_'+(idx+1)+'.mp4', type: 'video', duration: 5
@@ -935,7 +935,7 @@
 
     function openAssembly() {
         const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-        if (!scenes.length) { addLogLine('NO SCENES YET — Generate first'); return; }
+        if (!scenes.length) { addLogLine('NO SCENES YET � Generate first'); return; }
         window.location.href = 'assembly.html';
     }
 
