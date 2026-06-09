@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>MERCADREAM | BG Remover — Neural Background Removal</title>
+<title>MERCADREAM | BG Remover â Neural Background Removal</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@ body{background:#040404;color:#e3e2e2;font-family:"IBM Plex Mono",monospace;over
 
 <section class="pt-16 py-10 text-center border-b border-[#434933]">
   <div class="max-w-2xl mx-auto px-4">
-    <div class="inline-block px-4 py-1 border border-[#c8ff00]/30 text-[#c8ff00] font-mono text-xs tracking-[0.2em] uppercase mb-4">NEURAL MASK — BiRefNet PRECISION</div>
+    <div class="inline-block px-4 py-1 border border-[#c8ff00]/30 text-[#c8ff00] font-mono text-xs tracking-[0.2em] uppercase mb-4">NEURAL MASK â BiRefNet PRECISION</div>
     <h1 style="font-family:Orbitron,sans-serif;font-size:clamp(36px,7vw,72px);line-height:1;color:#c8ff00;font-weight:900;text-shadow:0 0 40px rgba(200,255,0,0.4);">BG REMOVER</h1>
     <p class="font-mono text-[#c9c6c5] text-sm uppercase tracking-wide mt-3">AI-powered background removal. Precision edge detection for images and video.</p>
   </div>
@@ -43,20 +43,20 @@ body{background:#040404;color:#e3e2e2;font-family:"IBM Plex Mono",monospace;over
   <!-- LEFT -->
   <div class="space-y-5">
     <div class="border border-[#434933] p-5">
-      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest mb-3">01 — UPLOAD IMAGE OR VIDEO</div>
+      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest mb-3">01 â UPLOAD IMAGE OR VIDEO</div>
       <div class="upload-zone p-10 flex flex-col items-center justify-center gap-3 relative" id="drop-zone" onclick="document.getElementById('media-input').click()">
         <div id="preview-wrap" class="absolute inset-0 hidden overflow-hidden">
           <img id="preview-img" class="w-full h-full object-cover opacity-70">
         </div>
         <span class="material-symbols-outlined text-4xl text-[#434933] relative z-10" id="upload-icon">auto_fix_high</span>
         <div class="text-[11px] text-[#c9c6c5] uppercase relative z-10" id="upload-label">CLICK OR DROP FILE</div>
-        <div class="text-[9px] text-[#434933] relative z-10">IMAGE: JPG PNG WEBP · VIDEO: MP4 MOV</div>
+        <div class="text-[9px] text-[#434933] relative z-10">IMAGE: JPG PNG WEBP Â· VIDEO: MP4 MOV</div>
       </div>
       <input type="file" id="media-input" accept="image/*,video/*" class="hidden" onchange="handleMedia(this)">
     </div>
 
     <div class="border border-[#434933] p-5 space-y-3">
-      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest">02 — OPTIONS</div>
+      <div class="font-mono text-[10px] text-[#c8ff00] uppercase tracking-widest">02 â OPTIONS</div>
       <div class="flex items-center justify-between">
         <span class="font-mono text-[10px] text-[#c9c6c5] uppercase">Refine Foreground</span>
         <label class="flex items-center gap-2 cursor-pointer">
@@ -121,11 +121,11 @@ body{background:#040404;color:#e3e2e2;font-family:"IBM Plex Mono",monospace;over
         <span class="material-symbols-outlined text-sm">download</span> DOWNLOAD PNG
       </a>
       <button onclick="sendToAssembly()" class="w-full py-3 bg-white text-black font-black font-mono text-xs uppercase hover:bg-[#c8ff00] transition-all">
-        USE IN ASSEMBLY — 20 GNS
+        USE IN ASSEMBLY â 20 GNS
       </button>
     </div>
 
-    <div id="status-bar" class="font-mono text-[10px] text-[#c9c6c5] uppercase border border-[#434933] p-2">READY — UPLOAD FILE TO BEGIN</div>
+    <div id="status-bar" class="font-mono text-[10px] text-[#c9c6c5] uppercase border border-[#434933] p-2">READY â UPLOAD FILE TO BEGIN</div>
 
     <div class="border border-[#434933] p-3">
       <div class="font-mono text-[9px] text-[#c8ff00] uppercase mb-2">LOG</div>
@@ -201,12 +201,14 @@ async function removeBackground() {
   addLog('CALLING WAVESPEED BiRefNet API...');
 
   try {
-    var body = isVideo ? {videoUrl: uploadedUrl, refine_foreground: document.getElementById('refine').checked}
-                      : {imageUrl: uploadedUrl, refine_foreground: document.getElementById('refine').checked};
+    // Upload image to get URL first (convert base64 to send)
+    var imgData = uploadedUrl;
+    var body = {imageUrl: imgData};
+    addLog('SENDING TO BiRefNet...');
     var res = await fetch('/api/bgremover', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var data = await res.json();
     if (!data.taskId) throw new Error(data.error||'No task ID');
-    addLog('TASK: ' + data.taskId);
+    addLog('TASK ID: ' + data.taskId);
     await pollResult(data.taskId);
   } catch(e) {
     addLog('ERROR: ' + e.message, '#ef4444');
@@ -222,10 +224,10 @@ async function pollResult(taskId) {
     await sleep(3000);
     setStatus('MASKING EDGES... ' + (i*3) + 's', Math.min(10+i*2,95));
     try {
-      var r = await fetch('/api/video?id='+taskId);
+      var r = await fetch('/api/bgremover', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'poll',id:taskId})});
       var d = await r.json();
-      if (d.status==='completed' && d.videoUrl) {
-        resultUrl = d.videoUrl;
+      if (d.status==='completed' && d.url) {
+        resultUrl = d.url;
         // Deduct GNS
         var gns=parseInt(localStorage.getItem('md_credits')||'0');
         var newGns=gns-50;
@@ -233,12 +235,12 @@ async function pollResult(taskId) {
         document.getElementById('gns-display').textContent=newGns.toLocaleString()+' GNS';
         try { var uid=localStorage.getItem('md_user_id'); if(uid) firebase.firestore().collection('users').doc(uid).update({credits:newGns}); } catch(e){}
         // Show result
-        document.getElementById('result-img').src = d.videoUrl;
+        document.getElementById('result-img').src = d.url;
         document.getElementById('result-img').classList.remove('hidden');
         document.getElementById('result-placeholder').classList.add('hidden');
-        document.getElementById('download-btn').href = d.videoUrl;
+        document.getElementById('download-btn').href = d.url;
         document.getElementById('download-section').classList.remove('hidden');
-        setStatus('COMPLETE ✓', 100);
+        setStatus('COMPLETE â', 100);
         addLog('BACKGROUND REMOVED', '#c8ff00');
         btn.disabled=false; btn.innerHTML='<span class="material-symbols-outlined">auto_fix_high</span> REMOVE BG';
         return;
