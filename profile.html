@@ -747,6 +747,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     window.location.href = 'register.html';
     return;
   }
+  
+  loadLedger(user.uid);
 
   firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
     if (!doc.exists) return;
@@ -813,13 +815,64 @@ if (txBtn) {
 ';
         snap.forEach(function(doc) {
           var d = doc.data();
-          msg += d.genesisId + ' � ' + d.title + '
+          msg += d.genesisId + '  ' + d.title + '
 ';
         });
         alert(msg || 'No items yet. Generate videos in Studio!');
       });
   };
 }
+
+// ── Load Ledger into Billing Table ──
+function loadLedger(uid) {
+  var body = document.getElementById('billing-table-body');
+  if(!body) return;
+  
+  firebase.firestore().collection('genesis_vault')
+    .orderBy('createdAt','desc').limit(50).get()
+    .then(function(snap) {
+      var txns = [];
+      var totalOut = 0;
+      snap.forEach(function(doc) {
+        var d = doc.data();
+        if(d.ownerId === uid) {
+          txns.push({
+            type: d.transferredAt ? 'purchase' : 'generation',
+            title: d.title || 'Video Generation',
+            id: d.genesisId || '—',
+            amount: d.transferredAt ? (d.price||0) : 50,
+            date: d.createdAt || '',
+            status: 'CONFIRMED'
+          });
+          totalOut += d.transferredAt ? (d.price||0) : 50;
+        }
+      });
+      
+      // Update total out if element exists
+      var totalEl = document.getElementById('total-out');
+      if(totalEl) totalEl.textContent = '-' + totalOut.toLocaleString() + ' CR';
+      
+      if(!txns.length) {
+        body.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-on-surface-variant opacity-60">-- No Transaction History --</td></tr>';
+        return;
+      }
+      
+      body.innerHTML = txns.map(function(tx) {
+        var dt = tx.date ? new Date(tx.date).toLocaleDateString('en-GB') : '—';
+        var icon = tx.type === 'generation' ? 'movie' : 'shopping_cart';
+        return '<tr class="hover:bg-outline-variant/10 transition-colors">' +
+          '<td class="px-6 py-4 text-xs font-technical-sm">' + dt + '</td>' +
+          '<td class="px-6 py-4"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-sm text-primary-fixed">' + icon + '</span><span class="text-xs">' + tx.title + '</span></div></td>' +
+          '<td class="px-6 py-4 text-xs text-on-surface-variant font-mono">' + tx.id + '</td>' +
+          '<td class="px-6 py-4 text-xs text-red-400 font-mono">-' + tx.amount + ' CR</td>' +
+          '<td class="px-6 py-4 text-right"><span class="text-xs px-2 py-1 bg-green-900/30 text-green-400 border border-green-800">CONFIRMED</span></td>' +
+        '</tr>';
+      }).join('');
+    }).catch(function() {
+      if(body) body.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-red-400 text-xs">Error loading transactions</td></tr>';
+    });
+}
+
 </script>
 </body>
 </html>
