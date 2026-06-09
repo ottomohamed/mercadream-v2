@@ -4,16 +4,17 @@
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if(req.method === "OPTIONS") return res.status(200).end();
 
-  var KEY  = process.env.WAVESPEED_KEY;
-  var BASE = "https://api.wavespeed.ai/api/v3";
-  var body = req.body || {};
+  var KEY      = process.env.WAVESPEED_KEY;
+  var IMGBB    = process.env.IMGBB_KEY;
+  var BASE_URL = "https://api.wavespeed.ai/api/v3";
+  var body     = req.body || {};
 
   // Poll
   if(body.action === "poll") {
     var id = body.id;
     if(!id) return res.status(400).json({error:"No ID"});
     try {
-      var pr = await fetch(BASE+"/predictions/"+id, {
+      var pr = await fetch(BASE_URL+"/predictions/"+id, {
         headers:{"Authorization":"Bearer "+KEY}
       });
       var pd = await pr.json();
@@ -23,23 +24,37 @@
     } catch(e) { return res.status(500).json({error:e.message}); }
   }
 
-  // Generate
-  var imageUrl = body.imageUrl || body.videoUrl;
-  var isVideo  = !!body.videoUrl;
-  if(!imageUrl) return res.status(400).json({error:"No image URL"});
+  // Upload base64 to ImgBB
+  var imageBase64 = body.imageBase64;
+  var imageUrl    = body.imageUrl;
+  var isVideo     = !!body.videoUrl;
 
-  // If base64, we need a public URL - WaveSpeed doesn't accept base64 directly
-  if(imageUrl.startsWith("data:")) {
-    return res.status(400).json({error:"Base64 not supported. Please use a public image URL."});
+  if(imageBase64) {
+    try {
+      var form = new URLSearchParams();
+      form.append("key", IMGBB);
+      form.append("image", imageBase64);
+      var up = await fetch("https://api.imgbb.com/1/upload", {
+        method:"POST",
+        body: form
+      });
+      var upd = await up.json();
+      imageUrl = upd.data && upd.data.url;
+      if(!imageUrl) return res.status(500).json({error:"ImgBB upload failed", raw:upd});
+    } catch(e) {
+      return res.status(500).json({error:"Upload error: "+e.message});
+    }
   }
+
+  if(!imageUrl) return res.status(400).json({error:"No image"});
 
   try {
     var model = isVideo ? "wavespeed-ai/birefnet-video" : "wavespeed-ai/birefnet";
-    var r = await fetch(BASE+"/predictions", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer "+KEY,
-        "Content-Type": "application/json"
+    var r = await fetch(BASE_URL+"/predictions", {
+      method:"POST",
+      headers:{
+        "Authorization":"Bearer "+KEY,
+        "Content-Type":"application/json"
       },
       body: JSON.stringify({
         model: model,
