@@ -201,9 +201,17 @@ async function removeBackground() {
   addLog('CALLING WAVESPEED BiRefNet API...');
 
   try {
-    // Upload image to get URL first (convert base64 to send)
-    var imgData = uploadedUrl;
-    var body = {imageUrl: imgData};
+    // Upload to ImgBB for public URL
+    addLog('UPLOADING IMAGE...');
+    var base64Data = uploadedUrl.split(',')[1];
+    var formData = new FormData();
+    formData.append('image', base64Data);
+    var uploadRes = await fetch('https://api.imgbb.com/1/upload?key=5f6e7c8d9a0b1c2d3e4f5a6b7c8d9e0f', {method:'POST',body:formData});
+    var uploadData = await uploadRes.json();
+    var publicUrl = uploadData.data && uploadData.data.url;
+    if(!publicUrl) throw new Error('Upload failed');
+    addLog('IMAGE UPLOADED');
+    var body = {imageUrl: publicUrl};
     addLog('SENDING TO BiRefNet...');
     var res = await fetch('/api/bgremover', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     var data = await res.json();
@@ -273,5 +281,6 @@ function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 </script>
 </body>
 </html>
+
 
 
