@@ -175,8 +175,8 @@
 <div class="space-y-2">
 <label class="font-label-sm text-label-sm text-on-surface-variant">DURATION</label>
 <div class="grid grid-cols-2 gap-2">
-<button class="duration-btn py-2 rounded-lg font-label-sm bg-primary text-on-primary border border-primary" data-value="3s">3s</button>
-<button class="duration-btn py-2 rounded-lg font-label-sm bg-surface-container-highest text-on-surface-variant border border-outline-variant hover:border-primary transition-all" data-value="5s">5s</button>
+<button class="duration-btn py-2 rounded-lg font-label-sm bg-primary text-on-primary border border-primary" data-value="5">5s</button>
+<button class="duration-btn py-2 rounded-lg font-label-sm bg-surface-container-highest text-on-surface-variant border border-outline-variant hover:border-primary transition-all" data-value="8">8s</button>
 </div>
 </div>
 <!-- Style Select -->
@@ -283,7 +283,7 @@
 <script>
         // --- State Management ---
         let currentImageBase64 = null;
-        let userCredits = 150;
+        let userCredits = parseInt(localStorage.getItem('md_credits') || '0');
         let isGenerating = false;
 
         const dropZone = document.getElementById('drop-zone');
@@ -300,6 +300,8 @@
         const videoResultContainer = document.getElementById('video-result-container');
         const resultVideo = document.getElementById('result-video');
         const creditsDisplay = document.getElementById('credits-display');
+        userCredits = parseInt(localStorage.getItem('md_credits') || '0');
+        creditsDisplay.textContent = userCredits + ' GNS';
 
         // --- Event Listeners ---
         dropZone.addEventListener('click', () => fileInput.click());
@@ -387,7 +389,7 @@
             // Real WaveSpeed API
             try {
                 const quality = document.querySelector('.quality-btn.bg-primary')?.dataset.value || '480p';
-                const duration = parseInt(document.querySelector('.duration-btn.bg-primary')?.dataset.value) || 3;
+                const duration = parseInt(document.querySelector('.duration-btn.bg-primary')?.dataset.value) || 5;
                 const prompt = document.getElementById('motion-prompt').value || 'cinematic motion';
                 const style = document.getElementById('style-select').value;
 
