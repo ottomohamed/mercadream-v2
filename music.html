@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MUREKA | AI MUSIC STUDIO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Orbitron:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100..900&family=Orbitron:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#1f1f1f",
+                    "inverse-primary": "#4f6600",
+                    "on-primary": "#273500",
+                    "error-container": "#93000a",
+                    "on-primary-fixed-variant": "#3b4d00",
+                    "primary-fixed": "#c0f500",
+                    "on-surface-variant": "#c4caac",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "on-tertiary-fixed-variant": "#474747",
+                    "surface-container-high": "#2a2a2a",
+                    "outline-variant": "#434933",
+                    "tertiary-fixed": "#e4e2e1",
+                    "surface-dim": "#131313",
+                    "surface-container-low": "#1b1b1b",
+                    "on-surface": "#e2e2e2",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface": "#131313",
+                    "on-primary-fixed": "#161f00",
+                    "tertiary-container": "#e4e2e1",
+                    "outline": "#8e9479",
+                    "primary-fixed-dim": "#a8d700",
+                    "on-background": "#e2e2e2",
+                    "inverse-surface": "#e2e2e2",
+                    "on-tertiary-container": "#656464",
+                    "surface-bright": "#393939",
+                    "surface-variant": "#353535",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-tertiary": "#303030",
+                    "secondary": "#c8c6c5",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-secondary-fixed-variant": "#474746",
+                    "on-secondary": "#313030",
+                    "on-error": "#690005",
+                    "surface-tint": "#a8d700",
+                    "secondary-container": "#474746",
+                    "tertiary-fixed-dim": "#c8c6c6",
+                    "primary": "#ffffff",
+                    "tertiary": "#ffffff",
+                    "background": "#131313",
+                    "inverse-on-surface": "#303030",
+                    "on-primary-container": "#546d00",
+                    "primary-container": "#c0f500",
+                    "surface-container-highest": "#353535",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-container": "#b7b5b4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-sm": "16px",
+                    "base": "4px",
+                    "margin-md": "32px",
+                    "gutter": "1px",
+                    "margin-lg": "48px",
+                    "grid-unit": "24px"
+            },
+            "fontFamily": {
+                    "mono-data": ["IBM Plex Mono"],
+                    "headline-lg": ["Orbitron"],
+                    "display-lg": ["Orbitron"],
+                    "label-sm": ["IBM Plex Mono"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            background-image: 
+                linear-gradient(to right, #1a1a1a 1px, transparent 1px),
+                linear-gradient(to bottom, #1a1a1a 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: #e2e2e2;
+        }
+
+        .glow-neon {
+            box-shadow: 0 0 8px rgba(200, 255, 0, 0.4);
+        }
+
+        .border-neon {
+            border-color: #c8ff00;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .scanline {
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(200, 255, 0, 0.05) 50%
+            );
+            background-size: 100% 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0e0e0e;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #333333;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #c8ff00;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #c8ff00;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        .waveform-bar {
+            transition: height 0.2s ease;
+        }
+    </style>
+</head>
+<body class="font-mono-data text-mono-data min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 bg-surface dark:bg-surface border-b border-outline-variant flex justify-between items-center w-full px-margin-sm h-16 z-50">
+<div class="flex items-center gap-4">
+<img alt="MUREKA Logo" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLsrpXNlmNsEjlYrNCadoSILiRlkzDY-t7s2AgYtbV9slIrdwcquS80UtP_q1rZMlubJ-5j8yxTspQQLoBORv7LrU98SHYz7aThshdII4kupRhur7Y1o2n1085mfWO9Rkz2qp_pAOOm7r-r4Waq7RN5kzxlWeZUVOTRiqE4_2l5mK0kytmN2rFAS9bpjNhjASatNxtpbJzi15HQduymSpEU7BLr2pg7Qx6yMyv25Iz-5yK4ynq77cafvNbo"/>
+<span class="font-display-lg text-[24px] text-primary-fixed tracking-tighter uppercase">MUREKA</span>
+</div>
+<nav class="hidden md:flex gap-margin-md items-center h-full">
+<a class="text-primary-fixed border-b-2 border-primary-fixed pb-1 h-full flex items-center transition-all" href="#">Studio</a>
+<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all h-full flex items-center" href="#">Mixer</a>
+<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all h-full flex items-center" href="#">Mastering</a>
+<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all h-full flex items-center" href="#">Samples</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex flex-col items-end mr-2">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Available Credits</span>
+<span class="text-primary-fixed font-bold" id="credit-display">0 GNS</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-4 py-2 font-bold text-label-sm uppercase hover:brightness-110 active:scale-95 transition-all">
+                Buy Credits
+            </button>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-fixed">account_balance_wallet</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-fixed">notifications</span>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col p-margin-sm md:p-margin-md max-w-[1440px] mx-auto w-full gap-8">
+<!-- Header -->
+<section class="border-l-4 border-primary-fixed pl-6 py-2">
+<h1 class="font-display-lg text-display-lg text-primary-fixed leading-none mb-2">MUREKA MUSIC STUDIO</h1>
+<p class="text-on-surface-variant max-w-2xl text-body-md">
+                Generate complete songs or background music with AI. Powered by Mureka V9. Precise spectral modeling and neural orchestration for the next generation of creators.
+            </p>
+</section>
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant gap-gutter">
+<button class="px-8 py-4 bg-surface-container-low border-t-2 border-primary-fixed text-primary-fixed font-bold tracking-widest text-label-sm">
+                GENERATE SONG
+            </button>
+<button class="px-8 py-4 text-on-tertiary-container hover:bg-surface-container hover:text-on-surface transition-colors font-bold tracking-widest text-label-sm">
+                GENERATE BGM
+            </button>
+</div>
+<!-- Main Content (Two-Panel) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 border border-outline-variant bg-surface-container-lowest overflow-hidden">
+<!-- Left Panel (Inputs) -->
+<div class="lg:col-span-5 border-r border-outline-variant p-6 flex flex-col gap-6 scanline">
+<div class="flex flex-col gap-2">
+<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Lyrical Input</label>
+<textarea class="w-full h-48 bg-black border border-outline-variant p-4 text-body-md text-on-surface focus:border-primary-fixed focus:ring-0 resize-none transition-colors" id="lyrics-input" placeholder="Type your lyrics here or describe a story..."></textarea>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Style Prompt</label>
+<input class="w-full bg-black border border-outline-variant p-4 text-body-md text-on-surface focus:border-primary-fixed focus:ring-0 transition-colors" id="style-input" placeholder="e.g. Acid Techno, 135 BPM, distorted bassline, industrial pads" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Format</label>
+<div class="flex border border-outline-variant h-12">
+<button class="flex-1 bg-primary-fixed text-on-primary-fixed text-label-sm font-bold">MP3</button>
+<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface">WAV</button>
+<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface">FLAC</button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Variations</label>
+<div class="flex border border-outline-variant h-12">
+<button class="flex-1 bg-surface-container text-on-surface text-label-sm font-bold border-r border-outline-variant">1</button>
+<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface border-r border-outline-variant">2</button>
+<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface">3</button>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant flex justify-between items-end">
+<div>
+<span class="block text-[10px] text-on-surface-variant uppercase tracking-widest">Compute Cost</span>
+<span class="text-headline-lg text-primary-fixed leading-none">5 GNS <span class="text-label-sm text-on-surface-variant">/ song</span></span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-8 py-4 font-bold text-label-sm uppercase hover:brightness-110 active:scale-95 transition-all glow-neon flex items-center gap-2" id="generate-btn">
+<span class="material-symbols-outlined">auto_awesome</span>
+                        GENERATE SONG
+                    </button>
+</div>
+</div>
+<!-- Right Panel (Results) -->
+<div class="lg:col-span-7 p-6 flex flex-col gap-4 relative min-h-[500px]">
+<div class="flex justify-between items-center mb-2">
+<h2 class="text-label-sm text-primary-fixed uppercase font-bold tracking-widest">Output Terminal</h2>
+<div class="flex gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></div>
+<span class="text-[10px] text-primary-fixed uppercase">System Online</span>
+</div>
+</div>
+<div class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2 h-full" id="results-container">
+<!-- Empty State -->
+<div class="flex-grow flex flex-col items-center justify-center border border-dashed border-outline-variant opacity-40 py-20" id="empty-state">
+<div class="flex items-end gap-1 mb-6 h-12">
+<div class="w-1 bg-primary-fixed h-4 animate-[bounce_1s_infinite_0s]"></div>
+<div class="w-1 bg-primary-fixed h-8 animate-[bounce_1s_infinite_0.1s]"></div>
+<div class="w-1 bg-primary-fixed h-12 animate-[bounce_1s_infinite_0.2s]"></div>
+<div class="w-1 bg-primary-fixed h-6 animate-[bounce_1s_infinite_0.3s]"></div>
+<div class="w-1 bg-primary-fixed h-10 animate-[bounce_1s_infinite_0.4s]"></div>
+<div class="w-1 bg-primary-fixed h-4 animate-[bounce_1s_infinite_0.5s]"></div>
+<div class="w-1 bg-primary-fixed h-12 animate-[bounce_1s_infinite_0.6s]"></div>
+</div>
+<p class="text-label-sm uppercase tracking-[0.2em]">Awaiting Input Sequence...</p>
+</div>
+<!-- Audio Players Stack (Hidden by default, shown by JS) -->
+<div class="hidden flex flex-col gap-4" id="track-list">
+<!-- Template for track list items -->
+</div>
+</div>
+<!-- Terminal Log (Bottom Right Overlay) -->
+<div class="absolute bottom-6 right-6 w-72 bg-black/90 border border-primary-fixed/30 p-3 font-mono-data text-[10px] text-primary-fixed/80 max-h-32 overflow-hidden pointer-events-none">
+<div id="terminal-content">
+<div>[10:42:01] MUREKA: ENGINE READY...</div>
+<div>[10:42:02] KERNEL: V9.4.1 LOADED</div>
+<div>[10:42:03] STATUS: WAITING_FOR_PROMPT</div>
+</div>
+<span class="terminal-cursor"></span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="docked full-width bottom-0 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center w-full px-margin-sm py-4 mt-auto">
+<div class="flex items-center gap-4">
+<span class="font-label-sm text-label-sm text-primary-fixed uppercase">© 2024 MUREKA_SYSTEM_OS v4.2.1</span>
+</div>
+<div class="flex gap-margin-md">
+<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">Documentation</a>
+<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">API</a>
+<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">Status</a>
+<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">Legal</a>
+</div>
+</footer>
+<script>
+        // --- State Management ---
+        const state = {
+            credits: parseInt(localStorage.getItem('md_credits')) || 100,
+            isGenerating: false,
+            logs: []
+        };
+
+        const updateCredits = (amount) => {
+            state.credits = amount;
+            localStorage.setItem('md_credits', state.credits);
+            document.getElementById('credit-display').innerText = `${state.credits} GNS`;
+        };
+
+        const addLog = (msg) => {
+            const terminal = document.getElementById('terminal-content');
+            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            const line = document.createElement('div');
+            line.innerText = `[${time}] ${msg}`;
+            terminal.appendChild(line);
+            if (terminal.children.length > 8) terminal.removeChild(terminal.firstChild);
+        };
+
+        // --- Initialization ---
+        updateCredits(state.credits);
+
+        // --- Logic ---
+        document.getElementById('generate-btn').addEventListener('click', async () => {
+            if (state.isGenerating) return;
+            if (state.credits < 5) {
+                alert("Insufficient Credits");
+                return;
+            }
+
+            const lyrics = document.getElementById('lyrics-input').value;
+            const style = document.getElementById('style-input').value;
+
+            if (!lyrics || !style) {
+                alert("Please provide both lyrics and style prompt.");
+                return;
+            }
+
+            state.isGenerating = true;
+            document.getElementById('generate-btn').disabled = true;
+            document.getElementById('generate-btn').innerText = "GENERATING...";
+            addLog("MUREKA: INITIATING SONG GENERATION...");
+
+            try {
+                // Deduct credits
+                const numSongs = state.numberOfSongs || 1;
+                const cost = numSongs * 5;
+                updateCredits(state.credits - cost);
+
+                // Real API call
+                const activeTab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'song';
+                const res = await fetch('/api/music', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        type: activeTab,
+                        lyrics: document.getElementById('lyrics-input')?.value || '',
+                        prompt: document.getElementById('style-input')?.value || document.getElementById('prompt-input')?.value || '',
+                        number_of_songs: numSongs,
+                        format: state.format || 'mp3'
+                    })
+                });
+                const data = await res.json();
+                if (!data.taskId) throw new Error(data.error || 'No task ID');
+                addLog('JOB: ' + data.taskId);
+
+                // Show placeholders
+                document.getElementById('empty-state').classList.add('hidden');
+                document.getElementById('track-list').classList.remove('hidden');
+                const trackList = document.getElementById('track-list');
+                trackList.innerHTML = '';
+                for (let i = 0; i < numSongs; i++) {
+                    trackList.appendChild(createTrackElement('MUREKA_GEN_' + (i+1), true));
+                }
+
+                // Poll real API
+                let attempts = 0;
+                const pollInterval = setInterval(async () => {
+                    attempts++;
+                    if (attempts > 80) {
+                        clearInterval(pollInterval);
+                        addLog('ERROR: TIMEOUT');
+                        updateCredits(state.credits + cost);
+                        state.isGenerating = false;
+                        document.getElementById('generate-btn').disabled = false;
+                        document.getElementById('generate-btn').innerText = 'GENERATE SONG';
+                        return;
+                    }
+                    try {
+                        const pr = await fetch('/api/video?id=' + data.taskId);
+                        const pd = await pr.json();
+                        addLog('POLL ' + attempts + ': ' + (pd.status||'').toUpperCase());
+                        if (pd.status === 'completed') {
+                            clearInterval(pollInterval);
+                            const urls = Array.isArray(pd.videoUrl) ? pd.videoUrl : [pd.videoUrl];
+                            trackList.innerHTML = '';
+                            urls.forEach((url, i) => {
+                                const el = createTrackElement('MUREKA_' + (i+1), false, url);
+                                trackList.appendChild(el);
+                            });
+                            addLog('MUREKA: ' + urls.length + ' TRACK(S) READY');
+                            state.isGenerating = false;
+                            document.getElementById('generate-btn').disabled = false;
+                            document.getElementById('generate-btn').innerText = 'GENERATE SONG';
+                        } else if (pd.status === 'failed') {
+                            clearInterval(pollInterval);
+                            throw new Error('Generation failed');
+                        }
+                    } catch(pe) { addLog('POLL ERR: ' + pe.message); }
+                }, 5000);
+
+            } catch (err) {
+                addLog('ERROR: ' + err.message);
+                updateCredits(state.credits + (state.numberOfSongs || 1) * 5);
+                state.isGenerating = false;
+                document.getElementById('generate-btn').disabled = false;
+                document.getElementById('generate-btn').innerText = 'GENERATE SONG';
+            }
+        });
+
+        function createTrackElement(title, isPlaceholder = false, audioUrl = null) {
+            const div = document.createElement('div');
+            div.className = `border border-outline-variant bg-black p-4 flex flex-col gap-3 transition-all hover:border-primary-fixed group ${isPlaceholder ? 'opacity-50' : ''}`;
+            const audio = audioUrl ? `<audio id="audio-${title}" src="${audioUrl}" class="hidden"></audio>` : '';
+            div.innerHTML = `
+                ${audio}
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary-fixed cursor-pointer play-track-btn" data-url="${audioUrl||''}">${isPlaceholder ? 'hourglass_empty' : 'play_circle'}</span>
+                        <span class="text-label-sm font-bold text-on-surface uppercase tracking-widest">${title}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        ${audioUrl ? `<a href="${audioUrl}" download="${title}.mp3" class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">download</a>` : '<span class="material-symbols-outlined text-outline-variant">download</span>'}
+                    </div>
+                </div>
+                <div class="flex items-end gap-1 h-8 px-2">
+                    ${Array.from({length: 40}).map(() => `
+                        <div class="flex-1 bg-outline-variant group-hover:bg-primary-fixed/40 transition-all" style="height: ${Math.random() * 100}%"></div>
+                    `).join('')}
+                </div>
+            `;
+            if (audioUrl) {
+                div.querySelector('.play-track-btn').addEventListener('click', function() {
+                    const allAudios = document.querySelectorAll('audio');
+                    allAudios.forEach(a => { if (a.src !== audioUrl) a.pause(); });
+                    const a = div.querySelector('audio');
+                    if (a.paused) { a.play(); this.textContent = 'pause_circle'; }
+                    else { a.pause(); this.textContent = 'play_circle'; }
+                });
+            }
+            return div;
+        }
+
+        function finalizeTracks() {
+            const trackList = document.getElementById('track-list');
+            trackList.innerHTML = '';
+            
+            const titles = ["NEON_DREAMS_V9", "ACID_ORCHESTRA_X", "SILICON_SOUL"];
+            titles.forEach(title => {
+                trackList.appendChild(createTrackElement(title));
+            });
+
+            addLog("MUREKA: GENERATION COMPLETE.");
+            state.isGenerating = false;
+            document.getElementById('generate-btn').disabled = false;
+            document.getElementById('generate-btn').innerText = "GENERATE SONG";
+        }
+
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+                audio.volume = 0.1;
+                // audio.play().catch(() => {}); // Optional click sound
+            });
+        });
+    </script>
+</body></html>

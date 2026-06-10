@@ -285,6 +285,28 @@ async function handle_faceswap(req, res) {
 }
 
 
+async function handle_music(req, res) {
+  const { type, lyrics, prompt, number_of_songs, format } = req.body||{};
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const model = type === 'bgm'
+      ? 'mureka-ai/mureka-v9/generate-bgm'
+      : 'mureka-ai/mureka-v9/generate-song';
+    const body = type === 'bgm'
+      ? { prompt: prompt||'cinematic background music', number_of_songs: number_of_songs||1, format: format||'mp3' }
+      : { lyrics: lyrics||'', prompt: prompt||'', number_of_songs: number_of_songs||1, format: format||'mp3' };
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
 async function handle_elevenlabs(req, res) {
   const { text, voice_id, language, stability, similarity } = req.body||{};
   if (!text) return res.status(400).json({ error: 'text required.' });
@@ -604,6 +626,7 @@ module.exports = async function handler(req, res) {
     faceswap:    handle_faceswap,
     tts:         handle_tts,
     elevenlabs:  handle_elevenlabs,
+    music:       handle_music,
     voiceclone:  handle_voiceclone,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
