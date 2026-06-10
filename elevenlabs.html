@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ElevenLabs V3 | MercaDream</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{
+    colors:{
+      "surface-container-high":"#2a2a2a","primary":"#ffffff","surface-dim":"#131313",
+      "outline-variant":"#434933","surface-container":"#201f1f","surface":"#131313",
+      "secondary":"#c6c6c7","primary-fixed-dim":"#a8d700","surface-container-low":"#1c1b1b",
+      "surface-container-lowest":"#0e0e0e","on-surface-variant":"#c4caac",
+      "on-background":"#e5e2e1","background":"#040404","surface-container-highest":"#353534",
+      "primary-fixed":"#c8ff00","on-surface":"#e5e2e1","surface-variant":"#353534",
+      "primary-container":"#c8ff00","on-primary":"#273500","outline":"#222222",
+    },
+    borderRadius:{"DEFAULT":"0px","lg":"0px","xl":"0px","full":"9999px"},
+    fontFamily:{
+      "headline-lg":["Orbitron"],"body-lg":["IBM Plex Mono"],"body-sm":["IBM Plex Mono"],
+      "headline-sm":["Orbitron"],"terminal-log":["IBM Plex Mono"],"body-md":["IBM Plex Mono"],
+      "label-caps":["IBM Plex Mono"],"headline-md":["Orbitron"]
+    }
+  }}
+}
+</script>
+<style>
+body{background-color:#040404;background-image:linear-gradient(#111 1px,transparent 1px),linear-gradient(90deg,#111 1px,transparent 1px);background-size:32px 32px;color:#e5e2e1;overflow-x:hidden;}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.2) 50%);background-size:100% 3px;pointer-events:none;z-index:50;}
+.voice-card{transition:all 0.2s;cursor:pointer;}
+.voice-card:hover{border-color:#c8ff00;}
+.voice-card.selected{border-color:#c8ff00;background:rgba(200,255,0,0.05);}
+input[type=range]{-webkit-appearance:none;height:4px;background:#222;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:#c8ff00;cursor:pointer;}
+</style>
+</head>
+<body class="font-body-md min-h-screen">
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav class="border-b border-outline-variant px-6 py-4 flex justify-between items-center">
+  <div class="flex items-center gap-4">
+    <a href="index.html" class="font-headline-sm text-headline-sm text-primary-fixed tracking-widest">MERCADREAM</a>
+    <span class="text-outline-variant">/</span>
+    <span class="font-label-caps text-[11px] text-on-surface-variant uppercase tracking-widest">ElevenLabs V3</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="border border-outline-variant px-3 py-1 flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary-fixed text-sm">bolt</span>
+      <span class="font-label-caps text-[11px]" id="gns-balance">0 GNS</span>
+    </div>
+    <a href="voice.html" class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary-fixed transition-colors uppercase">Neural Voice →</a>
+    <a href="voice-clone.html" class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary-fixed transition-colors uppercase">Voice Clone →</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="px-6 py-8 border-b border-outline-variant">
+  <h1 class="font-headline-lg text-headline-lg text-primary-fixed mb-2">ELEVENLABS V3</h1>
+  <p class="font-body-sm text-on-surface-variant max-w-2xl">High-naturalness text-to-speech with human-like intonation. Multi-language. Customizable tone and realism. $0.10 per 1,000 characters.</p>
+</div>
+
+<!-- MAIN -->
+<main class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- LEFT: Voice Library -->
+  <div class="lg:col-span-1">
+    <h3 class="font-label-caps text-[11px] text-on-surface-variant mb-4 uppercase tracking-widest">Voice Library</h3>
+    
+    <!-- Search -->
+    <div class="relative mb-4">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+      <input type="text" id="voice-search" placeholder="Search voices..."
+        class="w-full bg-black border border-outline pl-9 pr-3 py-2 font-body-sm text-on-surface focus:outline-none focus:border-primary-fixed text-sm"/>
+    </div>
+
+    <!-- Filter -->
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <button class="filter-btn active font-label-caps text-[10px] px-2 py-1 border border-primary-fixed text-primary-fixed" data-filter="all">ALL</button>
+      <button class="filter-btn font-label-caps text-[10px] px-2 py-1 border border-outline text-on-surface-variant hover:border-primary-fixed" data-filter="male">MALE</button>
+      <button class="filter-btn font-label-caps text-[10px] px-2 py-1 border border-outline text-on-surface-variant hover:border-primary-fixed" data-filter="female">FEMALE</button>
+      <button class="filter-btn font-label-caps text-[10px] px-2 py-1 border border-outline text-on-surface-variant hover:border-primary-fixed" data-filter="narration">NARRATION</button>
+    </div>
+
+    <!-- Voice Cards -->
+    <div class="space-y-2 max-h-[500px] overflow-y-auto pr-1" id="voice-list"></div>
+  </div>
+
+  <!-- RIGHT: Controls + Generate -->
+  <div class="lg:col-span-2 space-y-6">
+
+    <!-- Text Input -->
+    <div>
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="font-label-caps text-[11px] text-on-surface-variant uppercase tracking-widest">Text Input</h3>
+        <span class="font-label-caps text-[10px] text-on-surface-variant"><span id="char-count">0</span> chars — <span id="cost-display">0</span> GNS</span>
+      </div>
+      <textarea id="text-input" rows="7"
+        class="w-full bg-black border border-outline p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary-fixed resize-none"
+        placeholder="Enter text to convert to speech..."></textarea>
+
+      <!-- Presets -->
+      <div class="flex gap-2 mt-2 flex-wrap">
+        <button onclick="setPreset('narration')" class="font-label-caps text-[10px] px-2 py-1 border border-outline text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed transition-colors">NARRATION</button>
+        <button onclick="setPreset('dialogue')" class="font-label-caps text-[10px] px-2 py-1 border border-outline text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed transition-colors">DIALOGUE</button>
+        <button onclick="setPreset('promo')" class="font-label-caps text-[10px] px-2 py-1 border border-outline text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed transition-colors">PROMO</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Language -->
+      <div>
+        <label class="font-label-caps text-[10px] text-on-surface-variant block mb-2">LANGUAGE</label>
+        <select id="language-select" class="w-full bg-black border border-outline p-2 font-body-sm text-on-surface focus:outline-none focus:border-primary-fixed text-sm">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="it">Italian</option>
+          <option value="pt">Portuguese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="zh">Chinese</option>
+          <option value="ar">Arabic</option>
+          <option value="ru">Russian</option>
+        </select>
+      </div>
+
+      <!-- Stability -->
+      <div>
+        <label class="font-label-caps text-[10px] text-on-surface-variant block mb-2">STABILITY — <span id="stability-val">50</span>%</label>
+        <input type="range" min="0" max="100" value="50" id="stability-slider" class="w-full mt-3"/>
+      </div>
+
+      <!-- Similarity -->
+      <div>
+        <label class="font-label-caps text-[10px] text-on-surface-variant block mb-2">SIMILARITY — <span id="similarity-val">75</span>%</label>
+        <input type="range" min="0" max="100" value="75" id="similarity-slider" class="w-full mt-3"/>
+      </div>
+    </div>
+
+    <!-- Generate -->
+    <button id="generate-btn" onclick="startGenerate()"
+      class="w-full py-4 bg-primary-fixed text-on-primary font-headline-sm text-sm uppercase tracking-widest hover:bg-primary-fixed-dim transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined">graphic_eq</span>
+      GENERATE VOICE
+    </button>
+
+    <!-- Audio Player -->
+    <div id="audio-player" class="hidden bg-surface-container border border-primary-fixed p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary-fixed">audio_file</span>
+          <span class="font-terminal-log text-primary-fixed text-sm" id="audio-filename">OUTPUT.MP3</span>
+        </div>
+        <button id="dl-btn" class="border border-outline-variant px-3 py-1 font-label-caps text-[10px] hover:border-primary-fixed hover:text-primary-fixed transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">download</span>SAVE
+        </button>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="play-btn" class="material-symbols-outlined text-primary-fixed text-3xl">play_circle</button>
+        <div class="flex-1 bg-outline h-1 relative">
+          <div class="bg-primary-fixed h-full transition-all" id="progress-bar" style="width:0%"></div>
+        </div>
+        <span class="font-terminal-log text-[11px] text-on-surface-variant" id="time-display">0:00</span>
+      </div>
+      <audio id="audio-el" class="hidden"></audio>
+    </div>
+
+    <!-- Log -->
+    <div class="bg-black border border-outline-variant p-4">
+      <div class="font-label-caps text-[10px] text-on-surface-variant mb-2 flex items-center gap-2">
+        <span class="w-2 h-2 bg-primary-fixed rounded-full animate-pulse"></span>
+        SYNTHESIS LOG
+      </div>
+      <div id="terminal-log" class="font-terminal-log text-[11px] text-primary-fixed space-y-1 h-20 overflow-y-auto">
+        <div class="opacity-50">[SYSTEM] ElevenLabs V3 Engine Ready</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// Voices from ElevenLabs library
+var VOICES = [
+  {id:'JBFqnCBsd6RMkjVDRZzb', name:'George',    gender:'male',   style:'narration', desc:'Deep / Authoritative'},
+  {id:'TX3LPaxmHKxFdv7VOQHJ', name:'Liam',      gender:'male',   style:'narration', desc:'Clear / Professional'},
+  {id:'pFZP5JQG7iQjIQuC4Bku', name:'Lily',      gender:'female', style:'narration', desc:'Warm / British'},
+  {id:'XB0fDUnXU5powFXDhCwa', name:'Charlotte', gender:'female', style:'narration', desc:'Swedish / Seductive'},
+  {id:'Xb7hH8MSUJpSbSDYk0k2', name:'Alice',     gender:'female', style:'narration', desc:'Confident / British'},
+  {id:'pNInz6obpgDQGcFmaJgB', name:'Adam',      gender:'male',   style:'narration', desc:'Deep / American'},
+  {id:'N2lVS1w4EtoT3dr4eOWO', name:'Callum',    gender:'male',   style:'narration', desc:'Intense / Transatlantic'},
+  {id:'IKne3meq5aSn9XLyUdCD', name:'Charlie',   gender:'male',   style:'narration', desc:'Casual / Australian'},
+  {id:'XrExE9yKIg1WjnnlVkGX', name:'Matilda',   gender:'female', style:'narration', desc:'Warm / American'},
+  {id:'ErXwobaYiN019PkySvjV', name:'Antoni',    gender:'male',   style:'narration', desc:'Well-rounded'},
+  {id:'VR6AewLTigWG4xSOukaG', name:'Arnold',    gender:'male',   style:'narration', desc:'Crisp / Confident'},
+  {id:'MF3mGyEYCl7XYWbV9V6O', name:'Elli',      gender:'female', style:'narration', desc:'Emotional / Young'},
+  {id:'TxGEqnHWrfWFTfGW9XjX', name:'Josh',      gender:'male',   style:'narration', desc:'Deep / American'},
+  {id:'ThT5KcBeYPX3keUQqHPh', name:'Dorothy',   gender:'female', style:'narration', desc:'Pleasant / British'},
+  {id:'AZnzlk1XvdvUeBnXmlld', name:'Domi',      gender:'female', style:'narration', desc:'Strong / Confident'},
+  {id:'GBv7mTt0atIp3Br8iCZE', name:'Thomas',    gender:'male',   style:'narration', desc:'Calm / French'},
+  {id:'oWAxZDx7w5VEj9dCyTzz', name:'Grace',     gender:'female', style:'narration', desc:'Gentle / Southern'},
+  {id:'SOYHLrjzK2X1ezoPC6cr', name:'Harry',     gender:'male',   style:'narration', desc:'Anxious / Young'},
+];
+
+var selectedVoiceId = 'JBFqnCBsd6RMkjVDRZzb';
+var currentBlobUrl = null;
+var audioEl = document.getElementById('audio-el');
+
+// Balance
+document.getElementById('gns-balance').textContent = (parseInt(localStorage.getItem('md_credits')||'0')).toLocaleString() + ' GNS';
+
+// Build voice list
+function buildVoiceList(filter, search) {
+  var list = document.getElementById('voice-list');
+  list.innerHTML = '';
+  VOICES.filter(function(v) {
+    var matchFilter = filter === 'all' || v.gender === filter || v.style === filter;
+    var matchSearch = !search || v.name.toLowerCase().includes(search.toLowerCase()) || v.desc.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
+  }).forEach(function(v) {
+    var card = document.createElement('div');
+    card.className = 'voice-card border border-outline p-3 flex items-center justify-between' + (v.id === selectedVoiceId ? ' selected' : '');
+    card.innerHTML =
+      '<div>' +
+      '<p class="font-headline-sm text-sm ' + (v.id === selectedVoiceId ? 'text-primary-fixed' : 'text-on-surface') + '">' + v.name + '</p>' +
+      '<p class="font-label-caps text-[9px] text-on-surface-variant mt-0.5">' + v.desc + '</p>' +
+      '</div>' +
+      '<div class="flex items-center gap-2">' +
+      '<span class="font-label-caps text-[9px] px-1.5 py-0.5 border ' + (v.gender === 'male' ? 'border-blue-800 text-blue-400' : 'border-pink-800 text-pink-400') + '">' + v.gender.toUpperCase() + '</span>' +
+      '<button class="preview-voice material-symbols-outlined text-on-surface-variant hover:text-primary-fixed text-sm transition-colors" data-id="' + v.id + '" data-name="' + v.name + '">play_circle</button>' +
+      '</div>';
+    card.addEventListener('click', function(e) {
+      if (e.target.classList.contains('preview-voice')) return;
+      selectedVoiceId = v.id;
+      buildVoiceList(currentFilter, document.getElementById('voice-search').value);
+      addLog('VOICE: ' + v.name + ' SELECTED');
+    });
+    card.querySelector('.preview-voice').addEventListener('click', function(e) {
+      e.stopPropagation();
+      previewVoice(v.id, v.name);
+    });
+    list.appendChild(card);
+  });
+}
+
+var currentFilter = 'all';
+document.querySelectorAll('.filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(function(b) {
+      b.classList.remove('active', 'border-primary-fixed', 'text-primary-fixed');
+      b.classList.add('border-outline', 'text-on-surface-variant');
+    });
+    btn.classList.add('active', 'border-primary-fixed', 'text-primary-fixed');
+    btn.classList.remove('border-outline', 'text-on-surface-variant');
+    currentFilter = btn.dataset.filter;
+    buildVoiceList(currentFilter, document.getElementById('voice-search').value);
+  });
+});
+
+document.getElementById('voice-search').addEventListener('input', function() {
+  buildVoiceList(currentFilter, this.value);
+});
+
+buildVoiceList('all', '');
+
+// Sliders
+document.getElementById('stability-slider').addEventListener('input', function() {
+  document.getElementById('stability-val').textContent = this.value;
+});
+document.getElementById('similarity-slider').addEventListener('input', function() {
+  document.getElementById('similarity-val').textContent = this.value;
+});
+
+// Char count + cost
+document.getElementById('text-input').addEventListener('input', function() {
+  var len = this.value.length;
+  document.getElementById('char-count').textContent = len;
+  var cost = Math.max(1, Math.ceil(len / 1000));
+  document.getElementById('cost-display').textContent = cost;
+});
+
+// Presets
+function setPreset(type) {
+  var presets = {
+    narration: 'In a world where imagination has no boundaries, one platform dares to dream bigger. MercaDream — where your words become worlds. Generate, create, and own your vision.',
+    dialogue: 'DIRECTOR: What is your vision?\nCREATOR: A story without limits. A dream without boundaries.\nDIRECTOR: Then let us begin. This is MercaDream.',
+    promo: 'Introducing MercaDream — the world\'s first AI-powered film production studio. Write your story. Choose your director. Generate cinematic scenes in seconds. Start free today.'
+  };
+  document.getElementById('text-input').value = presets[type] || '';
+  var len = (presets[type]||'').length;
+  document.getElementById('char-count').textContent = len;
+  document.getElementById('cost-display').textContent = Math.max(1, Math.ceil(len / 1000));
+}
+
+async function previewVoice(voiceId, name) {
+  addLog('PREVIEW: ' + name + '...');
+  try {
+    var res = await fetch('/api/elevenlabs', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ text: 'Hello, I am ' + name + '. MercaDream neural voice engine.', voice_id: voiceId, language: 'en' })
+    });
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error || 'No task ID');
+    for (var i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      var pr = await fetch('/api/video?id=' + data.taskId);
+      var pd = await pr.json();
+      if (pd.status === 'completed' && pd.videoUrl) {
+        var blob = await (await fetch(pd.videoUrl)).blob();
+        new Audio(URL.createObjectURL(blob)).play();
+        addLog('PREVIEW OK: ' + name);
+        return;
+      }
+      if (pd.status === 'failed') throw new Error('failed');
+    }
+  } catch(e) { addLog('PREVIEW ERROR: ' + e.message); }
+}
+
+async function startGenerate() {
+  var text = document.getElementById('text-input').value.trim();
+  if (!text) { addLog('ERROR: NO TEXT'); return; }
+
+  var credits = parseInt(localStorage.getItem('md_credits')||'0');
+  var cost = Math.max(1, Math.ceil(text.length / 1000));
+  if (credits < cost) { addLog('ERROR: INSUFFICIENT GNS (' + cost + ' needed)'); return; }
+
+  var btn = document.getElementById('generate-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> SYNTHESIZING...';
+  btn.disabled = true;
+
+  addLog('ELEVENLABS: GENERATING...');
+
+  try {
+    var res = await fetch('/api/elevenlabs', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        text: text,
+        voice_id: selectedVoiceId,
+        language: document.getElementById('language-select').value,
+        stability: parseFloat(document.getElementById('stability-slider').value) / 100,
+        similarity: parseFloat(document.getElementById('similarity-slider').value) / 100
+      })
+    });
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error || 'No task ID');
+    addLog('JOB: ' + data.taskId);
+
+    // Deduct credits
+    credits -= cost;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits + ' GNS';
+
+    for (var i = 0; i < 60; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      var pr = await fetch('/api/video?id=' + data.taskId);
+      var pd = await pr.json();
+      addLog('POLL ' + (i+1) + ': ' + (pd.status||'').toUpperCase());
+      if (pd.status === 'completed' && pd.videoUrl) {
+        var blob = await (await fetch(pd.videoUrl)).blob();
+        currentBlobUrl = URL.createObjectURL(blob);
+        showPlayer();
+        addLog('COMPLETE — PLAYING');
+        break;
+      }
+      if (pd.status === 'failed') throw new Error('Generation failed');
+    }
+  } catch(e) {
+    addLog('ERROR: ' + e.message);
+    credits += cost;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits + ' GNS';
+  } finally {
+    btn.innerHTML = '<span class="material-symbols-outlined">graphic_eq</span> GENERATE VOICE';
+    btn.disabled = false;
+  }
+}
+
+function showPlayer() {
+  var player = document.getElementById('audio-player');
+  player.classList.remove('hidden');
+  audioEl.src = currentBlobUrl;
+  audioEl.play();
+  document.getElementById('play-btn').textContent = 'pause_circle';
+  document.getElementById('audio-filename').textContent = 'ELEVENLABS_' + Date.now() + '.MP3';
+  player.scrollIntoView({behavior:'smooth'});
+}
+
+document.getElementById('play-btn').addEventListener('click', function() {
+  if (audioEl.paused) { audioEl.play(); this.textContent = 'pause_circle'; }
+  else { audioEl.pause(); this.textContent = 'play_circle'; }
+});
+audioEl.addEventListener('ended', function() { document.getElementById('play-btn').textContent = 'play_circle'; });
+audioEl.addEventListener('timeupdate', function() {
+  if (audioEl.duration) {
+    document.getElementById('progress-bar').style.width = (audioEl.currentTime/audioEl.duration*100) + '%';
+    var s = Math.floor(audioEl.currentTime);
+    document.getElementById('time-display').textContent = Math.floor(s/60)+':'+('0'+s%60).slice(-2);
+  }
+});
+
+document.getElementById('dl-btn').addEventListener('click', function() {
+  if (!currentBlobUrl) return;
+  var a = document.createElement('a');
+  a.href = currentBlobUrl;
+  a.download = 'MERCADREAM_ELEVENLABS_' + Date.now() + '.mp3';
+  a.click();
+  addLog('DOWNLOAD: SAVED');
+});
+
+function addLog(msg) {
+  var log = document.getElementById('terminal-log');
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  var div = document.createElement('div');
+  div.textContent = '['+t+'] '+msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  while(log.children.length > 10) log.removeChild(log.children[0]);
+}
+</script>
+</body></html>
