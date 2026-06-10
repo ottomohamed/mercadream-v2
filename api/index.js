@@ -1,4 +1,4 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -293,6 +293,21 @@ async function handle_animate(req, res) {
   return res.json({ taskId });
 }
 
+async function handle_i2v(req, res) {
+  const { image, prompt, duration, resolution } = req.body||{};
+  if (!image) return res.status(400).json({ error: 'image required.' });
+  const size = resolution === '720p' ? '1280x720' : '854x480';
+  const d = await wsPost('wavespeed-ai/wan-2.2-spicy/image-to-video', {
+    image: image,
+    prompt: prompt || 'Smooth cinematic motion',
+    duration: duration || 5,
+    size: size
+  });
+  const taskId = d.data?.id;
+  if (!taskId) return res.status(500).json({ error: d?.message || 'No task ID', raw: d });
+  return res.json({ taskId });
+}
+
 async function handle_lipsync(req, res) {
   const { videoUrl, audioUrl } = req.body||{};
   if (!videoUrl||!audioUrl) return res.status(400).json({ error: 'videoUrl and audioUrl required.' });
@@ -553,6 +568,7 @@ module.exports = async function handler(req, res) {
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
+    i2v:         handle_i2v,
   };
 
   const fn = routes[service];

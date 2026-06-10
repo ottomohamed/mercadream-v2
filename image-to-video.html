@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Image-to-Video | Mercadream</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Geist:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#490080",
+                        "surface-container-lowest": "#060e20",
+                        "on-secondary-fixed": "#2c0051",
+                        "surface-tint": "#c0c1ff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "secondary-container": "#6f00be",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "inverse-primary": "#494bd6",
+                        "primary": "#6366f1", // Updated brand color
+                        "on-error": "#690005",
+                        "on-background": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "inverse-on-surface": "#283044",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#c7c4d7",
+                        "outline": "#908fa0",
+                        "outline-variant": "#464554",
+                        "on-primary-container": "#ffffff",
+                        "background": "#0b1326",
+                        "primary-fixed": "#e1e0ff",
+                        "secondary": "#ddb7ff",
+                        "secondary-fixed": "#f0dbff",
+                        "primary-container": "#4f46e5",
+                        "surface-container-low": "#131b2e",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "surface": "#0b1326",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "tertiary": "#4cd7f6",
+                        "on-primary-fixed": "#07006c",
+                        "on-tertiary": "#003640",
+                        "surface-dim": "#0b1326",
+                        "surface-bright": "#31394d",
+                        "error-container": "#93000a",
+                        "surface-container": "#171f33",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#2d3449",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-container-high": "#222a3d",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#009eb9",
+                        "on-surface": "#dae2fd",
+                        "on-tertiary-container": "#002f38",
+                        "on-secondary-container": "#d6a9ff",
+                        "tertiary-fixed": "#acedff",
+                        "inverse-surface": "#dae2fd",
+                        "on-secondary-fixed-variant": "#6900b3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "gutter": "16px",
+                        "stack-sm": "8px",
+                        "container-padding": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "title-md": ["Geist"],
+                        "body-md": ["Geist"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .progress-bar-fill {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center px-container-padding h-16 w-full fixed top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-sm">
+<div class="font-display-lg text-display-lg font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">auto_awesome_motion</span>
+<span class="hidden md:inline">Mercadream</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-title-md text-title-md" href="faceswap.html">Faceswap</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-title-md text-title-md" href="image-to-video.html">Image-to-Video</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-title-md text-title-md" href="#">Gallery</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-primary-container/20 text-primary px-4 py-1.5 rounded-full font-label-sm text-label-sm border border-primary/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">database</span>
+<span id="credits-display">150 GNS</span>
+</div>
+<button class="text-on-surface-variant hover:bg-white/5 p-2 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl">account_circle</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-stack-lg px-container-padding max-w-7xl mx-auto w-full">
+<header class="mb-stack-lg text-center md:text-left">
+<h1 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-primary mb-2">Image-to-Video</h1>
+<p class="text-on-surface-variant max-w-2xl">Breathe life into your static images with high-fidelity cinematic motion synthesis by Mercadream.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Sidebar: Generation Controls -->
+<aside class="lg:col-span-4 space-y-gutter order-2 lg:order-1">
+<div class="glass-panel p-6 rounded-xl space-y-6">
+<!-- Prompt -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                            MOTION PROMPT
+                        </label>
+<textarea class="w-full bg-surface-container-high border-none rounded-lg p-3 text-on-surface focus:ring-2 focus:ring-primary h-32 resize-none placeholder:text-on-surface-variant/50" id="motion-prompt" placeholder="Describe the motion... (e.g. 'Gentle ocean waves crashing against volcanic rocks at sunset, cinematic lighting')"></textarea>
+</div>
+<!-- Quality Toggle -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">RESOLUTION</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="quality-btn py-2 rounded-lg font-label-sm bg-primary text-on-primary border border-primary" data-value="480p">480p</button>
+<button class="quality-btn py-2 rounded-lg font-label-sm bg-surface-container-highest text-on-surface-variant border border-outline-variant hover:border-primary transition-all" data-value="720p">720p</button>
+</div>
+</div>
+<!-- Duration Toggle -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">DURATION</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="duration-btn py-2 rounded-lg font-label-sm bg-primary text-on-primary border border-primary" data-value="3s">3s</button>
+<button class="duration-btn py-2 rounded-lg font-label-sm bg-surface-container-highest text-on-surface-variant border border-outline-variant hover:border-primary transition-all" data-value="5s">5s</button>
+</div>
+</div>
+<!-- Style Select -->
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant">ARTISTIC STYLE</label>
+<select class="w-full bg-surface-container-high border-none rounded-lg p-3 text-on-surface focus:ring-2 focus:ring-primary appearance-none cursor-pointer" id="style-select">
+<option value="realistic">Realistic</option>
+<option value="anime">Anime</option>
+<option value="painterly">Painterly</option>
+<option value="cyberpunk">Cyberpunk</option>
+</select>
+</div>
+<!-- Generate Button -->
+<button class="w-full py-4 bg-gradient-to-r from-primary to-secondary text-on-primary font-bold rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2" id="generate-btn">
+<span class="material-symbols-outlined">bolt</span>
+                        GENERATE (15 GNS)
+                    </button>
+</div>
+</aside>
+<!-- Main Canvas: Upload & Result -->
+<div class="lg:col-span-8 space-y-gutter order-1 lg:order-2">
+<!-- Upload Zone -->
+<div class="glass-panel aspect-video rounded-xl flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer border-dashed border-2 border-outline-variant hover:border-primary transition-colors" id="drop-zone">
+<div class="text-center transition-opacity duration-300" id="upload-placeholder">
+<div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl text-primary">add_photo_alternate</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface mb-1">Upload Source Image</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Drag and drop or click to browse</p>
+<p class="font-label-sm text-label-sm text-outline-variant mt-4">JPG, PNG, WebP (Max 10MB)</p>
+</div>
+<div class="hidden absolute inset-0 w-full h-full" id="preview-container">
+<img alt="Preview" class="w-full h-full object-cover" data-alt="A high-resolution cinematic background plate featuring a breathtaking landscape with dramatic lighting, ready for AI animation. The scene is rendered in an obsidian dark mode aesthetic with deep shadows and soft, ethereal light-emitting accents that create a high-performance creative workspace feel. The image represents the pinnacle of generative AI fidelity and technical precision." id="image-preview" src=""/>
+<div class="absolute top-4 right-4 flex gap-2">
+<button class="p-2 bg-error/90 text-on-error rounded-lg hover:bg-error transition-colors flex items-center justify-center shadow-lg" id="delete-btn">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<input accept="image/*" class="hidden" id="file-input" type="file"/>
+</div>
+<!-- Generation Status / Result -->
+<div class="hidden glass-panel p-8 rounded-xl space-y-6" id="status-container">
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<div>
+<h4 class="font-title-md text-title-md text-primary animate-pulse" id="status-text">INITIALIZING...</h4>
+<p class="text-on-surface-variant text-sm">Processing parameters and allocating Mercadream GPU resources.</p>
+</div>
+<span class="font-label-sm text-label-sm text-primary" id="progress-percent">0%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="progress-bar-fill h-full w-0 bg-gradient-to-r from-primary via-tertiary to-secondary" id="progress-bar"></div>
+</div>
+</div>
+</div>
+<!-- Video Player Container -->
+<div class="hidden glass-panel rounded-xl overflow-hidden shadow-2xl" id="video-result-container">
+<div class="aspect-video bg-black relative">
+<video class="w-full h-full object-contain" controls="" id="result-video">
+                            Your browser does not support the video tag.
+                        </video>
+</div>
+<div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">movie</span>
+</div>
+<div>
+<h5 class="font-title-md text-on-surface">mercadream_gen_772.mp4</h5>
+<p class="text-xs text-on-surface-variant">Generated 3 seconds ago • 720p</p>
+</div>
+</div>
+<div class="flex gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-6 py-2 bg-surface-container-highest text-on-surface-variant font-label-sm rounded-lg hover:text-on-surface hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" id="open-assembly">
+<span class="material-symbols-outlined text-sm">edit</span>
+                                OPEN IN ASSEMBLY
+                            </button>
+<button class="flex-1 md:flex-none px-6 py-2 bg-primary text-on-primary font-label-sm rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-2" id="download-btn">
+<span class="material-symbols-outlined text-sm">download</span>
+                                DOWNLOAD
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-container-padding py-stack-lg w-full bg-surface-container-lowest border-t border-outline-variant mt-auto">
+<div class="font-headline-lg text-headline-lg font-black text-primary mb-4 md:mb-0">
+            Mercadream
+        </div>
+<div class="flex flex-col items-center md:items-end gap-2">
+<div class="flex gap-6 mb-2">
+<a class="text-on-surface-variant hover:text-tertiary transition-colors font-body-md text-body-md" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors font-body-md text-body-md" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors font-body-md text-body-md" href="#">Discord</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors font-body-md text-body-md" href="#">Support</a>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md opacity-60">© 2024 Mercadream. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // --- State Management ---
+        let currentImageBase64 = null;
+        let userCredits = 150;
+        let isGenerating = false;
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('preview-container');
+        const uploadPlaceholder = document.getElementById('upload-placeholder');
+        const imagePreview = document.getElementById('image-preview');
+        const deleteBtn = document.getElementById('delete-btn');
+        const generateBtn = document.getElementById('generate-btn');
+        const statusContainer = document.getElementById('status-container');
+        const progressBar = document.getElementById('progress-bar');
+        const statusText = document.getElementById('status-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const videoResultContainer = document.getElementById('video-result-container');
+        const resultVideo = document.getElementById('result-video');
+        const creditsDisplay = document.getElementById('credits-display');
+
+        // --- Event Listeners ---
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-primary');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-primary'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-primary');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetUpload();
+        });
+
+        // Toggle Buttons Logic
+        const setupToggles = (className) => {
+            const btns = document.querySelectorAll(`.${className}`);
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btns.forEach(b => {
+                        b.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+                        b.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant');
+                    });
+                    btn.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+                    btn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border-outline-variant');
+                });
+            });
+        };
+        setupToggles('quality-btn');
+        setupToggles('duration-btn');
+
+        // --- Core Functions ---
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImageBase64 = e.target.result;
+                imagePreview.src = currentImageBase64;
+                uploadPlaceholder.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetUpload() {
+            currentImageBase64 = null;
+            fileInput.value = '';
+            uploadPlaceholder.classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+        }
+
+        async function startGeneration() {
+            if (isGenerating) return;
+            if (!currentImageBase64) {
+                alert('Please upload an image first.');
+                return;
+            }
+            if (userCredits < 15) {
+                alert('Insufficient credits.');
+                return;
+            }
+
+            // Deduct credits UI
+            userCredits -= 15;
+            creditsDisplay.textContent = `${userCredits} GNS`;
+            
+            isGenerating = true;
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            statusContainer.classList.remove('hidden');
+            videoResultContainer.classList.add('hidden');
+            updateProgress(10, 'INITIALIZING...');
+
+            // Real WaveSpeed API
+            try {
+                const quality = document.querySelector('.quality-btn.bg-primary')?.dataset.value || '480p';
+                const duration = parseInt(document.querySelector('.duration-btn.bg-primary')?.dataset.value) || 3;
+                const prompt = document.getElementById('motion-prompt').value || 'cinematic motion';
+                const style = document.getElementById('style-select').value;
+
+                updateProgress(20, 'SENDING TO WAVESPEED...');
+                const res = await fetch('/api/i2v', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image: currentImageBase64,
+                        prompt: `${prompt}, ${style} style`,
+                        duration: duration,
+                        resolution: quality
+                    })
+                });
+                const data = await res.json();
+                if (!data.taskId) throw new Error(data.error || 'No task ID');
+
+                updateProgress(40, 'RENDERING IN PROGRESS...');
+                let attempts = 0;
+                const poll = setInterval(async () => {
+                    attempts++;
+                    if (attempts > 80) {
+                        clearInterval(poll);
+                        userCredits += 15;
+                        creditsDisplay.textContent = `${userCredits} GNS`;
+                        alert('Generation timed out. Credits refunded.');
+                        resetState();
+                        return;
+                    }
+                    try {
+                        const pr = await fetch('/api/video?id=' + data.taskId);
+                        const pd = await pr.json();
+                        const pct = Math.min(40 + attempts * 2, 95);
+                        updateProgress(pct, 'POLL ' + attempts + ': ' + (pd.status || '').toUpperCase());
+                        if (pd.status === 'completed' && pd.videoUrl) {
+                            clearInterval(poll);
+                            finishGeneration(pd.videoUrl);
+                        } else if (pd.status === 'failed') {
+                            clearInterval(poll);
+                            throw new Error('Generation failed');
+                        }
+                    } catch(pe) {
+                        clearInterval(poll);
+                        userCredits += 15;
+                        creditsDisplay.textContent = `${userCredits} GNS`;
+                        alert('Error: ' + pe.message + '. Credits refunded.');
+                        resetState();
+                    }
+                }, 5000);
+            } catch (error) {
+                userCredits += 15;
+                creditsDisplay.textContent = `${userCredits} GNS`;
+                alert('Generation failed: ' + error.message + '. Credits refunded.');
+                resetState();
+            }
+        }
+
+        function updateProgress(value, text) {
+            progressBar.style.width = `${value}%`;
+            progressPercent.textContent = `${value}%`;
+            statusText.textContent = text;
+        }
+
+        function finishGeneration(videoUrl) {
+            updateProgress(100, 'COMPLETE');
+            statusContainer.classList.add('hidden');
+            videoResultContainer.classList.remove('hidden');
+            resultVideo.src = videoUrl;
+            isGenerating = false;
+            generateBtn.disabled = false;
+            generateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Save to Firebase
+            try {
+                const uid = localStorage.getItem('md_user_id');
+                if (uid && typeof firebase !== 'undefined') {
+                    firebase.firestore().collection('users').doc(uid)
+                        .collection('videos').add({
+                            videoUrl: videoUrl,
+                            type: 'image-to-video',
+                            createdAt: new Date().toISOString()
+                        });
+                    firebase.firestore().collection('users').doc(uid)
+                        .update({ renders: firebase.firestore.FieldValue.increment(1) });
+                }
+            } catch(fe) { console.warn('Firestore save failed:', fe); }
+
+            // Download button
+            const dlBtn = document.getElementById('download-btn');
+            if (dlBtn) {
+                dlBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = videoUrl;
+                    a.download = 'mercadream_i2v_' + Date.now() + '.mp4';
+                    a.click();
+                };
+            }
+
+            // Open in Assembly
+            const asmBtn = document.getElementById('open-assembly');
+            if (asmBtn) {
+                asmBtn.onclick = () => {
+                    localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
+                        url: videoUrl, name: 'i2v_' + Date.now() + '.mp4', type: 'video', duration: 5
+                    }));
+                    window.location.href = 'assembly.html';
+                };
+            }
+        }
+
+        function resetState() {
+            isGenerating = false;
+            generateBtn.disabled = false;
+            generateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            statusContainer.classList.add('hidden');
+            updateProgress(0, '');
+        }
+
+        generateBtn.addEventListener('click', startGeneration);
+
+        // Micro-interactions for glass panels
+        document.querySelectorAll('.glass-panel').forEach(panel => {
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                panel.style.setProperty('--mouse-x', `${x}px`);
+                panel.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+        authDomain: "mercadream-4b4b3.firebaseapp.com",
+        projectId: "mercadream-4b4b3",
+        storageBucket: "mercadream-4b4b3.firebasestorage.app",
+        messagingSenderId: "257560928442",
+        appId: "1:257560928442:web:06983f27629a13eeed6283"
+    });
+}
+// Sync credits from Firebase
+firebase.auth && firebase.auth().onAuthStateChanged && firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) return;
+    localStorage.setItem('md_user_id', user.uid);
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+        if (!doc.exists) return;
+        userCredits = doc.data().credits || 0;
+        localStorage.setItem('md_credits', userCredits);
+        creditsDisplay.textContent = userCredits + ' GNS';
+    });
+});
+</script>
+</body></html>
