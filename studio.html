@@ -232,6 +232,15 @@
 </div>
 <div class="absolute top-2 right-2 w-2 h-2 bg-primary-fixed-dim shadow-[0_0_8px_#c8ff00]"></div>
 </div>
+<div class="px-sm pt-sm">
+<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest uppercase">Video Engine</div>
+<div class="flex gap-xs">
+<button class="model-btn flex-1 py-1 text-[9px] font-label-technical border border-primary-fixed-dim text-primary-fixed-dim bg-primary-fixed-dim/10 transition-all" data-model="bytedance/seedance-2.0-fast/text-to-video" data-cost="15" onclick="setModel(this)">SEEDANCE</button>
+<button class="model-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-model="alibaba/wan-2.5/image-to-video" data-cost="25" onclick="setModel(this)">WAN 2.5 </button>
+</div>
+<input id="selected-model" type="hidden" value="bytedance/seedance-2.0-fast/text-to-video"/>
+<input id="model-cost" type="hidden" value="15"/>
+</div>
 </div>
 <div class="mt-auto p-md bg-surface-container border-t border-outline-variant">
 <h3 class="font-label-technical text-[10px] text-on-surface-variant mb-sm uppercase">Command Library</h3>
