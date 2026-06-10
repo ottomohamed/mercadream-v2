@@ -1,731 +1,406 @@
-﻿<html class="dark" lang="en"><head>
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MercaDream | AI FILM STUDIO - Surgical Precision Portal</title>
-<meta content="MercaDream is the world's first AI-powered film production platform. Create professional cinematic videos using AI directors." name="description"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Orbitron:wght@400;700;900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>MercaDream | AI FILM STUDIO</title>
+<meta content="MercaDream is the world's first AI-powered film production platform." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                "primary-container": "#c0f500",
-                "on-secondary-fixed": "#1c1b1b",
-                "surface-container-highest": "#353534",
-                "on-tertiary": "#303030",
-                "secondary": "#c8c6c5",
-                "on-surface-variant": "#c4caac",
-                "on-secondary-fixed-variant": "#474746",
-                "inverse-surface": "#e5e2e1",
-                "error": "#ffb4ab",
-                "primary-fixed-dim": "#a8d700",
-                "on-tertiary-fixed-variant": "#474747",
-                "on-background": "#e5e2e1",
-                "on-tertiary-fixed": "#1b1c1c",
-                "tertiary-container": "#e4e2e1",
-                "secondary-container": "#474746",
-                "on-surface": "#e5e2e1",
-                "inverse-on-surface": "#313030",
-                "surface-container-lowest": "#0e0e0e",
-                "on-tertiary-container": "#656464",
-                "on-primary-fixed": "#161f00",
-                "surface-tint": "#a8d700",
-                "inverse-primary": "#4f6600",
-                "tertiary-fixed-dim": "#c8c6c6",
-                "surface-dim": "#131313",
-                "on-error-container": "#ffdad6",
-                "on-secondary": "#313030",
-                "surface-container-high": "#2a2a2a",
-                "surface-bright": "#3a3939",
-                "background": "#131313",
-                "surface": "#131313",
-                "on-primary-container": "#546d00",
-                "on-error": "#690005",
-                "surface-container": "#201f1f",
-                "on-primary": "#273500",
-                "error-container": "#93000a",
-                "tertiary": "#ffffff",
-                "on-secondary-container": "#b7b5b4",
-                "outline": "#8e9479",
-                "secondary-fixed": "#e5e2e1",
-                "on-primary-fixed-variant": "#3b4d00",
-                "surface-variant": "#353534",
-                "tertiary-fixed": "#e4e2e1",
-                "secondary-fixed-dim": "#c8c6c5",
-                "surface-container-low": "#1c1b1b",
-                "outline-variant": "#434933",
-                "primary-fixed": "#c0f500",
-                "primary": "#ffffff",
-                "neon-acid": "#c8ff00"
-            },
-            "borderRadius": {
-                "DEFAULT": "0px",
-                "lg": "0px",
-                "xl": "0px",
-                "full": "9999px"
-            },
-            "spacing": {
-                "margin-mobile": "20px",
-                "margin-desktop": "40px",
-                "unit": "8px",
-                "grid-cols": "12",
-                "gutter": "16px"
-            },
-            "fontFamily": {
-                "technical": ["JetBrains Mono"],
-                "headline": ["Orbitron"],
-                "body": ["Sora"]
-            }
-          },
-        },
-      }
-    </script>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{colors:{
+  "surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b",
+  "surface-container":"#201f1f","surface-container-high":"#2a2a2a",
+  "on-surface":"#e5e2e1","on-surface-variant":"#c4caac",
+  "outline-variant":"#434933","outline":"#8e9479",
+  "background":"#131313","surface":"#131313",
+  "primary":"#ffffff","neon-acid":"#c8ff00",
+  "primary-fixed":"#c0f500","primary-fixed-dim":"#a8d700","on-primary":"#273500"
+},borderRadius:{"DEFAULT":"0px","full":"9999px"},
+spacing:{"margin-mobile":"20px","margin-desktop":"40px","unit":"8px","gutter":"16px"},
+fontFamily:{"technical":["JetBrains Mono"],"headline":["Orbitron"],"body":["Sora"]}}}}
+</script>
 <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .scanning-line {
-            width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, #c8ff00, transparent);
-            opacity: 0.2; position: absolute; top: 0; left: 0;
-            pointer-events: none; animation: scan 8s linear infinite;
-        }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        .micro-grid {
-            background-image: linear-gradient(rgba(200, 255, 0, 0.05) 1px, transparent 1px), 
-                              linear-gradient(90deg, rgba(200, 255, 0, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-        .corner-accent { position: absolute; width: 10px; height: 10px; border-color: #c8ff00; }
-        .ca-tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; }
-        .ca-tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; }
-        .ca-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
-        .ca-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
-        
-        .service-card-bg {
-            background-size: cover;
-            background-position: center;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .service-card:hover .service-card-bg {
-            transform: scale(1.1);
-        }
-        .service-card:hover .service-overlay {
-            background: rgba(0, 0, 0, 0.3);
-        }
-        .service-card:hover .neon-glow {
-            text-shadow: 0 0 10px #c8ff00, 0 0 20px #c8ff00;
-        }
-    </style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.scanning-line{width:100%;height:2px;background:linear-gradient(90deg,transparent,#c8ff00,transparent);opacity:.2;position:absolute;top:0;left:0;pointer-events:none;animation:scan 8s linear infinite}
+@keyframes scan{0%{top:0}100%{top:100%}}
+.micro-grid{background-image:linear-gradient(rgba(200,255,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,.05) 1px,transparent 1px);background-size:30px 30px}
+.corner-accent{position:absolute;width:10px;height:10px;border-color:#c8ff00}
+.ca-tl{top:0;left:0;border-top:2px solid;border-left:2px solid}
+.service-card-bg{background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.service-card:hover .service-card-bg{transform:scale(1.1)}
+.service-card:hover .service-overlay{background:rgba(0,0,0,.3)}
+.service-card:hover .neon-glow{text-shadow:0 0 10px #c8ff00,0 0 20px #c8ff00}
+</style>
 </head>
 <body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden">
-<nav class="fixed top-0 w-full z-[100] bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/30 h-20 flex items-center px-margin-mobile md:px-4 md:px-margin-desktop justify-between" id="main-nav">
+
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-[100] bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/30 h-20 flex items-center px-margin-mobile md:px-margin-desktop justify-between" id="main-nav">
 <div class="flex items-center gap-4">
-<div class="font-headline text-xl md:text-2xl tracking-[0.2em] text-white font-black uppercase">MercaDream</div>
-<div class="hidden lg:block h-6 w-px bg-outline-variant/30 mx-2"></div>
-<div class="hidden lg:block font-technical text-[10px] text-neon-acid tracking-widest opacity-70 uppercase">AI Film Studio // v1.0.4</div>
+  <div class="font-headline text-xl md:text-2xl tracking-[0.2em] text-white font-black uppercase cursor-pointer" onclick="window.location.href='index.html'">MercaDream</div>
+  <div class="hidden lg:block font-technical text-[10px] text-neon-acid tracking-widest opacity-70 uppercase ml-4">AI Film Studio // v1.0.5</div>
 </div>
 <div class="hidden md:flex items-center gap-8">
-<a class="font-technical text-xs uppercase tracking-widest text-neon-acid" href="index.html">01_Portal</a>
-<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">02_Studio</a>
-<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">03_Studio</a>
-<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="profile.html">04_Profile</a>
-<a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="pricing.html">05_Pricing</a>
-<div class="relative">
-<button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1" id="more-menu-trigger">MORE ▾</button>
-<div class="absolute top-full right-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-40 hidden z-50 shadow-2xl" id="more-menu-dropdown">
-<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="assembly.html">Assembly</a>
-<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="stockreel.html">Stock Reel</a>
-<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="faceswap.html">Face Swap</a>
-<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="lipsync.html">Lip Sync</a>
-<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="upscale.html">Upscaler</a>
-<a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3" href="pricing.html">Pricing</a>
+  <a class="font-technical text-xs uppercase tracking-widest text-neon-acid" href="index.html">01_Portal</a>
+  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">02_Studio</a>
+  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="assembly.html">03_Assembly</a>
+  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="profile.html">04_Profile</a>
+  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="pricing.html">05_Pricing</a>
+  <div class="relative">
+    <button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1" id="more-menu-trigger">MORE ▾</button>
+    <div class="absolute top-full right-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-40 hidden z-50 shadow-2xl" id="more-menu-dropdown">
+      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="stockreel.html">Stock Reel</a>
+      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="faceswap.html">Face Swap</a>
+      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="lipsync.html">Lip Sync</a>
+      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="upscale.html">Upscaler</a>
+      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="lab-index.html">Secret Lab</a>
+      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3" href="api.html">API Docs</a>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-<div class="flex items-center gap-4 md:gap-6">
-<div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5 group hover:border-neon-acid transition-colors" id="credit-display">
-<span class="material-symbols-outlined text-sm text-neon-acid">bolt</span>
-<span class="text-neon-acid font-bold" id="user-credits">0.00 GNS</span>
-</div>
-<div class="flex items-center gap-3">
-<button class="px-5 py-2 border border-white text-[10px] font-technical uppercase tracking-tighter hover:bg-white hover:text-black transition-all" id="nav-auth-btn">LOG IN</button>
-<button class="px-5 py-2 bg-neon-acid text-black text-[10px] font-technical font-bold uppercase tracking-tighter hover:bg-white transition-all" id="nav-action-btn" onclick="window.location.href='register.html'">INITIALIZE ACCESS</button>
-</div>
+<div class="flex items-center gap-4">
+  <div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5">
+    <span class="material-symbols-outlined text-sm text-neon-acid">bolt</span>
+    <span class="text-neon-acid font-bold" id="user-credits">0 GNS</span>
+  </div>
+  <button class="px-5 py-2 border border-white text-[10px] font-technical uppercase hover:bg-white hover:text-black transition-all" id="nav-auth-btn">LOG IN</button>
+  <button class="px-5 py-2 bg-neon-acid text-black text-[10px] font-technical font-bold uppercase hover:bg-white transition-all" id="nav-action-btn" onclick="window.location.href='register.html'">START FREE</button>
 </div>
 </nav>
+
 <main class="pt-20">
-<!-- Hero Section -->
+<!-- HERO -->
 <section class="relative h-[calc(100vh-80px)] w-full overflow-hidden">
 <div class="absolute inset-0 z-0">
-<video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60"
-  onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='block';">
-  <source src="media/hero3.mp4" type="video/mp4"/>
-  <source src="media/hero2.mp4" type="video/mp4"/>
-  <source src="media/hero1.mp4" type="video/mp4"/>
-</video>
-<div id="hero-fallback" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#040404 0%,#0a0a0a 50%,#040404 100%);"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/30"></div>
-<div class="scanning-line"></div>
+  <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60" onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'">
+    <source src="media/hero3.mp4" type="video/mp4"/>
+    <source src="media/hero2.mp4" type="video/mp4"/>
+    <source src="media/hero1.mp4" type="video/mp4"/>
+  </video>
+  <div id="hero-fallback" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#040404,#0a0a0a,#040404)"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/30"></div>
+  <div class="scanning-line"></div>
 </div>
-<div class="relative z-20 h-full w-full px-margin-mobile md:px-4 md:px-margin-desktop py-12 flex flex-col justify-between">
-<div class="max-w-4xl">
-<h1 class="font-headline tracking-tight leading-none text-white text-4xl md:text-7xl lg:text-8xl flex flex-col gap-2">
-<span class="block">MERCADREAM</span>
-<span class="block text-neon-acid tracking-[0.2em] opacity-80 text-xl md:text-3xl lg:text-4xl">AI FILM STUDIO</span>
-</h1>
-<div class="mt-8 flex items-center gap-4 text-neon-acid/60">
-<div class="w-16 h-px bg-neon-acid/40"></div>
-<span class="font-technical text-xs uppercase tracking-widest">System_Online // Terminal_v04.62</span>
-</div>
-</div>
-<div class="flex flex-col md:flex-row items-end justify-between gap-8 pb-8">
-<div class="max-w-md">
-<p class="font-technical text-xs md:text-sm text-on-surface-variant uppercase tracking-[0.15em] leading-relaxed border-l-2 border-neon-acid/40 pl-6">
-                        Autonomous cinematic generation.<br/>
-                        Neural direction.<br/>
-                        Real-time dream extraction via surgical AI precision.
-                    </p>
-</div>
-<div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-<button class="px-12 py-6 bg-neon-acid text-black font-headline font-bold text-lg uppercase group relative overflow-hidden transition-all hover:pr-16" id="hero-primary-cta" onclick="window.location.href='register.html'">
-<span class="relative z-10">INITIALIZE ACCESS</span>
-<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">arrow_forward</span>
-<div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-0"></div>
-</button>
-<button class="px-12 py-6 border border-outline/50 text-white font-headline font-bold text-lg uppercase hover:border-neon-acid hover:text-neon-acid transition-all backdrop-blur-md bg-black/20">
-                        VIEW SYSTEM_INTEL
-                    </button>
-</div>
-</div>
+<div class="relative z-20 h-full w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col justify-between">
+  <div class="max-w-4xl">
+    <h1 class="font-headline tracking-tight leading-none text-white text-4xl md:text-7xl lg:text-8xl flex flex-col gap-2">
+      <span class="block">MERCADREAM</span>
+      <span class="block text-neon-acid tracking-[0.2em] opacity-80 text-xl md:text-3xl lg:text-4xl">AI FILM STUDIO</span>
+    </h1>
+    <div class="mt-8 flex items-center gap-4 text-neon-acid/60">
+      <div class="w-16 h-px bg-neon-acid/40"></div>
+      <span class="font-technical text-xs uppercase tracking-widest">System_Online // v1.0.5</span>
+    </div>
+  </div>
+  <div class="flex flex-col md:flex-row items-end justify-between gap-8 pb-8">
+    <div class="max-w-md">
+      <p class="font-technical text-xs md:text-sm text-on-surface-variant uppercase tracking-[0.15em] leading-relaxed border-l-2 border-neon-acid/40 pl-6">
+        Autonomous cinematic generation.<br/>Neural direction.<br/>Real-time dream extraction.
+      </p>
+    </div>
+    <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+      <button class="px-12 py-6 bg-neon-acid text-black font-headline font-bold text-lg uppercase group relative overflow-hidden transition-all hover:pr-16" id="hero-primary-cta" onclick="window.location.href='register.html'">
+        <span class="relative z-10">START FREE</span>
+        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">arrow_forward</span>
+      </button>
+      <button class="px-12 py-6 border border-outline/50 text-white font-headline font-bold text-lg uppercase hover:border-neon-acid hover:text-neon-acid transition-all bg-black/20" onclick="window.location.href='studio.html'">
+        ENTER STUDIO
+      </button>
+    </div>
+  </div>
 </div>
 </section>
-<!-- Platform Status Dashboard -->
-<section class="py-12 border-y border-outline-variant/20 bg-surface-container-low micro-grid px-margin-mobile md:px-4 md:px-margin-desktop">
+
+<!-- STATS -->
+<section class="py-12 border-y border-outline-variant/20 bg-surface-container-low micro-grid px-margin-mobile md:px-margin-desktop">
 <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-gutter">
-<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative group overflow-hidden">
-<div class="corner-accent ca-tl"></div>
-<div class="font-technical text-[10px] text-on-surface-variant uppercase">Global GPU Load</div>
-<div class="flex items-baseline gap-2">
-<span class="font-headline text-2xl text-neon-acid" id="gpu-load">82.4</span>
-<span class="font-technical text-xs">%</span>
-</div>
-<div class="w-full bg-white/5 h-1 mt-2">
-<div class="bg-neon-acid h-full transition-all duration-500" id="gpu-bar" style="width: 82%"></div>
-</div>
-</div>
-<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative">
-<div class="corner-accent ca-tl"></div>
-<div class="font-technical text-[10px] text-on-surface-variant uppercase">Active Clusters</div>
-<div class="flex items-baseline gap-2">
-<span class="font-headline text-2xl text-white" id="active-clusters">1,402</span>
-</div>
-<div class="font-technical text-[9px] text-neon-acid uppercase tracking-tighter">Region_Status: Nominal</div>
-</div>
-<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative">
-<div class="corner-accent ca-tl"></div>
-<div class="font-technical text-[10px] text-on-surface-variant uppercase">Successful Renders</div>
-<div class="flex items-baseline gap-2">
-<span class="font-headline text-2xl text-white" id="render-count">48,291</span>
-</div>
-<div class="font-technical text-[9px] text-on-surface-variant uppercase tracking-tighter">+24 IN LAST 60S</div>
-</div>
-<div class="p-6 border border-outline-variant/30 bg-black/40 backdrop-blur-sm flex flex-col gap-2 relative">
-<div class="corner-accent ca-tl"></div>
-<div class="font-technical text-[10px] text-on-surface-variant uppercase">Network Latency</div>
-<div class="flex items-baseline gap-2">
-<span class="font-headline text-2xl text-neon-acid">0.04</span>
-<span class="font-technical text-xs">ms</span>
-</div>
-<div class="font-technical text-[9px] text-white/40 uppercase tracking-tighter">Hyper-Link Active</div>
-</div>
+  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
+    <div class="corner-accent ca-tl"></div>
+    <div class="font-technical text-[10px] text-on-surface-variant uppercase">GPU Load</div>
+    <div class="flex items-baseline gap-2"><span class="font-headline text-2xl text-neon-acid" id="gpu-load">82.4</span><span class="font-technical text-xs">%</span></div>
+    <div class="w-full bg-white/5 h-1 mt-2"><div class="bg-neon-acid h-full transition-all duration-500" id="gpu-bar" style="width:82%"></div></div>
+  </div>
+  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
+    <div class="corner-accent ca-tl"></div>
+    <div class="font-technical text-[10px] text-on-surface-variant uppercase">Active Clusters</div>
+    <span class="font-headline text-2xl text-white" id="active-clusters">1,402</span>
+    <div class="font-technical text-[9px] text-neon-acid uppercase">Region: Nominal</div>
+  </div>
+  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
+    <div class="corner-accent ca-tl"></div>
+    <div class="font-technical text-[10px] text-on-surface-variant uppercase">Renders</div>
+    <span class="font-headline text-2xl text-white" id="render-count">48,291</span>
+    <div class="font-technical text-[9px] text-on-surface-variant uppercase">+24 IN LAST 60S</div>
+  </div>
+  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
+    <div class="corner-accent ca-tl"></div>
+    <div class="font-technical text-[10px] text-on-surface-variant uppercase">Latency</div>
+    <div class="flex items-baseline gap-2"><span class="font-headline text-2xl text-neon-acid">0.04</span><span class="font-technical text-xs">ms</span></div>
+    <div class="font-technical text-[9px] text-white/40 uppercase">Hyper-Link Active</div>
+  </div>
 </div>
 </section>
-<!-- Cinematic Services -->
-<section class="py-24 px-margin-mobile md:px-4 md:px-margin-desktop bg-surface-container-lowest">
+
+<!-- SERVICES -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
 <div class="max-w-7xl mx-auto">
-<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-<div>
-<h2 class="font-headline text-3xl md:text-5xl text-white uppercase tracking-tighter">Cinematic Services</h2>
-<p class="font-technical text-xs text-on-surface-variant uppercase mt-2 tracking-widest">Select process to initialize node</p>
-</div>
-<div class="h-px flex-1 bg-outline-variant/20 mx-8 mb-4 hidden md:block"></div>
-<a class="font-technical text-xs text-neon-acid border-b border-neon-acid pb-1 hover:text-white hover:border-white transition-all uppercase" href="studio.html">Enter Studio</a>
-</div>
-<div style="margin-bottom:32px;">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-    <div style="width:4px;height:32px;background:#c8ff00;"></div>
+  <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
     <div>
-      <div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:-0.02em;">GENESIS VAULT</div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#c8ff00;letter-spacing:3px;text-transform:uppercase;margin-top:2px;">World's First Video Ownership Registry</div>
+      <h2 class="font-headline text-3xl md:text-5xl text-white uppercase tracking-tighter">Cinematic Services</h2>
+      <p class="font-technical text-xs text-on-surface-variant uppercase mt-2 tracking-widest">Select process to initialize node</p>
+    </div>
+    <div class="h-px flex-1 bg-outline-variant/20 mx-8 mb-4 hidden md:block"></div>
+    <a class="font-technical text-xs text-neon-acid border-b border-neon-acid pb-1 hover:text-white hover:border-white transition-all uppercase" href="studio.html">Enter Studio</a>
+  </div>
+
+  <!-- AI PRODUCTION -->
+  <div style="padding:16px 0 8px;margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:4px;height:24px;background:#434933"></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a4a4a;letter-spacing:3px;text-transform:uppercase">AI PRODUCTION SERVICES</div>
+      <div style="flex:1;height:1px;background:#1a1a1a"></div>
     </div>
   </div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-<!-- ═══ GENESIS VAULT — HERO CARDS (full width) ═══ -->
-<div class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
-
-  <!-- CARD 1: STAMP — Register Ownership -->
-  <div class="relative overflow-hidden border-2 border-neon-acid group cursor-pointer"
-       style="min-height:280px;background:#040404;"
-       onclick="window.location.href='profile.html'">
-    <!-- Animated scanlines -->
-    <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(200,255,0,0.03) 2px,rgba(200,255,0,0.03) 4px);pointer-events:none;z-index:1;"></div>
-    <!-- Glow corner brackets -->
-    <div style="position:absolute;top:8px;left:8px;width:20px;height:20px;border-top:2px solid #c8ff00;border-left:2px solid #c8ff00;z-index:2;"></div>
-    <div style="position:absolute;top:8px;right:8px;width:20px;height:20px;border-top:2px solid #c8ff00;border-right:2px solid #c8ff00;z-index:2;"></div>
-    <div style="position:absolute;bottom:8px;left:8px;width:20px;height:20px;border-bottom:2px solid #c8ff00;border-left:2px solid #c8ff00;z-index:2;"></div>
-    <div style="position:absolute;bottom:8px;right:8px;width:20px;height:20px;border-bottom:2px solid #c8ff00;border-right:2px solid #c8ff00;z-index:2;"></div>
-    <!-- Content -->
-    <div style="position:relative;z-index:3;padding:40px;height:100%;display:flex;flex-direction:column;justify-content:space-between;">
-      <div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#c8ff00;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;">GENESIS VAULT // GNS-REGISTRY-v1</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#4a4a4a;letter-spacing:2px;">Node ID: GV-001 // Status: ACTIVE</div>
-          </div>
-          <span class="material-symbols-outlined" style="color:#c8ff00;font-size:32px;filter:drop-shadow(0 0 8px #c8ff00);">fingerprint</span>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    <!-- Studio -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='studio.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/7988213/pexels-photo-7988213.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: ST-001</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">movie_filter</span>
         </div>
-        <h3 style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px;">STAMP YOUR<br><span style="color:#c8ff00;">OWNERSHIP</span></h3>
-        <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;max-width:420px;">Plant an invisible DNA fingerprint in every frame of your video. Your name. Your date. Your proof — sealed in our registry forever.</p>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:32px;">
-        <button style="background:#c8ff00;color:#040404;border:none;padding:14px 32px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;cursor:pointer;box-shadow:0 0 30px rgba(200,255,0,0.4);">
-          STAMP — 50 GNS
-        </button>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#4a4a4a;text-align:right;line-height:1.8;">
-          FIRST TO REGISTER<br>= FIRST TO OWN
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">AI Studio</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Write your vision. Choose your director. Generate a full cinematic screenplay with AI.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
         </div>
       </div>
     </div>
-    <!-- Hover glow -->
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(200,255,0,0.06) 0%,transparent 70%);opacity:0;transition:opacity 0.4s;pointer-events:none;" class="group-hover:opacity-100"></div>
-  </div>
-
-  <!-- CARD 2: VERIFY — Check Ownership -->
-  <div class="relative overflow-hidden border border-outline-variant/40 group cursor-pointer"
-       style="min-height:280px;background:#0a0a0a;"
-       onclick="window.location.href='studio.html'">
-    <!-- Subtle grid -->
-    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(200,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:1;"></div>
-    <!-- Content -->
-    <div style="position:relative;z-index:3;padding:40px;height:100%;display:flex;flex-direction:column;justify-content:space-between;">
-      <div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">
-          <div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#c8ff00;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;">GENESIS MARKET // OWNERSHIP DEEDS</div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#4a4a4a;letter-spacing:2px;">Node ID: GM-002 // Status: OPEN</div>
-          </div>
-          <span class="material-symbols-outlined" style="color:#c8ff00;font-size:32px;">storefront</span>
+    <!-- Assembly -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='assembly.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/1367269/pexels-photo-1367269.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AS-305</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">movie_edit</span>
         </div>
-        <h3 style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px;">BUY · SELL<br><span style="color:#c8ff00;">OWNERSHIP DEEDS</span></h3>
-        <p style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;max-width:420px;">The video is free. The deed is priceless. Buy and sell verified ownership certificates for AI-generated content. No middleman.</p>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:32px;">
-        <button style="background:transparent;color:#c8ff00;border:1px solid #c8ff00;padding:14px 32px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;cursor:pointer;">
-          EXPLORE MARKET
-        </button>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#4a4a4a;text-align:right;line-height:1.8;">
-          CHECK ANY VIDEO<br>FREE — NO GNS
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Assembly</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Generate videos scene by scene. Combine AI clips into full cinematic sequences.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
         </div>
       </div>
     </div>
-    <!-- Hover border -->
-    <div style="position:absolute;inset:0;border:1px solid rgba(200,255,0,0.3);opacity:0;transition:opacity 0.3s;pointer-events:none;" class="group-hover:opacity-100"></div>
+    <!-- Stock Reel -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='stockreel.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/2599244/pexels-photo-2599244.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SR-042</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">video_library</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Stock Reel</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Browse licensed stock footage for your productions. Curated cinematic reels.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
+    <!-- Face Swap -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='faceswap.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3568520/pexels-photo-3568520.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: FS-201</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">face_retouching_natural</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Face Swap</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Neural face fusion for images and video. Precision WaveSpeed AI engine.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
+    <!-- Lip Sync -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='lipsync.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/6804581/pexels-photo-6804581.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: LS-301</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">forum</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Lip Sync</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Neural phoneme mapping for perfect multilingual synchronization.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
+    <!-- Upscale -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='upscale.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: UP-401</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">auto_fix_high</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Upscaler</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">720p in. 4K out. RE-ESRGAN neural upscaling for cinematic production.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-</div>
-<!-- ═══ END GENESIS VAULT HERO CARDS ═══ -->
+  <!-- FREE TOOLS -->
+  <div style="padding:16px 0 8px;margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:4px;height:24px;background:#c8ff00"></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase">CREATIVE TOOLS — FREE</div>
+      <div style="flex:1;height:1px;background:#1a1a1a"></div>
+    </div>
+  </div>
 
-<!-- ─── AI PRODUCTION SERVICES ─── -->
-<div class="col-span-1 md:col-span-2 lg:col-span-3" style="padding:16px 0 8px;">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div style="width:4px;height:24px;background:#2a2a2a;"></div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#4a4a4a;letter-spacing:3px;text-transform:uppercase;">AI PRODUCTION SERVICES</div>
-    <div style="flex:1;height:1px;background:#1a1a1a;"></div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Voice -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='voice.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: NV-114 // FREE</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">record_voice_over</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Neural Voice</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Text-to-speech. 6 cinematic voices. Narration and dialogue instantly.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
+    <!-- 3D Text -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='text3d.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3945313/pexels-photo-3945313.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: 3DT-001 // FREE</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">format_size</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">3D Text</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Cinematic 3D titles in Gold, Chrome, Neon, Glass. Animate and export free.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
+    <!-- Glitch -->
+    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='glitch.html'">
+      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/7991486/pexels-photo-7991486.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
+      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
+      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
+        <div class="flex justify-between items-start">
+          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: GE-099 // FREE</div></div>
+          <span class="material-symbols-outlined text-neon-acid neon-glow">dynamic_feed</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Glitch Engine</h3>
+          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Green screen compositor. Replace backgrounds in browser. Zero upload.</p>
+          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='stockreel.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/1367269/pexels-photo-1367269.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SR-042</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Library: Synchronized // 4PB Indexed</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">video_library</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Stock Reel</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Browse and download licensed stock footage for your productions. Curated cinematic reels.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='assembly.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/7988213/pexels-photo-7988213.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AS-305</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Engine: NLE_Quantum // Layer_Sync 1.0</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">movie_edit</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Assembly</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Multi-scene video assembly and editing. Combine AI clips into full cinematic sequences.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='semantic.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/6804581/pexels-photo-6804581.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SM-805</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Logic: Neural_Net // Semantic_Labeling Active</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">psychology</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Semantic</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI-powered screenplay analysis. Score your script across 5 cinematic dimensions.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='animate.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/3568520/pexels-photo-3568520.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AN-401</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Synth: WAN_2.1 // Motion_Vector Active</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">animation</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Animate</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Transform static images into cinematic video sequences using WAN 2.1 motion synthesis.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='convert.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/2599244/pexels-photo-2599244.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: CV-704</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Flux: Image_To_Video // Latent_Space Mapping</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">transform</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Convert</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Image-to-video conversion. Transform any still frame into a dynamic cinematic sequence.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='bgremover.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/66134/pexels-photo-66134.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: BG-077</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Mask: BiRefNet // Sub-pixel Precision</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">auto_fix_high</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">BG Remover</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI-powered background removal. Precision edge detection for images and video.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<!-- ─── CREATIVE TOOLS — FREE ─── -->
-<div class="col-span-1 md:col-span-2 lg:col-span-3" style="padding:16px 0 8px;">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div style="width:4px;height:24px;background:#c8ff00;"></div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase;">CREATIVE TOOLS — FREE SERVICES</div>
-    <div style="flex:1;height:1px;background:#1a1a1a;"></div>
-  </div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='voice.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: NV-114</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">TTS: 6 Voices // Free</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">record_voice_over</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Neural Voice</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Text-to-speech engine. 6 cinematic voices. Generate narration and dialogue instantly.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='sfx.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SFX-500K</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">500,000+ Sounds // CC Licensed</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">graphic_eq</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Sound FX Library</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">500,000+ cinematic sound effects. Explosions, ambience, sci-fi, horror. Free preview.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='intros.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/7991486/pexels-photo-7991486.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: INT-042</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Free Intros // Pexels Library</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">slideshow</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Cinematic Intros</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Free video intros for your productions. Cinematic, gaming, minimal, glitch styles.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='text3d.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: 3DT-001</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">WebGL // Gold Chrome Neon Glass</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">format_size</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">3D Text Generator</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Cinematic 3D title text in Gold, Chrome, Neon, Glass. Animate and export free.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='lut.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/3945313/pexels-photo-3945313.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: LUT-007</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">AI Color Science // .cube Export</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">palette</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">LUT Generator</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">AI cinematic color grading. Type a film name, get a professional LUT. Export .cube.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-<div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='glitch.html'">
-<div class="service-card-bg absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image:url('https://images.pexels.com/photos/2599244/pexels-photo-2599244.jpeg?auto=compress&cs=tinysrgb&w=1260');"></div>
-<div class="service-overlay absolute inset-0 z-10 bg-black/75 backdrop-blur-[2px] transition-all duration-500 group-hover:bg-black/35 group-hover:backdrop-blur-none"></div>
-<div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-<div class="relative z-20 h-full p-8 flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<div>
-<div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: GE-099</div>
-<div class="font-technical text-[8px] text-on-surface-variant uppercase mt-1">Browser Engine // Zero Upload</div>
-</div>
-<span class="material-symbols-outlined text-neon-acid neon-glow">dynamic_feed</span>
-</div>
-<div>
-<h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Glitch Engine</h3>
-<p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Green screen compositor. Replace backgrounds with Matrix, Neon City in browser.</p>
-<button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-</div>
-</div>
-</div>
-</div>
 </div>
 </section>
-<!-- Call to Action -->
+
+<!-- CTA -->
 <section class="py-32 bg-black relative overflow-hidden border-t border-outline-variant/30 flex items-center justify-center text-center">
-<div class="absolute inset-0 opacity-10 pointer-events-none">
-<img alt="Footer Background" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida/AP1WRLs8G9xMx6qWBM-QZUo2h2MVMIb523T7rt85A4yXrBO94VP8Yww8-T8-bnoCjTrJ-HYaVIQwF8toE-Hw8XXmp0u6q5ydq7z_x7XQKFlWI0tnfn1hTp9KCiCcnE3MICQa-2VwYANqjJLfJiniEyFgIrL-7kZZnxHLlF6NzqcnRlQOesCBsF8m6XJNZe0gi604cyoxfy17oknYitDOQ0_suUn3S7tFaraLidVkJwHM9ESjbpC9nhoyb2kVzjI"/>
-</div>
 <div class="relative z-10 px-margin-mobile">
-<h2 class="font-headline text-4xl md:text-7xl text-white mb-8 tracking-tighter">THE FUTURE IS COMPUTING</h2>
-<p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm md:text-base opacity-60">Architect your dream. Frame by frame.</p>
-<button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-2xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform group relative" id="footer-cta" onclick="window.location.href='register.html'">
-                INITIALIZE ACCESS
-                <span class="absolute -right-3 -bottom-3 w-6 h-6 border-r-2 border-b-2 border-neon-acid"></span>
-<span class="absolute -left-3 -top-3 w-6 h-6 border-l-2 border-t-2 border-neon-acid"></span>
-</button>
+  <h2 class="font-headline text-4xl md:text-7xl text-white mb-8 tracking-tighter">THE FUTURE IS COMPUTING</h2>
+  <p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm opacity-60">Architect your dream. Frame by frame.</p>
+  <button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-2xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform relative" id="footer-cta" onclick="window.location.href='register.html'">
+    START FREE
+    <span class="absolute -right-3 -bottom-3 w-6 h-6 border-r-2 border-b-2 border-neon-acid"></span>
+    <span class="absolute -left-3 -top-3 w-6 h-6 border-l-2 border-t-2 border-neon-acid"></span>
+  </button>
 </div>
 </section>
 </main>
-<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-margin-mobile md:px-4 md:px-margin-desktop">
+
+<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-margin-mobile md:px-margin-desktop">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-<div class="text-center md:text-left">
-<div class="font-headline text-xl text-white tracking-widest mb-2 uppercase">MercaDream</div>
-<div class="font-technical text-[10px] text-on-surface-variant uppercase tracking-widest">© 2026 AI CINEMA STUDIO. ALL RIGHTS RESERVED.</div>
-</div>
-<div class="flex flex-wrap justify-center gap-8 font-technical text-[10px] uppercase tracking-widest text-on-surface-variant">
-<a class="hover:text-neon-acid transition-colors" href="#">Privacy</a>
-<a class="hover:text-neon-acid transition-colors" href="#">Terms</a>
-<a class="hover:text-neon-acid transition-colors" href="api.html">API Docs</a>
-<a class="hover:text-neon-acid transition-colors" href="#">System Status</a>
-</div>
+  <div><div class="font-headline text-xl text-white tracking-widest mb-2 uppercase">MercaDream</div>
+  <div class="font-technical text-[10px] text-on-surface-variant uppercase">© 2026 AI CINEMA STUDIO.</div></div>
+  <div class="flex flex-wrap justify-center gap-8 font-technical text-[10px] uppercase tracking-widest text-on-surface-variant">
+    <a class="hover:text-neon-acid transition-colors" href="ethics.html">Ethics</a>
+    <a class="hover:text-neon-acid transition-colors" href="pricing.html">Pricing</a>
+    <a class="hover:text-neon-acid transition-colors" href="api.html">API</a>
+    <a class="hover:text-neon-acid transition-colors" href="login.html">Sign In</a>
+  </div>
 </div>
 </footer>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Dropdown Logic
-        const moreTrigger = document.getElementById('more-menu-trigger');
-        const moreDropdown = document.getElementById('more-menu-dropdown');
-        
-        if (moreTrigger && moreDropdown) {
-            moreTrigger.addEventListener('click', (e) => {
-                e.stopPropagation();
-                moreDropdown.classList.toggle('hidden');
-            });
-
-            // Stop clicks INSIDE dropdown from closing it
-            moreDropdown.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-
-            // Only close when clicking OUTSIDE both trigger and dropdown
-            document.addEventListener('click', (e) => {
-                if (!moreTrigger.contains(e.target) && !moreDropdown.contains(e.target)) {
-                    moreDropdown.classList.add('hidden');
-                }
-            });
-        }
-
-        // Dashboard Telemetry Animations
-        setInterval(() => {
-            const gpuLoad = document.getElementById('gpu-load');
-            const gpuBar = document.getElementById('gpu-bar');
-            const activeClusters = document.getElementById('active-clusters');
-            const renderCount = document.getElementById('render-count');
-            
-            if (gpuLoad && gpuBar) {
-                const newVal = (80 + Math.random() * 8).toFixed(1);
-                gpuLoad.innerText = newVal;
-                gpuBar.style.width = newVal + '%';
-            }
-            if (activeClusters) {
-                activeClusters.innerText = (1400 + Math.floor(Math.random() * 15)).toLocaleString();
-            }
-            if (renderCount) {
-                const current = parseInt(renderCount.innerText.replace(/,/g, '')) || 48291;
-                renderCount.innerText = (current + Math.floor(Math.random() * 3)).toLocaleString();
-            }
-        }, 3000);
-
-        // UI Auth State Simulation
-        const updateAuthUI = () => {
-            const isLoggedIn = localStorage.getItem('md_user_id');
-            const navAuthBtn = document.getElementById('nav-auth-btn');
-            const navActionBtn = document.getElementById('nav-action-btn');
-            const heroPrimaryCta = document.getElementById('hero-primary-cta');
-            const footerCta = document.getElementById('footer-cta');
-
-            if (isLoggedIn) {
-                if (navAuthBtn) navAuthBtn.innerText = 'LOG OUT';
-                [navActionBtn, heroPrimaryCta, footerCta].forEach(btn => {
-                    if (btn) btn.innerText = 'ENTER STUDIO';
-                });
-            } else {
-                if (navAuthBtn) navAuthBtn.innerText = 'LOG IN';
-                [navActionBtn, heroPrimaryCta, footerCta].forEach(btn => {
-                    if (btn) btn.innerText = 'INITIALIZE ACCESS';
-                });
-            }
-            
-            const credits = localStorage.getItem('md_credits') || '0.00';
-            const userCreditsEl = document.getElementById('user-credits');
-            if (userCreditsEl) userCreditsEl.innerText = credits + ' GNS';
-        };
-
-        if (document.getElementById('nav-auth-btn')) {
-            document.getElementById('nav-auth-btn').onclick = function() {
-                if (localStorage.getItem('md_user_id')) {
-                    localStorage.clear();
-                    location.reload();
-                } else {
-                    window.location.href = 'login.html';
-                }
-            };
-        }
-
-        updateAuthUI();
-    });
-</script>
 
 <script>
-(function() {
-  var MAP = {
-    'Neural Faceswap':'faceswap.html','Dynamic Relighting':'relighting.html',
-    '8K Ultra-Scan':'upscale.html','Stock Reel':'stockreel.html',
-    'BG Remover':'bgremover.html','Neural Audio':'audio.html',
-    'Neural Clean':'clean.html','Assembly':'assembly.html',
-    'Animate':'animate.html','Lipsync':'lipsync.html',
-    'De-Aging':'deaging.html','Convert':'convert.html','Semantic':'semantic.html'
+document.addEventListener('DOMContentLoaded', function() {
+  // Dropdown
+  var trigger = document.getElementById('more-menu-trigger');
+  var dropdown = document.getElementById('more-menu-dropdown');
+  if(trigger && dropdown){
+    trigger.addEventListener('click', function(e){ e.stopPropagation(); dropdown.classList.toggle('hidden'); });
+    document.addEventListener('click', function(){ dropdown.classList.add('hidden'); });
+  }
+  // Telemetry
+  setInterval(function(){
+    var g = document.getElementById('gpu-load');
+    var b = document.getElementById('gpu-bar');
+    var a = document.getElementById('active-clusters');
+    var r = document.getElementById('render-count');
+    if(g&&b){ var v=(80+Math.random()*8).toFixed(1); g.innerText=v; b.style.width=v+'%'; }
+    if(a) a.innerText=(1400+Math.floor(Math.random()*15)).toLocaleString();
+    if(r){ var c=parseInt(r.innerText.replace(/,/g,''))||48291; r.innerText=(c+Math.floor(Math.random()*3)).toLocaleString(); }
+  }, 3000);
+  // Auth
+  var isLoggedIn = localStorage.getItem('md_user_id');
+  var authBtn = document.getElementById('nav-auth-btn');
+  var actionBtn = document.getElementById('nav-action-btn');
+  var heroCta = document.getElementById('hero-primary-cta');
+  var footerCta = document.getElementById('footer-cta');
+  if(isLoggedIn){
+    if(authBtn) authBtn.innerText='LOG OUT';
+    [actionBtn,heroCta,footerCta].forEach(function(b){ if(b) b.innerText='ENTER STUDIO'; });
+    if(actionBtn) actionBtn.onclick=function(){ window.location.href='studio.html'; };
+    if(heroCta) heroCta.onclick=function(){ window.location.href='studio.html'; };
+    if(footerCta) footerCta.onclick=function(){ window.location.href='studio.html'; };
+  }
+  if(authBtn) authBtn.onclick=function(){
+    if(localStorage.getItem('md_user_id')){ localStorage.clear(); location.reload(); }
+    else { window.location.href='login.html'; }
   };
-  document.querySelectorAll('.bg-surface-container').forEach(function(card) {
-    var h3 = card.querySelector('h3');
-    if (!h3) return;
-    var dest = MAP[h3.textContent.trim()];
-    if (!dest) return;
-    card.style.cursor = 'pointer';
-    var btn = card.querySelector('button');
-    if (btn) btn.onclick = function(e) { e.stopPropagation(); window.location.href = dest; };
-    card.onclick = function() { window.location.href = dest; };
-  });
-})();
+  var credits = localStorage.getItem('md_credits')||'0';
+  var el = document.getElementById('user-credits');
+  if(el) el.innerText=credits+' GNS';
+});
 </script>
-</body></html>
-
-
-
-
+</body>
+</html>
