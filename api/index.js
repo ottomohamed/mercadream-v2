@@ -296,18 +296,29 @@ async function handle_animate(req, res) {
 async function handle_i2v(req, res) {
   const { image, prompt, duration, resolution } = req.body||{};
   if (!image) return res.status(400).json({ error: 'image required.' });
-  const size = resolution === '720p' ? '1280x720' : '854x480';
-  const d = await wsPost('wavespeed-ai/wan-2.2-spicy/image-to-video', {
-    image: image,
-    prompt: prompt || 'Smooth cinematic motion',
-    duration: duration || 5,
-    size: size,
-    page: 1,
-    page_size: 10
-  });
-  const taskId = d.data?.id;
-  if (!taskId) return res.status(500).json({ error: d?.message || 'No task ID', raw: d });
-  return res.json({ taskId });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/wan-2.2-spicy/image-to-video', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + WAVESPEED_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        image: image,
+        prompt: prompt || 'Smooth cinematic motion',
+        resolution: resolution || '480p',
+        duration: duration || 5,
+        seed: -1
+      })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message || 'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
 
 async function handle_lipsync(req, res) {
