@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TRIPO3D x MERCADREAM | STUDIO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&amp;family=IBM+Plex+Mono:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js" type="module"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#e2e2e2",
+                        "surface": "#131313",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "surface-container-low": "#1b1b1b",
+                        "outline-variant": "#434933",
+                        "tertiary-fixed": "#e4e2e1",
+                        "surface-dim": "#131313",
+                        "primary-fixed-dim": "#a8d700",
+                        "tertiary-container": "#e4e2e1",
+                        "outline": "#8e9479",
+                        "on-primary-fixed": "#161f00",
+                        "primary-fixed": "#c0f500",
+                        "on-primary-fixed-variant": "#3b4d00",
+                        "error-container": "#93000a",
+                        "on-primary": "#273500",
+                        "inverse-primary": "#4f6600",
+                        "surface-container": "#1f1f1f",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-container-high": "#2a2a2a",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#c4caac",
+                        "tertiary": "#ffffff",
+                        "primary": "#ffffff",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "secondary-container": "#474746",
+                        "surface-tint": "#a8d700",
+                        "on-secondary-container": "#b7b5b4",
+                        "surface-container-highest": "#353535",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#303030",
+                        "primary-container": "#c0f500",
+                        "on-primary-container": "#546d00",
+                        "background": "#131313",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-variant": "#353535",
+                        "surface-bright": "#393939",
+                        "on-tertiary-container": "#656464",
+                        "on-background": "#e2e2e2",
+                        "inverse-surface": "#e2e2e2",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-secondary": "#313030",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "on-tertiary": "#303030",
+                        "secondary": "#c8c6c5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "margin-sm": "16px",
+                        "grid-unit": "24px",
+                        "margin-lg": "48px",
+                        "gutter": "1px",
+                        "margin-md": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Orbitron"],
+                        "mono-data": ["IBM Plex Mono"],
+                        "headline-lg": ["Orbitron"],
+                        "label-sm": ["IBM Plex Mono"],
+                        "display-lg": ["Orbitron"],
+                        "body-md": ["IBM Plex Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "mono-data": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "1.6", "letterSpacing": "0px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        :root {
+            --grid-color: #1a1a1a;
+            --neon-green: #c8ff00;
+        }
+        body {
+            background-color: #000000;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: #e2e2e2;
+            overflow-x: hidden;
+        }
+        .glow-sm:hover {
+            box-shadow: 0 0 8px var(--neon-green);
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(200, 255, 0, 0.1);
+            position: absolute;
+            animation: scanline 4s linear infinite;
+        }
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--neon-green);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        input, textarea {
+            background: #0a0a0a !important;
+            border: 1px solid #333333 !important;
+            color: var(--neon-green) !important;
+            font-family: 'IBM Plex Mono', monospace !important;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--neon-green) !important;
+            outline: none !important;
+            box-shadow: 0 0 5px rgba(200, 255, 0, 0.2) !important;
+        }
+        .tab-active {
+            color: var(--neon-green);
+            border-bottom: 2px solid var(--neon-green);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-green);
+        }
+    </style>
+</head>
+<body class="font-mono-data text-mono-data">
+<!-- TopNavBar (JSON Mapping) -->
+<nav class="flex justify-between items-center w-full px-margin-md h-grid-unit-16 border-b border-outline-variant bg-background dark:bg-background fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-lg text-headline-lg text-primary-fixed dark:text-primary-fixed tracking-tighter">TRIPO3D x MERCADREAM</h1>
+<div class="hidden md:flex gap-6 font-mono-data text-mono-data uppercase tracking-widest">
+<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all duration-150" href="#">WORKSPACE</a>
+<a class="text-primary-fixed border-b border-primary-fixed hover:glow-sm transition-all duration-150" href="#">LIBRARY</a>
+<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all duration-150" href="#">MARKETPLACE</a>
+<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all duration-150" href="#">DOCS</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="text-primary-fixed font-bold" id="credit-display">500 CREDITS</span>
+<span class="text-label-sm text-on-surface-variant">PLAN: PRO_STUDIO</span>
+</div>
+<button class="bg-primary-fixed text-on-primary-fixed px-4 py-1 font-bold text-label-sm hover:glow-sm transition-all">UPGRADE</button>
+<div class="flex gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed">settings</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed">notifications</span>
+</div>
+<img alt="User profile" class="w-10 h-10 border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALtqqyoq6FAGDYvIDgdGEJMZgUajnzX9pqALBPdQup3pIO8jUpmvJWzSMmQCkBMTjq8O5EuAtBLgB8VVq3WYctjFD8Y-o0h6nalksW8S6nALRWF8Byp2AA8MKLO5WVeqVOHAiBbsDT4dy0NSfgE3h5HYpGSQb8uKTtiAGbPq_z3YOkDA3lxr43pCVkCW2UHf2eNAex2c2spuHK0ZMBIYd2DpTkkLorgdQyzmE6Q5BEMRvjD-n9AAz8vQTKKllH8dJiJIIGWAQZOME"/>
+</div>
+</nav>
+<!-- Sidebar Navigation (JSON Mapping - Executing style_shell_layout) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-24 pb-4 w-64 border-r border-outline-variant bg-surface-container-lowest dark:bg-surface-container-lowest z-40 hidden lg:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed text-sm">token</span>
+</div>
+<div>
+<h2 class="text-primary-fixed font-headline-lg-mobile leading-none">STUDIO_v1.0</h2>
+<p class="text-[10px] text-primary-fixed opacity-60">SYSTEM_ACTIVE</p>
+</div>
+</div>
+<button class="w-full mt-4 border border-primary-fixed text-primary-fixed py-2 text-label-sm hover:bg-primary-fixed hover:text-on-primary-fixed transition-all active:scale-95">NEW PROJECT</button>
+</div>
+<nav class="flex-grow">
+<ul class="space-y-1">
+<li class="px-6 py-3 bg-primary-fixed text-on-primary-fixed font-bold border-r-4 border-primary-fixed cursor-pointer flex items-center gap-4">
+<span class="material-symbols-outlined">title</span>
+<span>TEXT TO 3D</span>
+</li>
+<li class="px-6 py-3 text-on-surface-variant hover:bg-surface-variant cursor-pointer flex items-center gap-4 transition-all active:scale-95">
+<span class="material-symbols-outlined">image</span>
+<span>IMAGE TO 3D</span>
+</li>
+<li class="px-6 py-3 text-on-surface-variant hover:bg-surface-variant cursor-pointer flex items-center gap-4 transition-all active:scale-95">
+<span class="material-symbols-outlined">view_in_ar</span>
+<span>MULTIVIEW</span>
+</li>
+<li class="px-6 py-3 text-on-surface-variant hover:bg-surface-variant cursor-pointer flex items-center gap-4 transition-all active:scale-95">
+<span class="material-symbols-outlined">layers</span>
+<span>STAGING</span>
+</li>
+</ul>
+</nav>
+<div class="mt-auto px-6 space-y-2 border-t border-outline-variant pt-4">
+<div class="flex items-center gap-3 text-on-surface-variant hover:text-primary-fixed cursor-pointer">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span class="text-label-sm uppercase">LOGS</span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant hover:text-primary-fixed cursor-pointer">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span class="text-label-sm uppercase">SUPPORT</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 pt-32 px-margin-md pb-margin-lg">
+<!-- Header -->
+<header class="mb-margin-md">
+<h2 class="font-display-lg text-display-lg text-primary-fixed mb-2">TRIPO3D STUDIO</h2>
+<p class="text-body-md text-on-surface-variant max-w-2xl leading-relaxed">
+                Generate production-ready 3D models from text or images. Export for Blender, Unreal Engine, and more.
+            </p>
+</header>
+<!-- Tab Switcher -->
+<div class="flex gap-8 border-b border-outline-variant mb-margin-md">
+<button class="tab-btn pb-4 font-mono-data text-label-sm uppercase tracking-widest tab-active transition-all" id="tab-text" onclick="switchTab('text')">
+                [ TEXT TO 3D ]
+            </button>
+<button class="tab-btn pb-4 font-mono-data text-label-sm uppercase tracking-widest text-on-surface-variant hover:text-primary-fixed transition-all" id="tab-image" onclick="switchTab('image')">
+                [ IMAGE TO 3D ]
+            </button>
+<button class="tab-btn pb-4 font-mono-data text-label-sm uppercase tracking-widest text-on-surface-variant hover:text-primary-fixed transition-all" id="tab-multi" onclick="switchTab('multi')">
+                [ MULTIVIEW TO 3D ]
+            </button>
+</div>
+<!-- Studio Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter bg-outline-variant border border-outline-variant">
+<!-- Left Control Panel -->
+<div class="lg:col-span-4 bg-surface-container-lowest p-6 space-y-8 min-h-[600px]">
+<!-- Tab 1: Text To 3D -->
+<div class="tab-panel space-y-6" id="panel-text">
+<div class="space-y-2">
+<label class="text-label-sm text-on-surface-variant block uppercase">Prompt Input</label>
+<textarea class="w-full p-4 h-32 text-sm focus:ring-0" placeholder="e.g. A high-detail cybernetic skull with glowing neon tubes..."></textarea>
+</div>
+<div class="space-y-2">
+<label class="text-label-sm text-on-surface-variant block uppercase">Negative Prompt</label>
+<input class="w-full p-3 text-sm" placeholder="blurry, low poly, distorted, organic" type="text"/>
+</div>
+</div>
+<!-- Tab 2: Image To 3D -->
+<div class="tab-panel hidden space-y-6" id="panel-image">
+<div class="space-y-2">
+<label class="text-label-sm text-on-surface-variant block uppercase">Source Image</label>
+<div class="border-2 border-dashed border-outline-variant h-48 flex flex-col items-center justify-center cursor-pointer hover:border-primary-fixed transition-colors group">
+<span class="material-symbols-outlined text-4xl mb-2 group-hover:text-primary-fixed">upload_file</span>
+<span class="text-label-sm">DRAG &amp; DROP IMAGE</span>
+</div>
+</div>
+</div>
+<!-- Tab 3: Multiview To 3D -->
+<div class="tab-panel hidden space-y-6" id="panel-multi">
+<label class="text-label-sm text-on-surface-variant block uppercase">Reference Orthographics</label>
+<div class="grid grid-cols-2 gap-4">
+<div class="aspect-square border border-outline-variant flex flex-col items-center justify-center hover:border-primary-fixed cursor-pointer">
+<span class="text-[10px] text-on-surface-variant mb-1">FRONT</span>
+<span class="material-symbols-outlined text-lg">add</span>
+</div>
+<div class="aspect-square border border-outline-variant flex flex-col items-center justify-center hover:border-primary-fixed cursor-pointer">
+<span class="text-[10px] text-on-surface-variant mb-1">LEFT</span>
+<span class="material-symbols-outlined text-lg">add</span>
+</div>
+<div class="aspect-square border border-outline-variant flex flex-col items-center justify-center hover:border-primary-fixed cursor-pointer">
+<span class="text-[10px] text-on-surface-variant mb-1">BACK</span>
+<span class="material-symbols-outlined text-lg">add</span>
+</div>
+<div class="aspect-square border border-outline-variant flex flex-col items-center justify-center hover:border-primary-fixed cursor-pointer">
+<span class="text-[10px] text-on-surface-variant mb-1">RIGHT</span>
+<span class="material-symbols-outlined text-lg">add</span>
+</div>
+</div>
+</div>
+<!-- Shared Settings -->
+<div class="space-y-6 pt-6 border-t border-outline-variant">
+<div class="flex justify-between items-center">
+<span class="text-label-sm text-on-surface-variant uppercase">Quality Mode</span>
+<div class="flex border border-outline-variant">
+<button class="px-3 py-1 text-label-sm bg-primary-fixed text-on-primary-fixed font-bold">STANDARD</button>
+<button class="px-3 py-1 text-label-sm text-on-surface-variant hover:text-primary-fixed">DETAILED</button>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-label-sm text-on-surface-variant uppercase">PBR Materials</span>
+<input class="w-5 h-5 text-primary-fixed bg-surface-container border-outline-variant rounded-none focus:ring-primary-fixed" type="checkbox"/>
+</div>
+<div class="pt-4">
+<div class="flex justify-between mb-4">
+<span class="text-label-sm text-on-surface-variant">ESTIMATED COST:</span>
+<span class="text-primary-fixed font-bold" id="task-cost">10 GNS</span>
+</div>
+<button class="w-full bg-primary-fixed text-on-primary-fixed py-4 font-bold text-body-md hover:glow-sm active:scale-95 transition-all uppercase tracking-tighter" onclick="startGeneration()">
+                            GENERATE 3D MODEL
+                        </button>
+</div>
+</div>
+</div>
+<!-- Right Preview Panel -->
+<div class="lg:col-span-8 bg-surface p-1 relative flex flex-col min-h-[600px]">
+<!-- Viewport Header -->
+<div class="absolute top-4 left-4 z-10 flex gap-2">
+<div class="px-3 py-1 bg-surface-container-highest border border-outline-variant flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></div>
+<span class="text-[10px] uppercase font-bold text-primary-fixed">Live Viewport</span>
+</div>
+<div class="px-3 py-1 bg-surface-container border border-outline-variant text-[10px] uppercase text-on-surface-variant" id="model-status">
+                        Status: Idle
+                    </div>
+</div>
+<div class="absolute top-4 right-4 z-10 flex gap-2">
+<button class="p-2 border border-outline-variant hover:border-primary-fixed hover:text-primary-fixed transition-all">
+<span class="material-symbols-outlined text-sm">fullscreen</span>
+</button>
+<button class="p-2 border border-outline-variant hover:border-primary-fixed hover:text-primary-fixed transition-all">
+<span class="material-symbols-outlined text-sm">videocam</span>
+</button>
+</div>
+<!-- 3D Preview Canvas -->
+<div class="flex-grow flex items-center justify-center bg-[#050505] relative overflow-hidden">
+<!-- Background Grid for Viewport -->
+<div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px;"></div>
+<!-- Placeholder Wireframe Animation -->
+<div class="text-center z-10" id="model-placeholder">
+<div class="relative w-48 h-48 mx-auto mb-4 border border-primary-fixed opacity-30 animate-[spin_10s_linear_infinite]">
+<div class="absolute inset-0 border border-primary-fixed opacity-50 rotate-45"></div>
+<div class="absolute inset-0 border border-primary-fixed opacity-50 -rotate-45"></div>
+</div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-[0.2em]">Awaiting Simulation Data</p>
+</div>
+<!-- Actual 3D Viewer -->
+<model-viewer auto-rotate="" background-color="#050505" camera-controls="" class="w-full h-full hidden" id="main-viewer" shadow-intensity="1"></model-viewer>
+<!-- Scanline effect -->
+<div class="scanline"></div>
+</div>
+<!-- Export Controls -->
+<div class="p-4 border-t border-outline-variant bg-surface-container-lowest flex justify-between items-center">
+<div class="flex gap-2">
+<button class="px-4 py-2 border border-outline-variant text-label-sm hover:border-primary-fixed hover:text-primary-fixed">GLB</button>
+<button class="px-4 py-2 border border-outline-variant text-label-sm hover:border-primary-fixed hover:text-primary-fixed">OBJ</button>
+<button class="px-4 py-2 border border-outline-variant text-label-sm hover:border-primary-fixed hover:text-primary-fixed">FBX</button>
+</div>
+<div class="text-[10px] text-on-surface-variant uppercase">
+                        Polycount: <span class="text-primary-fixed">---</span> | Textures: <span class="text-primary-fixed">PBR 4K</span>
+</div>
+</div>
+</div>
+</div>
+<!-- System Logs -->
+<div class="fixed bottom-6 right-6 w-80 bg-surface-container-highest border border-outline-variant p-4 z-50 shadow-2xl">
+<div class="flex justify-between items-center mb-3 border-b border-outline-variant pb-2">
+<span class="text-[10px] font-bold uppercase text-primary-fixed flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-primary-fixed rounded-full"></span>
+                    Terminal Output
+                </span>
+<span class="material-symbols-outlined text-xs cursor-pointer hover:text-primary-fixed">close</span>
+</div>
+<div class="h-32 overflow-y-auto text-[10px] text-on-surface-variant space-y-1 font-mono-data" id="terminal-logs">
+<div class="flex gap-2"><span class="text-primary-fixed">[SYSTEM]</span> Initializing Tripo3D Core...</div>
+<div class="flex gap-2"><span class="text-primary-fixed">[SYSTEM]</span> Authentication successful.</div>
+<div class="flex gap-2"><span class="text-primary-fixed">[SYSTEM]</span> Ready for task injection.</div>
+</div>
+<div class="mt-2 text-[10px] border-t border-outline-variant pt-2 flex items-center">
+<span class="text-primary-fixed mr-2">&gt;</span>
+<span id="typing-prompt">Waiting for user...</span><span class="terminal-cursor"></span>
+</div>
+</div>
+</main>
+<script>
+        // State Management
+        let credits = parseInt(localStorage.getItem('md_credits')) || 500;
+        let currentTab = 'text';
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('credit-display').textContent = `${credits} CREDITS`;
+            localStorage.setItem('md_credits', credits);
+        }
+
+        // Tab Switching
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // UI Update
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active', 'text-primary-fixed'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.add('text-on-surface-variant'));
+            document.getElementById(`tab-${tab}`).classList.add('tab-active', 'text-primary-fixed');
+            document.getElementById(`tab-${tab}`).classList.remove('text-on-surface-variant');
+
+            // Panel Update
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`panel-${tab}`).classList.remove('hidden');
+
+            // Cost Update
+            const costMap = { 'text': 10, 'image': 20, 'multi': 40 };
+            document.getElementById('task-cost').textContent = `${costMap[tab]} GNS`;
+            
+            addLog(`Switching context: ${tab.toUpperCase()}_ENGINE_LOADED`, 'SYSTEM');
+        }
+
+        // Terminal Logging
+        function addLog(msg, type = 'USER') {
+            const container = document.getElementById('terminal-logs');
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `<span class="text-primary-fixed">[${type}]</span> ${msg}`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Generation Logic
+        async function startGeneration() {
+            const cost = currentTab === 'text' ? 10 : (currentTab === 'image' ? 20 : 40);
+            
+            if (credits < cost) {
+                addLog('Insufficient credits. Access denied.', 'ERROR');
+                return;
+            }
+
+            // Deduct credits
+            credits -= cost;
+            updateUI();
+            
+            addLog(`Starting task... Deducting ${cost} credits.`, 'SYSTEM');
+            document.getElementById('model-status').textContent = 'Status: Processing...';
+            document.getElementById('model-placeholder').innerHTML = `
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 border-4 border-primary-fixed border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-label-sm text-primary-fixed animate-pulse uppercase">Generating Topology...</p>
+                </div>
+            `;
+
+            try {
+                // Real API call
+                const activeTab = document.querySelector('.tab-active')?.dataset?.tab || 'text';
+                const prompt = document.getElementById('prompt-input')?.value || '';
+                const negPrompt = document.getElementById('neg-prompt-input')?.value || '';
+                const geoQuality = document.querySelector('.geo-btn.active')?.dataset?.value || 'standard';
+                const texQuality = document.querySelector('.tex-btn.active')?.dataset?.value || 'standard';
+                const pbr = document.getElementById('pbr-toggle')?.checked !== false;
+
+                let body = { type: activeTab, geometry_quality: geoQuality, texture_quality: texQuality, pbr };
+                if (activeTab === 'text') {
+                    body.prompt = prompt;
+                    body.negative_prompt = negPrompt;
+                } else if (activeTab === 'image') {
+                    const imgEl = document.getElementById('image-preview-b64');
+                    if (!imgEl?.value) throw new Error('No image uploaded');
+                    body.image = imgEl.value;
+                } else {
+                    const imgs = [];
+                    ['front','left','back','right'].forEach(v => {
+                        const el = document.getElementById('view-' + v + '-b64');
+                        if (el?.value) imgs.push(el.value);
+                    });
+                    if (imgs.length < 2) throw new Error('Upload at least 2 images');
+                    body.images = imgs;
+                }
+
+                const res = await fetch('/api/tripo3d', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (!data.taskId) throw new Error(data.error || 'No task ID');
+                addLog('JOB: ' + data.taskId, 'NETWORK');
+
+                let attempts = 0;
+                const pollInterval = setInterval(async () => {
+                    attempts++;
+                    if (attempts > 80) {
+                        clearInterval(pollInterval);
+                        addLog('TIMEOUT — refunding credits', 'ERROR');
+                        credits += cost; updateUI(); return;
+                    }
+                    try {
+                        const pr = await fetch('/api/video?id=' + data.taskId);
+                        const pd = await pr.json();
+                        addLog('POLL ' + attempts + ': ' + (pd.status||'').toUpperCase(), 'SYSTEM');
+                        if (pd.status === 'completed' && pd.videoUrl) {
+                            clearInterval(pollInterval);
+                            completeGeneration(pd.videoUrl);
+                        } else if (pd.status === 'failed') {
+                            clearInterval(pollInterval);
+                            throw new Error('Generation failed');
+                        }
+                    } catch(pe) { addLog('POLL ERR: ' + pe.message, 'ERROR'); }
+                }, 5000);
+
+            } catch (err) {
+                addLog('Generation failed: ' + err.message + '. Refunding credits.', 'ERROR');
+                credits += cost;
+                updateUI();
+            }
+        }
+
+        function completeGeneration(glbUrl) {
+            addLog('Model reconstruction complete. Streaming GLB...', 'SYSTEM');
+            document.getElementById('model-status').textContent = 'Status: Render Ready';
+            const viewer = document.getElementById('main-viewer');
+            const placeholder = document.getElementById('model-placeholder');
+            placeholder.classList.add('hidden');
+            viewer.classList.remove('hidden');
+            viewer.src = glbUrl;
+            // Enable download
+            const dlBtns = document.querySelectorAll('.download-model-btn');
+            dlBtns.forEach(btn => {
+                btn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = glbUrl;
+                    a.download = 'mercadream_3d_' + Date.now() + '.glb';
+                    a.click();
+                };
+            });
+            addLog('MODEL READY — GLB loaded in viewer', 'SUCCESS');
+        }
+
+        // Initialize
+        updateUI();
+        addLog('Studio Workspace version 1.0.4 build-2023.12.01', 'SYSTEM');
+    </script>
+</body></html>

@@ -285,6 +285,33 @@ async function handle_faceswap(req, res) {
 }
 
 
+async function handle_tripo3d(req, res) {
+  const { type, prompt, negative_prompt, image, images, geometry_quality, texture_quality, pbr } = req.body||{};
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const models = {
+      text:      'tripo3d/h3.1/text-to-3d',
+      image:     'tripo3d/h3.1/image-to-3d',
+      multiview: 'tripo3d/h3.1/multiview-to-3d'
+    };
+    const model = models[type] || models.text;
+    const body = type === 'text'
+      ? { prompt, negative_prompt: negative_prompt||'', geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false }
+      : type === 'image'
+      ? { image, geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false }
+      : { images, geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false };
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
 async function handle_music(req, res) {
   const { type, lyrics, prompt, number_of_songs, format } = req.body||{};
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
@@ -627,6 +654,7 @@ module.exports = async function handler(req, res) {
     tts:         handle_tts,
     elevenlabs:  handle_elevenlabs,
     music:       handle_music,
+    tripo3d:     handle_tripo3d,
     voiceclone:  handle_voiceclone,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
