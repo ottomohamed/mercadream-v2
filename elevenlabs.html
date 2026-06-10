@@ -295,7 +295,7 @@ function setPreset(type) {
   document.getElementById('text-input').value = presets[type] || '';
   var len = (presets[type]||'').length;
   document.getElementById('char-count').textContent = len;
-  document.getElementById('cost-display').textContent = Math.max(1, Math.ceil(len / 1000));
+  document.getElementById('cost-display').textContent = Math.max(10, Math.ceil(len / 100));
 }
 
 async function previewVoice(voiceId, name) {
@@ -328,7 +328,7 @@ async function startGenerate() {
   if (!text) { addLog('ERROR: NO TEXT'); return; }
 
   var credits = parseInt(localStorage.getItem('md_credits')||'0');
-  var cost = Math.max(1, Math.ceil(text.length / 1000));
+  var cost = Math.max(10, Math.ceil(text.length / 100));
   if (credits < cost) { addLog('ERROR: INSUFFICIENT GNS (' + cost + ' needed)'); return; }
 
   var btn = document.getElementById('generate-btn');
