@@ -303,7 +303,7 @@
 <div class="flex gap-md self-end max-w-[90%] md:max-w-[80%]">
 <div class="bg-surface-variant border border-outline-variant p-md corner-bracket relative">
 <p class="text-body-md text-on-surface">Initiate screenplay structure for 'CYBERPUNK NEON' series. Focus on Act 1 sequence 4 - The meeting at the rain-soaked docks.</p>
-<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 — USER_MAIN</span>
+<span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">09:42:01 ï¿½ USER_MAIN</span>
 </div>
 <div class="w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0">
 <span class="material-symbols-outlined">person</span>
@@ -327,7 +327,7 @@
 <span class="text-primary-fixed-dim">&gt;&gt;</span> Tone set to: NOIR / HIGH_CONTRAST.<br/>
 <span class="text-primary-fixed-dim">&gt;&gt;</span> Screenplay protocol engaged. Ready for Act 1 details.
                         </p>
-<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 — GEMINI-9</span>
+<span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">09:42:05 ï¿½ GEMINI-9</span>
 </div>
 </div>
 <div class="absolute inset-0 bg-background/90 z-20 flex-col items-center justify-center gap-lg" id="voice-overlay" style="display:none">
@@ -606,7 +606,7 @@
             return;
         }
 
-        addLogLine('GENERATE pressed — requesting scene from ' + director);
+        addLogLine('GENERATE pressed ï¿½ requesting scene from ' + director);
         animatePipeline();
     }
 
@@ -663,7 +663,7 @@
         if (role === 'user') {
             const msgWrap = document.createElement('div');
             msgWrap.className = 'bg-surface-variant border border-outline-variant p-md relative';
-            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} — USER_MAIN</span>`;
+            msgWrap.innerHTML = `<p class="text-body-md text-on-surface">${text}</p><span class="absolute -bottom-5 right-0 font-label-technical text-[10px] text-on-surface-variant">${now} ï¿½ USER_MAIN</span>`;
             div.appendChild(msgWrap);
             const icon = document.createElement('div');
             icon.className = 'w-10 h-10 bg-on-surface text-background flex items-center justify-center border border-on-surface shrink-0';
@@ -673,7 +673,7 @@
             div.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">smart_toy</span></div>';
             const bubble = document.createElement('div');
             bubble.className = 'bg-surface-container-high border border-primary-fixed-dim/30 p-md relative';
-            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' — ' + (label || 'GEMINI-9') + '</span>';
+            bubble.innerHTML = '<p class="text-body-md text-on-surface-variant font-label-technical leading-relaxed">' + text + '</p><span class="absolute -bottom-5 left-0 font-label-technical text-[10px] text-on-surface-variant">' + now + ' ï¿½ ' + (label || 'GEMINI-9') + '</span>';
             div.appendChild(bubble);
         }
         chat.insertBefore(div, voiceOverlay);
@@ -746,7 +746,7 @@
         header.innerHTML = '<div class="w-10 h-10 bg-primary-fixed-dim text-on-primary flex items-center justify-center border border-primary-fixed-dim shadow-[0_0_10px_#c8ff00] shrink-0"><span class="material-symbols-outlined">movie</span></div>'
             + '<div class="flex-1 bg-surface-container-high border border-primary-fixed-dim/30 p-md">'
             + '<p class="font-label-technical text-primary-fixed-dim text-sm mb-xs uppercase">Director: ' + (directorName || director) + '</p>'
-            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes — ' + cost + ' GNS each. Click GENERATE.</p></div>';
+            + '<p class="text-body-md text-on-surface-variant">' + scenes.length + ' scenes ï¿½ ' + cost + ' GNS each. Click GENERATE.</p></div>';
         chat.insertBefore(header, voiceOverlay);
 
         scenes.forEach((scene, idx) => {
@@ -824,7 +824,7 @@
                     addLogLine('POLL ' + attempts + ': ' + (pd.status||'').toUpperCase());
                     if (pd.status === 'completed' && pd.videoUrl) {
                         clearInterval(poll);
-                        // Save to Assembly
+                        // Save to Assembly + Firestore
                         try {
                             const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]').filter(s => s.sceneNumber !== idx+1);
                             scenes.push({ videoUrl: pd.videoUrl, title: 'Scene_'+(idx+1), sceneNumber: idx+1 });
@@ -832,6 +832,22 @@
                             const el = document.getElementById('assembly-count');
                             if (el) el.textContent = scenes.length;
                         } catch(e) {}
+                        // Save to Firestore
+                        try {
+                            const uid = localStorage.getItem('md_user_id');
+                            if (uid) {
+                                firebase.firestore().collection('users').doc(uid)
+                                    .collection('videos').add({
+                                        videoUrl: pd.videoUrl,
+                                        title: 'Scene_'+(idx+1),
+                                        sceneNumber: idx+1,
+                                        createdAt: new Date().toISOString(),
+                                        prompt: scene.prompt || ''
+                                    });
+                                firebase.firestore().collection('users').doc(uid)
+                                    .update({ renders: firebase.firestore.FieldValue.increment(1) });
+                            }
+                        } catch(fe) { console.warn('Firestore save failed:', fe); }
                         if (resultDiv) {
                             resultDiv.innerHTML = '';
                             var vid = document.createElement('video');
@@ -935,7 +951,7 @@
 
     function openAssembly() {
         const scenes = JSON.parse(localStorage.getItem('md_6scenes') || '[]');
-        if (!scenes.length) { addLogLine('NO SCENES YET — Generate first'); return; }
+        if (!scenes.length) { addLogLine('NO SCENES YET ï¿½ Generate first'); return; }
         window.location.href = 'assembly.html';
     }
 
