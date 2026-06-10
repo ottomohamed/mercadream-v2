@@ -932,6 +932,19 @@
         }
     }
 
+    function setModel(btn) {
+        document.querySelectorAll('.model-btn').forEach(b => {
+            b.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+            b.classList.add('border-outline-variant');
+        });
+        btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+        btn.classList.remove('border-outline-variant');
+        document.getElementById('selected-model').value = btn.dataset.model;
+        document.getElementById('model-cost').value = btn.dataset.cost;
+        document.getElementById('sync-cost').innerText = btn.dataset.cost + ' GNS';
+        addLogLine('ENGINE: ' + btn.textContent.trim() + ' SELECTED');
+    }
+
     function setSceneCount(n) {
         document.getElementById('scene-count').value = n;
         document.querySelectorAll('.scene-btn').forEach(btn => {
