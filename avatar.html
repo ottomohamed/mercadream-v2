@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM // AVATAR_STUDIO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+body{background-color:#000000;background-image:linear-gradient(#1a1a1a 1px,transparent 1px),linear-gradient(90deg,#1a1a1a 1px,transparent 1px);background-size:24px 24px;color:#e2e2e2;}
+.neon-glow{box-shadow:0 0 8px rgba(200,255,0,0.4);}
+.terminal-scroll::-webkit-scrollbar{width:4px;}
+.terminal-scroll::-webkit-scrollbar-track{background:#0a0a0a;}
+.terminal-scroll::-webkit-scrollbar-thumb{background:#333333;}
+.terminal-scroll::-webkit-scrollbar-thumb:hover{background:#c8ff00;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.terminal-cursor{display:inline-block;width:8px;height:14px;background:#c8ff00;animation:blink 1s infinite;vertical-align:middle;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+</head>
+<body class="font-mono overflow-hidden h-screen flex flex-col" style="font-family:'IBM Plex Mono',monospace">
+
+<!-- NAV -->
+<header class="border-b border-[#333] flex justify-between items-center w-full px-6 py-3 z-50" style="background:#000">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="text-[#c8ff00] font-bold tracking-widest text-sm" style="font-family:Orbitron,sans-serif">MERCADREAM</a>
+    <nav class="hidden md:flex gap-6">
+      <a href="studio.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">STUDIO</a>
+      <a href="avatar.html" class="text-[#c8ff00] border-b border-[#c8ff00] text-xs uppercase tracking-wider">AVATAR</a>
+      <a href="voice.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">VOICE</a>
+    </nav>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="border border-[#333] px-3 py-1 text-[#c8ff00] text-xs flex items-center gap-2">
+      <span class="material-symbols-outlined text-sm">bolt</span>
+      <span id="gns-balance">0 GNS</span>
+    </div>
+  </div>
+</header>
+
+<main class="flex flex-1 overflow-hidden">
+
+  <!-- Column 1: Character Library -->
+  <div class="w-64 border-r border-[#333] flex flex-col h-full" style="background:#050505">
+    <div class="p-3 border-b border-[#333]">
+      <div class="text-[#666] text-[9px] mb-2 uppercase tracking-widest">// CHARACTER_LIBRARY</div>
+      <div class="flex flex-wrap gap-1" id="category-filters">
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#c8ff00] text-[#c8ff00]" data-cat="all">ALL</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="PRESENTER">HOST</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="DOCTOR">DOCTOR</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="TEACHER">TEACHER</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="CHEF">CHEF</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="BUSINESS">BIZ</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="LAWYER">LAWYER</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="FITNESS">FITNESS</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="TECH">TECH</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="JOURNALIST">PRESS</button>
+        <button class="cat-btn px-2 py-0.5 text-[9px] border border-[#333] text-[#666] hover:border-[#c8ff00] hover:text-[#c8ff00] transition-colors" data-cat="SCIENTIST">SCIENCE</button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto p-3 terminal-scroll grid grid-cols-2 gap-2 content-start" id="char-grid"></div>
+  </div>
+
+  <!-- Column 2: Script & Voice -->
+  <div class="flex-1 border-r border-[#333] flex flex-col h-full" style="background:#050505">
+    <div class="p-4 flex-1 flex flex-col">
+      <div class="flex justify-between items-center mb-3">
+        <div class="text-white text-sm font-bold uppercase tracking-wider" style="font-family:Orbitron,sans-serif">Script Input</div>
+        <div class="text-[#666] text-[9px]"><span id="char-count">0</span> / 5000</div>
+      </div>
+      <textarea id="script-input" class="flex-1 border border-[#333] p-3 text-xs text-[#e0e0e0] resize-none focus:outline-none focus:border-[#c8ff00] transition-colors" 
+        style="background:#000;font-family:'IBM Plex Mono',monospace;min-height:200px"
+        placeholder="INITIATING SCRIPT INPUT... TYPE YOUR NARRATIVE HERE."></textarea>
+
+      <!-- Voice Engine -->
+      <div class="mt-4">
+        <label class="block text-[#666] text-[9px] mb-2 uppercase tracking-wider">Voice Engine</label>
+        <div class="flex border border-[#333] w-fit p-0.5 mb-3">
+          <button class="voice-engine-btn px-4 py-1.5 text-[10px] bg-[#c8ff00] text-black font-bold" data-engine="elevenlabs">ELEVENLABS</button>
+          <button class="voice-engine-btn px-4 py-1.5 text-[10px] text-[#666] hover:text-white transition-colors" data-engine="qwen3">QWEN3</button>
+        </div>
+        <input type="hidden" id="selected-engine" value="elevenlabs"/>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[#666] text-[9px] mb-1 uppercase">Voice Profile</label>
+            <select id="voice-select" class="w-full border border-[#333] text-[#e0e0e0] text-xs p-2 focus:outline-none focus:border-[#c8ff00]" style="background:#000">
+              <option value="JBFqnCBsd6RMkjVDRZzb">George (Deep)</option>
+              <option value="TX3LPaxmHKxFdv7VOQHJ">Liam (Clear)</option>
+              <option value="pFZP5JQG7iQjIQuC4Bku">Lily (Warm)</option>
+              <option value="XB0fDUnXU5powFXDhCwa">Charlotte (Smooth)</option>
+              <option value="Xb7hH8MSUJpSbSDYk0k2">Alice (British)</option>
+              <option value="pNInz6obpgDQGcFmaJgB">Adam (American)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[#666] text-[9px] mb-1 uppercase">Language</label>
+            <select id="lang-select" class="w-full border border-[#333] text-[#e0e0e0] text-xs p-2 focus:outline-none focus:border-[#c8ff00]" style="background:#000">
+              <option value="en">English</option>
+              <option value="ar">Arabic</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="zh">Chinese</option>
+              <option value="ja">Japanese</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Column 3: Duration & Generate -->
+  <div class="w-80 flex flex-col h-full" style="background:#050505">
+    <div class="p-4 flex flex-col h-full">
+      <div class="text-white text-sm font-bold uppercase tracking-wider mb-4" style="font-family:Orbitron,sans-serif">Execution Params</div>
+
+      <!-- Duration -->
+      <div class="space-y-2 mb-4" id="duration-options">
+        <div class="dur-btn flex justify-between items-center p-3 border border-[#c8ff00] bg-[#c8ff00]/10 cursor-pointer" data-dur="10" data-cost="75">
+          <div class="text-[#c8ff00] text-xs font-bold">10s</div><div class="text-[#666] text-xs">75 GNS</div>
+        </div>
+        <div class="dur-btn flex justify-between items-center p-3 border border-[#333] cursor-pointer hover:border-[#c8ff00] transition-colors" data-dur="30" data-cost="225">
+          <div class="text-[#e0e0e0] text-xs">30s</div><div class="text-[#666] text-xs">225 GNS</div>
+        </div>
+        <div class="dur-btn flex justify-between items-center p-3 border border-[#333] cursor-pointer hover:border-[#c8ff00] transition-colors" data-dur="60" data-cost="450">
+          <div class="text-[#e0e0e0] text-xs">1 min</div><div class="text-[#666] text-xs">450 GNS</div>
+        </div>
+        <div class="dur-btn flex justify-between items-center p-3 border border-[#333] cursor-pointer hover:border-[#c8ff00] transition-colors" data-dur="180" data-cost="1000">
+          <div class="text-[#e0e0e0] text-xs">3 min</div><div class="text-[#666] text-xs">1000 GNS</div>
+        </div>
+        <div class="dur-btn flex justify-between items-center p-3 border border-[#333] cursor-pointer hover:border-[#c8ff00] transition-colors" data-dur="300" data-cost="1500">
+          <div class="text-[#e0e0e0] text-xs">5 min</div><div class="text-[#666] text-xs">1500 GNS</div>
+        </div>
+      </div>
+      <input type="hidden" id="selected-dur" value="10"/>
+      <input type="hidden" id="selected-cost" value="75"/>
+
+      <!-- Resolution -->
+      <div class="mb-4">
+        <label class="block text-[#666] text-[9px] mb-1 uppercase">Resolution</label>
+        <div class="flex border border-[#333] p-0.5">
+          <button class="res-btn flex-1 py-1.5 text-[10px] text-[#666] hover:text-white transition-colors" data-res="480p">480p</button>
+          <button class="res-btn flex-1 py-1.5 text-[10px] bg-[#c8ff00] text-black font-bold" data-res="720p">720p</button>
+        </div>
+        <input type="hidden" id="selected-res" value="720p"/>
+      </div>
+
+      <!-- Cost Breakdown -->
+      <div class="border-t border-[#333] pt-3 mb-4 space-y-1">
+        <div class="flex justify-between text-[9px] text-[#666]">
+          <span>VOICE SYNTHESIS</span><span id="cost-voice">~10 GNS</span>
+        </div>
+        <div class="flex justify-between text-[9px] text-[#666]">
+          <span>AVATAR RENDER</span><span id="cost-avatar">75 GNS</span>
+        </div>
+        <div class="flex justify-between text-xs text-[#c8ff00] font-bold pt-2 border-t border-[#333]/30">
+          <span>TOTAL</span><span id="cost-total">~85 GNS</span>
+        </div>
+      </div>
+
+      <!-- Terminal Log -->
+      <div class="border border-[#333] p-2 h-32 overflow-hidden flex flex-col mb-3" style="background:#000">
+        <div class="text-[#c8ff00] text-[9px] mb-1 uppercase tracking-widest">System Log</div>
+        <div class="flex-1 overflow-y-auto terminal-scroll text-[9px] text-[#666] space-y-0.5" id="terminal-log">
+          <div>> SYSTEM READY</div>
+          <div>> WAITING FOR INPUT...<span class="terminal-cursor"></span></div>
+        </div>
+        <div class="hidden h-1 bg-[#333] mt-1 overflow-hidden" id="render-progress">
+          <div class="h-full bg-[#c8ff00] transition-all duration-300" id="progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Video Result -->
+      <div id="video-result" class="hidden mb-3">
+        <video id="result-video" controls class="w-full border border-[#c8ff00]"></video>
+        <div class="flex gap-2 mt-2">
+          <button id="dl-btn" class="flex-1 py-2 bg-[#c8ff00] text-black text-[10px] font-bold uppercase">DOWNLOAD</button>
+          <button id="asm-btn" class="flex-1 py-2 border border-[#c8ff00] text-[#c8ff00] text-[10px] uppercase hover:bg-[#c8ff00]/10 transition-colors">ASSEMBLY</button>
+        </div>
+      </div>
+
+      <button id="generate-btn" class="w-full py-4 bg-[#c8ff00] text-black font-bold uppercase tracking-widest text-sm hover:brightness-110 active:scale-95 transition-all" style="font-family:Orbitron,sans-serif">
+        GENERATE AVATAR VIDEO
+      </button>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── State ──
+var credits = parseInt(localStorage.getItem('md_credits')||'0');
+var selectedCharImg = null;
+var selectedCharName = null;
+var currentVideoUrl = null;
+
+// Balance
+document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+
+// Firebase sync
+try {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) return;
+    localStorage.setItem('md_user_id', user.uid);
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      credits = doc.data().credits || 0;
+      localStorage.setItem('md_credits', credits);
+      document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    });
+  });
+} catch(e) {}
+
+// ── Characters ──
+var CHARACTERS = [{"name": "Emma Roberts", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?w=400&h=400&fit=crop"}, {"name": "James Walker", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?w=400&h=400&fit=crop"}, {"name": "Sophia Lane", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?w=400&h=400&fit=crop"}, {"name": "Daniel Pierce", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?w=400&h=400&fit=crop"}, {"name": "Olivia Nash", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?w=400&h=400&fit=crop"}, {"name": "Marcus Bell", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?w=400&h=400&fit=crop"}, {"name": "Ava Collins", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?w=400&h=400&fit=crop"}, {"name": "Ryan Stone", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?w=400&h=400&fit=crop"}, {"name": "Mia Torres", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?w=400&h=400&fit=crop"}, {"name": "Leo Grant", "cat": "PRESENTER", "img": "https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Elena Ross", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Ahmed Malik", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Sarah Kim", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/5214958/pexels-photo-5214958.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Paul White", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/4225880/pexels-photo-4225880.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Nadia Farah", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. James Ford", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/4173251/pexels-photo-4173251.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Yuki Tanaka", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/5214995/pexels-photo-5214995.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Omar Hassan", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/4225920/pexels-photo-4225920.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Lisa Chen", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/5327921/pexels-photo-5327921.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Mark Evans", "cat": "DOCTOR", "img": "https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Prof. Williams", "cat": "TEACHER", "img": "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?w=400&h=400&fit=crop"}, {"name": "Ms. Chen", "cat": "TEACHER", "img": "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?w=400&h=400&fit=crop"}, {"name": "Mr. Davis", "cat": "TEACHER", "img": "https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?w=400&h=400&fit=crop"}, {"name": "Ms. Patel", "cat": "TEACHER", "img": "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?w=400&h=400&fit=crop"}, {"name": "Prof. Santos", "cat": "TEACHER", "img": "https://images.pexels.com/photos/5212338/pexels-photo-5212338.jpeg?w=400&h=400&fit=crop"}, {"name": "Ms. Johnson", "cat": "TEACHER", "img": "https://images.pexels.com/photos/3765811/pexels-photo-3765811.jpeg?w=400&h=400&fit=crop"}, {"name": "Mr. Ali", "cat": "TEACHER", "img": "https://images.pexels.com/photos/5212349/pexels-photo-5212349.jpeg?w=400&h=400&fit=crop"}, {"name": "Ms. Garcia", "cat": "TEACHER", "img": "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?w=400&h=400&fit=crop"}, {"name": "Prof. Brown", "cat": "TEACHER", "img": "https://images.pexels.com/photos/5212361/pexels-photo-5212361.jpeg?w=400&h=400&fit=crop"}, {"name": "Ms. Kim", "cat": "TEACHER", "img": "https://images.pexels.com/photos/3769151/pexels-photo-3769151.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Marco", "cat": "CHEF", "img": "https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Yuki", "cat": "CHEF", "img": "https://images.pexels.com/photos/887827/pexels-photo-887827.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Sofia", "cat": "CHEF", "img": "https://images.pexels.com/photos/3771120/pexels-photo-3771120.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Carlos", "cat": "CHEF", "img": "https://images.pexels.com/photos/3814447/pexels-photo-3814447.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Amara", "cat": "CHEF", "img": "https://images.pexels.com/photos/3771121/pexels-photo-3771121.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Pierre", "cat": "CHEF", "img": "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Nina", "cat": "CHEF", "img": "https://images.pexels.com/photos/3771119/pexels-photo-3771119.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Hassan", "cat": "CHEF", "img": "https://images.pexels.com/photos/3814448/pexels-photo-3814448.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Mei", "cat": "CHEF", "img": "https://images.pexels.com/photos/3771122/pexels-photo-3771122.jpeg?w=400&h=400&fit=crop"}, {"name": "Chef Andre", "cat": "CHEF", "img": "https://images.pexels.com/photos/887828/pexels-photo-887828.jpeg?w=400&h=400&fit=crop"}, {"name": "Alex Carter", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?w=400&h=400&fit=crop"}, {"name": "Diana Ford", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?w=400&h=400&fit=crop"}, {"name": "Nathan Blake", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?w=400&h=400&fit=crop"}, {"name": "Claire Morgan", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?w=400&h=400&fit=crop&hue=200"}, {"name": "Victor Reyes", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?w=400&h=400&fit=crop&sat=-10"}, {"name": "Sarah Wells", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/3760809/pexels-photo-3760809.jpeg?w=400&h=400&fit=crop"}, {"name": "Kevin Park", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?w=400&h=400&fit=crop&sat=-10"}, {"name": "Amanda Liu", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?w=400&h=400&fit=crop&sat=-10"}, {"name": "Robert Hayes", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?w=400&h=400&fit=crop&sat=-10"}, {"name": "Jessica Tang", "cat": "BUSINESS", "img": "https://images.pexels.com/photos/3785104/pexels-photo-3785104.jpeg?w=400&h=400&fit=crop"}, {"name": "Elena Vance", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg?w=400&h=400&fit=crop"}, {"name": "Michael Cross", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg?w=400&h=400&fit=crop"}, {"name": "Patricia Stone", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?w=400&h=400&fit=crop"}, {"name": "David Hall", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5668860/pexels-photo-5668860.jpeg?w=400&h=400&fit=crop"}, {"name": "Rachel Burns", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5669602/pexels-photo-5669602.jpeg?w=400&h=400&fit=crop"}, {"name": "Thomas Gray", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5668473/pexels-photo-5668473.jpeg?w=400&h=400&fit=crop"}, {"name": "Sandra Lee", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5669783/pexels-photo-5669783.jpeg?w=400&h=400&fit=crop"}, {"name": "Anthony Ross", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5668854/pexels-photo-5668854.jpeg?w=400&h=400&fit=crop"}, {"name": "Julia Hart", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5669618/pexels-photo-5669618.jpeg?w=400&h=400&fit=crop"}, {"name": "Frank Webb", "cat": "LAWYER", "img": "https://images.pexels.com/photos/5668855/pexels-photo-5668855.jpeg?w=400&h=400&fit=crop"}, {"name": "Jake Strong", "cat": "FITNESS", "img": "https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?w=400&h=400&fit=crop"}, {"name": "Maya Fit", "cat": "FITNESS", "img": "https://images.pexels.com/photos/3823488/pexels-photo-3823488.jpeg?w=400&h=400&fit=crop"}, {"name": "Carlos Cruz", "cat": "FITNESS", "img": "https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?w=400&h=400&fit=crop"}, {"name": "Zoe Power", "cat": "FITNESS", "img": "https://images.pexels.com/photos/3823490/pexels-photo-3823490.jpeg?w=400&h=400&fit=crop"}, {"name": "Ryan Max", "cat": "FITNESS", "img": "https://images.pexels.com/photos/1229356/pexels-photo-1229356.jpeg?w=400&h=400&fit=crop"}, {"name": "Luna Active", "cat": "FITNESS", "img": "https://images.pexels.com/photos/3823491/pexels-photo-3823491.jpeg?w=400&h=400&fit=crop"}, {"name": "Mike Atlas", "cat": "FITNESS", "img": "https://images.pexels.com/photos/1552248/pexels-photo-1552248.jpeg?w=400&h=400&fit=crop"}, {"name": "Sara Flex", "cat": "FITNESS", "img": "https://images.pexels.com/photos/3823489/pexels-photo-3823489.jpeg?w=400&h=400&fit=crop"}, {"name": "Tom Rush", "cat": "FITNESS", "img": "https://images.pexels.com/photos/1552250/pexels-photo-1552250.jpeg?w=400&h=400&fit=crop"}, {"name": "Iris Yoga", "cat": "FITNESS", "img": "https://images.pexels.com/photos/3823492/pexels-photo-3823492.jpeg?w=400&h=400&fit=crop"}, {"name": "Marcus Thorne", "cat": "TECH", "img": "https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?w=400&h=400&fit=crop"}, {"name": "Sora Dev", "cat": "TECH", "img": "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?w=400&h=400&fit=crop"}, {"name": "Kevin Code", "cat": "TECH", "img": "https://images.pexels.com/photos/4974915/pexels-photo-4974915.jpeg?w=400&h=400&fit=crop"}, {"name": "Aria AI", "cat": "TECH", "img": "https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?w=400&h=400&fit=crop"}, {"name": "Dylan Data", "cat": "TECH", "img": "https://images.pexels.com/photos/4974916/pexels-photo-4974916.jpeg?w=400&h=400&fit=crop"}, {"name": "Nova Tech", "cat": "TECH", "img": "https://images.pexels.com/photos/3861960/pexels-photo-3861960.jpeg?w=400&h=400&fit=crop"}, {"name": "Chris Cloud", "cat": "TECH", "img": "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?w=400&h=400&fit=crop"}, {"name": "Zara UX", "cat": "TECH", "img": "https://images.pexels.com/photos/3861964/pexels-photo-3861964.jpeg?w=400&h=400&fit=crop"}, {"name": "Sam System", "cat": "TECH", "img": "https://images.pexels.com/photos/4974913/pexels-photo-4974913.jpeg?w=400&h=400&fit=crop"}, {"name": "Lily Logic", "cat": "TECH", "img": "https://images.pexels.com/photos/3861962/pexels-photo-3861962.jpeg?w=400&h=400&fit=crop"}, {"name": "Tom Field", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/3760809/pexels-photo-3760809.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Anna Press", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Jake Report", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Sara News", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Mark Live", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Nora Scoop", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Ben Flash", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Kim Anchor", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Chris Byline", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Eva Broadcast", "cat": "JOURNALIST", "img": "https://images.pexels.com/photos/3785104/pexels-photo-3785104.jpeg?w=400&h=400&fit=crop&sat=-20"}, {"name": "Dr. Newton", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Curie", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825581/pexels-photo-3825581.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Tesla", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825527/pexels-photo-3825527.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Farah", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825572/pexels-photo-3825572.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Singh", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825530/pexels-photo-3825530.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Zhao", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825580/pexels-photo-3825580.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Okafor", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825528/pexels-photo-3825528.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Rivera", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825573/pexels-photo-3825573.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Müller", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825526/pexels-photo-3825526.jpeg?w=400&h=400&fit=crop"}, {"name": "Dr. Yusuf", "cat": "SCIENTIST", "img": "https://images.pexels.com/photos/3825579/pexels-photo-3825579.jpeg?w=400&h=400&fit=crop"}];
+
+var currentCat = 'all';
+
+function buildGrid(cat) {
+  var grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+  CHARACTERS.filter(function(c) { return cat === 'all' || c.cat === cat; }).forEach(function(c) {
+    var div = document.createElement('div');
+    div.className = 'char-card border border-[#333] p-1 cursor-pointer transition-all hover:border-[#c8ff00]';
+    div.style.background = '#000';
+    div.innerHTML = '<img src="'+c.img+'" class="w-full aspect-square object-cover mb-1" onerror="this.src='https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400'"/>'
+      + '<div class="text-[8px] text-[#e0e0e0] truncate">'+c.name+'</div>'
+      + '<div class="text-[7px] text-[#666] border border-[#333] px-1 inline-block mt-0.5">'+c.cat+'</div>';
+    div.addEventListener('click', function() {
+      document.querySelectorAll('.char-card').forEach(function(el) {
+        el.style.borderColor = '#333';
+        el.style.boxShadow = '';
+      });
+      div.style.borderColor = '#c8ff00';
+      div.style.boxShadow = '0 0 8px rgba(200,255,0,0.4)';
+      selectedCharImg = c.img;
+      selectedCharName = c.name;
+      addLog('CHARACTER: '+c.name+' SELECTED');
+    });
+    grid.appendChild(div);
+  });
+}
+buildGrid('all');
+
+// Category filter
+document.querySelectorAll('.cat-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-btn').forEach(function(b) {
+      b.style.borderColor = '#333'; b.style.color = '#666';
+    });
+    btn.style.borderColor = '#c8ff00'; btn.style.color = '#c8ff00';
+    currentCat = btn.dataset.cat;
+    buildGrid(currentCat);
+  });
+});
+
+// Duration select
+document.querySelectorAll('.dur-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.dur-btn').forEach(function(b) {
+      b.style.borderColor = '#333';
+      b.querySelector('div').style.color = '#e0e0e0';
+    });
+    btn.style.borderColor = '#c8ff00';
+    btn.querySelector('div').style.color = '#c8ff00';
+    document.getElementById('selected-dur').value = btn.dataset.dur;
+    document.getElementById('selected-cost').value = btn.dataset.cost;
+    document.getElementById('cost-avatar').textContent = btn.dataset.cost + ' GNS';
+    document.getElementById('cost-total').textContent = '~' + (parseInt(btn.dataset.cost)+10) + ' GNS';
+  });
+});
+
+// Resolution
+document.querySelectorAll('.res-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.res-btn').forEach(function(b) {
+      b.style.background = ''; b.style.color = '#666'; b.style.fontWeight = '';
+    });
+    btn.style.background = '#c8ff00'; btn.style.color = '#000'; btn.style.fontWeight = 'bold';
+    document.getElementById('selected-res').value = btn.dataset.res;
+  });
+});
+
+// Voice engine
+document.querySelectorAll('.voice-engine-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.voice-engine-btn').forEach(function(b) {
+      b.style.background = ''; b.style.color = '#666'; b.style.fontWeight = '';
+    });
+    btn.style.background = '#c8ff00'; btn.style.color = '#000'; btn.style.fontWeight = 'bold';
+    document.getElementById('selected-engine').value = btn.dataset.engine;
+    var sel = document.getElementById('voice-select');
+    sel.innerHTML = btn.dataset.engine === 'elevenlabs'
+      ? '<option value="JBFqnCBsd6RMkjVDRZzb">George (Deep)</option><option value="TX3LPaxmHKxFdv7VOQHJ">Liam (Clear)</option><option value="pFZP5JQG7iQjIQuC4Bku">Lily (Warm)</option><option value="XB0fDUnXU5powFXDhCwa">Charlotte</option><option value="Xb7hH8MSUJpSbSDYk0k2">Alice (British)</option><option value="pNInz6obpgDQGcFmaJgB">Adam</option>'
+      : '<option value="Chelsie">Chelsie</option><option value="Ethan">Ethan</option><option value="Serena">Serena</option><option value="Marcus">Marcus</option><option value="Luna">Luna</option><option value="Dylan">Dylan</option>';
+  });
+});
+
+// Char counter
+document.getElementById('script-input').addEventListener('input', function() {
+  document.getElementById('char-count').textContent = this.value.length;
+});
+
+// Log
+function addLog(msg) {
+  var log = document.getElementById('terminal-log');
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  var div = document.createElement('div');
+  div.textContent = '> ['+t+'] '+msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── Generate ──
+document.getElementById('generate-btn').addEventListener('click', async function() {
+  var script = document.getElementById('script-input').value.trim();
+  if (!script) { addLog('ERROR: SCRIPT IS EMPTY'); return; }
+  if (!selectedCharImg) { addLog('ERROR: SELECT A CHARACTER FIRST'); return; }
+
+  var cost = parseInt(document.getElementById('selected-cost').value);
+  var totalCost = cost + 10;
+  if (credits < totalCost) { addLog('ERROR: INSUFFICIENT GNS (need '+totalCost+')'); return; }
+
+  var btn = document.getElementById('generate-btn');
+  btn.disabled = true; btn.textContent = 'GENERATING...';
+  document.getElementById('render-progress').classList.remove('hidden');
+  document.getElementById('video-result').classList.add('hidden');
+
+  addLog('SCRIPT: '+script.length+' CHARS');
+  addLog('GENERATING VOICE...');
+
+  try {
+    // Step 1: Generate voice
+    var engine = document.getElementById('selected-engine').value;
+    var voiceId = document.getElementById('voice-select').value;
+    var lang = document.getElementById('lang-select').value;
+
+    var ttsEndpoint = engine === 'elevenlabs' ? '/api/elevenlabs' : '/api/tts';
+    var ttsBody = engine === 'elevenlabs'
+      ? { text: script, voice_id: voiceId, language: lang }
+      : { text: script, voice: voiceId, language: lang };
+
+    var ttsRes = await fetch(ttsEndpoint, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(ttsBody)
+    });
+    var ttsData = await ttsRes.json();
+    if (!ttsData.taskId) throw new Error(ttsData.error || 'TTS failed');
+    addLog('TTS JOB: '+ttsData.taskId);
+    document.getElementById('progress-bar').style.width = '20%';
+
+    // Poll TTS
+    var audioUrl = null;
+    for (var i = 0; i < 60; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      var tp = await fetch('/api/video?id='+ttsData.taskId);
+      var td = await tp.json();
+      addLog('TTS POLL '+i+': '+(td.status||'').toUpperCase());
+      if (td.status === 'completed' && td.videoUrl) { audioUrl = td.videoUrl; break; }
+      if (td.status === 'failed') throw new Error('TTS failed');
+    }
+    if (!audioUrl) throw new Error('TTS timeout');
+    addLog('VOICE READY');
+    document.getElementById('progress-bar').style.width = '40%';
+
+    // Deduct credits
+    credits -= totalCost;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+
+    // Step 2: Generate avatar
+    addLog('INITIATING AVATAR GENERATION...');
+    var dur = parseInt(document.getElementById('selected-dur').value);
+    var res = document.getElementById('selected-res').value;
+
+    var avRes = await fetch('/api/avatar', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        image: selectedCharImg,
+        audio: audioUrl,
+        duration: dur,
+        resolution: res,
+        prompt: 'Professional speaking avatar, natural head movements, maintain identity'
+      })
+    });
+    var avData = await avRes.json();
+    if (!avData.taskId) throw new Error(avData.error || 'Avatar failed');
+    addLog('AVATAR JOB: '+avData.taskId);
+    document.getElementById('progress-bar').style.width = '60%';
+
+    // Poll Avatar
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 120) {
+        clearInterval(poll);
+        credits += totalCost;
+        localStorage.setItem('md_credits', credits);
+        addLog('TIMEOUT — credits refunded');
+        btn.disabled = false; btn.textContent = 'GENERATE AVATAR VIDEO';
+        return;
+      }
+      try {
+        var pr = await fetch('/api/video?id='+avData.taskId);
+        var pd = await pr.json();
+        var pct = Math.min(60 + attempts, 95);
+        document.getElementById('progress-bar').style.width = pct+'%';
+        addLog('POLL '+attempts+': '+(pd.status||'').toUpperCase());
+        if (pd.status === 'completed' && pd.videoUrl) {
+          clearInterval(poll);
+          currentVideoUrl = pd.videoUrl;
+          document.getElementById('progress-bar').style.width = '100%';
+          document.getElementById('result-video').src = pd.videoUrl;
+          document.getElementById('video-result').classList.remove('hidden');
+          addLog('AVATAR READY!');
+          btn.disabled = false; btn.textContent = 'GENERATE AVATAR VIDEO';
+          // Save to Firebase
+          try {
+            var uid = localStorage.getItem('md_user_id');
+            if (uid) {
+              firebase.firestore().collection('users').doc(uid).collection('videos').add({
+                videoUrl: pd.videoUrl, type: 'avatar', character: selectedCharName,
+                createdAt: new Date().toISOString()
+              });
+              firebase.firestore().collection('users').doc(uid).update({
+                renders: firebase.firestore.FieldValue.increment(1)
+              });
+            }
+          } catch(fe) {}
+        } else if (pd.status === 'failed') {
+          clearInterval(poll);
+          throw new Error('Avatar generation failed');
+        }
+      } catch(pe) { addLog('POLL ERR: '+pe.message); }
+    }, 5000);
+
+  } catch(e) {
+    addLog('ERROR: '+e.message);
+    credits += totalCost;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    btn.disabled = false; btn.textContent = 'GENERATE AVATAR VIDEO';
+  }
+});
+
+// Download
+document.getElementById('dl-btn').addEventListener('click', function() {
+  if (!currentVideoUrl) return;
+  var a = document.createElement('a');
+  a.href = currentVideoUrl;
+  a.download = 'mercadream_avatar_'+Date.now()+'.mp4';
+  a.click();
+});
+
+// Assembly
+document.getElementById('asm-btn').addEventListener('click', function() {
+  if (!currentVideoUrl) return;
+  localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
+    url: currentVideoUrl, name: 'avatar_'+Date.now()+'.mp4', type: 'video', duration: 10
+  }));
+  window.location.href = 'assembly.html';
+});
+</script>
+</body></html>
