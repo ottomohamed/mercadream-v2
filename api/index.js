@@ -1,4 +1,4 @@
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -284,6 +284,41 @@ async function handle_faceswap(req, res) {
   return res.json({ taskId });
 }
 
+
+async function handle_tts(req, res) {
+  const { text, voice, language, style } = req.body||{};
+  if (!text) return res.status(400).json({ error: 'text required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/qwen3-tts/text-to-speech', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice: voice||'Chelsie', language: language||'auto', style_instructions: style||'' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_voiceclone(req, res) {
+  const { audio, text, language, transcript } = req.body||{};
+  if (!audio || !text) return res.status(400).json({ error: 'audio and text required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/qwen3-tts/voice-clone', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio, text, language: language||'auto', reference_transcript: transcript||'' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
 async function handle_animate(req, res) {
   const { imageUrl, prompt, duration } = req.body||{};
   if (!imageUrl) return res.status(400).json({ error: 'imageUrl required.' });
@@ -291,34 +326,6 @@ async function handle_animate(req, res) {
   const taskId = d.data?.id;
   if (!taskId) return res.status(500).json({ error: 'No task ID' });
   return res.json({ taskId });
-}
-
-async function handle_i2v(req, res) {
-  const { image, prompt, duration, resolution } = req.body||{};
-  if (!image) return res.status(400).json({ error: 'image required.' });
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/wan-2.2-spicy/image-to-video', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + WAVESPEED_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        image: image,
-        prompt: prompt || 'Smooth cinematic motion',
-        resolution: resolution || '480p',
-        duration: duration || 5,
-        seed: -1
-      })
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message || 'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) {
-    return res.status(500).json({ error: e.message });
-  }
 }
 
 async function handle_lipsync(req, res) {
@@ -571,6 +578,8 @@ module.exports = async function handler(req, res) {
     audioforge:  handle_audioforge,
     bgremover:   handle_bgremover,
     faceswap:    handle_faceswap,
+    tts:         handle_tts,
+    voiceclone:  handle_voiceclone,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
     deaging:     handle_deaging,
@@ -581,7 +590,6 @@ module.exports = async function handler(req, res) {
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
-    i2v:         handle_i2v,
   };
 
   const fn = routes[service];
