@@ -1,4 +1,4 @@
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -186,18 +186,13 @@ async function handle_wavespeed(req, res) {
   try {
     // WaveSpeed API v3 - model-specific endpoint
     const endpoint = 'https://api.wavespeed.ai/api/v3/' + modelId;
-    const isWan25 = modelId.includes('wan-2.5');
     const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + WAVESPEED_KEY,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(isWan25 ? {
-        prompt: prompt,
-        duration: duration||5,
-        resolution: '720p'
-      } : {
+      body: JSON.stringify({
         prompt: prompt,
         duration: duration||5,
         size: '1280x720',
@@ -287,114 +282,6 @@ async function handle_faceswap(req, res) {
   const taskId = d.data?.id;
   if (!taskId) return res.status(500).json({ error: 'No task ID' });
   return res.json({ taskId });
-}
-
-
-async function handle_tripo3d(req, res) {
-  const { type, prompt, negative_prompt, image, images, geometry_quality, texture_quality, pbr } = req.body||{};
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const models = {
-      text:      'tripo3d/h3.1/text-to-3d',
-      image:     'tripo3d/h3.1/image-to-3d',
-      multiview: 'tripo3d/h3.1/multiview-to-3d'
-    };
-    const model = models[type] || models.text;
-    const body = type === 'text'
-      ? { prompt, negative_prompt: negative_prompt||'', geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false }
-      : type === 'image'
-      ? { image, geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false }
-      : { images, geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false };
-    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
-}
-
-async function handle_music(req, res) {
-  const { type, lyrics, prompt, number_of_songs, format } = req.body||{};
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const model = type === 'bgm'
-      ? 'mureka-ai/mureka-v9/generate-bgm'
-      : 'mureka-ai/mureka-v9/generate-song';
-    const body = type === 'bgm'
-      ? { prompt: prompt||'cinematic background music', number_of_songs: number_of_songs||1, format: format||'mp3' }
-      : { lyrics: lyrics||'', prompt: prompt||'', number_of_songs: number_of_songs||1, format: format||'mp3' };
-    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
-}
-
-async function handle_elevenlabs(req, res) {
-  const { text, voice_id, language, stability, similarity } = req.body||{};
-  if (!text) return res.status(400).json({ error: 'text required.' });
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/elevenlabs/eleven-v3', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text,
-        voice_id: voice_id || 'JBFqnCBsd6RMkjVDRZzb',
-        language_code: language || 'en',
-        stability: stability || 0.5,
-        similarity_boost: similarity || 0.75,
-        speaker_boost: true
-      })
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
-}
-
-async function handle_tts(req, res) {
-  const { text, voice, language, style } = req.body||{};
-  if (!text) return res.status(400).json({ error: 'text required.' });
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/qwen3-tts/text-to-speech', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice: voice||'Chelsie', language: language||'auto', style_instructions: style||'' })
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
-}
-
-async function handle_voiceclone(req, res) {
-  const { audio, text, language, transcript } = req.body||{};
-  if (!audio || !text) return res.status(400).json({ error: 'audio and text required.' });
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/qwen3-tts/voice-clone', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ audio, text, language: language||'auto', reference_transcript: transcript||'' })
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
 }
 
 async function handle_animate(req, res) {
@@ -510,8 +397,8 @@ async function handle_director(req, res) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{ 'x-api-key':ANTHROPIC_KEY, 'anthropic-version':'2023-06-01', 'content-type':'application/json' },
-    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1024,
-      messages:[{ role:'user', content:`You are ${director||'a master film director'}. Generate ${duration||3} cinematic video prompts for: "${concept}". Genre: ${genre||'cinematic'}. Return JSON array only.` }]
+    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:4096,
+      messages:[{ role:'user', content:`You are ${director||'a master film director'}. Generate EXACTLY ${duration||3} cinematic video prompts for: "${concept}". Return ONLY a valid JSON array with exactly ${duration||3} objects. Each object: {"scene": number, "title": "string", "prompt": "detailed 80+ word English video prompt"}. No markdown, no explanation, ONLY the JSON array.` }]
     })
   });
   const d = await r.json();
@@ -656,11 +543,6 @@ module.exports = async function handler(req, res) {
     audioforge:  handle_audioforge,
     bgremover:   handle_bgremover,
     faceswap:    handle_faceswap,
-    tts:         handle_tts,
-    elevenlabs:  handle_elevenlabs,
-    music:       handle_music,
-    tripo3d:     handle_tripo3d,
-    voiceclone:  handle_voiceclone,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
     deaging:     handle_deaging,
