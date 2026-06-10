@@ -186,13 +186,13 @@ async function handle_wavespeed(req, res) {
   try {
     // WaveSpeed API v3 - model-specific endpoint
     const endpoint = 'https://api.wavespeed.ai/api/v3/' + modelId;
+    const isWan25 = modelId.includes('wan-2.5');
     const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + WAVESPEED_KEY,
         'Content-Type': 'application/json'
       },
-      const isWan25 = modelId.includes('wan-2.5');
       body: JSON.stringify(isWan25 ? {
         prompt: prompt,
         duration: duration||5,
