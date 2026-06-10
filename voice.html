@@ -202,14 +202,17 @@ document.getElementById('gns-balance').textContent = (parseInt(localStorage.getI
 
 // --- VOICES ---
 var VOICES = [
-  {id:'alloy',  name:'ALLOY',   desc:'NEUTRAL / PROFESSIONAL'},
-  {id:'echo',   name:'ECHO',    desc:'DEEP / CINEMATIC MALE'},
-  {id:'fable',  name:'FABLE',   desc:'STORYTELLER / BRITISH'},
-  {id:'nova',   name:'NOVA',    desc:'CLEAR / CONFIDENT FEMALE'},
-  {id:'onyx',   name:'ONYX',    desc:'DARK / AUTHORITATIVE'},
-  {id:'shimmer',name:'SHIMMER', desc:'WARM / EMOTIONAL'},
+  {id:'Chelsie',  name:'CHELSIE',  desc:'WARM / FRIENDLY FEMALE'},
+  {id:'Ethan',    name:'ETHAN',    desc:'CLEAR / PROFESSIONAL MALE'},
+  {id:'Serena',   name:'SERENA',   desc:'CALM / NARRATOR FEMALE'},
+  {id:'Marcus',   name:'MARCUS',   desc:'DEEP / AUTHORITATIVE MALE'},
+  {id:'Luna',     name:'LUNA',     desc:'BRIGHT / ENERGETIC FEMALE'},
+  {id:'Dylan',    name:'DYLAN',    desc:'CASUAL / CONVERSATIONAL MALE'},
+  {id:'Aurora',   name:'AURORA',   desc:'ELEGANT / SOPHISTICATED'},
+  {id:'Jasper',   name:'JASPER',   desc:'STORYTELLER / CINEMATIC'},
+  {id:'Zoe',      name:'ZOE',      desc:'YOUTHFUL / EXPRESSIVE'},
 ];
-var selectedVoice = 'echo';
+var selectedVoice = 'Chelsie';
 var currentBlobUrl = null;
 var audioEl = document.getElementById('audio-el');
 
@@ -311,38 +314,31 @@ document.getElementById('dl-btn').addEventListener('click', function() {
   addLog('DOWNLOAD: SAVED');
 });
 
-// --- TTS API ---
+// --- TTS API (WaveSpeed Qwen3-TTS) ---
 async function generateAudio(text, voice, speed) {
-  // Try Pollinations OpenAI-compatible endpoint
-  var res = await fetch('https://api.pollinations.ai/v1/audio/speech', {
+  addLog('TTS: SENDING TO WAVESPEED...');
+  var res = await fetch('/api/tts', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({model:'tts-1', input:text, voice:voice, speed:speed||1.0})
+    body: JSON.stringify({ text: text, voice: voice, language: 'auto' })
   });
-  if (res.ok) {
-    addLog('TTS: POLLINATIONS API OK');
-    return URL.createObjectURL(await res.blob());
+  var data = await res.json();
+  if (!data.taskId) throw new Error(data.error || 'No task ID');
+  addLog('JOB: ' + data.taskId);
+  for (var i = 0; i < 60; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    var pr = await fetch('/api/video?id=' + data.taskId);
+    var pd = await pr.json();
+    addLog('POLL ' + (i+1) + ': ' + (pd.status||'').toUpperCase());
+    if (pd.status === 'completed' && pd.videoUrl) {
+      addLog('TTS: COMPLETE');
+      var audioRes = await fetch(pd.videoUrl);
+      var blob = await audioRes.blob();
+      return URL.createObjectURL(blob);
+    }
+    if (pd.status === 'failed') throw new Error('TTS generation failed');
   }
-  // Fallback: text.pollinations.ai chat audio
-  addLog('TTS: TRYING FALLBACK...');
-  var r2 = await fetch('https://text.pollinations.ai/', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'openai-audio', voice:voice,
-      modalities:['audio'], audio:{voice:voice, format:'mp3'},
-      messages:[{role:'user', content:text}]
-    })
-  });
-  if (!r2.ok) throw new Error('TTS failed: ' + r2.status);
-  var d = await r2.json();
-  var b64 = d.choices?.[0]?.message?.audio?.data;
-  if (!b64) throw new Error('No audio data');
-  var bin = atob(b64);
-  var bytes = new Uint8Array(bin.length);
-  for (var i=0; i<bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  addLog('TTS: FALLBACK OK');
-  return URL.createObjectURL(new Blob([bytes], {type:'audio/mp3'}));
+  throw new Error('TTS timeout');
 }
 
 // --- LOG ---

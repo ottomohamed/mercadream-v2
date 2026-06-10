@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Voice Clone | MercaDream</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{
+    colors:{
+      "surface-container-high":"#2a2a2a","primary":"#ffffff","surface-dim":"#131313",
+      "outline-variant":"#434933","surface-container":"#201f1f","surface":"#131313",
+      "secondary":"#c6c6c7","primary-fixed-dim":"#a8d700","surface-container-low":"#1c1b1b",
+      "surface-container-lowest":"#0e0e0e","on-surface-variant":"#c4caac",
+      "on-background":"#e5e2e1","background":"#040404","surface-container-highest":"#353534",
+      "primary-fixed":"#c8ff00","on-surface":"#e5e2e1","surface-variant":"#353534",
+      "primary-container":"#c8ff00","on-primary":"#273500","outline":"#222222",
+    },
+    borderRadius:{"DEFAULT":"0px","lg":"0px","xl":"0px","full":"9999px"},
+    fontFamily:{
+      "headline-lg":["Orbitron"],"body-lg":["IBM Plex Mono"],"body-sm":["IBM Plex Mono"],
+      "headline-sm":["Orbitron"],"terminal-log":["IBM Plex Mono"],"body-md":["IBM Plex Mono"],
+      "label-caps":["IBM Plex Mono"],"headline-md":["Orbitron"]
+    }
+  }}
+}
+</script>
+<style>
+body{background-color:#040404;background-image:linear-gradient(#111 1px,transparent 1px),linear-gradient(90deg,#111 1px,transparent 1px);background-size:32px 32px;color:#e5e2e1;overflow-x:hidden;}
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.2) 50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03));background-size:100% 3px,3px 100%;pointer-events:none;z-index:50;}
+.drop-zone{border:2px dashed #434933;transition:all 0.2s;}
+.drop-zone.dragover{border-color:#c8ff00;background:rgba(200,255,0,0.05);}
+.drop-zone.has-file{border-color:#c8ff00;border-style:solid;}
+</style>
+</head>
+<body class="font-body-md min-h-screen">
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav class="border-b border-outline-variant px-6 py-4 flex justify-between items-center">
+  <div class="flex items-center gap-4">
+    <a href="index.html" class="font-headline-sm text-headline-sm text-primary-fixed tracking-widest">MERCADREAM</a>
+    <span class="text-outline-variant">/</span>
+    <span class="font-label-caps text-[11px] text-on-surface-variant uppercase tracking-widest">Voice Clone</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="border border-outline-variant px-3 py-1 flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary-fixed text-sm">bolt</span>
+      <span class="font-label-caps text-[11px]" id="gns-balance">0 GNS</span>
+    </div>
+    <a href="voice.html" class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary-fixed transition-colors uppercase">Neural Voice →</a>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="px-6 py-8 border-b border-outline-variant">
+  <h1 class="font-headline-lg text-headline-lg text-primary-fixed mb-2">VOICE CLONE</h1>
+  <p class="font-body-sm text-on-surface-variant">Upload a voice sample. Generate speech in that exact voice. Powered by Qwen3-TTS.</p>
+</div>
+
+<!-- MAIN -->
+<main class="max-w-5xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+  <!-- LEFT: Upload + Settings -->
+  <div class="space-y-6">
+
+    <!-- Upload Reference Audio -->
+    <div>
+      <h3 class="font-label-caps text-[11px] text-on-surface-variant mb-3 uppercase tracking-widest">01 // Reference Audio</h3>
+      <div class="drop-zone p-8 text-center cursor-pointer relative" id="drop-zone" onclick="document.getElementById('audio-input').click()">
+        <div id="upload-placeholder">
+          <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-3 block">mic</span>
+          <p class="font-body-sm text-on-surface-variant mb-1">Drop audio file or click to browse</p>
+          <p class="font-label-caps text-[10px] text-outline-variant">MP3, WAV, M4A — Min 5 seconds</p>
+        </div>
+        <div id="file-preview" class="hidden">
+          <span class="material-symbols-outlined text-4xl text-primary-fixed mb-3 block">audio_file</span>
+          <p class="font-body-sm text-primary-fixed" id="file-name">—</p>
+          <p class="font-label-caps text-[10px] text-on-surface-variant mt-1" id="file-size">—</p>
+        </div>
+        <input type="file" id="audio-input" accept="audio/*" class="hidden"/>
+      </div>
+    </div>
+
+    <!-- Reference Transcript (optional) -->
+    <div>
+      <h3 class="font-label-caps text-[11px] text-on-surface-variant mb-3 uppercase tracking-widest">02 // Reference Transcript <span class="text-outline-variant">(Optional)</span></h3>
+      <textarea id="transcript-input" rows="3"
+        class="w-full bg-black border border-outline p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary-fixed resize-none"
+        placeholder="Type what is said in the reference audio to improve accuracy..."></textarea>
+    </div>
+
+    <!-- Language -->
+    <div>
+      <h3 class="font-label-caps text-[11px] text-on-surface-variant mb-3 uppercase tracking-widest">03 // Language</h3>
+      <select id="language-select" class="w-full bg-black border border-outline p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary-fixed">
+        <option value="auto">Auto Detect</option>
+        <option value="en">English</option>
+        <option value="zh">Chinese</option>
+        <option value="de">German</option>
+        <option value="it">Italian</option>
+        <option value="pt">Portuguese</option>
+        <option value="es">Spanish</option>
+        <option value="ja">Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="fr">French</option>
+        <option value="ru">Russian</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- RIGHT: Text + Generate -->
+  <div class="space-y-6">
+
+    <!-- Text to speak -->
+    <div>
+      <h3 class="font-label-caps text-[11px] text-on-surface-variant mb-3 uppercase tracking-widest">04 // Text to Generate</h3>
+      <textarea id="text-input" rows="8"
+        class="w-full bg-black border border-outline p-3 font-body-sm text-on-surface focus:outline-none focus:border-primary-fixed resize-none"
+        placeholder="Enter the text you want spoken in the cloned voice..."></textarea>
+      <p class="font-label-caps text-[10px] text-on-surface-variant mt-1 text-right"><span id="char-count">0</span>/2000</p>
+    </div>
+
+    <!-- Generate Button -->
+    <button id="generate-btn" onclick="startClone()"
+      class="w-full py-4 bg-primary-fixed text-on-primary font-headline-sm text-sm uppercase tracking-widest hover:bg-primary-fixed-dim transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined">record_voice_over</span>
+      CLONE VOICE (5 GNS)
+    </button>
+
+    <!-- Audio Player -->
+    <div id="audio-player" class="hidden bg-surface-container border border-primary-fixed p-6">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary-fixed">audio_file</span>
+          <span class="font-terminal-log text-primary-fixed text-sm" id="audio-filename">CLONE_OUTPUT.MP3</span>
+        </div>
+        <button id="dl-btn" class="border border-outline-variant px-3 py-1 font-label-caps text-[10px] hover:border-primary-fixed hover:text-primary-fixed transition-colors flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">download</span>SAVE
+        </button>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="play-btn" class="material-symbols-outlined text-primary-fixed text-3xl">play_circle</button>
+        <div class="flex-1 bg-outline h-1 relative cursor-pointer">
+          <div class="bg-primary-fixed h-full transition-all" id="progress-bar" style="width:0%"></div>
+        </div>
+        <span class="font-terminal-log text-[11px] text-on-surface-variant" id="time-display">0:00</span>
+      </div>
+      <audio id="audio-el" class="hidden"></audio>
+    </div>
+
+    <!-- Terminal Log -->
+    <div class="bg-black border border-outline-variant p-4">
+      <div class="font-label-caps text-[10px] text-on-surface-variant mb-2 flex items-center gap-2">
+        <span class="w-2 h-2 bg-primary-fixed rounded-full animate-pulse"></span>
+        CLONE LOG
+      </div>
+      <div id="terminal-log" class="font-terminal-log text-[11px] text-primary-fixed space-y-1 h-24 overflow-y-auto">
+        <div class="opacity-50">[SYSTEM] Voice Clone Engine Ready</div>
+        <div class="opacity-50">[SYSTEM] Powered by Qwen3-TTS</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+var currentAudioBase64 = null;
+var currentBlobUrl = null;
+var audioEl = document.getElementById('audio-el');
+
+// Balance
+document.getElementById('gns-balance').textContent = (parseInt(localStorage.getItem('md_credits')||'0')).toLocaleString() + ' GNS';
+
+// Char count
+document.getElementById('text-input').addEventListener('input', function() {
+  document.getElementById('char-count').textContent = this.value.length;
+});
+
+// Drop zone
+var dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('dragover'); });
+dropZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  var file = e.dataTransfer.files[0];
+  if (file) handleAudioFile(file);
+});
+document.getElementById('audio-input').addEventListener('change', function(e) {
+  if (e.target.files[0]) handleAudioFile(e.target.files[0]);
+});
+
+function handleAudioFile(file) {
+  if (!file.type.startsWith('audio/')) { addLog('ERROR: File must be audio'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    currentAudioBase64 = e.target.result;
+    document.getElementById('upload-placeholder').classList.add('hidden');
+    document.getElementById('file-preview').classList.remove('hidden');
+    document.getElementById('file-name').textContent = file.name;
+    document.getElementById('file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
+    dropZone.classList.add('has-file');
+    addLog('AUDIO LOADED: ' + file.name);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function startClone() {
+  var text = document.getElementById('text-input').value.trim();
+  if (!text) { addLog('ERROR: NO TEXT INPUT'); return; }
+  if (!currentAudioBase64) { addLog('ERROR: NO REFERENCE AUDIO'); return; }
+
+  var credits = parseInt(localStorage.getItem('md_credits')||'0');
+  if (credits < 5) { addLog('ERROR: INSUFFICIENT GNS'); return; }
+
+  var btn = document.getElementById('generate-btn');
+  btn.textContent = 'CLONING...';
+  btn.disabled = true;
+
+  addLog('VOICE CLONE: INITIATING...');
+
+  try {
+    var language = document.getElementById('language-select').value;
+    var transcript = document.getElementById('transcript-input').value.trim();
+
+    var res = await fetch('/api/voiceclone', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        audio: currentAudioBase64,
+        text: text,
+        language: language,
+        transcript: transcript
+      })
+    });
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error || 'No task ID');
+    addLog('JOB: ' + data.taskId);
+
+    // Deduct credits
+    credits -= 5;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits + ' GNS';
+
+    // Poll
+    for (var i = 0; i < 60; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      var pr = await fetch('/api/video?id=' + data.taskId);
+      var pd = await pr.json();
+      addLog('POLL ' + (i+1) + ': ' + (pd.status||'').toUpperCase());
+      if (pd.status === 'completed' && pd.videoUrl) {
+        var audioRes = await fetch(pd.videoUrl);
+        var blob = await audioRes.blob();
+        currentBlobUrl = URL.createObjectURL(blob);
+        showPlayer();
+        addLog('CLONE COMPLETE');
+        break;
+      }
+      if (pd.status === 'failed') throw new Error('Clone failed');
+    }
+  } catch(e) {
+    addLog('ERROR: ' + e.message);
+    // Refund
+    credits += 5;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits + ' GNS';
+  } finally {
+    btn.innerHTML = '<span class="material-symbols-outlined">record_voice_over</span> CLONE VOICE (5 GNS)';
+    btn.disabled = false;
+  }
+}
+
+function showPlayer() {
+  var player = document.getElementById('audio-player');
+  player.classList.remove('hidden');
+  audioEl.src = currentBlobUrl;
+  audioEl.play();
+  document.getElementById('play-btn').textContent = 'pause_circle';
+  document.getElementById('audio-filename').textContent = 'CLONE_' + Date.now() + '.MP3';
+  player.scrollIntoView({behavior:'smooth'});
+}
+
+document.getElementById('play-btn').addEventListener('click', function() {
+  if (audioEl.paused) { audioEl.play(); this.textContent = 'pause_circle'; }
+  else { audioEl.pause(); this.textContent = 'play_circle'; }
+});
+audioEl.addEventListener('ended', function() { document.getElementById('play-btn').textContent = 'play_circle'; });
+audioEl.addEventListener('timeupdate', function() {
+  if (audioEl.duration) {
+    document.getElementById('progress-bar').style.width = (audioEl.currentTime/audioEl.duration*100) + '%';
+    var s = Math.floor(audioEl.currentTime);
+    document.getElementById('time-display').textContent = Math.floor(s/60) + ':' + ('0'+s%60).slice(-2);
+  }
+});
+
+document.getElementById('dl-btn').addEventListener('click', function() {
+  if (!currentBlobUrl) return;
+  var a = document.createElement('a');
+  a.href = currentBlobUrl;
+  a.download = 'MERCADREAM_CLONE_' + Date.now() + '.mp3';
+  a.click();
+  addLog('DOWNLOAD: SAVED');
+});
+
+function addLog(msg) {
+  var log = document.getElementById('terminal-log');
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  var div = document.createElement('div');
+  div.textContent = '['+t+'] '+msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  while(log.children.length > 10) log.removeChild(log.children[0]);
+}
+</script>
+</body></html>
