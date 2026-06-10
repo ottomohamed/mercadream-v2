@@ -278,6 +278,15 @@
 </div>
 <input id="scene-count" type="hidden" value="6"/>
 </div>
+<div class="mt-sm border border-outline-variant/40 bg-surface-container p-xs">
+<div class="text-[9px] text-on-surface-variant font-label-technical mb-xs tracking-widest uppercase">Video Engine</div>
+<div class="flex gap-xs">
+<button class="model-btn flex-1 py-1 text-[9px] font-label-technical border border-primary-fixed-dim text-primary-fixed-dim bg-primary-fixed-dim/10 transition-all" data-model="bytedance/seedance-2.0-fast/text-to-video" data-cost="15" onclick="setModel(this)">SEEDANCE</button>
+<button class="model-btn flex-1 py-1 text-[9px] font-label-technical border border-outline-variant hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-all" data-model="alibaba/wan-2.5/image-to-video" data-cost="25" onclick="setModel(this)">WAN 2.5 ✦</button>
+</div>
+<input id="selected-model" type="hidden" value="bytedance/seedance-2.0-fast/text-to-video"/>
+<input id="model-cost" type="hidden" value="15"/>
+</div>
 <div class="mt-auto pt-sm flex justify-between items-center border-t border-outline-variant">
 <div class="flex flex-col">
 <span class="text-[9px] text-on-surface-variant font-label-technical">SYNC COST</span>
@@ -598,7 +607,8 @@
     async function startGeneration() {
         const directorEl = document.querySelector('input[name="director"]:checked');
         const director = directorEl ? directorEl.value : 'Drama';
-        const cost = costTable[director] || 50;
+        const modelCost = parseInt(document.getElementById('model-cost')?.value || '15');
+        const cost = modelCost;
 
         if (credits < cost) {
             addLogLine('ERROR: INSUFFICIENT GNS FOR SYNC.');
@@ -739,7 +749,8 @@
     function renderScriptCards(scenes, director, directorName) {
         const chat = document.getElementById('chat-messages');
         const voiceOverlay = document.getElementById('voice-overlay');
-        const cost = costTable[director] || 50;
+        const modelCost = parseInt(document.getElementById('model-cost')?.value || '15');
+        const cost = modelCost;
 
         const header = document.createElement('div');
         header.className = 'flex gap-md max-w-full w-full';
@@ -799,10 +810,11 @@
         }
         try {
             const prompt = typeof scene.prompt === 'string' ? scene.prompt : JSON.stringify(scene.prompt);
+            const selectedModel = document.getElementById('selected-model')?.value || 'bytedance/seedance-2.0-fast/text-to-video';
             const res = await fetch('/api/wavespeed', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({prompt, duration: 5, model: 'bytedance/seedance-2.0-fast/text-to-video'})
+                body: JSON.stringify({prompt, duration: 5, model: selectedModel})
             });
             const data = await res.json();
             if (!data.taskId) throw new Error(data.error || 'No task ID');
@@ -902,6 +914,19 @@
             if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
             activeGenerations[idx] = false;
         }
+    }
+
+    function setModel(btn) {
+        document.querySelectorAll('.model-btn').forEach(b => {
+            b.classList.remove('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+            b.classList.add('border-outline-variant');
+        });
+        btn.classList.add('border-primary-fixed-dim', 'text-primary-fixed-dim', 'bg-primary-fixed-dim/10');
+        btn.classList.remove('border-outline-variant');
+        document.getElementById('selected-model').value = btn.dataset.model;
+        document.getElementById('model-cost').value = btn.dataset.cost;
+        document.getElementById('sync-cost').innerText = btn.dataset.cost + ' GNS';
+        addLogLine('ENGINE: ' + btn.textContent.trim() + ' SELECTED');
     }
 
     function setSceneCount(n) {

@@ -192,7 +192,12 @@ async function handle_wavespeed(req, res) {
         'Authorization': 'Bearer ' + WAVESPEED_KEY,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      const isWan25 = modelId.includes('wan-2.5');
+      body: JSON.stringify(isWan25 ? {
+        prompt: prompt,
+        duration: duration||5,
+        resolution: '720p'
+      } : {
         prompt: prompt,
         duration: duration||5,
         size: '1280x720',
