@@ -1,4 +1,4 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -284,6 +284,30 @@ async function handle_faceswap(req, res) {
   return res.json({ taskId });
 }
 
+
+async function handle_elevenlabs(req, res) {
+  const { text, voice_id, language, stability, similarity } = req.body||{};
+  if (!text) return res.status(400).json({ error: 'text required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/elevenlabs/eleven-v3', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text,
+        voice_id: voice_id || 'JBFqnCBsd6RMkjVDRZzb',
+        language_code: language || 'en',
+        stability: stability || 0.5,
+        similarity_boost: similarity || 0.75,
+        speaker_boost: true
+      })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
 
 async function handle_tts(req, res) {
   const { text, voice, language, style } = req.body||{};
@@ -579,6 +603,7 @@ module.exports = async function handler(req, res) {
     bgremover:   handle_bgremover,
     faceswap:    handle_faceswap,
     tts:         handle_tts,
+    elevenlabs:  handle_elevenlabs,
     voiceclone:  handle_voiceclone,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
