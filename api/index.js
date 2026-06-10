@@ -301,7 +301,9 @@ async function handle_i2v(req, res) {
     image: image,
     prompt: prompt || 'Smooth cinematic motion',
     duration: duration || 5,
-    size: size
+    size: size,
+    page: 1,
+    page_size: 10
   });
   const taskId = d.data?.id;
   if (!taskId) return res.status(500).json({ error: d?.message || 'No task ID', raw: d });
