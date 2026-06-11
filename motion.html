@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MOTION MIMIC | MERCADREAM STUDIO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+body{background-color:#000;background-image:linear-gradient(to right,#1a1a1a 1px,transparent 1px),linear-gradient(to bottom,#1a1a1a 1px,transparent 1px);background-size:24px 24px;color:#e2e2e2;}
+.scanline{width:100%;height:2px;background:#c8ff00;position:absolute;top:0;left:0;z-index:10;opacity:0.5;box-shadow:0 0 8px #c8ff00;animation:scan 3s linear infinite;}
+@keyframes scan{0%{top:0%}100%{top:100%}}
+.glow-hover:hover{border-color:#c8ff00;box-shadow:0 0 12px rgba(200,255,0,0.3);}
+.pulse-arrow{animation:pulse-flow 1.5s ease-in-out infinite;}
+@keyframes pulse-flow{0%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.1) translateX(10px);opacity:1;}100%{transform:scale(1);opacity:0.5;}}
+.terminal-scroll::-webkit-scrollbar{width:4px;}
+.terminal-scroll::-webkit-scrollbar-thumb{background:#333;}
+.particle{position:absolute;pointer-events:none;background:#c8ff00;width:2px;height:2px;}
+.qual-btn{flex:1;padding:8px;font-family:"IBM Plex Mono",monospace;font-size:11px;transition:all 0.2s;}
+.qual-btn.active{background:#c8ff00;color:#000;font-weight:bold;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+</head>
+<body style="font-family:'IBM Plex Mono',monospace;min-height:100vh;">
+
+<!-- NAV -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 border-b" style="background:#000;border-color:#222">
+  <div class="flex items-center gap-4">
+    <a href="index.html" style="font-family:Orbitron,sans-serif;color:#c8ff00;font-weight:bold;letter-spacing:0.2em;font-size:18px;">MERCADREAM</a>
+    <nav class="hidden md:flex items-center gap-6 ml-8">
+      <a href="studio.html" style="color:#666;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;" class="hover:text-white transition-colors">STUDIO</a>
+      <a href="motion.html" style="color:#c8ff00;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;border-bottom:1px solid #c8ff00;">MOTION</a>
+      <a href="avatar.html" style="color:#666;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;" class="hover:text-white transition-colors">AVATAR</a>
+    </nav>
+  </div>
+  <div style="border:1px solid #333;padding:4px 12px;color:#c8ff00;font-size:11px;display:flex;align-items:center;gap:6px;">
+    <span class="material-symbols-outlined" style="font-size:14px;">bolt</span>
+    <span id="credit-display">0</span> GNS
+  </div>
+</header>
+
+<!-- HERO HEADER -->
+<section style="margin-top:64px;height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid #222;position:relative;overflow:hidden;background:radial-gradient(ellipse at center,#0a1a00 0%,#000 70%);">
+  <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(200,255,0,0.03) 23px,rgba(200,255,0,0.03) 24px);pointer-events:none;"></div>
+  
+  <canvas id="shader-canvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.2;pointer-events:none;"></canvas>
+  <script>
+  (function(){
+    var canvas=document.getElementById('shader-canvas');
+    function syncSize(){canvas.width=canvas.clientWidth||1280;canvas.height=canvas.clientHeight||307;}
+    syncSize();
+    var gl=canvas.getContext('webgl');
+    if(!gl)return;
+    var vs='attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0,1);}';
+    var fs='precision highp float;varying vec2 v;uniform float t;void main(){vec2 g=fract(v*vec2(20.,10.));float l=smoothstep(.01,0.,g.x)+smoothstep(.01,0.,g.y);vec3 c=l*vec3(.1);float s=sin(v.y*100.+t*5.);s=smoothstep(.98,1.,s);float b=fract(v.y-t*.1);float sw=smoothstep(.01,0.,abs(b-.5));c+=(s*.02+sw*.01)*vec3(.78,1.,0.);gl_FragColor=vec4(c,1.);}';
+    function sh(type,src){var s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+    var prog=gl.createProgram();
+    gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));
+    gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));
+    gl.linkProgram(prog);gl.useProgram(prog);
+    var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+    var pos=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+    var uT=gl.getUniformLocation(prog,'t');
+    function render(t){syncSize();gl.viewport(0,0,canvas.width,canvas.height);if(uT)gl.uniform1f(uT,t*.001);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);requestAnimationFrame(render);}
+    render(0);
+  })();
+  </script>
+  <h1 style="font-family:Orbitron,sans-serif;font-size:40px;color:#c8ff00;letter-spacing:0.1em;margin-bottom:8px;position:relative;z-index:1;">MOTION MIMIC</h1>
+  <p style="color:#666;font-size:13px;position:relative;z-index:1;text-align:center;max-width:500px;">Give your character a soul. Transfer motion from reality to imagination.</p>
+</section>
+
+<!-- STUDIO COLUMNS -->
+<section style="display:grid;grid-template-columns:1fr auto 1fr;gap:1px;background:#111;padding:24px;min-height:500px;">
+
+  <!-- LEFT: Character Upload -->
+  <div style="background:#050505;border:1px solid #222;padding:24px;position:relative;">
+    <div style="position:absolute;top:0;left:0;width:12px;height:12px;border-top:2px solid #c8ff00;border-left:2px solid #c8ff00;"></div>
+    <div style="position:absolute;top:0;right:0;width:12px;height:12px;border-top:2px solid #c8ff00;border-right:2px solid #c8ff00;"></div>
+    <div style="position:absolute;bottom:0;left:0;width:12px;height:12px;border-bottom:2px solid #c8ff00;border-left:2px solid #c8ff00;"></div>
+    <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;border-bottom:2px solid #c8ff00;border-right:2px solid #c8ff00;"></div>
+
+    <div id="char-upload" onclick="document.getElementById('char-input').click()"
+      style="aspect-ratio:1;width:100%;border:2px dashed #333;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;background:#000;"
+      class="glow-hover">
+      <div id="char-placeholder" style="text-align:center;pointer-events:none;">
+        <span class="material-symbols-outlined" style="font-size:48px;color:#444;display:block;margin-bottom:8px;">person_add</span>
+        <div style="color:#666;font-size:12px;">[ CHARACTER ]</div>
+        <div style="color:#333;font-size:10px;margin-top:4px;text-transform:uppercase;">Drop image here. Still. Waiting.</div>
+      </div>
+      <img id="char-preview" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;"/>
+      <div id="char-scanline" class="scanline" style="display:none;"></div>
+    </div>
+    <input type="file" id="char-input" accept="image/*" style="display:none"/>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+      <span style="color:#444;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;">SOURCE CHARACTER</span>
+      <span style="background:#111;border:1px solid #222;padding:2px 8px;font-size:9px;color:#c8ff00;">USER_SLOT_01</span>
+    </div>
+  </div>
+
+  <!-- CENTER: Controls -->
+  <div style="background:#000;padding:32px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;min-width:200px;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <span style="color:#c8ff00;font-size:10px;text-transform:uppercase;letter-spacing:0.2em;">Motion Transfer</span>
+      <div style="width:1px;height:40px;background:linear-gradient(to bottom,transparent,#c8ff00,transparent);opacity:0.4;"></div>
+      <span class="material-symbols-outlined pulse-arrow" style="font-size:48px;color:#c8ff00;">double_arrow</span>
+      <div style="width:1px;height:40px;background:linear-gradient(to bottom,transparent,#c8ff00,transparent);opacity:0.4;"></div>
+    </div>
+
+    <!-- Quality Selector -->
+    <div style="width:100%;">
+      <div style="color:#666;font-size:9px;text-transform:uppercase;margin-bottom:6px;text-align:center;">Output Quality</div>
+      <div style="display:flex;border:1px solid #333;padding:2px;">
+        <button class="qual-btn" data-q="360p" onclick="setQuality(this)" style="color:#666;">360P</button>
+        <button class="qual-btn active" data-q="540p" onclick="setQuality(this)">540P</button>
+        <button class="qual-btn" data-q="720p" onclick="setQuality(this)" style="color:#666;">720P</button>
+      </div>
+      <input type="hidden" id="selected-quality" value="540p"/>
+    </div>
+
+    <div style="text-align:center;width:100%;">
+      <div style="color:#666;font-size:10px;margin-bottom:16px;">COMPUTE COST: <span style="color:#c8ff00;font-weight:bold;">9 GNS</span></div>
+      <button id="animate-btn" onclick="startAnimation(event)"
+        style="width:100%;background:#c8ff00;color:#000;padding:16px;font-family:Orbitron,sans-serif;font-size:14px;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;border:none;transition:all 0.2s;box-shadow:0 0 20px rgba(200,255,0,0.4);"
+        onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#c8ff00'">
+        ANIMATE
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT: Motion Upload -->
+  <div style="background:#050505;border:1px solid #222;padding:24px;position:relative;">
+    <div style="position:absolute;top:0;left:0;width:12px;height:12px;border-top:2px solid #c8ff00;border-left:2px solid #c8ff00;"></div>
+    <div style="position:absolute;top:0;right:0;width:12px;height:12px;border-top:2px solid #c8ff00;border-right:2px solid #c8ff00;"></div>
+    <div style="position:absolute;bottom:0;left:0;width:12px;height:12px;border-bottom:2px solid #c8ff00;border-left:2px solid #c8ff00;"></div>
+    <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;border-bottom:2px solid #c8ff00;border-right:2px solid #c8ff00;"></div>
+
+    <div id="motion-upload" onclick="document.getElementById('motion-input').click()"
+      style="aspect-ratio:1;width:100%;border:2px dashed #333;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;background:#000;"
+      class="glow-hover">
+      <div id="motion-placeholder" style="text-align:center;pointer-events:none;">
+        <span class="material-symbols-outlined" style="font-size:48px;color:#444;display:block;margin-bottom:8px;">movie</span>
+        <div style="color:#666;font-size:12px;">[ REFERENCE ]</div>
+        <div style="color:#333;font-size:10px;margin-top:4px;text-transform:uppercase;">Drop video here. The movement.</div>
+      </div>
+      <video id="motion-preview" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;" muted autoplay loop></video>
+    </div>
+    <input type="file" id="motion-input" accept="video/*" style="display:none"/>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+      <span style="color:#444;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;">MOTION REFERENCE</span>
+      <span style="background:#111;border:1px solid #222;padding:2px 8px;font-size:9px;color:#c8ff00;">MP4 / 30FPS</span>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT AREA -->
+<div id="result-area" style="display:none;padding:24px;background:#050505;border-top:1px solid #222;">
+  <div style="border:1px solid #c8ff00;padding:4px;box-shadow:0 0 15px rgba(200,255,0,0.2);">
+    <div style="position:relative;background:#000;">
+      <video id="result-video" controls style="width:100%;max-height:500px;display:block;"></video>
+      <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.8);border:1px solid #c8ff00;padding:4px 12px;font-size:10px;color:#c8ff00;display:flex;align-items:center;gap:6px;">
+        <span style="width:8px;height:8px;background:#c8ff00;border-radius:50%;display:inline-block;animation:blink 1s infinite;"></span>
+        SYNTH_OUTPUT.MP4
+      </div>
+    </div>
+    <div style="display:flex;gap:2px;margin-top:2px;">
+      <button id="dl-btn" style="flex:1;background:#222;color:#fff;padding:12px;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;border:none;cursor:pointer;" onmouseover="this.style.background='#c8ff00';this.style.color='#000'" onmouseout="this.style.background='#222';this.style.color='#fff'">DOWNLOAD</button>
+      <button id="asm-btn" style="flex:1;background:#222;color:#fff;padding:12px;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;border:none;cursor:pointer;" onmouseover="this.style.background='#c8ff00';this.style.color='#000'" onmouseout="this.style.background='#222';this.style.color='#fff'">OPEN IN ASSEMBLY</button>
+    </div>
+  </div>
+</div>
+
+<!-- TERMINAL LOG -->
+<div style="position:fixed;bottom:16px;right:16px;width:280px;background:rgba(0,0,0,0.95);border:1px solid #222;padding:12px;font-size:10px;z-index:50;">
+  <div style="display:flex;justify-content:space-between;border-bottom:1px solid #222;padding-bottom:6px;margin-bottom:8px;">
+    <span style="color:#666;">SYSTEM LOG v4.0.2</span>
+    <span style="color:#c8ff00;" id="log-status">STANDBY</span>
+  </div>
+  <div id="terminal-log" style="height:100px;overflow-y:auto;color:#444;line-height:1.6;" class="terminal-scroll">
+    <div>> SYSTEM INITIALIZED...</div>
+    <div>> WAITING FOR ASSET UPLOAD...</div>
+  </div>
+</div>
+
+<script>
+var credits = parseInt(localStorage.getItem('md_credits')||'0');
+var charBase64 = null;
+var videoBase64 = null;
+var currentVideoUrl = null;
+
+document.getElementById('credit-display').textContent = credits.toLocaleString();
+
+// Firebase sync
+try {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) return;
+    localStorage.setItem('md_user_id', user.uid);
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      credits = doc.data().credits || 0;
+      localStorage.setItem('md_credits', credits);
+      document.getElementById('credit-display').textContent = credits.toLocaleString();
+    });
+  });
+} catch(e) {}
+
+function log(msg) {
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  var div = document.createElement('div');
+  div.textContent = '> ['+t+'] '+msg;
+  div.style.color = '#666';
+  var logEl = document.getElementById('terminal-log');
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function setQuality(btn) {
+  document.querySelectorAll('.qual-btn').forEach(function(b) {
+    b.classList.remove('active');
+    b.style.color = '#666';
+    b.style.background = '';
+  });
+  btn.classList.add('active');
+  document.getElementById('selected-quality').value = btn.dataset.q;
+}
+
+// Character upload
+document.getElementById('char-input').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    charBase64 = ev.target.result;
+    var preview = document.getElementById('char-preview');
+    preview.src = charBase64;
+    preview.style.display = 'block';
+    document.getElementById('char-placeholder').style.display = 'none';
+    document.getElementById('char-scanline').style.display = 'block';
+    document.getElementById('char-upload').style.borderColor = '#c8ff00';
+    log('SOURCE IMAGE LOADED: '+file.name);
+  };
+  reader.readAsDataURL(file);
+});
+
+// Motion upload
+document.getElementById('motion-input').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    videoBase64 = ev.target.result;
+    var preview = document.getElementById('motion-preview');
+    preview.src = videoBase64;
+    preview.style.display = 'block';
+    document.getElementById('motion-placeholder').style.display = 'none';
+    document.getElementById('motion-upload').style.borderColor = '#c8ff00';
+    log('MOTION REFERENCE LOADED: '+file.name);
+  };
+  reader.readAsDataURL(file);
+});
+
+// Drag & Drop
+['char-upload','motion-upload'].forEach(function(id) {
+  var el = document.getElementById(id);
+  el.addEventListener('dragover', function(e) { e.preventDefault(); el.style.borderColor='#c8ff00'; });
+  el.addEventListener('dragleave', function() { el.style.borderColor='#333'; });
+  el.addEventListener('drop', function(e) {
+    e.preventDefault();
+    var file = e.dataTransfer.files[0];
+    if (!file) return;
+    var inputId = id==='char-upload' ? 'char-input' : 'motion-input';
+    var dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById(inputId).files = dt.files;
+    document.getElementById(inputId).dispatchEvent(new Event('change'));
+  });
+});
+
+// Particles
+function createParticles(x, y) {
+  for (var i=0; i<20; i++) {
+    var p = document.createElement('div');
+    p.className = 'particle';
+    document.body.appendChild(p);
+    var angle = Math.random()*Math.PI*2;
+    var dist = Math.random()*50+20;
+    var tx = Math.cos(angle)*dist;
+    var ty = Math.sin(angle)*dist;
+    p.style.left = x+'px'; p.style.top = y+'px';
+    p.animate([
+      {transform:'translate(0,0) scale(1)',opacity:1},
+      {transform:'translate('+tx+'px,'+ty+'px) scale(0)',opacity:0}
+    ],{duration:500+Math.random()*500,easing:'ease-out'}).onfinish=function(){p.remove();};
+  }
+}
+
+async function startAnimation(e) {
+  if (!charBase64) { log('ERROR: UPLOAD SOURCE CHARACTER FIRST'); return; }
+  if (!videoBase64) { log('ERROR: UPLOAD MOTION REFERENCE FIRST'); return; }
+  if (credits < 9) { log('ERROR: INSUFFICIENT GNS (need 9)'); return; }
+
+  var rect = document.getElementById('animate-btn').getBoundingClientRect();
+  createParticles(rect.left+rect.width/2, rect.top+rect.height/2);
+
+  var btn = document.getElementById('animate-btn');
+  btn.disabled = true; btn.textContent = 'PROCESSING...'; btn.style.opacity = '0.5';
+  document.getElementById('log-status').textContent = 'ACTIVE';
+  document.getElementById('log-status').style.color = '#ff3b3b';
+
+  log('INITIATING TRANSFER SEQUENCE...');
+
+  try {
+    var quality = document.getElementById('selected-quality').value;
+    var res = await fetch('/api/motion', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ image: charBase64, video: videoBase64, quality: quality })
+    });
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error || 'No task ID');
+    log('JOB: '+data.taskId);
+
+    // Deduct credits
+    credits -= 9;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('credit-display').textContent = credits.toLocaleString();
+
+    // Poll
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 80) {
+        clearInterval(poll);
+        credits += 9;
+        localStorage.setItem('md_credits', credits);
+        log('TIMEOUT — credits refunded');
+        btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
+        document.getElementById('log-status').textContent='STANDBY';
+        document.getElementById('log-status').style.color='#c8ff00';
+        return;
+      }
+      try {
+        var pr = await fetch('/api/video?id='+data.taskId);
+        var pd = await pr.json();
+        log('POLL '+attempts+': '+(pd.status||'').toUpperCase());
+        if (pd.status==='completed' && pd.videoUrl) {
+          clearInterval(poll);
+          currentVideoUrl = pd.videoUrl;
+          document.getElementById('result-video').src = pd.videoUrl;
+          document.getElementById('result-area').style.display = 'block';
+          log('ANIMATION READY!');
+          btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
+          document.getElementById('log-status').textContent='COMPLETE';
+          document.getElementById('log-status').style.color='#c8ff00';
+          // Save to Firebase
+          try {
+            var uid = localStorage.getItem('md_user_id');
+            if (uid) {
+              firebase.firestore().collection('users').doc(uid).collection('videos').add({
+                videoUrl: pd.videoUrl, type:'motion-mimic', createdAt: new Date().toISOString()
+              });
+              firebase.firestore().collection('users').doc(uid).update({ renders: firebase.firestore.FieldValue.increment(1) });
+            }
+          } catch(fe){}
+        } else if (pd.status==='failed') {
+          clearInterval(poll);
+          throw new Error('Generation failed');
+        }
+      } catch(pe) { log('POLL ERR: '+pe.message); }
+    }, 5000);
+
+  } catch(err) {
+    log('ERROR: '+err.message);
+    credits += 9;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('credit-display').textContent = credits.toLocaleString();
+    btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
+    document.getElementById('log-status').textContent='ERROR';
+    document.getElementById('log-status').style.color='#ff3b3b';
+  }
+}
+
+// Download
+document.getElementById('dl-btn').addEventListener('click', function() {
+  if (!currentVideoUrl) return;
+  var a = document.createElement('a');
+  a.href = currentVideoUrl;
+  a.download = 'mercadream_motion_'+Date.now()+'.mp4';
+  a.click();
+});
+
+// Assembly
+document.getElementById('asm-btn').addEventListener('click', function() {
+  if (!currentVideoUrl) return;
+  localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
+    url: currentVideoUrl, name: 'motion_'+Date.now()+'.mp4', type:'video', duration:5
+  }));
+  window.location.href = 'assembly.html';
+});
+</script>
+</body></html>
