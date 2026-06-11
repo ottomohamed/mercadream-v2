@@ -123,17 +123,17 @@ firebase.initializeApp({
     <div style="width:100%;margin-bottom:8px;">
       <div style="color:#666;font-size:9px;text-transform:uppercase;margin-bottom:6px;text-align:center;">Engine</div>
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <button class="engine-btn active" data-engine="pixverse" data-cost="9" data-endpoint="/api/motion" onclick="setEngine(this)"
+        <button class="engine-btn active" data-engine="pixverse" data-cost="50" data-endpoint="/api/motion" onclick="setEngine(this)"
           style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#c8ff00;color:#000;font-weight:bold;border:none;cursor:pointer;text-align:left;">
-          PIXVERSE ▸ 9 GNS <span style="float:right;opacity:0.6;">Standard</span>
+          PIXVERSE ▸ 50 GNS <span style="float:right;opacity:0.6;">Standard</span>
         </button>
-        <button class="engine-btn" data-engine="kling-std" data-cost="63" data-endpoint="/api/motion" onclick="setEngine(this)"
+        <button class="engine-btn" data-engine="kling-std" data-cost="120" data-endpoint="/api/motion" onclick="setEngine(this)"
           style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#111;color:#666;border:1px solid #333;cursor:pointer;text-align:left;">
-          KLING V3 STD ▸ 63 GNS <span style="float:right;opacity:0.6;">Premium</span>
+          KLING V3 STD ▸ 120 GNS <span style="float:right;opacity:0.6;">Premium</span>
         </button>
-        <button class="engine-btn" data-engine="kling-pro" data-cost="84" data-endpoint="/api/motion" onclick="setEngine(this)"
+        <button class="engine-btn" data-engine="kling-pro" data-cost="150" data-endpoint="/api/motion" onclick="setEngine(this)"
           style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#111;color:#666;border:1px solid #333;cursor:pointer;text-align:left;">
-          KLING V3 PRO ▸ 84 GNS <span style="float:right;color:#c8ff00;">✦ Best</span>
+          KLING V3 PRO ▸ 150 GNS <span style="float:right;color:#c8ff00;">✦ Best</span>
         </button>
       </div>
       <input type="hidden" id="selected-engine" value="pixverse"/>
@@ -151,7 +151,7 @@ firebase.initializeApp({
     </div>
 
     <div style="text-align:center;width:100%;">
-      <div style="color:#666;font-size:10px;margin-bottom:16px;">COMPUTE COST: <span style="color:#c8ff00;font-weight:bold;" id="cost-display">9 GNS</span></div>
+      <div style="color:#666;font-size:10px;margin-bottom:16px;">COMPUTE COST: <span style="color:#c8ff00;font-weight:bold;" id="cost-display">50 GNS</span></div>
       <button id="animate-btn" onclick="startAnimation(event)"
         style="width:100%;background:#c8ff00;color:#000;padding:16px;font-family:Orbitron,sans-serif;font-size:14px;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;border:none;transition:all 0.2s;box-shadow:0 0 20px rgba(200,255,0,0.4);"
         onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#c8ff00'">
@@ -375,6 +375,7 @@ async function startAnimation(e) {
     credits -= cost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('credit-display').textContent = credits.toLocaleString();
+    try { var uid=localStorage.getItem('md_user_id'); if(uid) firebase.firestore().collection('users').doc(uid).update({credits:credits}); } catch(fe){}
 
     // Poll
     var attempts = 0;
@@ -384,6 +385,8 @@ async function startAnimation(e) {
         clearInterval(poll);
         credits += cost;
         localStorage.setItem('md_credits', credits);
+        document.getElementById('credit-display').textContent = credits.toLocaleString();
+        try { var uid2=localStorage.getItem('md_user_id'); if(uid2) firebase.firestore().collection('users').doc(uid2).update({credits:credits}); } catch(fe){}
         log('TIMEOUT — credits refunded');
         btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
         document.getElementById('log-status').textContent='STANDBY';
@@ -422,9 +425,10 @@ async function startAnimation(e) {
 
   } catch(err) {
     log('ERROR: '+err.message);
-    credits += 9;
+    credits += cost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('credit-display').textContent = credits.toLocaleString();
+    try { var uid3=localStorage.getItem('md_user_id'); if(uid3) firebase.firestore().collection('users').doc(uid3).update({credits:credits}); } catch(fe){}
     btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
     document.getElementById('log-status').textContent='ERROR';
     document.getElementById('log-status').style.color='#ff3b3b';
