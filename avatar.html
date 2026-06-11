@@ -147,7 +147,7 @@ firebase.initializeApp({
         </div>
       </div>
       <input type="hidden" id="selected-dur" value="10"/>
-      <input type="hidden" id="selected-cost" value="75"/>
+      <input type="hidden" id="selected-cost" value="8"/>
 
       <!-- Resolution -->
       <div class="mb-4">
@@ -377,10 +377,14 @@ document.getElementById('generate-btn').addEventListener('click', async function
     addLog('VOICE READY');
     document.getElementById('progress-bar').style.width = '40%';
 
-    // Deduct credits
+    // Deduct credits locally + Firebase
     credits -= totalCost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    try {
+      var uid = localStorage.getItem('md_user_id');
+      if (uid) firebase.firestore().collection('users').doc(uid).update({ credits: credits });
+    } catch(fe) {}
 
     // Step 2: Generate avatar (LongCat 1.5)
     addLog('INITIATING LONGCAT AVATAR...');
@@ -411,6 +415,8 @@ document.getElementById('generate-btn').addEventListener('click', async function
         clearInterval(poll);
         credits += totalCost;
         localStorage.setItem('md_credits', credits);
+        document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+        try { var uid2=localStorage.getItem('md_user_id'); if(uid2) firebase.firestore().collection('users').doc(uid2).update({credits:credits}); } catch(fe){}
         addLog('TIMEOUT — credits refunded');
         btn.disabled = false; btn.textContent = 'GENERATE AVATAR VIDEO';
         return;
@@ -454,6 +460,7 @@ document.getElementById('generate-btn').addEventListener('click', async function
     credits += totalCost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    try { var uid3=localStorage.getItem('md_user_id'); if(uid3) firebase.firestore().collection('users').doc(uid3).update({credits:credits}); } catch(fe){}
     btn.disabled = false; btn.textContent = 'GENERATE AVATAR VIDEO';
   }
 });
