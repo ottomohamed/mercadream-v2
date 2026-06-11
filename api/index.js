@@ -611,10 +611,19 @@ async function handle_avatar(req, res) {
       const mime = imgRes.headers.get('content-type') || 'image/jpeg';
       imageData = 'data:' + mime + ';base64,' + b64;
     }
+    // Convert audio URL to base64 if needed
+    let audioData = audio;
+    if (typeof audio === 'string' && audio.startsWith('http')) {
+      const audRes = await fetch(audio);
+      const audBuf = await audRes.arrayBuffer();
+      const audB64 = Buffer.from(audBuf).toString('base64');
+      const audMime = audRes.headers.get('content-type') || 'audio/mpeg';
+      audioData = 'data:' + audMime + ';base64,' + audB64;
+    }
     const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: imageData, audio, duration: parseInt(duration)||10, resolution: resolution||'720p' })
+      body: JSON.stringify({ image: imageData, audio: audioData, duration: parseInt(duration)||10, resolution: resolution||'720p' })
     });
     const d = await r.json();
     const taskId = d?.data?.id;
