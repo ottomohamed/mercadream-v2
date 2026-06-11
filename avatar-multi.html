@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM // AVATAR MULTI — Two Person Dialogue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+body{background-color:#000;background-image:linear-gradient(#1a1a1a 1px,transparent 1px),linear-gradient(90deg,#1a1a1a 1px,transparent 1px);background-size:24px 24px;color:#e2e2e2;}
+.neon-glow{box-shadow:0 0 8px rgba(200,255,0,0.4);}
+.terminal-scroll::-webkit-scrollbar{width:4px;}
+.terminal-scroll::-webkit-scrollbar-thumb{background:#333;}
+.terminal-scroll::-webkit-scrollbar-thumb:hover{background:#c8ff00;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.terminal-cursor{display:inline-block;width:8px;height:14px;background:#c8ff00;animation:blink 1s infinite;vertical-align:middle;}
+.upload-zone{border:2px dashed #333;transition:all 0.2s;cursor:pointer;}
+.upload-zone:hover{border-color:#c8ff00;}
+.upload-zone.has-file{border-color:#c8ff00;border-style:solid;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+</head>
+<body class="min-h-screen flex flex-col" style="font-family:'IBM Plex Mono',monospace">
+
+<!-- NAV -->
+<header class="border-b border-[#333] flex justify-between items-center px-6 py-3 z-50" style="background:#000">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="text-[#c8ff00] font-bold tracking-widest text-sm" style="font-family:Orbitron,sans-serif">MERCADREAM</a>
+    <nav class="hidden md:flex gap-6">
+      <a href="studio.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">STUDIO</a>
+      <a href="avatar.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">AVATAR</a>
+      <a href="avatar-multi.html" class="text-[#c8ff00] border-b border-[#c8ff00] text-xs uppercase tracking-wider">MULTI</a>
+      <a href="voice.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">VOICE</a>
+    </nav>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="border border-[#333] px-3 py-1 text-[#c8ff00] text-xs flex items-center gap-2">
+      <span class="material-symbols-outlined text-sm">bolt</span>
+      <span id="gns-balance">0 GNS</span>
+    </div>
+  </div>
+</header>
+
+<!-- HEADER -->
+<div class="px-6 py-6 border-b border-[#333]" style="background:#050505">
+  <h1 class="text-[#c8ff00] font-bold text-lg uppercase tracking-widest mb-1" style="font-family:Orbitron,sans-serif">AVATAR MULTI — Two Person Dialogue</h1>
+  <p class="text-[#666] text-xs">Upload one photo with TWO people + two audio tracks. Generate a realistic dialogue video with perfect lip sync for each speaker.</p>
+</div>
+
+<main class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-0">
+
+  <!-- Column 1: Image Upload -->
+  <div class="border-r border-[#333] p-6" style="background:#050505">
+    <div class="text-[#666] text-[9px] mb-4 uppercase tracking-widest">// 01 — GROUP PHOTO</div>
+
+    <div class="upload-zone p-8 text-center mb-4" id="image-zone" onclick="document.getElementById('image-input').click()">
+      <div id="image-placeholder">
+        <span class="material-symbols-outlined text-4xl text-[#333] block mb-2">group</span>
+        <p class="text-[#666] text-xs mb-1">Upload photo with 2 people</p>
+        <p class="text-[#444] text-[10px]">JPG, PNG, WebP</p>
+      </div>
+      <div id="image-preview" class="hidden absolute inset-0">
+        <img id="img-preview" class="w-full h-full object-cover"/>
+      </div>
+      <input type="file" id="image-input" accept="image/*" class="hidden"/>
+    </div>
+
+    <!-- Speaker Order -->
+    <div class="mb-4">
+      <label class="block text-[#666] text-[9px] mb-2 uppercase tracking-widest">Speaker Order</label>
+      <div class="flex border border-[#333] p-0.5">
+        <button class="order-btn flex-1 py-2 text-[10px] bg-[#c8ff00] text-black font-bold" data-order="sequential">SEQUENTIAL</button>
+        <button class="order-btn flex-1 py-2 text-[10px] text-[#666] hover:text-white transition-colors" data-order="simultaneous">SIMULTANEOUS</button>
+      </div>
+      <input type="hidden" id="selected-order" value="sequential"/>
+      <p class="text-[#444] text-[9px] mt-1">Sequential: one speaks then the other. Simultaneous: both at same time.</p>
+    </div>
+
+    <!-- Resolution -->
+    <div>
+      <label class="block text-[#666] text-[9px] mb-2 uppercase tracking-widest">Resolution</label>
+      <div class="flex border border-[#333] p-0.5">
+        <button class="res-btn flex-1 py-1.5 text-[10px] text-[#666] hover:text-white transition-colors" data-res="480p">480p</button>
+        <button class="res-btn flex-1 py-1.5 text-[10px] bg-[#c8ff00] text-black font-bold" data-res="720p">720p</button>
+      </div>
+      <input type="hidden" id="selected-res" value="720p"/>
+    </div>
+  </div>
+
+  <!-- Column 2: Audio Tracks -->
+  <div class="border-r border-[#333] p-6" style="background:#050505">
+    <div class="text-[#666] text-[9px] mb-4 uppercase tracking-widest">// 02 — AUDIO TRACKS</div>
+
+    <!-- Speaker 1 -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-6 h-6 bg-[#c8ff00] text-black text-xs font-bold flex items-center justify-center">1</div>
+        <span class="text-[#c8ff00] text-xs uppercase tracking-wider">Speaker 1 — Left Person</span>
+      </div>
+
+      <div class="mb-3">
+        <label class="block text-[#666] text-[9px] mb-1 uppercase">Script</label>
+        <textarea id="script1" rows="4" class="w-full border border-[#333] p-2 text-xs text-[#e0e0e0] resize-none focus:outline-none focus:border-[#c8ff00] transition-colors"
+          style="background:#000;font-family:'IBM Plex Mono',monospace"
+          placeholder="Speaker 1 lines..."></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[#666] text-[9px] mb-1 uppercase">Voice</label>
+          <select id="voice1" class="w-full border border-[#333] text-[#e0e0e0] text-[10px] p-2 focus:outline-none focus:border-[#c8ff00]" style="background:#000">
+            <option value="JBFqnCBsd6RMkjVDRZzb">George (Deep)</option>
+            <option value="TX3LPaxmHKxFdv7VOQHJ">Liam (Clear)</option>
+            <option value="pNInz6obpgDQGcFmaJgB">Adam (American)</option>
+            <option value="pFZP5JQG7iQjIQuC4Bku">Lily (Warm)</option>
+            <option value="XB0fDUnXU5powFXDhCwa">Charlotte</option>
+            <option value="Xb7hH8MSUJpSbSDYk0k2">Alice (British)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[#666] text-[9px] mb-1 uppercase">Language</label>
+          <select id="lang1" class="w-full border border-[#333] text-[#e0e0e0] text-[10px] p-2 focus:outline-none focus:border-[#c8ff00]" style="background:#000">
+            <option value="en">English</option>
+            <option value="ar">Arabic</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="border-t border-[#333] my-4"></div>
+
+    <!-- Speaker 2 -->
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-6 h-6 border border-[#c8ff00] text-[#c8ff00] text-xs font-bold flex items-center justify-center">2</div>
+        <span class="text-[#c8ff00] text-xs uppercase tracking-wider">Speaker 2 — Right Person</span>
+      </div>
+
+      <div class="mb-3">
+        <label class="block text-[#666] text-[9px] mb-1 uppercase">Script</label>
+        <textarea id="script2" rows="4" class="w-full border border-[#333] p-2 text-xs text-[#e0e0e0] resize-none focus:outline-none focus:border-[#c8ff00] transition-colors"
+          style="background:#000;font-family:'IBM Plex Mono',monospace"
+          placeholder="Speaker 2 lines..."></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[#666] text-[9px] mb-1 uppercase">Voice</label>
+          <select id="voice2" class="w-full border border-[#333] text-[#e0e0e0] text-[10px] p-2 focus:outline-none focus:border-[#c8ff00]" style="background:#000">
+            <option value="pFZP5JQG7iQjIQuC4Bku">Lily (Warm)</option>
+            <option value="XB0fDUnXU5powFXDhCwa">Charlotte</option>
+            <option value="Xb7hH8MSUJpSbSDYk0k2">Alice (British)</option>
+            <option value="JBFqnCBsd6RMkjVDRZzb">George (Deep)</option>
+            <option value="TX3LPaxmHKxFdv7VOQHJ">Liam (Clear)</option>
+            <option value="pNInz6obpgDQGcFmaJgB">Adam (American)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[#666] text-[9px] mb-1 uppercase">Language</label>
+          <select id="lang2" class="w-full border border-[#333] text-[#e0e0e0] text-[10px] p-2 focus:outline-none focus:border-[#c8ff00]" style="background:#000">
+            <option value="en">English</option>
+            <option value="ar">Arabic</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Column 3: Generate -->
+  <div class="p-6 flex flex-col" style="background:#050505">
+    <div class="text-[#666] text-[9px] mb-4 uppercase tracking-widest">// 03 — GENERATE</div>
+
+    <!-- Cost Breakdown -->
+    <div class="border border-[#333] p-4 mb-4">
+      <div class="text-[#c8ff00] text-[9px] uppercase tracking-widest mb-3">Cost Breakdown</div>
+      <div class="space-y-2">
+        <div class="flex justify-between text-[9px] text-[#666]">
+          <span>Voice 1 synthesis</span><span>~5 GNS</span>
+        </div>
+        <div class="flex justify-between text-[9px] text-[#666]">
+          <span>Voice 2 synthesis</span><span>~5 GNS</span>
+        </div>
+        <div class="flex justify-between text-[9px] text-[#666]">
+          <span>LongCat Multi render</span><span id="render-cost">20 GNS/10s</span>
+        </div>
+        <div class="flex justify-between text-xs text-[#c8ff00] font-bold pt-2 border-t border-[#333]">
+          <span>ESTIMATED TOTAL</span><span id="total-cost">~30 GNS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Log -->
+    <div class="border border-[#333] p-3 h-48 overflow-hidden flex flex-col mb-4" style="background:#000">
+      <div class="text-[#c8ff00] text-[9px] mb-1 uppercase tracking-widest">System Log</div>
+      <div class="flex-1 overflow-y-auto terminal-scroll text-[9px] text-[#666] space-y-0.5" id="terminal-log">
+        <div>> LONGCAT MULTI ENGINE READY</div>
+        <div>> WAITING FOR INPUT...<span class="terminal-cursor"></span></div>
+      </div>
+      <div class="hidden h-1 bg-[#333] mt-2 overflow-hidden" id="render-progress">
+        <div class="h-full bg-[#c8ff00] transition-all" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Video Result -->
+    <div id="video-result" class="hidden mb-4">
+      <video id="result-video" controls class="w-full border border-[#c8ff00] mb-2"></video>
+      <div class="flex gap-2">
+        <button id="dl-btn" class="flex-1 py-2 bg-[#c8ff00] text-black text-[10px] font-bold uppercase">DOWNLOAD</button>
+        <button id="asm-btn" class="flex-1 py-2 border border-[#c8ff00] text-[#c8ff00] text-[10px] uppercase hover:bg-[#c8ff00]/10 transition-colors">ASSEMBLY</button>
+      </div>
+    </div>
+
+    <button id="generate-btn" class="w-full py-5 bg-[#c8ff00] text-black font-bold uppercase tracking-widest text-sm hover:brightness-110 active:scale-95 transition-all mt-auto" style="font-family:Orbitron,sans-serif">
+      GENERATE DIALOGUE VIDEO
+    </button>
+  </div>
+</main>
+
+<script>
+var credits = parseInt(localStorage.getItem('md_credits')||'0');
+var imageBase64 = null;
+var currentVideoUrl = null;
+
+document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+
+// Firebase sync
+try {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) return;
+    localStorage.setItem('md_user_id', user.uid);
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      credits = doc.data().credits || 0;
+      localStorage.setItem('md_credits', credits);
+      document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    });
+  });
+} catch(e) {}
+
+// Image upload
+var imgZone = document.getElementById('image-zone');
+imgZone.addEventListener('dragover', function(e) { e.preventDefault(); imgZone.style.borderColor='#c8ff00'; });
+imgZone.addEventListener('dragleave', function() { imgZone.style.borderColor='#333'; });
+imgZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  var f = e.dataTransfer.files[0];
+  if (f) loadImage(f);
+});
+document.getElementById('image-input').addEventListener('change', function(e) {
+  if (e.target.files[0]) loadImage(e.target.files[0]);
+});
+
+function loadImage(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    imageBase64 = e.target.result;
+    document.getElementById('img-preview').src = imageBase64;
+    document.getElementById('image-placeholder').classList.add('hidden');
+    document.getElementById('image-preview').classList.remove('hidden');
+    document.getElementById('image-preview').classList.add('absolute','inset-0');
+    imgZone.style.borderColor = '#c8ff00';
+    imgZone.style.position = 'relative';
+    addLog('IMAGE LOADED: '+file.name);
+  };
+  reader.readAsDataURL(file);
+}
+
+// Toggles
+document.querySelectorAll('.order-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.order-btn').forEach(function(b) { b.style.background=''; b.style.color='#666'; b.style.fontWeight=''; });
+    btn.style.background='#c8ff00'; btn.style.color='#000'; btn.style.fontWeight='bold';
+    document.getElementById('selected-order').value = btn.dataset.order;
+  });
+});
+
+document.querySelectorAll('.res-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.res-btn').forEach(function(b) { b.style.background=''; b.style.color='#666'; b.style.fontWeight=''; });
+    btn.style.background='#c8ff00'; btn.style.color='#000'; btn.style.fontWeight='bold';
+    document.getElementById('selected-res').value = btn.dataset.res;
+  });
+});
+
+function addLog(msg) {
+  var log = document.getElementById('terminal-log');
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  var div = document.createElement('div');
+  div.textContent = '> ['+t+'] '+msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+// Generate
+document.getElementById('generate-btn').addEventListener('click', async function() {
+  var s1 = document.getElementById('script1').value.trim();
+  var s2 = document.getElementById('script2').value.trim();
+  if (!s1 || !s2) { addLog('ERROR: BOTH SCRIPTS REQUIRED'); return; }
+  if (!imageBase64) { addLog('ERROR: UPLOAD GROUP PHOTO FIRST'); return; }
+
+  var totalCost = 30; // ~10 per voice + 10 render
+  if (credits < totalCost) { addLog('ERROR: INSUFFICIENT GNS (need ~'+totalCost+')'); return; }
+
+  var btn = document.getElementById('generate-btn');
+  btn.disabled = true; btn.textContent = 'GENERATING...';
+  document.getElementById('render-progress').classList.remove('hidden');
+  document.getElementById('video-result').classList.add('hidden');
+
+  try {
+    // Step 1: Generate voice 1
+    addLog('GENERATING VOICE 1...');
+    var v1Res = await fetch('/api/elevenlabs', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text: s1, voice_id: document.getElementById('voice1').value, language: document.getElementById('lang1').value })
+    });
+    var v1Data = await v1Res.json();
+    if (!v1Data.taskId) throw new Error('Voice 1 failed: ' + (v1Data.error||''));
+    addLog('VOICE 1 JOB: '+v1Data.taskId);
+    document.getElementById('progress-bar').style.width = '15%';
+
+    // Poll voice 1
+    var audio1Url = await pollAudio(v1Data.taskId, 'VOICE 1');
+    addLog('VOICE 1 READY');
+    document.getElementById('progress-bar').style.width = '30%';
+
+    // Step 2: Generate voice 2
+    addLog('GENERATING VOICE 2...');
+    var v2Res = await fetch('/api/elevenlabs', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text: s2, voice_id: document.getElementById('voice2').value, language: document.getElementById('lang2').value })
+    });
+    var v2Data = await v2Res.json();
+    if (!v2Data.taskId) throw new Error('Voice 2 failed: ' + (v2Data.error||''));
+    addLog('VOICE 2 JOB: '+v2Data.taskId);
+
+    var audio2Url = await pollAudio(v2Data.taskId, 'VOICE 2');
+    addLog('VOICE 2 READY');
+    document.getElementById('progress-bar').style.width = '50%';
+
+    // Deduct credits
+    credits -= totalCost;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+
+    // Step 3: Generate Multi Avatar
+    addLog('INITIATING LONGCAT MULTI...');
+    var avRes = await fetch('/api/avatarmulti', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        image: imageBase64,
+        audio1: audio1Url,
+        audio2: audio2Url,
+        order: document.getElementById('selected-order').value,
+        resolution: document.getElementById('selected-res').value
+      })
+    });
+    var avData = await avRes.json();
+    if (!avData.taskId) throw new Error(avData.error || 'Avatar Multi failed');
+    addLog('AVATAR JOB: '+avData.taskId);
+    document.getElementById('progress-bar').style.width = '60%';
+
+    // Poll avatar
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 120) {
+        clearInterval(poll);
+        credits += totalCost;
+        localStorage.setItem('md_credits', credits);
+        addLog('TIMEOUT — credits refunded');
+        btn.disabled=false; btn.textContent='GENERATE DIALOGUE VIDEO';
+        return;
+      }
+      try {
+        var pr = await fetch('/api/video?id='+avData.taskId);
+        var pd = await pr.json();
+        var pct = Math.min(60+attempts, 95);
+        document.getElementById('progress-bar').style.width = pct+'%';
+        addLog('POLL '+attempts+': '+(pd.status||'').toUpperCase());
+        if (pd.status==='completed' && pd.videoUrl) {
+          clearInterval(poll);
+          currentVideoUrl = pd.videoUrl;
+          document.getElementById('progress-bar').style.width = '100%';
+          document.getElementById('result-video').src = pd.videoUrl;
+          document.getElementById('video-result').classList.remove('hidden');
+          addLog('DIALOGUE VIDEO READY!');
+          btn.disabled=false; btn.textContent='GENERATE DIALOGUE VIDEO';
+          try {
+            var uid = localStorage.getItem('md_user_id');
+            if (uid) {
+              firebase.firestore().collection('users').doc(uid).collection('videos').add({
+                videoUrl: pd.videoUrl, type:'avatar-multi', createdAt: new Date().toISOString()
+              });
+              firebase.firestore().collection('users').doc(uid).update({ renders: firebase.firestore.FieldValue.increment(1) });
+            }
+          } catch(fe){}
+        } else if (pd.status==='failed') {
+          clearInterval(poll);
+          throw new Error('Avatar generation failed');
+        }
+      } catch(pe) { addLog('POLL ERR: '+pe.message); }
+    }, 5000);
+
+  } catch(e) {
+    addLog('ERROR: '+e.message);
+    credits += totalCost;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    btn.disabled=false; btn.textContent='GENERATE DIALOGUE VIDEO';
+  }
+});
+
+async function pollAudio(taskId, label) {
+  for (var i = 0; i < 60; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    var pr = await fetch('/api/video?id='+taskId);
+    var pd = await pr.json();
+    addLog(label+' POLL '+i+': '+(pd.status||'').toUpperCase());
+    if (pd.status==='completed' && pd.videoUrl) return pd.videoUrl;
+    if (pd.status==='failed') throw new Error(label+' synthesis failed');
+  }
+  throw new Error(label+' timeout');
+}
+
+document.getElementById('dl-btn').addEventListener('click', function() {
+  if (!currentVideoUrl) return;
+  var a = document.createElement('a');
+  a.href = currentVideoUrl;
+  a.download = 'mercadream_multi_'+Date.now()+'.mp4';
+  a.click();
+});
+
+document.getElementById('asm-btn').addEventListener('click', function() {
+  if (!currentVideoUrl) return;
+  localStorage.setItem('NEURA_ACTIVE_STREAM', JSON.stringify({
+    url: currentVideoUrl, name: 'multi_'+Date.now()+'.mp4', type:'video', duration:10
+  }));
+  window.location.href = 'assembly.html';
+});
+</script>
+</body></html>

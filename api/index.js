@@ -274,41 +274,6 @@ async function handle_bgremover(req, res) {
   return res.json({ taskId });
 }
 
-
-async function handle_imagefaceswap(req, res) {
-  const { image, face_image } = req.body||{};
-  if (!image || !face_image) return res.status(400).json({ error: 'image and face_image required.' });
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/image-face-swap', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image, face_image })
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
-}
-
-async function handle_videofaceswap(req, res) {
-  const { video, face_image_video } = req.body||{};
-  if (!video || !face_image_video) return res.status(400).json({ error: 'video and face_image_video required.' });
-  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/video-face-swap', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ video, face_image: face_image_video })
-    });
-    const d = await r.json();
-    const taskId = d?.data?.id;
-    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
-}
-
 async function handle_faceswap(req, res) {
   const { sourceImage, targetImage, targetVideo } = req.body||{};
   if (!sourceImage) return res.status(400).json({ error: 'sourceImage required.' });
@@ -317,6 +282,41 @@ async function handle_faceswap(req, res) {
   const taskId = d.data?.id;
   if (!taskId) return res.status(500).json({ error: 'No task ID' });
   return res.json({ taskId });
+}
+
+
+async function handle_avatar(req, res) {
+  const { image, audio, duration, resolution, model } = req.body||{};
+  if (!image || !audio) return res.status(400).json({ error: 'image and audio required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, audio, duration: duration||10, resolution: resolution||'720p' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_avatarmulti(req, res) {
+  const { image, audio1, audio2, order, resolution } = req.body||{};
+  if (!image || !audio1 || !audio2) return res.status(400).json({ error: 'image, audio1, audio2 required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5/multi', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, audio1, audio2, order: order||'sequential', resolution: resolution||'720p' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
 }
 
 async function handle_animate(req, res) {
@@ -578,8 +578,8 @@ module.exports = async function handler(req, res) {
     audioforge:  handle_audioforge,
     bgremover:   handle_bgremover,
     faceswap:    handle_faceswap,
-    imagefaceswap: handle_imagefaceswap,
-    videofaceswap: handle_videofaceswap,
+    avatar:      handle_avatar,
+    avatarmulti: handle_avatarmulti,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
     deaging:     handle_deaging,

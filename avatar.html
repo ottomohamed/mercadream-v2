@@ -2,7 +2,7 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM // AVATAR_STUDIO</title>
+<title>MERCADREAM // AVATAR STUDIO — LongCat 1.5</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -40,6 +40,7 @@ firebase.initializeApp({
       <a href="studio.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">STUDIO</a>
       <a href="avatar.html" class="text-[#c8ff00] border-b border-[#c8ff00] text-xs uppercase tracking-wider">AVATAR</a>
       <a href="voice.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">VOICE</a>
+      <a href="avatar-multi.html" class="text-[#666] hover:text-[#c8ff00] text-xs uppercase tracking-wider transition-colors">MULTI</a>
     </nav>
   </div>
   <div class="flex items-center gap-4">
@@ -381,8 +382,8 @@ document.getElementById('generate-btn').addEventListener('click', async function
     localStorage.setItem('md_credits', credits);
     document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
 
-    // Step 2: Generate avatar
-    addLog('INITIATING AVATAR GENERATION...');
+    // Step 2: Generate avatar (LongCat 1.5)
+    addLog('INITIATING LONGCAT AVATAR...');
     var dur = parseInt(document.getElementById('selected-dur').value);
     var res = document.getElementById('selected-res').value;
 
@@ -394,7 +395,7 @@ document.getElementById('generate-btn').addEventListener('click', async function
         audio: audioUrl,
         duration: dur,
         resolution: res,
-        prompt: 'Professional speaking avatar, natural head movements, maintain identity'
+        model: 'longcat'
       })
     });
     var avData = await avRes.json();
