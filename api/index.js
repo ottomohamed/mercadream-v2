@@ -603,19 +603,18 @@ async function handle_avatar(req, res) {
   if (!image || !audio) return res.status(400).json({ error: 'image and audio required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
   try {
+    let imageData = image;
+    if (typeof image === 'string' && image.startsWith('http')) {
+      const imgRes = await fetch(image);
+      const buf = await imgRes.arrayBuffer();
+      const b64 = Buffer.from(buf).toString('base64');
+      const mime = imgRes.headers.get('content-type') || 'image/jpeg';
+      imageData = 'data:' + mime + ';base64,' + b64;
+    }
     const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      // Convert URL to base64 if needed
-      let imageData = image;
-      if (image.startsWith('http')) {
-        const imgRes = await fetch(image);
-        const buf = await imgRes.arrayBuffer();
-        const b64 = Buffer.from(buf).toString('base64');
-        const mime = imgRes.headers.get('content-type') || 'image/jpeg';
-        imageData = 'data:' + mime + ';base64,' + b64;
-      }
-      body: JSON.stringify({ image: imageData, audio, duration: duration||10, resolution: resolution||'720p' })
+      body: JSON.stringify({ image: imageData, audio, duration: parseInt(duration)||10, resolution: resolution||'720p' })
     });
     const d = await r.json();
     const taskId = d?.data?.id;
