@@ -125,15 +125,15 @@ firebase.initializeApp({
       <div style="display:flex;flex-direction:column;gap:4px;">
         <button class="engine-btn active" data-engine="pixverse" data-cost="50" data-endpoint="/api/motion" onclick="setEngine(this)"
           style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#c8ff00;color:#000;font-weight:bold;border:none;cursor:pointer;text-align:left;">
-          PIXVERSE ▸ 50 GNS <span style="float:right;opacity:0.6;">Standard</span>
+          PIXVERSE ▸ 9 GNS <span style="float:right;opacity:0.6;">Standard</span>
         </button>
         <button class="engine-btn" data-engine="kling-std" data-cost="120" data-endpoint="/api/motion" onclick="setEngine(this)"
           style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#111;color:#666;border:1px solid #333;cursor:pointer;text-align:left;">
-          KLING V3 STD ▸ 120 GNS <span style="float:right;opacity:0.6;">Premium</span>
+          KLING V3 STD ▸ 63 GNS <span style="float:right;opacity:0.6;">Premium</span>
         </button>
         <button class="engine-btn" data-engine="kling-pro" data-cost="150" data-endpoint="/api/motion" onclick="setEngine(this)"
           style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#111;color:#666;border:1px solid #333;cursor:pointer;text-align:left;">
-          KLING V3 PRO ▸ 150 GNS <span style="float:right;color:#c8ff00;">✦ Best</span>
+          KLING V3 PRO ▸ 84 GNS <span style="float:right;color:#c8ff00;">✦ Best</span>
         </button>
       </div>
       <input type="hidden" id="selected-engine" value="pixverse"/>
@@ -216,6 +216,7 @@ firebase.initializeApp({
 
 <script>
 var credits = parseInt(localStorage.getItem('md_credits')||'0');
+window._creditsLocked = false;
 var charBase64 = null;
 var videoBase64 = null;
 var currentVideoUrl = null;
@@ -229,8 +230,8 @@ try {
     localStorage.setItem('md_user_id', user.uid);
     firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
       if (!doc.exists) return;
+      if (window._creditsLocked) return;
       credits = doc.data().credits || 0;
-      localStorage.setItem('md_credits', credits);
       document.getElementById('credit-display').textContent = credits.toLocaleString();
     });
   });
@@ -372,23 +373,22 @@ async function startAnimation(e) {
     log('JOB: '+data.taskId);
 
     // Deduct credits
+    // Deduct credits
     credits -= cost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('credit-display').textContent = credits.toLocaleString();
-    try { var uid=localStorage.getItem('md_user_id'); if(uid) firebase.firestore().collection('users').doc(uid).update({credits:credits}); } catch(fe){}
-
-    // Poll
+    try { var uid=localStorage.getItem('md_user_id'); if(uid){window._creditsLocked=true; firebase.firestore().collection('users').doc(uid).update({credits:firebase.firestore.FieldValue.increment(-cost)}).then(function(){window._creditsLocked=false;}).catch(function(){window._creditsLocked=false;});} } catch(fe){window._creditsLocked=false;}
     var attempts = 0;
     var poll = setInterval(async function() {
       attempts++;
       if (attempts > 80) {
         clearInterval(poll);
         credits += cost;
+        credits += cost;
         localStorage.setItem('md_credits', credits);
         document.getElementById('credit-display').textContent = credits.toLocaleString();
-        try { var uid2=localStorage.getItem('md_user_id'); if(uid2) firebase.firestore().collection('users').doc(uid2).update({credits:credits}); } catch(fe){}
+        try { var uid2=localStorage.getItem('md_user_id'); if(uid2){window._creditsLocked=true; firebase.firestore().collection('users').doc(uid2).update({credits:firebase.firestore.FieldValue.increment(cost)}).then(function(){window._creditsLocked=false;}).catch(function(){window._creditsLocked=false;});} } catch(fe){window._creditsLocked=false;}
         log('TIMEOUT — credits refunded');
-        btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
         document.getElementById('log-status').textContent='STANDBY';
         document.getElementById('log-status').style.color='#c8ff00';
         return;
@@ -426,10 +426,10 @@ async function startAnimation(e) {
   } catch(err) {
     log('ERROR: '+err.message);
     credits += cost;
+    credits += cost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('credit-display').textContent = credits.toLocaleString();
-    try { var uid3=localStorage.getItem('md_user_id'); if(uid3) firebase.firestore().collection('users').doc(uid3).update({credits:credits}); } catch(fe){}
-    btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
+    try { var uid3=localStorage.getItem('md_user_id'); if(uid3){window._creditsLocked=true; firebase.firestore().collection('users').doc(uid3).update({credits:firebase.firestore.FieldValue.increment(cost)}).then(function(){window._creditsLocked=false;}).catch(function(){window._creditsLocked=false;});} } catch(fe){window._creditsLocked=false;}
     document.getElementById('log-status').textContent='ERROR';
     document.getElementById('log-status').style.color='#ff3b3b';
   }
