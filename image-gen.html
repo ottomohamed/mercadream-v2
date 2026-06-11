@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM_STUDIO // IMAGE_GEN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@300..700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+body{background-color:#131313;color:#e2e2e2;overflow-x:hidden;font-family:'IBM Plex Mono',monospace;}
+.orbitron{font-family:'Orbitron',sans-serif;}
+.grid-overlay{background-image:linear-gradient(to right,rgba(51,51,51,0.1) 1px,transparent 1px),linear-gradient(to bottom,rgba(51,51,51,0.1) 1px,transparent 1px);background-size:40px 40px;}
+.neon-glow:hover{box-shadow:0 0 10px rgba(200,255,0,0.4);}
+.corner-bracket{position:relative;}
+.corner-bracket::before{content:'';position:absolute;top:-1px;left:-1px;width:8px;height:8px;border-top:2px solid #c0f500;border-left:2px solid #c0f500;}
+.corner-bracket::after{content:'';position:absolute;bottom:-1px;right:-1px;width:8px;height:8px;border-bottom:2px solid #c0f500;border-right:2px solid #c0f500;}
+.scan-line{width:100%;height:2px;background:#c0f500;position:absolute;top:0;left:0;z-index:10;opacity:0.5;box-shadow:0 0 15px #c0f500;animation:scan 3s ease-in-out infinite;}
+@keyframes scan{0%{top:0}50%{top:100%}100%{top:0}}
+.custom-scrollbar::-webkit-scrollbar{width:4px;}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:#333;}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover{background:#c0f500;}
+.tab-active{color:#c0f500;border-bottom:2px solid #c0f500;}
+.ratio-btn,.quality-btn{transition:all 0.2s;}
+.ratio-btn.active,.quality-btn.active{border-color:#c0f500;background:rgba(192,245,0,0.15);color:#c0f500;}
+</style>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-surface":"#e2e2e2","surface-container":"#1f1f1f","surface":"#131313","primary":"#ffffff","primary-fixed":"#c0f500","terminal-bg":"#0a0a0a","border-muted":"#222222","text-dim":"#888888","acid-glow":"rgba(200,255,0,0.15)"},"fontFamily":{"terminal-log":["IBM Plex Mono"],"body-md":["IBM Plex Mono"],"display-xl":["Orbitron"]}}}}
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",authDomain:"mercadream-4b4b3.firebaseapp.com",projectId:"mercadream-4b4b3",storageBucket:"mercadream-4b4b3.firebasestorage.app",messagingSenderId:"257560928442",appId:"1:257560928442:web:06983f27629a13eeed6283"});
+</script>
+</head>
+<body class="bg-surface text-on-surface custom-scrollbar selection:bg-primary-fixed selection:text-black">
+<div class="fixed inset-0 grid-overlay pointer-events-none z-0"></div>
+
+<!-- NAV -->
+<header class="flex justify-between items-center px-8 h-16 w-full z-50 fixed top-0 bg-surface border-b border-border-muted">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="orbitron text-primary-fixed tracking-tighter font-bold">MERCADREAM</a>
+    <nav class="hidden md:flex gap-6">
+      <a href="studio.html" class="text-text-dim hover:text-primary-fixed text-xs uppercase transition-colors">STUDIO</a>
+      <a href="image-gen.html" class="text-primary-fixed border-b border-primary-fixed text-xs uppercase pb-1">IMAGE</a>
+      <a href="voice.html" class="text-text-dim hover:text-primary-fixed text-xs uppercase transition-colors">VOICE</a>
+    </nav>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="border border-border-muted px-3 py-1 text-primary-fixed text-xs flex items-center gap-2">
+      <span class="material-symbols-outlined text-sm">bolt</span>
+      <span id="gns-balance">0 GNS</span>
+    </div>
+  </div>
+</header>
+
+<main class="relative z-10 pt-24 pb-12 px-8 max-w-7xl mx-auto">
+  <!-- Hero -->
+  <div class="mb-10 border-l-2 border-primary-fixed pl-6">
+    <h2 class="orbitron text-5xl font-black text-white leading-tight">IMAGE STUDIO</h2>
+    <p class="text-text-dim text-lg mt-2 tracking-wide font-light">Describe reality. GPT Image 2 renders it.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-12 mb-8 border-b border-border-muted">
+    <button class="tab-active py-4 font-bold tracking-widest text-sm orbitron transition-all" id="tab-t2i" onclick="switchTab('t2i')">TEXT TO IMAGE</button>
+    <button class="text-text-dim py-4 font-bold tracking-widest text-sm orbitron transition-all hover:text-white" id="tab-edit" onclick="switchTab('edit')">IMAGE EDIT</button>
+  </div>
+
+  <!-- TAB 1: TEXT TO IMAGE -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8" id="content-t2i">
+    <!-- Left -->
+    <div class="lg:col-span-5 flex flex-col gap-6">
+      <div class="bg-terminal-bg border border-border-muted p-6 corner-bracket relative">
+        <div class="flex justify-between items-center mb-4">
+          <label class="text-xs font-bold text-text-dim orbitron uppercase tracking-tighter">Prompt</label>
+          <button onclick="enhancePrompt()" class="flex items-center gap-1 text-[10px] text-primary-fixed hover:underline">
+            <span class="material-symbols-outlined text-sm">magic_button</span> ENHANCE
+          </button>
+        </div>
+        <div class="relative">
+          <textarea id="prompt-input" class="w-full bg-surface border border-border-muted p-4 text-sm focus:border-primary-fixed focus:ring-0 min-h-[160px] resize-none placeholder:text-[#333]"
+            placeholder="A cinematic wide shot of a futuristic Tokyo alleyway, neon signs reflecting in puddles, cinematic lighting, 8k resolution..." oninput="document.getElementById('char-count').textContent=this.value.length"></textarea>
+          <span class="absolute bottom-2 right-2 text-[10px] text-text-dim"><span id="char-count">0</span> / 1000</span>
+        </div>
+        <div class="mt-4">
+          <label class="text-xs font-bold text-text-dim orbitron uppercase tracking-tighter block mb-2">Negative Prompt</label>
+          <input id="neg-prompt" class="w-full bg-surface border border-border-muted p-3 text-sm focus:border-primary-fixed focus:ring-0" placeholder="blurry, distorted, low quality, watermark" type="text"/>
+        </div>
+      </div>
+
+      <div class="bg-terminal-bg border border-border-muted p-6 corner-bracket">
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <label class="text-xs font-bold text-text-dim orbitron uppercase tracking-tighter block mb-3">Aspect Ratio</label>
+            <div class="flex gap-2">
+              <button class="ratio-btn active flex-1 py-2 border border-primary-fixed bg-acid-glow text-[10px] font-bold" data-size="1024x1024" onclick="setRatio(this)">1:1</button>
+              <button class="ratio-btn flex-1 py-2 border border-border-muted text-[10px] font-bold" data-size="1024x1792" onclick="setRatio(this)">9:16</button>
+              <button class="ratio-btn flex-1 py-2 border border-border-muted text-[10px] font-bold" data-size="1792x1024" onclick="setRatio(this)">16:9</button>
+            </div>
+            <input type="hidden" id="selected-size" value="1024x1024"/>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-text-dim orbitron uppercase tracking-tighter block mb-3">Quality</label>
+            <div class="flex gap-2">
+              <button class="quality-btn active flex-1 py-2 border border-primary-fixed bg-acid-glow text-[10px] font-bold" data-q="standard" onclick="setQuality(this)">STD</button>
+              <button class="quality-btn flex-1 py-2 border border-border-muted text-[10px] font-bold" data-q="hd" onclick="setQuality(this)">HD</button>
+            </div>
+            <input type="hidden" id="selected-quality" value="standard"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-auto">
+        <div class="flex justify-between items-center mb-4 px-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-primary-fixed"></span>
+            <span class="text-xs">COST: 6 GNS</span>
+          </div>
+          <span class="text-xs text-text-dim italic">~10s generation</span>
+        </div>
+        <button onclick="generateImage()" class="w-full bg-primary-fixed text-black orbitron font-black py-5 tracking-[0.2em] neon-glow transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+          <span class="material-symbols-outlined text-xl">auto_awesome</span> GENERATE IMAGE
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Result -->
+    <div class="lg:col-span-7">
+      <div class="relative w-full aspect-square bg-terminal-bg border border-border-muted corner-bracket overflow-hidden flex items-center justify-center group" id="result-box">
+        <div id="loader" class="hidden flex-col items-center gap-4 z-20 w-full h-full absolute inset-0 bg-terminal-bg flex items-center justify-center">
+          <div class="scan-line"></div>
+          <div class="text-primary-fixed orbitron font-bold text-xs tracking-widest animate-pulse">SYNTHESIZING REALITY...</div>
+        </div>
+        <img id="main-result" src="" class="w-full h-full object-cover hidden"/>
+        <div id="placeholder-text" class="text-border-muted orbitron text-2xl font-black text-center px-12 pointer-events-none uppercase" style="color:#222">
+          Waiting for<br/>Instruction_Set
+        </div>
+        <!-- Hover overlay -->
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4" id="hover-overlay" style="display:none">
+          <button id="dl-t2i" class="p-3 bg-primary-fixed text-black hover:scale-110 transition-transform"><span class="material-symbols-outlined">download</span></button>
+          <button id="edit-this" class="p-3 bg-white text-black hover:scale-110 transition-transform"><span class="material-symbols-outlined">auto_fix_high</span></button>
+        </div>
+      </div>
+      <div class="flex gap-4 mt-4 justify-end">
+        <button onclick="useInStudio()" class="text-[10px] orbitron font-bold py-2 px-4 border border-border-muted text-text-dim hover:text-white hover:border-white transition-all uppercase">Use in Studio</button>
+        <button onclick="switchToEdit()" class="text-[10px] orbitron font-bold py-2 px-4 border border-border-muted text-text-dim hover:text-white hover:border-white transition-all uppercase">Edit this image</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: IMAGE EDIT -->
+  <div class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8" id="content-edit">
+    <!-- Left -->
+    <div class="lg:col-span-5 flex flex-col gap-6">
+      <div id="edit-upload-zone" onclick="document.getElementById('edit-input').click()"
+        class="bg-terminal-bg border-2 border-dashed border-border-muted p-8 corner-bracket flex flex-col items-center justify-center hover:border-primary-fixed transition-colors cursor-pointer group h-48 relative">
+        <span class="material-symbols-outlined text-4xl text-text-dim group-hover:text-primary-fixed mb-2">upload_file</span>
+        <p class="text-xs orbitron font-bold tracking-widest text-text-dim group-hover:text-white">UPLOAD SOURCE IMAGE</p>
+        <img id="edit-preview" src="" class="hidden absolute inset-0 w-full h-full object-cover"/>
+        <input type="file" id="edit-input" accept="image/*" class="hidden"/>
+      </div>
+
+      <div class="bg-terminal-bg border border-border-muted p-6 corner-bracket">
+        <label class="text-xs font-bold text-text-dim orbitron uppercase tracking-tighter block mb-4">Edit Instructions</label>
+        <textarea id="edit-prompt" class="w-full bg-surface border border-border-muted p-4 text-sm focus:border-primary-fixed focus:ring-0 min-h-[120px] resize-none"
+          placeholder="Add a neon dragon flying in the background, keep the subject exactly as is..."></textarea>
+      </div>
+
+      <div class="mt-auto">
+        <div class="flex justify-between items-center mb-4 px-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-primary-fixed"></span>
+            <span class="text-xs">COST: 6 GNS</span>
+          </div>
+        </div>
+        <button onclick="applyEdit()" class="w-full bg-white text-black orbitron font-black py-5 tracking-[0.2em] transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+          <span class="material-symbols-outlined text-xl">transform</span> APPLY EDIT
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Before/After -->
+    <div class="lg:col-span-7">
+      <div class="relative w-full aspect-square bg-terminal-bg border border-border-muted corner-bracket overflow-hidden" id="compare-box">
+        <img id="before-img" src="" class="absolute inset-0 w-full h-full object-cover"/>
+        <div class="absolute inset-0 overflow-hidden transition-all" id="after-layer" style="width:50%">
+          <img id="after-img" src="" class="w-full h-full object-cover" style="width:200%"/>
+        </div>
+        <div class="absolute inset-0 pointer-events-none flex items-center">
+          <div class="h-full w-px bg-primary-fixed shadow-[0_0_15px_#c0f500]" id="separator" style="position:absolute;left:50%"></div>
+        </div>
+        <div class="absolute bottom-4 left-4 z-40 bg-black/80 px-3 py-1 text-[10px] font-bold orbitron border border-border-muted">ORIGINAL</div>
+        <div class="absolute bottom-4 right-4 z-40 bg-black/80 px-3 py-1 text-[10px] font-bold orbitron border border-primary-fixed text-primary-fixed">MODIFIED</div>
+        <div class="absolute inset-0 z-50 cursor-col-resize" onmousemove="handleComparison(event)"></div>
+        <div id="edit-loader" class="hidden absolute inset-0 bg-terminal-bg flex items-center justify-center z-40">
+          <div class="scan-line"></div>
+          <div class="text-primary-fixed orbitron font-bold text-xs tracking-widest animate-pulse">APPLYING EDIT...</div>
+        </div>
+        <div id="compare-placeholder" class="absolute inset-0 flex items-center justify-center">
+          <div class="text-[#222] orbitron text-xl font-black text-center uppercase">Upload image<br/>to begin</div>
+        </div>
+      </div>
+      <div class="mt-2 text-center">
+        <p class="text-[10px] text-text-dim tracking-widest">DRAG MOUSE OVER CANVAS TO COMPARE</p>
+      </div>
+      <div class="flex gap-4 mt-3 justify-end">
+        <button id="dl-edit" class="hidden text-[10px] orbitron font-bold py-2 px-4 border border-border-muted text-text-dim hover:text-white transition-all uppercase">Download Result</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Terminal Log -->
+<div class="fixed bottom-8 right-8 w-64 bg-terminal-bg/90 backdrop-blur-xl border border-border-muted p-4 z-50 pointer-events-none">
+  <div class="flex items-center gap-2 mb-2 border-b border-border-muted pb-2">
+    <span class="w-2 h-2 bg-primary-fixed rounded-full animate-pulse"></span>
+    <span class="text-[9px] font-bold orbitron text-text-dim">TERMINAL_LOG_V2.4</span>
+  </div>
+  <div class="flex flex-col gap-1 h-20 overflow-hidden" id="terminal-lines">
+    <div class="text-[9px] text-primary-fixed">> INITIALIZING STUDIO...</div>
+    <div class="text-[9px] text-text-dim">> SYSTEM STATUS: OPTIMAL</div>
+    <div class="text-[9px] text-text-dim">> WAITING FOR INPUT...</div>
+  </div>
+</div>
+
+<footer class="flex justify-between items-center px-8 h-8 w-full z-50 fixed bottom-0 bg-terminal-bg border-t border-border-muted">
+  <div class="text-[9px] text-text-dim">© 2024 MERCADREAM // IMAGE_GEN v1.0</div>
+  <div class="text-[9px] text-text-dim" id="footer-balance">0 GNS</div>
+</footer>
+
+<script>
+var credits = parseInt(localStorage.getItem('md_credits')||'0');
+var currentImageUrl = null;
+var editImageBase64 = null;
+var editResultUrl = null;
+
+// Balance
+document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+document.getElementById('footer-balance').textContent = credits.toLocaleString() + ' GNS';
+
+// Firebase sync
+try {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) return;
+    localStorage.setItem('md_user_id', user.uid);
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      credits = doc.data().credits || 0;
+      localStorage.setItem('md_credits', credits);
+      document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+      document.getElementById('footer-balance').textContent = credits.toLocaleString() + ' GNS';
+    });
+  });
+} catch(e) {}
+
+function logTerminal(msg) {
+  var c = document.getElementById('terminal-lines');
+  var d = document.createElement('div');
+  var t = new Date().toLocaleTimeString('en-GB',{hour12:false});
+  d.className = 'text-[9px] text-text-dim uppercase';
+  d.textContent = '> ['+t+'] '+msg;
+  c.appendChild(d);
+  if (c.children.length > 6) c.removeChild(c.children[0]);
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-t2i').className = tab==='t2i' ? 'tab-active py-4 font-bold tracking-widest text-sm orbitron' : 'text-text-dim py-4 font-bold tracking-widest text-sm orbitron hover:text-white';
+  document.getElementById('tab-edit').className = tab==='edit' ? 'tab-active py-4 font-bold tracking-widest text-sm orbitron' : 'text-text-dim py-4 font-bold tracking-widest text-sm orbitron hover:text-white';
+  document.getElementById('content-t2i').className = (tab==='t2i' ? '' : 'hidden ') + 'grid grid-cols-1 lg:grid-cols-12 gap-8';
+  document.getElementById('content-edit').className = (tab==='edit' ? '' : 'hidden ') + 'grid grid-cols-1 lg:grid-cols-12 gap-8';
+  logTerminal('CONTEXT: '+(tab==='t2i'?'TEXT_TO_IMAGE':'IMAGE_EDIT'));
+}
+
+function setRatio(btn) {
+  document.querySelectorAll('.ratio-btn').forEach(function(b){b.classList.remove('active','border-primary-fixed','bg-acid-glow');b.classList.add('border-border-muted');});
+  btn.classList.add('active','border-primary-fixed','bg-acid-glow');
+  document.getElementById('selected-size').value = btn.dataset.size;
+}
+
+function setQuality(btn) {
+  document.querySelectorAll('.quality-btn').forEach(function(b){b.classList.remove('active','border-primary-fixed','bg-acid-glow');b.classList.add('border-border-muted');});
+  btn.classList.add('active','border-primary-fixed','bg-acid-glow');
+  document.getElementById('selected-quality').value = btn.dataset.q;
+}
+
+async function enhancePrompt() {
+  var text = document.getElementById('prompt-input').value.trim();
+  if (!text) { logTerminal('ERROR: EMPTY PROMPT'); return; }
+  logTerminal('ENHANCING PROMPT...');
+  try {
+    var res = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ message: 'Enhance this image generation prompt to be more detailed and cinematic. Return ONLY the enhanced prompt, no explanation: ' + text })
+    });
+    var d = await res.json();
+    if (d.reply) { document.getElementById('prompt-input').value = d.reply; document.getElementById('char-count').textContent = d.reply.length; logTerminal('PROMPT ENHANCED'); }
+  } catch(e) { logTerminal('ENHANCE ERROR: '+e.message); }
+}
+
+async function generateImage() {
+  var prompt = document.getElementById('prompt-input').value.trim();
+  if (!prompt) { logTerminal('ERROR: EMPTY PROMPT'); return; }
+  if (credits < 6) { logTerminal('ERROR: INSUFFICIENT GNS (need 6)'); return; }
+
+  var loader = document.getElementById('loader');
+  var mainResult = document.getElementById('main-result');
+  var placeholder = document.getElementById('placeholder-text');
+  var hoverOverlay = document.getElementById('hover-overlay');
+
+  loader.classList.remove('hidden'); loader.style.display='flex';
+  placeholder.style.display='none';
+  mainResult.classList.add('hidden');
+  hoverOverlay.style.display='none';
+
+  logTerminal('PROMPT: '+prompt.substring(0,40)+'...');
+  logTerminal('SENDING TO GPT IMAGE 2...');
+
+  try {
+    var res = await fetch('/api/imagegen', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type: 'text',
+        prompt: prompt,
+        negative_prompt: document.getElementById('neg-prompt').value,
+        size: document.getElementById('selected-size').value,
+        quality: document.getElementById('selected-quality').value
+      })
+    });
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error || 'No task ID');
+    logTerminal('JOB: '+data.taskId);
+
+    credits -= 6;
+    localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+    document.getElementById('footer-balance').textContent = credits.toLocaleString() + ' GNS';
+
+    // Poll
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 60) {
+        clearInterval(poll);
+        credits += 6; localStorage.setItem('md_credits', credits);
+        logTerminal('TIMEOUT — refunded');
+        loader.style.display='none'; placeholder.style.display='';
+        return;
+      }
+      try {
+        var pr = await fetch('/api/video?id='+data.taskId);
+        var pd = await pr.json();
+        logTerminal('POLL '+attempts+': '+(pd.status||'').toUpperCase());
+        if (pd.status==='completed' && pd.videoUrl) {
+          clearInterval(poll);
+          currentImageUrl = pd.videoUrl;
+          mainResult.src = pd.videoUrl;
+          mainResult.classList.remove('hidden');
+          loader.style.display='none';
+          hoverOverlay.style.display='';
+          document.getElementById('result-box').addEventListener('mouseenter', function(){hoverOverlay.style.opacity='1';});
+          document.getElementById('result-box').addEventListener('mouseleave', function(){hoverOverlay.style.opacity='0';});
+          logTerminal('IMAGE READY!');
+          // Firebase save
+          try {
+            var uid = localStorage.getItem('md_user_id');
+            if (uid) {
+              firebase.firestore().collection('users').doc(uid).collection('images').add({imageUrl:pd.videoUrl,type:'text-to-image',prompt:prompt,createdAt:new Date().toISOString()});
+              firebase.firestore().collection('users').doc(uid).update({renders:firebase.firestore.FieldValue.increment(1)});
+            }
+          } catch(fe){}
+        } else if (pd.status==='failed') { clearInterval(poll); throw new Error('Generation failed'); }
+      } catch(pe) { logTerminal('POLL ERR: '+pe.message); }
+    }, 3000);
+  } catch(e) {
+    credits += 6; localStorage.setItem('md_credits', credits);
+    logTerminal('ERROR: '+e.message);
+    loader.style.display='none'; placeholder.style.display='';
+  }
+}
+
+// Edit tab: file upload
+document.getElementById('edit-input').addEventListener('change', function(e) {
+  var file = e.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    editImageBase64 = ev.target.result;
+    var preview = document.getElementById('edit-preview');
+    preview.src = editImageBase64; preview.classList.remove('hidden');
+    document.getElementById('compare-placeholder').style.display='none';
+    document.getElementById('before-img').src = editImageBase64;
+    logTerminal('IMAGE LOADED: '+file.name);
+  };
+  reader.readAsDataURL(file);
+});
+
+async function applyEdit() {
+  var prompt = document.getElementById('edit-prompt').value.trim();
+  if (!editImageBase64) { logTerminal('ERROR: UPLOAD IMAGE FIRST'); return; }
+  if (!prompt) { logTerminal('ERROR: EMPTY EDIT PROMPT'); return; }
+  if (credits < 6) { logTerminal('ERROR: INSUFFICIENT GNS (need 6)'); return; }
+
+  var editLoader = document.getElementById('edit-loader');
+  editLoader.classList.remove('hidden'); editLoader.style.display='flex';
+  logTerminal('APPLYING EDIT...');
+
+  try {
+    var res = await fetch('/api/imagegen', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type:'edit', image:editImageBase64, prompt:prompt })
+    });
+    var data = await res.json();
+    if (!data.taskId) throw new Error(data.error || 'No task ID');
+    logTerminal('JOB: '+data.taskId);
+
+    credits -= 6; localStorage.setItem('md_credits', credits);
+    document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
+
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 60) {
+        clearInterval(poll);
+        credits += 6; localStorage.setItem('md_credits', credits);
+        logTerminal('TIMEOUT — refunded');
+        editLoader.style.display='none'; return;
+      }
+      try {
+        var pr = await fetch('/api/video?id='+data.taskId);
+        var pd = await pr.json();
+        logTerminal('POLL '+attempts+': '+(pd.status||'').toUpperCase());
+        if (pd.status==='completed' && pd.videoUrl) {
+          clearInterval(poll);
+          editResultUrl = pd.videoUrl;
+          var afterImg = document.getElementById('after-img');
+          afterImg.src = pd.videoUrl; afterImg.style.width='200%';
+          document.getElementById('after-layer').style.width='50%';
+          editLoader.style.display='none';
+          document.getElementById('dl-edit').classList.remove('hidden');
+          logTerminal('EDIT COMPLETE!');
+        } else if (pd.status==='failed') { clearInterval(poll); throw new Error('Edit failed'); }
+      } catch(pe) { logTerminal('POLL ERR: '+pe.message); }
+    }, 3000);
+  } catch(e) {
+    credits += 6; localStorage.setItem('md_credits', credits);
+    logTerminal('ERROR: '+e.message);
+    editLoader.style.display='none';
+  }
+}
+
+function handleComparison(e) {
+  var rect = e.currentTarget.getBoundingClientRect();
+  var pct = ((e.clientX-rect.left)/rect.width)*100;
+  document.getElementById('after-layer').style.width = pct+'%';
+  document.getElementById('separator').style.left = pct+'%';
+}
+
+function switchToEdit() {
+  if (!currentImageUrl) return;
+  switchTab('edit');
+  editImageBase64 = currentImageUrl;
+  document.getElementById('before-img').src = currentImageUrl;
+  document.getElementById('edit-preview').src = currentImageUrl;
+  document.getElementById('edit-preview').classList.remove('hidden');
+  document.getElementById('compare-placeholder').style.display='none';
+  logTerminal('IMAGE LOADED FROM GENERATOR');
+}
+
+function useInStudio() {
+  if (!currentImageUrl) return;
+  localStorage.setItem('md_studio_image', currentImageUrl);
+  window.location.href = 'studio.html';
+}
+
+// Download buttons
+document.getElementById('dl-t2i').addEventListener('click', function() {
+  if (!currentImageUrl) return;
+  var a=document.createElement('a'); a.href=currentImageUrl; a.download='mercadream_img_'+Date.now()+'.png'; a.click();
+});
+document.getElementById('dl-edit').addEventListener('click', function() {
+  if (!editResultUrl) return;
+  var a=document.createElement('a'); a.href=editResultUrl; a.download='mercadream_edit_'+Date.now()+'.png'; a.click();
+});
+document.getElementById('edit-this').addEventListener('click', switchToEdit);
+</script>
+</body></html>

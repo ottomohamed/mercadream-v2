@@ -284,21 +284,19 @@ async function handle_faceswap(req, res) {
   return res.json({ taskId });
 }
 
-async function handle_motion(req, res) {
-  const { image, video, quality, engine } = req.body||{};
-  if (!image || !video) return res.status(400).json({ error: 'image and video required.' });
+
+async function handle_imagegen(req, res) {
+  const { type, prompt, negative_prompt, size, quality, image } = req.body||{};
+  if (!prompt) return res.status(400).json({ error: 'prompt required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
   try {
     let model, body;
-    if (engine === 'kling-std') {
-      model = 'kwaivgi/kling-v3.0-std/motion-control';
-      body = { image, video, prompt: '' };
-    } else if (engine === 'kling-pro') {
-      model = 'kwaivgi/kling-v3.0-pro/motion-control';
-      body = { image, video, prompt: '' };
+    if (type === 'edit') {
+      model = 'openai/gpt-image-2/edit';
+      body = { image, prompt };
     } else {
-      model = 'pixverse/motion-control/mimic';
-      body = { image, video, quality: quality || '540p' };
+      model = 'openai/gpt-image-2/text-to-image';
+      body = { prompt, negative_prompt: negative_prompt||'', size: size||'1024x1024', quality: quality||'standard' };
     }
     const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
       method: 'POST',
@@ -571,7 +569,7 @@ module.exports = async function handler(req, res) {
     audioforge:  handle_audioforge,
     bgremover:   handle_bgremover,
     faceswap:    handle_faceswap,
-    motion:      handle_motion,
+    imagegen:    handle_imagegen,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
     deaging:     handle_deaging,
