@@ -216,7 +216,6 @@ firebase.initializeApp({
 
 <script>
 var credits = parseInt(localStorage.getItem('md_credits')||'0');
-window._creditsLocked = false;
 var charBase64 = null;
 var videoBase64 = null;
 var currentVideoUrl = null;
@@ -230,8 +229,8 @@ try {
     localStorage.setItem('md_user_id', user.uid);
     firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
       if (!doc.exists) return;
-      if (window._creditsLocked) return;
       credits = doc.data().credits || 0;
+      localStorage.setItem('md_credits', credits);
       document.getElementById('credit-display').textContent = credits.toLocaleString();
     });
   });
@@ -372,23 +371,35 @@ async function startAnimation(e) {
     if (!data.taskId) throw new Error(data.error || 'No task ID');
     log('JOB: '+data.taskId);
 
-    // Deduct credits
-    // Deduct credits
-    credits -= cost;
+    // Deduct via server (safe - server validates balance)
+    var uid = localStorage.getItem('md_user_id');
+    var deductRes = await fetch('/api/deduct', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ uid: uid, amount: cost, service: 'motion-mimic' })
+    });
+    var deductData = await deductRes.json();
+    if (!deductData.success) throw new Error(deductData.error || 'Deduct failed');
+    credits = deductData.balance;
     localStorage.setItem('md_credits', credits);
     document.getElementById('credit-display').textContent = credits.toLocaleString();
-    try { var uid=localStorage.getItem('md_user_id'); if(uid){window._creditsLocked=true; firebase.firestore().collection('users').doc(uid).update({credits:firebase.firestore.FieldValue.increment(-cost)}).then(function(){window._creditsLocked=false;}).catch(function(){window._creditsLocked=false;});} } catch(fe){window._creditsLocked=false;}
+
+    // Poll
     var attempts = 0;
     var poll = setInterval(async function() {
       attempts++;
       if (attempts > 80) {
         clearInterval(poll);
-        credits += cost;
-        credits += cost;
-        localStorage.setItem('md_credits', credits);
-        document.getElementById('credit-display').textContent = credits.toLocaleString();
-        try { var uid2=localStorage.getItem('md_user_id'); if(uid2){window._creditsLocked=true; firebase.firestore().collection('users').doc(uid2).update({credits:firebase.firestore.FieldValue.increment(cost)}).then(function(){window._creditsLocked=false;}).catch(function(){window._creditsLocked=false;});} } catch(fe){window._creditsLocked=false;}
+        try {
+          var uid_t = localStorage.getItem('md_user_id');
+          var rr = await fetch('/api/refund', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ uid: uid_t, amount: cost, service: 'motion-mimic', reason: 'timeout' })
+          });
+          var rd = await rr.json();
+          if (rd.success) { credits = rd.balance; localStorage.setItem('md_credits', credits); document.getElementById('credit-display').textContent = credits.toLocaleString(); }
+        } catch(re) {}
         log('TIMEOUT — credits refunded');
+        btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
         document.getElementById('log-status').textContent='STANDBY';
         document.getElementById('log-status').style.color='#c8ff00';
         return;
@@ -418,18 +429,38 @@ async function startAnimation(e) {
           } catch(fe){}
         } else if (pd.status==='failed') {
           clearInterval(poll);
-          throw new Error('Generation failed');
+          try {
+            var uid_f = localStorage.getItem('md_user_id');
+            var fr = await fetch('/api/refund', {
+              method:'POST', headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({ uid: uid_f, amount: cost, service: 'motion-mimic', reason: 'failed' })
+            });
+            var fd = await fr.json();
+            if (fd.success) { credits = fd.balance; localStorage.setItem('md_credits', credits); document.getElementById('credit-display').textContent = credits.toLocaleString(); }
+          } catch(re) {}
+          log('FAILED — credits refunded');
+          btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
+          document.getElementById('log-status').textContent='ERROR';
+          document.getElementById('log-status').style.color='#ff3b3b';
         }
       } catch(pe) { log('POLL ERR: '+pe.message); }
     }, 5000);
 
   } catch(err) {
     log('ERROR: '+err.message);
-    credits += cost;
-    credits += cost;
-    localStorage.setItem('md_credits', credits);
-    document.getElementById('credit-display').textContent = credits.toLocaleString();
-    try { var uid3=localStorage.getItem('md_user_id'); if(uid3){window._creditsLocked=true; firebase.firestore().collection('users').doc(uid3).update({credits:firebase.firestore.FieldValue.increment(cost)}).then(function(){window._creditsLocked=false;}).catch(function(){window._creditsLocked=false;});} } catch(fe){window._creditsLocked=false;}
+    // Only refund if deduction already happened
+    if (err.message !== 'Deduct failed' && err.message !== 'Insufficient credits.') {
+      try {
+        var uid_e = localStorage.getItem('md_user_id');
+        var er = await fetch('/api/refund', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ uid: uid_e, amount: cost, service: 'motion-mimic', reason: err.message })
+        });
+        var ed = await er.json();
+        if (ed.success) { credits = ed.balance; localStorage.setItem('md_credits', credits); document.getElementById('credit-display').textContent = credits.toLocaleString(); log('Credits refunded'); }
+      } catch(re) {}
+    }
+    btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';
     document.getElementById('log-status').textContent='ERROR';
     document.getElementById('log-status').style.color='#ff3b3b';
   }
