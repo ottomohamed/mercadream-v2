@@ -274,6 +274,41 @@ async function handle_bgremover(req, res) {
   return res.json({ taskId });
 }
 
+
+async function handle_imagefaceswap(req, res) {
+  const { image, face_image } = req.body||{};
+  if (!image || !face_image) return res.status(400).json({ error: 'image and face_image required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/image-face-swap', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, face_image })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_videofaceswap(req, res) {
+  const { video, face_image_video } = req.body||{};
+  if (!video || !face_image_video) return res.status(400).json({ error: 'video and face_image_video required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/video-face-swap', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video, face_image: face_image_video })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
 async function handle_faceswap(req, res) {
   const { sourceImage, targetImage, targetVideo } = req.body||{};
   if (!sourceImage) return res.status(400).json({ error: 'sourceImage required.' });
@@ -397,8 +432,8 @@ async function handle_director(req, res) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{ 'x-api-key':ANTHROPIC_KEY, 'anthropic-version':'2023-06-01', 'content-type':'application/json' },
-    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:4096,
-      messages:[{ role:'user', content:`You are ${director||'a master film director'}. Generate EXACTLY ${duration||3} cinematic video prompts for: "${concept}". Return ONLY a valid JSON array with exactly ${duration||3} objects. Each object: {"scene": number, "title": "string", "prompt": "detailed 80+ word English video prompt"}. No markdown, no explanation, ONLY the JSON array.` }]
+    body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1024,
+      messages:[{ role:'user', content:`You are ${director||'a master film director'}. Generate ${duration||3} cinematic video prompts for: "${concept}". Genre: ${genre||'cinematic'}. Return JSON array only.` }]
     })
   });
   const d = await r.json();
@@ -543,6 +578,8 @@ module.exports = async function handler(req, res) {
     audioforge:  handle_audioforge,
     bgremover:   handle_bgremover,
     faceswap:    handle_faceswap,
+    imagefaceswap: handle_imagefaceswap,
+    videofaceswap: handle_videofaceswap,
     animate:     handle_animate,
     lipsync:     handle_lipsync,
     deaging:     handle_deaging,

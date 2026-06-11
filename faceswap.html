@@ -383,7 +383,7 @@ const db = firebase.firestore();
 </footer>
 <script src="/js/navigation.js"></script>
 <script>
-var sourceFile=null, targetFile=null, sourceDataUrl=null, targetDataUrl=null, COST=20;
+var sourceFile=null, targetFile=null, sourceDataUrl=null, targetDataUrl=null, COST=1;
 
 function updateDisplayGenesis() {
     var c = localStorage.getItem('md_genesis');
@@ -453,13 +453,16 @@ async function startFaceSwap() {
     var targetType = (targetFile && targetFile.type.startsWith('video')) ? 'video' : 'image';
 
     try {
-        var res = await fetch('/api/faceswap', {
+        // Use new WaveSpeedAI models: image-face-swap (1 GNS) or video-face-swap (5 GNS)
+        var endpoint = targetType === 'video' ? '/api/videofaceswap' : '/api/imagefaceswap';
+        var res = await fetch(endpoint, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                source_face_url: sourceDataUrl,
-                target_url: targetDataUrl,
-                target_type: targetType
+                image: sourceDataUrl,
+                face_image: targetType === 'video' ? null : targetDataUrl,
+                video: targetType === 'video' ? targetDataUrl : null,
+                face_image_video: targetType === 'video' ? sourceDataUrl : null
             })
         });
         var data = await res.json();
@@ -479,7 +482,7 @@ async function startFaceSwap() {
         if(btn) btn.innerHTML='<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING...';
 
         // Poll
-        var jobId = data.id;
+        var jobId = data.taskId || data.id;
         var attempts = 0;
         var poll = setInterval(async function() {
             attempts++;
@@ -491,20 +494,17 @@ async function startFaceSwap() {
                 return;
             }
             try {
-                var pr = await fetch('/api/faceswap', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({action:'poll', id:jobId})
-                });
+                var pr = await fetch('/api/video?id='+jobId);
                 var pd = await pr.json();
                 if(btn) btn.innerHTML='<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> PROCESSING ['+attempts+']...';
 
-                if((pd.status==='completed'||pd.status==='succeeded') && pd.url) {
+                if((pd.status==='completed'||pd.status==='succeeded') && (pd.videoUrl||pd.url)) {
                     clearInterval(poll);
                     if(btn){btn.disabled=false;btn.style.background='#c8ff00';btn.style.color='#060606';
                         btn.innerHTML='<span class="material-symbols-outlined text-[20px]">check</span> COMPLETE — DOWNLOAD';}
 
                     // Show result
-                    showFaceswapResult(pd.url, targetType);
+                    showFaceswapResult(pd.videoUrl||pd.url, targetType);
 
                 } else if(pd.status==='failed') {
                     clearInterval(poll);
