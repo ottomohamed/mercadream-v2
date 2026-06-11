@@ -546,6 +546,214 @@ async function handle_chat(req, res) {
 
 // â”€â”€ ROUTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
+
+async function handle_tts(req, res) {
+  const { text, voice, language, style } = req.body||{};
+  if (!text) return res.status(400).json({ error: 'text required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/qwen3-tts/text-to-speech', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice: voice||'Chelsie', language: language||'auto', style_instructions: style||'' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_voiceclone(req, res) {
+  const { audio, text, language, transcript } = req.body||{};
+  if (!audio || !text) return res.status(400).json({ error: 'audio and text required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/qwen3-tts/voice-clone', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio, text, language: language||'auto', reference_transcript: transcript||'' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_elevenlabs(req, res) {
+  const { text, voice_id, language, stability, similarity } = req.body||{};
+  if (!text) return res.status(400).json({ error: 'text required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/elevenlabs/eleven-v3', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice_id: voice_id||'JBFqnCBsd6RMkjVDRZzb', language_code: language||'en', stability: stability||0.5, similarity_boost: similarity||0.75, speaker_boost: true })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_avatar(req, res) {
+  const { image, audio, duration, resolution } = req.body||{};
+  if (!image || !audio) return res.status(400).json({ error: 'image and audio required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, audio, duration: duration||10, resolution: resolution||'720p' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_avatarmulti(req, res) {
+  const { image, audio1, audio2, order, resolution } = req.body||{};
+  if (!image || !audio1 || !audio2) return res.status(400).json({ error: 'image, audio1, audio2 required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5/multi', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, audio1, audio2, order: order||'sequential', resolution: resolution||'720p' })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_music(req, res) {
+  const { type, lyrics, prompt, number_of_songs, format } = req.body||{};
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const model = type === 'bgm' ? 'mureka-ai/mureka-v9/generate-bgm' : 'mureka-ai/mureka-v9/generate-song';
+    const body = type === 'bgm'
+      ? { prompt: prompt||'cinematic background music', number_of_songs: number_of_songs||1, format: format||'mp3' }
+      : { lyrics: lyrics||'', prompt: prompt||'', number_of_songs: number_of_songs||1, format: format||'mp3' };
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_tripo3d(req, res) {
+  const { type, prompt, negative_prompt, image, images, geometry_quality, texture_quality, pbr } = req.body||{};
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const models = { text:'tripo3d/h3.1/text-to-3d', image:'tripo3d/h3.1/image-to-3d', multiview:'tripo3d/h3.1/multiview-to-3d' };
+    const model = models[type] || models.text;
+    const body = type === 'text'
+      ? { prompt, negative_prompt: negative_prompt||'', geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false }
+      : type === 'image'
+      ? { image, geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false }
+      : { images, geometry_quality: geometry_quality||'standard', texture_quality: texture_quality||'standard', pbr: pbr!==false };
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_motion(req, res) {
+  const { image, video, quality, engine } = req.body||{};
+  if (!image || !video) return res.status(400).json({ error: 'image and video required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    let model, body;
+    if (engine === 'kling-std') {
+      model = 'kwaivgi/kling-v3.0-std/motion-control';
+      body = { image, video, prompt: '' };
+    } else if (engine === 'kling-pro') {
+      model = 'kwaivgi/kling-v3.0-pro/motion-control';
+      body = { image, video, prompt: '' };
+    } else {
+      model = 'pixverse/motion-control/mimic';
+      body = { image, video, quality: quality||'540p' };
+    }
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_imagefaceswap(req, res) {
+  const { image, face_image } = req.body||{};
+  if (!image || !face_image) return res.status(400).json({ error: 'image and face_image required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/image-face-swap', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, face_image })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_videofaceswap(req, res) {
+  const { video, face_image_video } = req.body||{};
+  if (!video || !face_image_video) return res.status(400).json({ error: 'video and face_image_video required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/video-face-swap', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video, face_image: face_image_video })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_i2v(req, res) {
+  const { imageUrl, prompt, duration } = req.body||{};
+  if (!imageUrl) return res.status(400).json({ error: 'imageUrl required.' });
+  if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  try {
+    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/wan-2.2-spicy/image-to-video', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_url: imageUrl, prompt: prompt||'Cinematic motion', duration: duration||5 })
+    });
+    const d = await r.json();
+    const taskId = d?.data?.id;
+    if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
+    return res.json({ taskId });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
 async function handle_analyze(req, res) {
   const analyzeApi = require('./analyze');
   return await analyzeApi(req, res);
@@ -580,6 +788,17 @@ module.exports = async function handler(req, res) {
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
+    tts:         handle_tts,
+    voiceclone:  handle_voiceclone,
+    elevenlabs:  handle_elevenlabs,
+    avatar:      handle_avatar,
+    avatarmulti: handle_avatarmulti,
+    music:       handle_music,
+    tripo3d:     handle_tripo3d,
+    motion:      handle_motion,
+    imagefaceswap: handle_imagefaceswap,
+    videofaceswap: handle_videofaceswap,
+    i2v:         handle_i2v,
   };
 
   const fn = routes[service];
