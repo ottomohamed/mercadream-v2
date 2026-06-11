@@ -119,19 +119,39 @@ firebase.initializeApp({
       <div style="width:1px;height:40px;background:linear-gradient(to bottom,transparent,#c8ff00,transparent);opacity:0.4;"></div>
     </div>
 
-    <!-- Quality Selector -->
-    <div style="width:100%;">
-      <div style="color:#666;font-size:9px;text-transform:uppercase;margin-bottom:6px;text-align:center;">Output Quality</div>
+    <!-- Engine Selector -->
+    <div style="width:100%;margin-bottom:8px;">
+      <div style="color:#666;font-size:9px;text-transform:uppercase;margin-bottom:6px;text-align:center;">Engine</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <button class="engine-btn active" data-engine="pixverse" data-cost="9" data-endpoint="/api/motion" onclick="setEngine(this)"
+          style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#c8ff00;color:#000;font-weight:bold;border:none;cursor:pointer;text-align:left;">
+          PIXVERSE ▸ 9 GNS <span style="float:right;opacity:0.6;">Standard</span>
+        </button>
+        <button class="engine-btn" data-engine="kling-std" data-cost="63" data-endpoint="/api/motion" onclick="setEngine(this)"
+          style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#111;color:#666;border:1px solid #333;cursor:pointer;text-align:left;">
+          KLING V3 STD ▸ 63 GNS <span style="float:right;opacity:0.6;">Premium</span>
+        </button>
+        <button class="engine-btn" data-engine="kling-pro" data-cost="84" data-endpoint="/api/motion" onclick="setEngine(this)"
+          style="padding:6px;font-size:9px;font-family:IBM Plex Mono,monospace;background:#111;color:#666;border:1px solid #333;cursor:pointer;text-align:left;">
+          KLING V3 PRO ▸ 84 GNS <span style="float:right;color:#c8ff00;">✦ Best</span>
+        </button>
+      </div>
+      <input type="hidden" id="selected-engine" value="pixverse"/>
+      <input type="hidden" id="selected-quality" value="540p"/>
+    </div>
+
+    <!-- Quality (PixVerse only) -->
+    <div style="width:100%;" id="quality-row">
+      <div style="color:#666;font-size:9px;text-transform:uppercase;margin-bottom:4px;text-align:center;">Quality</div>
       <div style="display:flex;border:1px solid #333;padding:2px;">
         <button class="qual-btn" data-q="360p" onclick="setQuality(this)" style="color:#666;">360P</button>
         <button class="qual-btn active" data-q="540p" onclick="setQuality(this)">540P</button>
         <button class="qual-btn" data-q="720p" onclick="setQuality(this)" style="color:#666;">720P</button>
       </div>
-      <input type="hidden" id="selected-quality" value="540p"/>
     </div>
 
     <div style="text-align:center;width:100%;">
-      <div style="color:#666;font-size:10px;margin-bottom:16px;">COMPUTE COST: <span style="color:#c8ff00;font-weight:bold;">9 GNS</span></div>
+      <div style="color:#666;font-size:10px;margin-bottom:16px;">COMPUTE COST: <span style="color:#c8ff00;font-weight:bold;" id="cost-display">9 GNS</span></div>
       <button id="animate-btn" onclick="startAnimation(event)"
         style="width:100%;background:#c8ff00;color:#000;padding:16px;font-family:Orbitron,sans-serif;font-size:14px;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;cursor:pointer;border:none;transition:all 0.2s;box-shadow:0 0 20px rgba(200,255,0,0.4);"
         onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#c8ff00'">
@@ -236,6 +256,23 @@ function setQuality(btn) {
   document.getElementById('selected-quality').value = btn.dataset.q;
 }
 
+function setEngine(btn) {
+  document.querySelectorAll('.engine-btn').forEach(function(b) {
+    b.style.background = '#111';
+    b.style.color = '#666';
+    b.style.fontWeight = '';
+    b.style.border = '1px solid #333';
+  });
+  btn.style.background = '#c8ff00';
+  btn.style.color = '#000';
+  btn.style.fontWeight = 'bold';
+  btn.style.border = 'none';
+  document.getElementById('selected-engine').value = btn.dataset.engine;
+  document.getElementById('cost-display').textContent = btn.dataset.cost + ' GNS';
+  // Show/hide quality row for PixVerse only
+  document.getElementById('quality-row').style.display = btn.dataset.engine === 'pixverse' ? 'block' : 'none';
+}
+
 // Character upload
 document.getElementById('char-input').addEventListener('change', function(e) {
   var file = e.target.files[0];
@@ -309,7 +346,8 @@ function createParticles(x, y) {
 async function startAnimation(e) {
   if (!charBase64) { log('ERROR: UPLOAD SOURCE CHARACTER FIRST'); return; }
   if (!videoBase64) { log('ERROR: UPLOAD MOTION REFERENCE FIRST'); return; }
-  if (credits < 9) { log('ERROR: INSUFFICIENT GNS (need 9)'); return; }
+  var cost = parseInt(document.getElementById('cost-display').textContent);
+  if (credits < cost) { log('ERROR: INSUFFICIENT GNS (need '+cost+')'); return; }
 
   var rect = document.getElementById('animate-btn').getBoundingClientRect();
   createParticles(rect.left+rect.width/2, rect.top+rect.height/2);
@@ -322,18 +360,19 @@ async function startAnimation(e) {
   log('INITIATING TRANSFER SEQUENCE...');
 
   try {
+    var engine = document.getElementById('selected-engine').value;
     var quality = document.getElementById('selected-quality').value;
     var res = await fetch('/api/motion', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ image: charBase64, video: videoBase64, quality: quality })
+      body: JSON.stringify({ image: charBase64, video: videoBase64, quality: quality, engine: engine })
     });
     var data = await res.json();
     if (!data.taskId) throw new Error(data.error || 'No task ID');
     log('JOB: '+data.taskId);
 
     // Deduct credits
-    credits -= 9;
+    credits -= cost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('credit-display').textContent = credits.toLocaleString();
 
@@ -343,7 +382,7 @@ async function startAnimation(e) {
       attempts++;
       if (attempts > 80) {
         clearInterval(poll);
-        credits += 9;
+        credits += cost;
         localStorage.setItem('md_credits', credits);
         log('TIMEOUT — credits refunded');
         btn.disabled=false; btn.textContent='ANIMATE'; btn.style.opacity='1';

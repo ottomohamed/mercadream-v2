@@ -284,16 +284,26 @@ async function handle_faceswap(req, res) {
   return res.json({ taskId });
 }
 
-
 async function handle_motion(req, res) {
-  const { image, video, quality } = req.body||{};
+  const { image, video, quality, engine } = req.body||{};
   if (!image || !video) return res.status(400).json({ error: 'image and video required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
   try {
-    const r = await fetch('https://api.wavespeed.ai/api/v3/pixverse/motion-control/mimic', {
+    let model, body;
+    if (engine === 'kling-std') {
+      model = 'kwaivgi/kling-v3.0-std/motion-control';
+      body = { image, video, prompt: '' };
+    } else if (engine === 'kling-pro') {
+      model = 'kwaivgi/kling-v3.0-pro/motion-control';
+      body = { image, video, prompt: '' };
+    } else {
+      model = 'pixverse/motion-control/mimic';
+      body = { image, video, quality: quality || '540p' };
+    }
+    const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image, video, quality: quality || '540p' })
+      body: JSON.stringify(body)
     });
     const d = await r.json();
     const taskId = d?.data?.id;
