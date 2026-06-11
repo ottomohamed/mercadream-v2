@@ -1,4 +1,4 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -606,7 +606,16 @@ async function handle_avatar(req, res) {
     const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image, audio, duration: duration||10, resolution: resolution||'720p' })
+      // Convert URL to base64 if needed
+      let imageData = image;
+      if (image.startsWith('http')) {
+        const imgRes = await fetch(image);
+        const buf = await imgRes.arrayBuffer();
+        const b64 = Buffer.from(buf).toString('base64');
+        const mime = imgRes.headers.get('content-type') || 'image/jpeg';
+        imageData = 'data:' + mime + ';base64,' + b64;
+      }
+      body: JSON.stringify({ image: imageData, audio, duration: duration||10, resolution: resolution||'720p' })
     });
     const d = await r.json();
     const taskId = d?.data?.id;
