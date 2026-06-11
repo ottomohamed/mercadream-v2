@@ -236,9 +236,19 @@ function buildGrid(cat) {
     var div = document.createElement('div');
     div.className = 'char-card border border-[#333] p-1 cursor-pointer transition-all hover:border-[#c8ff00]';
     div.style.background = '#000';
-    div.innerHTML = '<img src="'+c.img+'" class="w-full aspect-square object-cover mb-1" onerror="this.src='https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400'"/>'
-      + '<div class="text-[8px] text-[#e0e0e0] truncate">'+c.name+'</div>'
-      + '<div class="text-[7px] text-[#666] border border-[#333] px-1 inline-block mt-0.5">'+c.cat+'</div>';
+    var imgEl = document.createElement('img');
+    imgEl.src = c.img;
+    imgEl.className = 'w-full aspect-square object-cover mb-1';
+    imgEl.onerror = function() { this.src = 'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400'; };
+    var nameEl = document.createElement('div');
+    nameEl.className = 'text-[8px] text-[#e0e0e0] truncate';
+    nameEl.textContent = c.name;
+    var catEl = document.createElement('div');
+    catEl.className = 'text-[7px] text-[#666] border border-[#333] px-1 inline-block mt-0.5';
+    catEl.textContent = c.cat;
+    div.appendChild(imgEl);
+    div.appendChild(nameEl);
+    div.appendChild(catEl);
     div.addEventListener('click', function() {
       document.querySelectorAll('.char-card').forEach(function(el) {
         el.style.borderColor = '#333';
@@ -377,14 +387,11 @@ document.getElementById('generate-btn').addEventListener('click', async function
     addLog('VOICE READY');
     document.getElementById('progress-bar').style.width = '40%';
 
-    // Deduct credits locally + Firebase
+    // Deduct credits
     credits -= totalCost;
     localStorage.setItem('md_credits', credits);
     document.getElementById('gns-balance').textContent = credits.toLocaleString() + ' GNS';
-    try {
-      var uid = localStorage.getItem('md_user_id');
-      if (uid) firebase.firestore().collection('users').doc(uid).update({ credits: credits });
-    } catch(fe) {}
+    try { var uid=localStorage.getItem('md_user_id'); if(uid) firebase.firestore().collection('users').doc(uid).update({credits:credits}); } catch(fe){}
 
     // Step 2: Generate avatar (LongCat 1.5)
     addLog('INITIATING LONGCAT AVATAR...');
