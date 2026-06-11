@@ -112,23 +112,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
       <div class="flex-1 space-y-2">
         <div class="flex justify-between items-end">
           <label class="text-[9px] font-headline text-white/60 tracking-widest uppercase">Dialogue Input</label>
-          <span class="text-[9px] text-primary/40"><span id="word-count">0</span> / <span id="word-limit">150</span> WORDS</span>
+          <span class="text-[9px] text-primary/40" id="char-count">0 / 5000</span>
         </div>
         <textarea id="script-area" class="w-full flex-1 bg-surface/50 border border-outline focus:border-primary/50 outline-none p-4 text-sm text-primary/90 font-ui-data resize-none leading-relaxed transition-colors" style="min-height:200px" placeholder="ENTER DIALOGUE INSTRUCTIONS...&#10;&#10;> _"></textarea>
-      <!-- Word progress -->
-        <div class="space-y-1 mt-1">
-          <div class="h-1 bg-white/10 overflow-hidden">
-            <div id="word-progress-bar" class="h-full bg-primary transition-all duration-300" style="width:0%"></div>
-          </div>
-          <div id="word-warning" class="hidden bg-red-950/50 border border-red-500/50 p-2 space-y-1">
-            <p class="text-[9px] text-red-400 font-headline">⚠ EXCEEDED PLAN LIMIT</p>
-            <p class="text-[8px] text-red-300/70 font-ui-data" id="word-warning-msg"></p>
-            <div class="flex gap-2 mt-1">
-              <button id="btn-upgrade-plan" class="flex-1 bg-primary text-black text-[8px] font-headline py-1 px-2">UPGRADE PLAN</button>
-              <button id="btn-edit-script" class="flex-1 border border-white/20 text-white/60 text-[8px] font-headline py-1 px-2 hover:border-primary hover:text-primary transition-colors">EDIT SCRIPT</button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Voice settings -->
@@ -168,38 +154,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
         </select>
       </div>
 
-      <!-- Word Plan -->
-      <div class="space-y-2">
-        <label class="text-[9px] font-headline text-white/40 uppercase tracking-widest">Script Plan</label>
-        <div class="flex flex-col gap-1.5">
-          <button class="plan-btn segment-pill active border border-primary px-3 py-2 text-[9px] font-bold text-left flex justify-between" data-words="150" data-cost="50">
-            <span>150 WORDS</span><span class="text-primary">50 GNS</span>
-          </button>
-          <button class="plan-btn segment-pill border border-outline px-3 py-2 text-[9px] font-ui-data text-white/40 text-left flex justify-between hover:border-primary/50 transition-colors" data-words="400" data-cost="120">
-            <span>400 WORDS</span><span>120 GNS</span>
-          </button>
-          <button class="plan-btn segment-pill border border-outline px-3 py-2 text-[9px] font-ui-data text-white/40 text-left flex justify-between hover:border-primary/50 transition-colors" data-words="700" data-cost="180">
-            <span>700 WORDS</span><span>180 GNS</span>
-          </button>
-          <button class="plan-btn segment-pill border border-outline px-3 py-2 text-[9px] font-ui-data text-white/40 text-left flex justify-between hover:border-primary/50 transition-colors" data-words="1300" data-cost="300">
-            <span>1300 WORDS</span><span>300 GNS</span>
-          </button>
+      <!-- Duration -->
+      <div class="space-y-1">
+        <label class="text-[9px] font-headline text-white/40 uppercase tracking-widest">Duration</label>
+        <div class="grid grid-cols-5 gap-1">
+          <button class="dur-btn segment-pill active border border-primary py-2 text-[9px] font-bold text-center" data-dur="10" data-cost="8">10S</button>
+          <button class="dur-btn segment-pill border border-outline py-2 text-[9px] font-ui-data text-white/40 text-center hover:border-primary/50 transition-colors" data-dur="30" data-cost="23">30S</button>
+          <button class="dur-btn segment-pill border border-outline py-2 text-[9px] font-ui-data text-white/40 text-center hover:border-primary/50 transition-colors" data-dur="60" data-cost="45">1M</button>
+          <button class="dur-btn segment-pill border border-outline py-2 text-[9px] font-ui-data text-white/40 text-center hover:border-primary/50 transition-colors" data-dur="180" data-cost="100">3M</button>
+          <button class="dur-btn segment-pill border border-outline py-2 text-[9px] font-ui-data text-white/40 text-center hover:border-primary/50 transition-colors" data-dur="300" data-cost="150">5M</button>
         </div>
-        <input type="hidden" id="selected-words" value="150"/>
-        <input type="hidden" id="selected-cost" value="50"/>
+        <input type="hidden" id="selected-dur" value="10"/>
+        <input type="hidden" id="selected-cost" value="8"/>
       </div>
 
       <!-- Cost summary -->
-      <div class="bg-surface border border-outline px-3 py-2 space-y-1">
-        <div class="flex justify-between text-[9px] font-ui-data text-on-surface-variant">
-          <span>Plan</span><span id="plan-words-display">150 words</span>
-        </div>
-        <div class="flex justify-between text-[9px] font-ui-data text-on-surface-variant">
-          <span>Balance</span><span id="balance-display" class="text-white">0 GNS</span>
-        </div>
-        <div class="flex justify-between text-sm font-headline text-primary border-t border-outline pt-1 mt-1">
-          <span>TOTAL</span><span id="cost-total">50 GNS</span>
-        </div>
+      <div class="flex items-center gap-2 text-[10px] font-ui-data text-on-surface-variant bg-surface border border-outline px-3 py-2">
+        <span>Voice ~10</span>
+        <span class="text-outline">+</span>
+        <span>Render <span id="cost-render" class="text-white">8</span></span>
+        <span class="text-outline">=</span>
+        <span class="text-primary font-bold">TOTAL <span id="cost-total">~18</span> GNS</span>
       </div>
     </div>
 
@@ -351,16 +326,16 @@ try {
 
 // ── Talent Roster ──
 var talentRoster = [
-  {name:"Sarah Mitchell",  category:"REPORTER",        img:"https://lh3.googleusercontent.com/aida/AP1WRLuiReKt5IXQgwyAijMElEhO2nHrICNWTkc_RtmWXAYs5X5sqEKji4INiRn3hAyycgE8mnHLMo4bYA593dC5N5kI4ExUmndVJCGcR2Oob55C9RCRVnZwoPNXZe-3zdo7S_rQKvECtmJHnshlmix_Q8C_j5VxmMhSJu8iCRnsP5sg2mhFFAxFHPPgQ7G_JAMQjwIgkXEXRs9dErCrXeNdmy_JCi37HHvNHWsOhBbGd20QPbhPKVE7d0Y5ZGs"},
-  {name:"Prof. Elena Ross", category:"ACADEMIC",        img:"https://lh3.googleusercontent.com/aida/AP1WRLtpO2WoXDvrI9JE2FK3v9_ZN3C5BHObLoFRvNBQQMdwLzbE-trE7iCdei6M1kO3_2vSIjV9JEeYrtzLanNXRKGXoPVa_r2UJIL-_4J2vtopmtP9XGW1-nYVVih1QUDjXrAAOjLll4NtVidX5HMVNE1wt-JGO2MY35MYfi7RASMByoQ5i5lDB4LxazQq8UKhONloK_Mey9W70_Sxp4L39Hmm2mNZzsFyohgHHlYaIynmlWQixO1jchLJQWI"},
-  {name:"James Williams",   category:"PRESENTER",       img:"https://lh3.googleusercontent.com/aida/AP1WRLsfQbN2nirnK2m74jV9BV8REv221w3Ba-byUAprjefu88YCASGS4tCh3hQhGz2tiASwx15UyWcRlyP3LYxlgXJsoUaPIpKM0qMAGvOu4XTPgyKMpiXG5OrWqkZuFFSkJyMFlHugOArjU8XR9qHRVukyXYiz3LDkE99hoTE5bHQUVl6iamlGWz8KmabJyqtqM7AG98bExxsYo4CpzYXQ0ypd8sO_tq92BMQubvMSmvHeeqgjK5bYJTykamw"},
-  {name:"Chef Marco",       category:"CULINARY",        img:"https://lh3.googleusercontent.com/aida/AP1WRLuEJoJfTxT5dcbWPZEJBkv9p-r5tIRVqRThRJLUmxRMnk0PBVC7z57dYzR6Jri4ymUWvPxEtVC8UqFNDHS0TURpWES2ju-_QuhkrEdLIujFUhZrVSChwnVrLHMTu9jNy2UXEniIxf7nCyZrgUD0ur-GXmynUGmRMNl4Qzn4BfsT7P2IjqRWvXY2l830IYNbejWSrPYcbOrz1PiENeBmaNuFTqPuqbKa2ZSHeUhx6hSQzM7SU2cB_-j94hA"},
-  {name:"Alex Carter",      category:"NEWS ANCHOR",     img:"https://lh3.googleusercontent.com/aida/AP1WRLvNuImMHo-7WDb-byVGosHTm_FCPT0PVIGsZEudHsJJ53UsYADz8T4UspxMhW60nFtOUX_YZmbrQJZZNiSnoBwyctvDlIgT48mlrEi4m3NyY7LXXD9WgaYJnGiZhe5Fg5qwrId5WKXyPtE7wNzv2h0E-LvaYYD28eqNrEFSZi0NXPEHxC7Nav7-ErBSfIrZvl3X57HQ6ZDS1Vvw8nKbLShKbhsLRZAy9j35wkf4l7wz-boSp_NREEUtwGc"},
-  {name:"Elena Vance",      category:"PODCASTER",       img:"https://lh3.googleusercontent.com/aida/AP1WRLv-b5wA8vM-hBTx3V2OKORsqoFCm9prvxMyNkjRy9s1DrJmtldja7Xkgypt1ChdZOet0UjTq_PHEltjyppC4JhNiWA9MmKZ6qxBmshHCC36ljARJP66lF5KZBDrds68hOxQss4ZqKSdUx1fs0tDLQiu9wLRHzT5Vj8H48Pye9HcT1TSc6uRabOdj7FkF_9VN_9xmnWlIq0CzT7Dk4CjBBGpH_08Mh4T8bA9ruZAENzACz6ep6NuBt1Lb3c"},
-  {name:"Jake Strong",      category:"COMMENTATOR",     img:"https://lh3.googleusercontent.com/aida/AP1WRLtWvShI_GG1K2kNUKPo0ZdXIpmzUtVCBO4xZ507Kkevj64unSXOnhOTBV18jRatJuDnWZlOCGBl4MeJI5ZomjCQxFbln29xiYIgj568eKcWvM7XoeE0-3Z2E6rgcn5h-z4f7Aq_9RmNEnFIlIKDqDS8kea54ARrq4BVjT54zX69Cwpj6jrn3nGC5hXss7sNbXUqxN0d89V7TRALINfnfFuo9uCgO0bYf2wuLtaA1sWisQGv91f5tcAU_w"},
-  {name:"Marcus Thorne",    category:"TECH REVIEWER",   img:"https://lh3.googleusercontent.com/aida/AP1WRLuVaojq_WW8GaN4ZaDWiwM9BRXVEwN-0J4UTHxqEg5uffWdTN8kLuYJNcu8rXhFnY0XwDE4HJAb-gLRJYDNXNLvl2lwh0l8iv3I7roFP3CPNgCC8hN2BQdZ6w7HeXHRXCHhKw6Q8cunzISmcPTxsMQe8DiRCjtsFPA-aCQ7yoghq-I7mbK4MSXYb-UVaJk6xIpo4efeqBeaXASvxvC0ciXEISKuw6XFPX9uzzejUIXd2dQjBK-3LUrmYQ"},
-  {name:"Tom Field",        category:"KEYNOTE SPEAKER", img:"https://lh3.googleusercontent.com/aida/AP1WRLvgx2_JIIKBEZIXdFMIuGQ6vSNXr-DqeK6f4A0P2pmhmXONLpLo6oGgAeOpM9b4BcUq_6G5mw3I8ciEgSgtk1sRZFSc8YYydwMy1IOBQp9XoeMWkbWxLZn6Tz7vAXA2yCveeTq7GCeAtzzq0mabZ7zh0QfdJAhjpW-p4p-NcwEPBXHADX7DIP7001aWnCH532moPtt1lwd4JGe6_KIVpsj9Jo_yieZbLYDssgtLnCLjEtKYbhdV_TWEh5o"},
-  {name:"Dr. Newton",       category:"FORECASTER",      img:"https://lh3.googleusercontent.com/aida/AP1WRLv5oPRh1pYeAJqWfIhe6PkA1APk_aHbMe3q3aNQPh68LAwt9AlUqGtKUe2u2TXAK-oFYhVj0EaF9PKjzl5qbcoPf567xzY9mWrnkogfTIwuTHO73A4OqH4jBK5dWtJXxbDKwQ4gks9XQ41LxOsEL5-ebfvmGON7BMNQypwNQgSdaN44DoG2bJsc_Wk_WOVBmMF0137KpuDK0gbm1bkf2Ku-jXSiCU6kxd54a-amqOHSZsvl6LQ_16Xqpxg"},
+  {name:"Sarah Mitchell",  category:"REPORTER",        img:"https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Prof. Elena Ross", category:"ACADEMIC",        img:"https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"James Williams",   category:"PRESENTER",       img:"https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Chef Marco",       category:"CULINARY",        img:"https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Alex Carter",      category:"NEWS ANCHOR",     img:"https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Elena Vance",      category:"PODCASTER",       img:"https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Jake Strong",      category:"COMMENTATOR",     img:"https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Marcus Thorne",    category:"TECH REVIEWER",   img:"https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Tom Field",        category:"KEYNOTE SPEAKER", img:"https://images.pexels.com/photos/3760809/pexels-photo-3760809.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Dr. Newton",       category:"FORECASTER",      img:"https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
 ];
 
 var currentCat = 'all';
@@ -440,9 +415,7 @@ document.querySelectorAll('.voice-btn').forEach(function(btn) {
     btn.className = 'voice-btn segment-pill active px-2 py-1 text-[9px] font-bold flex-1';
     document.getElementById('selected-engine').value = btn.dataset.engine;
     var sel = document.getElementById('voice-select');
-    sel.innerHTML = btn.dataset.engine === 'elevenlabs'
-      sel.innerHTML = '<option value="Chelsie">Chelsie — Female</option><option value="Serena">Serena — Female</option><option value="Vivian">Vivian — Female</option><option value="Ethan">Ethan — Male</option><option value="Dylan">Dylan — Male</option><option value="Ryan">Ryan — Male</option><option value="Eric">Eric — Male</option><option value="Ono_Anna">Anna — Female</option>';
-      : '<option value="Chelsie">Chelsie</option><option value="Ethan">Ethan</option><option value="Serena">Serena</option><option value="Marcus">Marcus</option><option value="Luna">Luna</option>';
+    sel.innerHTML = '<option value="Chelsie">Chelsie — Female</option><option value="Serena">Serena — Female</option><option value="Vivian">Vivian — Female</option><option value="Ethan">Ethan — Male</option><option value="Dylan">Dylan — Male</option><option value="Ryan">Ryan — Male</option><option value="Eric">Eric — Male</option><option value="Ono_Anna">Anna — Female</option>';
   });
 });
 
@@ -556,103 +529,22 @@ document.getElementById('btn-gen-ai').addEventListener('click', async function()
 
 // ── GENERATE AVATAR ──
 var videoEl = document.getElementById('result-video');
-
-// ── Plan & Word Counter ──
-var currentPlanWords = 150;
-var currentPlanCost = 50;
-
-function countWords(text) {
-  return text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-}
-
-function checkWordCount() {
-  var words = countWords(document.getElementById('script-area').value);
-  var limit = currentPlanWords;
-  var pct = Math.min((words/limit)*100, 100);
-  document.getElementById('word-count').textContent = words;
-  document.getElementById('word-limit').textContent = limit;
-  var bar = document.getElementById('word-progress-bar');
-  var warning = document.getElementById('word-warning');
-  var btn = document.getElementById('render-btn');
-  if (words > limit) {
-    bar.style.width='100%'; bar.style.background='#ef4444';
-    warning.classList.remove('hidden');
-    document.getElementById('word-warning-msg').textContent = 'You have '+(words-limit)+' extra words. Upgrade plan or edit script.';
-    btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed';
-  } else {
-    bar.style.width=pct+'%'; bar.style.background=pct>85?'#f59e0b':'#c8ff00';
-    warning.classList.add('hidden');
-    btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer';
-  }
-}
-
-document.getElementById('script-area').addEventListener('input', checkWordCount);
-
-document.querySelectorAll('.plan-btn').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.plan-btn').forEach(function(b) {
-      b.className = 'plan-btn segment-pill border border-outline px-3 py-2 text-[9px] font-ui-data text-white/40 text-left flex justify-between hover:border-primary/50 transition-colors';
-      b.querySelector('span:last-child').style.color = '';
-    });
-    this.className = 'plan-btn segment-pill active border border-primary px-3 py-2 text-[9px] font-bold text-left flex justify-between';
-    this.querySelector('span:last-child').style.color = '#c8ff00';
-    currentPlanWords = parseInt(this.dataset.words);
-    currentPlanCost = parseInt(this.dataset.cost);
-    document.getElementById('selected-words').value = currentPlanWords;
-    document.getElementById('selected-cost').value = currentPlanCost;
-    document.getElementById('cost-total').textContent = currentPlanCost+' GNS';
-    document.getElementById('word-limit').textContent = currentPlanWords;
-    if (document.getElementById('plan-words-display')) document.getElementById('plan-words-display').textContent = currentPlanWords+' words';
-    checkWordCount();
-    addLog('PLAN: '+currentPlanWords+' WORDS — '+currentPlanCost+' GNS');
-  });
-});
-
-document.getElementById('btn-upgrade-plan').addEventListener('click', function() {
-  var words = countWords(document.getElementById('script-area').value);
-  var btns = document.querySelectorAll('.plan-btn');
-  for (var i=0; i<btns.length; i++) {
-    if (parseInt(btns[i].dataset.words) >= words) { btns[i].click(); break; }
-  }
-});
-document.getElementById('btn-edit-script').addEventListener('click', function() {
-  document.getElementById('script-area').focus();
-  document.getElementById('word-warning').classList.add('hidden');
-});
-
-if (document.getElementById('balance-display')) {
-  document.getElementById('balance-display').textContent = credits.toLocaleString()+' GNS';
-}
-checkWordCount();
-
-
 document.getElementById('render-btn').addEventListener('click', async function() {
   var script = document.getElementById('script-area').value.trim();
   if (!script) { addLog('ERROR: SCRIPT IS EMPTY'); return; }
-  if (!selectedCharImg) { addLog('ERROR: SELECT A CHARACTER FIRST'); return; }
-
-  var words = countWords(script);
-  var planWords = parseInt(document.getElementById('selected-words').value) || 150;
-  if (words > planWords) {
-    addLog('ERROR: SCRIPT EXCEEDS PLAN ('+words+' > '+planWords+' WORDS)');
-    return;
-  }
-
-  var cost = parseInt(document.getElementById('selected-cost').value) || 50;
-  var uid = localStorage.getItem('md_user_id');
-  if (!uid) { addLog('ERROR: NOT LOGGED IN'); return; }
-  if (credits < cost) { addLog('ERROR: NEED '+cost+' GNS — HAVE '+credits); return; }
+  if (!selectedCharImg) { addLog('ERROR: SELECT CHARACTER FIRST'); return; }
+  var cost = parseInt(document.getElementById('selected-cost').value)+10;
+  if (credits < cost) { addLog('ERROR: NEED '+cost+' GNS'); return; }
 
   var btn = this;
-  btn.disabled=true; btn.textContent='⏳ GENERATING...';
+  btn.disabled=true; btn.textContent='⏳ SYNTHESIZING...';
   document.getElementById('render-progress').style.width='5%';
   document.getElementById('render-overlay').classList.remove('hidden');
   document.getElementById('video-controls').classList.add('hidden');
-  var refunded = false;
 
   try {
-    // STEP 1: Qwen3 TTS
-    addLog('STEP 1/3: GENERATING VOICE ('+words+' WORDS)...');
+    var engine = document.getElementById('selected-engine').value;
+    var ttsRes = await fetch(engine==='elevenlabs'?'/api/elevenlabs':'/api/tts', {
     var ttsRes = await fetch('/api/tts', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -661,96 +553,81 @@ document.getElementById('render-btn').addEventListener('click', async function()
         language: document.getElementById('lang-select').value || 'English'
       })
     });
-    var ttsData = await ttsRes.json();
-    if (!ttsData.taskId) throw new Error('Voice failed: '+(ttsData.error||'no task ID'));
-    addLog('VOICE JOB: '+ttsData.taskId);
-    document.getElementById('render-progress').style.width='15%';
+    if (!ttsData.taskId) throw new Error(ttsData.error||'TTS failed');
+    addLog('TTS: '+ttsData.taskId);
+    document.getElementById('render-progress').style.width='20%';
 
-    var audioUrl = null;
-    for (var i=0; i<36; i++) {
-      await new Promise(r=>setTimeout(r,5000));
-      var tp = await fetch('/api/video?id='+ttsData.taskId);
-      var td = await tp.json();
-      addLog('VOICE '+i+': '+(td.status||'').toUpperCase());
-      document.getElementById('render-progress').style.width = (15+i)+'%';
-      if (td.status==='completed' && td.videoUrl) { audioUrl=td.videoUrl; break; }
-      if (td.status==='failed') throw new Error('Voice failed — try again');
+    var audioUrl=null;
+    for (var i=0;i<60;i++) {
+      await new Promise(r=>setTimeout(r,3000));
+      var tp=await fetch('/api/video?id='+ttsData.taskId);
+      var td=await tp.json();
+      addLog('TTS '+i+': '+(td.status||'').toUpperCase());
+      if (td.status==='completed'&&td.videoUrl){audioUrl=td.videoUrl;break;}
+      if (td.status==='failed') throw new Error('TTS failed');
     }
-    if (!audioUrl) throw new Error('Voice timeout — try again');
-    addLog('VOICE READY ✓');
-    document.getElementById('render-progress').style.width='50%';
+    if (!audioUrl) throw new Error('TTS timeout');
+    addLog('VOICE READY', 'SUCCESS');
+    document.getElementById('render-progress').style.width='40%';
 
-    // STEP 2: Deduct via server
-    addLog('STEP 2/3: PAYMENT ('+cost+' GNS)...');
-    var dr = await fetch('/api/deduct', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ uid:uid, amount:cost, service:'avatar-'+planWords+'w' })
-    });
-    var dd = await dr.json();
-    if (!dd.success) throw new Error(dd.error||'Payment failed');
-    credits = dd.balance; localStorage.setItem('md_credits',credits);
-    document.getElementById('gns-balance').textContent = credits.toLocaleString()+' GNS';
-    if (document.getElementById('balance-display')) document.getElementById('balance-display').textContent = credits.toLocaleString()+' GNS';
-    addLog('PAID: '+cost+' GNS — BALANCE: '+credits);
+    credits-=cost; localStorage.setItem('md_credits',credits);
+    document.getElementById('gns-balance').textContent=credits.toLocaleString()+' GNS';
+    try{var u=localStorage.getItem('md_user_id');if(u)firebase.firestore().collection('users').doc(u).update({credits:credits});}catch(fe){}
 
-    // STEP 3: InfiniteTalk
-    addLog('STEP 3/3: INFINITETALK...');
-    var avRes = await fetch('/api/avatar', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ image:selectedCharImg, audio:audioUrl, resolution:'720p', model:'infinitetalk' })
+    addLog('LONGCAT 1.5: INITIATING...');
+    var avRes=await fetch('/api/avatar',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({image:selectedCharImg,audio:audioUrl,duration:parseInt(document.getElementById('selected-dur').value),resolution:'720p'})
     });
-    var avData = await avRes.json();
-    if (!avData.taskId) throw new Error('InfiniteTalk: '+(avData.error||'no task ID'));
-    addLog('AVATAR JOB: '+avData.taskId);
+    var avData=await avRes.json();
+    if (!avData.taskId) throw new Error(avData.error||'Avatar failed');
+    addLog('AVATAR: '+avData.taskId);
     document.getElementById('render-progress').style.width='60%';
 
-    var attempts=0, maxAttempts=180;
+    var attempts=0;
     var poll=setInterval(async function(){
       attempts++;
-      if (attempts>maxAttempts) {
+      if (attempts>120){
         clearInterval(poll);
-        if (!refunded) { refunded=true; try { var rr=await fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar',reason:'timeout'})}); var rd=await rr.json(); if(rd.success){credits=rd.balance;localStorage.setItem('md_credits',credits);document.getElementById('gns-balance').textContent=credits.toLocaleString()+' GNS';} } catch(re){} }
-        addLog('TIMEOUT — '+cost+' GNS REFUNDED');
-        btn.disabled=false; btn.textContent='⚡ GENERATE AVATAR';
+        credits+=cost; localStorage.setItem('md_credits',credits);
+        document.getElementById('gns-balance').textContent=credits.toLocaleString()+' GNS';
+        try{var u2=localStorage.getItem('md_user_id');if(u2)firebase.firestore().collection('users').doc(u2).update({credits:credits});}catch(fe){}
+        addLog('TIMEOUT - refunded');
+        btn.disabled=false;btn.textContent='⚡ GENERATE AVATAR VIDEO';
         document.getElementById('render-overlay').classList.add('hidden');
         return;
       }
-      try {
+      try{
         var pr=await fetch('/api/video?id='+avData.taskId);
         var pd=await pr.json();
-        document.getElementById('render-progress').style.width=Math.min(60+Math.floor(attempts/maxAttempts*35),95)+'%';
+        document.getElementById('render-progress').style.width=Math.min(60+attempts,95)+'%';
         addLog('POLL '+attempts+': '+(pd.status||'').toUpperCase());
-        if (pd.status==='completed' && pd.videoUrl) {
+        if (pd.status==='completed'&&pd.videoUrl){
           clearInterval(poll);
           currentVideoUrl=pd.videoUrl;
           document.getElementById('render-progress').style.width='100%';
           document.getElementById('render-overlay').classList.add('hidden');
           document.getElementById('video-placeholder').style.display='none';
           videoEl.src=pd.videoUrl; videoEl.classList.remove('hidden');
-          videoEl.load(); videoEl.play().catch(function(){});
-          document.getElementById('play-btn').textContent='pause_circle';
+          videoEl.play(); document.getElementById('play-btn').textContent='pause_circle';
           document.getElementById('video-controls').classList.remove('hidden');
-          addLog('✓ AVATAR COMPLETE!');
-          btn.disabled=false; btn.textContent='⚡ GENERATE AVATAR';
-          try { if(uid){firebase.firestore().collection('users').doc(uid).collection('videos').add({videoUrl:pd.videoUrl,type:'avatar-infinitetalk',character:selectedCharName,words:words,plan:planWords,createdAt:new Date().toISOString()});firebase.firestore().collection('users').doc(uid).update({renders:firebase.firestore.FieldValue.increment(1)});} } catch(fe){}
-        } else if (pd.status==='failed') {
-          clearInterval(poll);
-          if (!refunded) { refunded=true; try{var fr=await fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar',reason:'failed'})});var fd=await fr.json();if(fd.success){credits=fd.balance;localStorage.setItem('md_credits',credits);document.getElementById('gns-balance').textContent=credits.toLocaleString()+' GNS';}}catch(re){} }
-          addLog('FAILED — '+cost+' GNS REFUNDED');
-          btn.disabled=false; btn.textContent='⚡ GENERATE AVATAR';
-          document.getElementById('render-overlay').classList.add('hidden');
-        }
-      } catch(pe){addLog('POLL ERR: '+pe.message);}
+          addLog('AVATAR COMPLETE!','SUCCESS');
+          btn.disabled=false;btn.textContent='⚡ GENERATE AVATAR VIDEO';
+          try{var u3=localStorage.getItem('md_user_id');if(u3){firebase.firestore().collection('users').doc(u3).collection('videos').add({videoUrl:pd.videoUrl,type:'avatar',character:selectedCharName,createdAt:new Date().toISOString()});firebase.firestore().collection('users').doc(u3).update({renders:firebase.firestore.FieldValue.increment(1)});}}catch(fe){}
+        } else if(pd.status==='failed'){clearInterval(poll);throw new Error('Failed');}
+      }catch(pe){addLog('POLL ERR: '+pe.message);}
     },5000);
 
-  } catch(e) {
+  }catch(e){
     addLog('ERROR: '+e.message);
-    var beforeDeduct = e.message.indexOf('Voice')!==-1 || e.message.indexOf('Payment')!==-1;
-    if (!refunded && !beforeDeduct) { refunded=true; try{var er=await fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar',reason:e.message})});var ed=await er.json();if(ed.success){credits=ed.balance;localStorage.setItem('md_credits',credits);document.getElementById('gns-balance').textContent=credits.toLocaleString()+' GNS';addLog(cost+' GNS REFUNDED');}}catch(re){} }
-    btn.disabled=false; btn.textContent='⚡ GENERATE AVATAR';
+    credits+=cost;localStorage.setItem('md_credits',credits);
+    document.getElementById('gns-balance').textContent=credits.toLocaleString()+' GNS';
+    try{var u4=localStorage.getItem('md_user_id');if(u4)firebase.firestore().collection('users').doc(u4).update({credits:credits});}catch(fe){}
+    btn.disabled=false;btn.textContent='⚡ GENERATE AVATAR VIDEO';
     document.getElementById('render-overlay').classList.add('hidden');
   }
-})
+});
+
 // Video controls
 document.getElementById('play-btn').addEventListener('click',function(){
   if(videoEl.paused){videoEl.play();this.textContent='pause_circle';}
