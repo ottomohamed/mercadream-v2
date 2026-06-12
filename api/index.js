@@ -1,4 +1,4 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -599,7 +599,7 @@ async function handle_elevenlabs(req, res) {
 }
 
 async function handle_avatar(req, res) {
-  const { image, audio, duration, resolution } = req.body||{};
+  const { image, audio, duration, resolution, model } = req.body||{};
   if (!image || !audio) return res.status(400).json({ error: 'image and audio required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
   try {
@@ -620,10 +620,17 @@ async function handle_avatar(req, res) {
       const audMime = audRes.headers.get('content-type') || 'audio/mpeg';
       audioData = 'data:' + audMime + ';base64,' + audB64;
     }
-    const r = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5', {
+    const endpoint = (model === 'infinitetalk')
+        ? 'https://api.wavespeed.ai/api/v3/wavespeed-ai/infinitetalk'
+        : 'https://api.wavespeed.ai/api/v3/wavespeed-ai/longcat-avatar-1.5';
+    const r = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: imageData, audio: audioData, duration: parseInt(duration)||10, resolution: resolution||'720p' })
+      body: JSON.stringify(
+        (model === 'infinitetalk')
+          ? { image: imageData, audio: audioData, resolution: resolution||'720p' }
+          : { image: imageData, audio: audioData, duration: parseInt(duration)||10, resolution: resolution||'720p' }
+      )
     });
     const d = await r.json();
     const taskId = d?.data?.id;
@@ -771,6 +778,37 @@ async function handle_i2v(req, res) {
   } catch(e) { return res.status(500).json({ error: e.message }); }
 }
 
+
+async function handle_deduct(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const { uid, amount, service } = req.body||{};
+  if (!uid || !amount || amount <= 0) return res.status(400).json({ error: 'uid and amount required.' });
+  try {
+    const userDoc = await fsGet('users', uid);
+    if (!userDoc) return res.status(404).json({ error: 'User not found.' });
+    const current = parseInt(userDoc.fields?.credits?.integerValue) || 0;
+    if (current < amount) return res.status(402).json({ error: 'Insufficient credits.', current });
+    const newBalance = current - Math.abs(amount);
+    await fsWrite('users', uid, { credits:{integerValue:newBalance}, lastDeduct:{stringValue:new Date().toISOString()}, lastService:{stringValue:service||'unknown'} });
+    await fsWrite('transactions', null, { uid:{stringValue:uid}, type:{stringValue:'deduct'}, amount:{integerValue:Math.abs(amount)}, service:{stringValue:service||'unknown'}, balanceBefore:{integerValue:current}, balanceAfter:{integerValue:newBalance}, createdAt:{stringValue:new Date().toISOString()} });
+    return res.json({ success: true, balance: newBalance, deducted: amount });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
+
+async function handle_refund(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const { uid, amount, service, reason } = req.body||{};
+  if (!uid || !amount || amount <= 0) return res.status(400).json({ error: 'uid and amount required.' });
+  try {
+    const userDoc = await fsGet('users', uid);
+    if (!userDoc) return res.status(404).json({ error: 'User not found.' });
+    const current = parseInt(userDoc.fields?.credits?.integerValue) || 0;
+    const newBalance = current + Math.abs(amount);
+    await fsWrite('users', uid, { credits:{integerValue:newBalance} });
+    await fsWrite('transactions', null, { uid:{stringValue:uid}, type:{stringValue:'refund'}, amount:{integerValue:Math.abs(amount)}, service:{stringValue:service||'unknown'}, reason:{stringValue:reason||'service_failed'}, balanceBefore:{integerValue:current}, balanceAfter:{integerValue:newBalance}, createdAt:{stringValue:new Date().toISOString()} });
+    return res.json({ success: true, balance: newBalance, refunded: amount });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
 async function handle_analyze(req, res) {
   const analyzeApi = require('./analyze');
   return await analyzeApi(req, res);
@@ -805,6 +843,8 @@ module.exports = async function handler(req, res) {
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
+    deduct:      handle_deduct,
+    refund:      handle_refund,
     tts:         handle_tts,
     voiceclone:  handle_voiceclone,
     elevenlabs:  handle_elevenlabs,
