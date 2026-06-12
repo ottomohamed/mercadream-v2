@@ -415,7 +415,9 @@ document.querySelectorAll('.voice-btn').forEach(function(btn) {
     btn.className = 'voice-btn segment-pill active px-2 py-1 text-[9px] font-bold flex-1';
     document.getElementById('selected-engine').value = btn.dataset.engine;
     var sel = document.getElementById('voice-select');
-    sel.innerHTML = '<option value="Chelsie">Chelsie — Female</option><option value="Serena">Serena — Female</option><option value="Vivian">Vivian — Female</option><option value="Ethan">Ethan — Male</option><option value="Dylan">Dylan — Male</option><option value="Ryan">Ryan — Male</option><option value="Eric">Eric — Male</option><option value="Ono_Anna">Anna — Female</option>';
+    sel.innerHTML = btn.dataset.engine === 'elevenlabs'
+      sel.innerHTML = '<option value="Chelsie">Chelsie — Female</option><option value="Serena">Serena — Female</option><option value="Vivian">Vivian — Female</option><option value="Ethan">Ethan — Male</option><option value="Dylan">Dylan — Male</option><option value="Ryan">Ryan — Male</option><option value="Eric">Eric — Male</option><option value="Ono_Anna">Anna — Female</option>';
+      : '<option value="Chelsie">Chelsie</option><option value="Ethan">Ethan</option><option value="Serena">Serena</option><option value="Marcus">Marcus</option><option value="Luna">Luna</option>';
   });
 });
 
@@ -543,8 +545,6 @@ document.getElementById('render-btn').addEventListener('click', async function()
   document.getElementById('video-controls').classList.add('hidden');
 
   try {
-    var engine = document.getElementById('selected-engine').value;
-    var ttsRes = await fetch(engine==='elevenlabs'?'/api/elevenlabs':'/api/tts', {
     var ttsRes = await fetch('/api/tts', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
