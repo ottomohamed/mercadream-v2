@@ -32,7 +32,9 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:#333;}
 ::-webkit-scrollbar-thumb:hover{background:#a8d700;}
-.talent-card img{transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);}
+.talent-card{position:relative;width:100%;padding-bottom:133.33%;overflow:hidden;}
+.talent-card>*{position:absolute;inset:0;}
+.talent-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);}
 .talent-card:hover img{transform:scale(1.05);}
 .plan-btn.active{background-color:#a8d700;color:#000;}
 .terminal-text{text-shadow:0 0 5px rgba(168,215,0,0.5);}
@@ -46,17 +48,20 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
     <h2 class="font-headline-md text-sm text-surface-tint tracking-widest uppercase">Talent Roster</h2>
   </div>
   <div class="p-3 space-y-1 shrink-0" id="cat-filters">
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-surface-tint border-l-2 border-surface-tint bg-white/5 transition-all" data-cat="all">ALL TALENT</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="REPORTER">REPORTER</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="ACADEMIC">ACADEMIC</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="PRESENTER">PRESENTER</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="CULINARY">CULINARY</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="NEWS ANCHOR">NEWS ANCHOR</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="PODCASTER">PODCASTER</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="COMMENTATOR">COMMENTATOR</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="TECH REVIEWER">TECH</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="KEYNOTE SPEAKER">KEYNOTE</button>
-    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="FORECASTER">FORECASTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-surface-tint border-l-2 border-surface-tint bg-white/5 transition-all" data-cat="all">● ALL</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="PILOT">○ PILOT</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="FASHION">○ FASHION</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="ARCHITECT">○ ARCHITECT</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="SCIENTIST">○ SCIENTIST</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="TECH CREATOR">○ TECH CREATOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="NEWS ANCHOR">○ NEWS ANCHOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="JOURNALIST">○ JOURNALIST</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="CULINARY">○ CULINARY</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="PODCASTER">○ PODCASTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="TECH REPORTER">○ TECH REPORTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="COMMENTATOR">○ COMMENTATOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="REPORTER">○ REPORTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="ACADEMIC">○ ACADEMIC</button>
   </div>
   <div class="flex-1 overflow-y-auto p-3">
     <div class="grid grid-cols-2 gap-2" id="talent-grid"></div>
@@ -68,11 +73,11 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
   <header class="p-4 border-b border-white/10 flex justify-between items-center bg-surface/80 sticky top-0 z-40 backdrop-blur-md">
     <div class="flex items-center gap-3">
       <div class="w-12 h-12 border border-surface-tint p-0.5 overflow-hidden flex-shrink-0">
-        <img class="w-full h-full object-cover" id="active-thumb" src="https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"/>
+        <img class="w-full h-full object-cover" id="active-thumb" src="https://images.pexels.com/photos/1438761/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"/>
       </div>
       <div>
-        <h1 class="font-headline-md text-sm text-white uppercase" id="active-name">SARAH MITCHELL</h1>
-        <p class="font-label-caps text-[9px] text-surface-tint" id="active-status">● SELECTED | READY</p>
+        <h1 class="font-headline-md text-sm text-white uppercase" id="active-name">CAPTAIN ELIAS</h1>
+        <p class="font-label-caps text-[9px] text-surface-tint" id="active-status">● PILOT | READY</p>
       </div>
     </div>
     <div class="bg-surface-container px-3 py-1.5 border border-white/10 font-ui-data-sm text-surface-tint text-sm" id="gns-balance">
@@ -170,7 +175,7 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
         <span id="plan-words-display">150</span> WORDS ALLOCATED
       </div>
       <div class="text-right">
-        <span class="font-headline-md text-surface-tint text-sm" id="cost-total">50</span>
+        <span class="font-headline-md text-surface-tint text-sm" id="cost-total">200</span>
         <span class="font-label-caps text-[9px] text-on-surface-variant"> GNS</span>
       </div>
     </div>
@@ -288,24 +293,28 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
 <script>
 // ── State ──
 var credits = parseInt(localStorage.getItem('md_credits')||'0');
-var selectedCharImg = 'https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop';
-var selectedCharName = 'Sarah Mitchell';
+var selectedCharImg = 'https://images.pexels.com/photos/1438761/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop';
+var selectedCharName = 'Captain Elias';
 var currentVideoUrl = null;
 var currentPlanWords = 150;
-var currentPlanCost = 50;
+var currentPlanCost = 200;
 
 // ── Talent Roster Data ──
 var talentRoster = [
-  {name:"Sarah Mitchell",  category:"REPORTER",        img:"https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Prof. Elena Ross", category:"ACADEMIC",        img:"https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"James Williams",   category:"PRESENTER",       img:"https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Chef Marco",       category:"CULINARY",        img:"https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Alex Carter",      category:"NEWS ANCHOR",     img:"https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Elena Vance",      category:"PODCASTER",       img:"https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Jake Strong",      category:"COMMENTATOR",     img:"https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Marcus Thorne",    category:"TECH REVIEWER",   img:"https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Tom Field",        category:"KEYNOTE SPEAKER", img:"https://images.pexels.com/photos/3760809/pexels-photo-3760809.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
-  {name:"Dr. Newton",       category:"FORECASTER",      img:"https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Captain Elias",  category:"PILOT",        img:"https://images.pexels.com/photos/1438761/pexels-photo-1438761.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Bella V.",       category:"FASHION",      img:"https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Marcus H.",      category:"ARCHITECT",    img:"https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Dr. Elena",      category:"SCIENTIST",    img:"https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Leo Tech",       category:"TECH CREATOR", img:"https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Alex Carter",    category:"NEWS ANCHOR",  img:"https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Sarah Mitchell", category:"JOURNALIST",   img:"https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Chef Marco",     category:"CULINARY",     img:"https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Elara V.",       category:"PODCASTER",    img:"https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Serena J.",      category:"PODCASTER",    img:"https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"May Ling",       category:"TECH REPORTER",img:"https://images.pexels.com/photos/3771089/pexels-photo-3771089.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Jackson Ford",   category:"COMMENTATOR",  img:"https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Clara White",    category:"REPORTER",     img:"https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Prof. Gale",     category:"ACADEMIC",     img:"https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
 ];
 
 // ── Balance ──
@@ -337,9 +346,662 @@ function buildGrid(cat) {
   filtered.forEach(function(t) {
     var div = document.createElement('div');
     div.className = 'talent-card group relative overflow-hidden cursor-pointer border border-white/10 transition-all duration-300';
-    div.style.aspectRatio = '3/4';
+    div.style.cssText='position:relative;width:100%;padding-top:133.33%;';
     div.innerHTML =
-      '<img src="'+t.img+'" class="w-full h-full object-cover" onerror="this.src=\'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400\'">'
+      '<img src="'+t.img+'" class="w-full h-full object-cover" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400\'">'
+      +'<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>'
+      +'<div class="absolute bottom-0 left-0 p-2 w-full">'
+      +'<p class="font-label-caps text-[7px] text-surface-tint">'+t.category+'</p>'
+      +'<p class="font-headline-md text-[9px] truncate text-white">'+t.name+'</p>'
+      +'</div>'
+      +'<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-surface-tint/20 transition-opacity">'
+      +'<button class="bg-surface-tint text-black font-label-caps px-2 py-1 text-[9px]">SELECT</button>'
+      +'</div>';
+    div.addEventListener('click', function() {
+      document.querySelectorAll('.talent-card').forEach(function(c){c.classList.remove('neo-glow-active');});
+      div.classList.add('neo-glow-active');
+      selectedCharImg = t.img;
+      selectedCharName = t.name;
+      document.getElementById('active-thumb').src = t.img;
+      document.getElementById('active-name').textContent = t.name.toUpperCase();
+      document.getElementById('active-status').textContent = '● '+t.category+' | READY';
+      addLog('[SELECT] '+t.name.toUpperCase());
+    });
+    grid.appendChild(div);
+  });
+}
+buildGrid('all');
+
+// ── Category Filters ──
+document.querySelectorAll('.cat-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-btn').forEach(function(b) {
+      b.className = 'cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all';
+    });
+    btn.className = 'cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-surface-tint border-l-2 border-surface-tint bg-white/5 transition-all';
+    currentCat = btn.dataset.cat;
+    buildGrid(currentCat);
+  });
+});
+
+// ── Word Counter ──
+function countWords(text) {
+  return text.trim()===''?0:text.trim().split(/\s+/).filter(function(w){return w!=='';}).length;
+}
+function checkWordCount() {
+  var words = countWords(document.getElementById('script-area').value);
+  var pct = Math.min((words/currentPlanWords)*100, 100);
+  document.getElementById('word-count').textContent = words;
+  var bar = document.getElementById('word-progress-bar');
+  var warning = document.getElementById('word-warning');
+  var btn = document.getElementById('render-btn');
+  if (words > currentPlanWords) {
+    bar.style.width='100%'; bar.style.background='#ef4444';
+    warning.style.display='flex';
+    document.getElementById('word-warning-msg').textContent='EXCEEDS LIMIT — '+(words-currentPlanWords)+' WORDS OVER';
+    btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed';
+  } else {
+    bar.style.width=pct+'%'; bar.style.background=pct>85?'#facc15':'#a8d700';
+    warning.style.display='none';
+    btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer';
+  }
+}
+document.getElementById('script-area').addEventListener('input', checkWordCount);
+
+// ── Plan Selection ──
+document.querySelectorAll('.plan-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.plan-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    currentPlanWords = parseInt(btn.dataset.words);
+    currentPlanCost = parseInt(btn.dataset.cost);
+    document.getElementById('selected-words').value = currentPlanWords;
+    document.getElementById('selected-cost').value = currentPlanCost;
+    document.getElementById('word-limit').textContent = currentPlanWords;
+    document.getElementById('plan-words-display').textContent = currentPlanWords;
+    document.getElementById('cost-total').textContent = currentPlanCost;
+    checkWordCount();
+    addLog('[PLAN] '+currentPlanWords+' WORDS — '+currentPlanCost+' GNS');
+  });
+});
+
+// ── Upgrade/Edit ──
+document.getElementById('btn-upgrade-plan').addEventListener('click', function() {
+  var words = countWords(document.getElementById('script-area').value);
+  var btns = document.querySelectorAll('.plan-btn');
+  for(var i=0;i<btns.length;i++){if(parseInt(btns[i].dataset.words)>=words){btns[i].click();break;}}
+});
+document.getElementById('btn-edit-script').addEventListener('click', function() {
+  document.getElementById('script-area').focus();
+  document.getElementById('word-warning').style.display='none';
+});
+
+// ── Upload ──
+document.getElementById('upload-zone').addEventListener('click', function(){document.getElementById('file-input').click();});
+document.getElementById('upload-zone').addEventListener('dragover',function(e){e.preventDefault();this.style.borderColor='#a8d700';});
+document.getElementById('upload-zone').addEventListener('dragleave',function(){this.style.borderColor='';});
+document.getElementById('upload-zone').addEventListener('drop',function(e){e.preventDefault();this.style.borderColor='';if(e.dataTransfer.files[0])handleUpload(e.dataTransfer.files[0]);});
+document.getElementById('file-input').addEventListener('change',function(e){if(e.target.files[0])handleUpload(e.target.files[0]);});
+function handleUpload(file) {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    selectedCharImg = ev.target.result; selectedCharName = 'Custom Photo';
+    var prev = document.getElementById('upload-preview');
+    prev.src = ev.target.result; prev.classList.remove('hidden');
+    document.getElementById('active-thumb').src = ev.target.result;
+    document.getElementById('active-name').textContent = 'CUSTOM PHOTO';
+    document.getElementById('active-status').textContent = '● UPLOADED | READY';
+    addLog('[UPLOAD] '+file.name);
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── AI Tags ──
+document.querySelectorAll('#ai-tags button').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var area = document.getElementById('ai-prompt');
+    area.value = area.value+(area.value?', ':'')+btn.dataset.tag;
+  });
+});
+
+// ── AI Generate ──
+document.getElementById('btn-gen-ai').addEventListener('click', async function() {
+  var prompt = document.getElementById('ai-prompt').value.trim();
+  if (!prompt){addLog('[ERROR] DESCRIBE CHARACTER FIRST');return;}
+  if (credits<6){addLog('[ERROR] NEED 6 GNS');return;}
+  var uid = localStorage.getItem('md_user_id');
+  var btn = this; btn.textContent='SYNTHESIZING...'; btn.disabled=true;
+  document.getElementById('ai-loading').classList.remove('hidden');
+  addLog('[AI] GENERATING...');
+  try {
+    var dr=await fetch('/api/deduct',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:6,service:'ai-char'})});
+    var dd=await dr.json();
+    if(!dd.success) throw new Error(dd.error||'Payment failed');
+    credits=dd.balance; localStorage.setItem('md_credits',credits); updateBalance();
+    var res=await fetch('/api/imagegen',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'text',prompt:prompt+', professional portrait headshot, studio lighting, neutral background, photorealistic',size:'1024x1024',quality:'standard'})});
+    var data=await res.json();
+    if(!data.taskId) throw new Error(data.error||'No task ID');
+    for(var i=0;i<40;i++){
+      await new Promise(r=>setTimeout(r,3000));
+      var pr=await fetch('/api/video?id='+data.taskId);
+      var pd=await pr.json();
+      if(pd.status==='completed'&&pd.videoUrl){
+        selectedCharImg=pd.videoUrl; selectedCharName='AI Character';
+        document.getElementById('active-thumb').src=pd.videoUrl;
+        document.getElementById('active-name').textContent='AI CHARACTER';
+        document.getElementById('active-status').textContent='● AI GEN | READY';
+        document.getElementById('ai-preview-img').src=pd.videoUrl;
+        document.getElementById('ai-preview-wrap').classList.remove('hidden');
+        addLog('[AI] CHARACTER READY ✓'); break;
+      }
+      if(pd.status==='failed') throw new Error('Failed');
+    }
+  } catch(e){addLog('[ERROR] '+e.message);}
+  finally{btn.textContent='GENERATE CHARACTER — 6 GNS';btn.disabled=false;document.getElementById('ai-loading').classList.add('hidden');}
+});
+
+// ── GENERATE AVATAR ──
+var videoEl = document.getElementById('result-video');
+document.getElementById('render-btn').addEventListener('click', async function() {
+  var script = document.getElementById('script-area').value.trim();
+  if(!script){addLog('[ERROR] SCRIPT IS EMPTY');return;}
+  if(!selectedCharImg){addLog('[ERROR] SELECT CHARACTER FIRST');return;}
+  var words = countWords(script);
+  var planWords = parseInt(document.getElementById('selected-words').value)||150;
+  if(words>planWords){addLog('[ERROR] SCRIPT EXCEEDS PLAN ('+words+'>'+planWords+')');return;}
+  var cost = parseInt(document.getElementById('selected-cost').value)||50;
+  var uid = localStorage.getItem('md_user_id');
+  if(!uid){addLog('[ERROR] NOT LOGGED IN');return;}
+  if(credits<cost){addLog('[ERROR] NEED '+cost+' GNS — HAVE '+credits);return;}
+
+  var btn=this, pWrap=document.getElementById('render-progress-wrap'),
+      pFill=document.getElementById('render-progress'), overlay=document.getElementById('render-overlay');
+  btn.disabled=true; btn.style.opacity='0.5';
+  pWrap.classList.remove('hidden'); overlay.classList.remove('hidden'); pFill.style.width='5%';
+  var refunded=false;
+
+  try {
+    addLog('[1/3] GENERATING VOICE ('+words+' WORDS)...');
+    var ttsRes=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:script,voice:document.getElementById('voice-select').value||'Chelsie',language:document.getElementById('lang-select').value||'English'})});
+    var ttsData=await ttsRes.json();
+    if(!ttsData.taskId) throw new Error('Voice: '+(ttsData.error||'no task ID'));
+    addLog('[TTS] JOB: '+ttsData.taskId);
+    pFill.style.width='15%';
+    var audioUrl=null;
+    for(var i=0;i<36;i++){
+      await new Promise(r=>setTimeout(r,5000));
+      var tp=await fetch('/api/video?id='+ttsData.taskId);
+      var td=await tp.json();
+      addLog('[TTS] '+i+': '+(td.status||'').toUpperCase());
+      pFill.style.width=(15+i)+'%';
+      if(td.status==='completed'&&td.videoUrl){audioUrl=td.videoUrl;break;}
+      if(td.status==='failed') throw new Error('Voice failed');
+    }
+    if(!audioUrl) throw new Error('Voice timeout');
+    addLog('[TTS] READY ✓'); pFill.style.width='50%';
+
+    addLog('[2/3] PAYMENT ('+cost+' GNS)...');
+    var dr=await fetch('/api/deduct',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar-'+planWords+'w'})});
+    var dd=await dr.json();
+    if(!dd.success) throw new Error(dd.error||'Payment failed');
+    credits=dd.balance; localStorage.setItem('md_credits',credits); updateBalance();
+    addLog('[PAY] '+cost+' GNS — BAL: '+credits);
+
+    addLog('[3/3] INFINITETALK...');
+    var avRes=await fetch('/api/avatar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:selectedCharImg,audio:audioUrl,resolution:'720p',model:'infinitetalk'})});
+    var avData=await avRes.json();
+    if(!avData.taskId) throw new Error('InfiniteTalk: '+(avData.error||'no task'));
+    addLog('[AV] JOB: '+avData.taskId); pFill.style.width='60%';
+
+    var attempts=0,maxAttempts=360;
+    var poll=setInterval(async function(){
+      attempts++;
+      if(attempts>maxAttempts){
+        clearInterval(poll);
+        if(!refunded){refunded=true;try{var rr=await fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar',reason:'timeout'})});var rd=await rr.json();if(rd.success){credits=rd.balance;localStorage.setItem('md_credits',credits);updateBalance();}}catch(re){}}
+        addLog('[TIMEOUT] '+cost+' GNS REFUNDED');
+        btn.disabled=false;btn.style.opacity='1';pWrap.classList.add('hidden');overlay.classList.add('hidden');return;
+      }
+      try{
+        var pr=await fetch('/api/video?id='+avData.taskId);
+        var pd=await pr.json();
+        pFill.style.width=Math.min(60+Math.floor(attempts/maxAttempts*35),95)+'%';
+        document.getElementById('render-percent').textContent=Math.floor(parseFloat(pFill.style.width))+'%';
+        addLog('[POLL] '+attempts+': '+(pd.status||'').toUpperCase());
+        if(pd.status==='completed'&&pd.videoUrl){
+          clearInterval(poll);
+          currentVideoUrl=pd.videoUrl; pFill.style.width='100%';
+          overlay.classList.add('hidden');
+          document.getElementById('video-placeholder').style.display='none';
+          videoEl.src=pd.videoUrl; videoEl.classList.remove('hidden');
+          videoEl.load(); videoEl.play().catch(function(){});
+          document.getElementById('play-btn').querySelector('.material-symbols-outlined').textContent='pause';
+          addLog('[OK] AVATAR COMPLETE ✓');
+          btn.disabled=false;btn.style.opacity='1';
+          try{if(uid){firebase.firestore().collection('users').doc(uid).collection('videos').add({videoUrl:pd.videoUrl,type:'avatar-infinitetalk',character:selectedCharName,words:words,plan:planWords,createdAt:new Date().toISOString()});firebase.firestore().collection('users').doc(uid).update({renders:firebase.firestore.FieldValue.increment(1)});}}catch(fe){}
+        } else if(pd.status==='failed'){
+          clearInterval(poll);
+          if(!refunded){refunded=true;try{var fr=await fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar',reason:'failed'})});var fd=await fr.json();if(fd.success){credits=fd.balance;localStorage.setItem('md_credits',credits);updateBalance();}}catch(re){}}
+          addLog('[FAILED] '+cost+' GNS REFUNDED');
+          btn.disabled=false;btn.style.opacity='1';pWrap.classList.add('hidden');overlay.classList.add('hidden');
+        }
+      }catch(pe){addLog('[ERR] '+pe.message);}
+    },5000);
+
+  } catch(e){
+    addLog('[ERROR] '+e.message);
+    var beforeDeduct=e.message.indexOf('Voice')!==-1||e.message.indexOf('Payment')!==-1;
+    if(!refunded&&!beforeDeduct){refunded=true;try{var er=await fetch('/api/refund',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:uid,amount:cost,service:'avatar',reason:e.message})});var ed=await er.json();if(ed.success){credits=ed.balance;localStorage.setItem('md_credits',credits);updateBalance();addLog('[REFUND] '+cost+' GNS');}}catch(re){}}
+    btn.disabled=false;btn.style.opacity='1';pWrap.classList.add('hidden');overlay.classList.add('hidden');
+  }
+});
+
+// ── Video Controls ──
+document.getElementById('play-btn').addEventListener('click',function(){
+  var icon=this.querySelector('.material-symbols-outlined');
+  if(videoEl.paused){videoEl.play();icon.textContent='pause';}else{videoEl.pause();icon.textContent='play_arrow';}
+});
+videoEl.addEventListener('ended',function(){document.getElementById('play-btn').querySelector('.material-symbols-outlined').textContent='play_arrow';});
+videoEl.addEventListener('timeupdate',function(){
+  if(!videoEl.duration)return;
+  var p=(videoEl.currentTime/videoEl.duration)*100;
+  document.getElementById('seek-progress').style.width=p+'%';
+  document.getElementById('seek-bar').value=p;
+});
+document.getElementById('seek-bar').addEventListener('input',function(){if(videoEl.duration)videoEl.currentTime=(this.value/100)*videoEl.duration;});
+document.getElementById('volume-slider').addEventListener('input',function(){videoEl.volume=this.value/100;});
+
+// ── Download / Assembly ──
+document.getElementById('dl-btn').addEventListener('click',function(){
+  if(!currentVideoUrl)return;
+  var a=document.createElement('a');a.href=currentVideoUrl;a.download='mercadream_avatar_'+Date.now()+'.mp4';a.click();
+  addLog('[DL] SAVED');
+});
+document.getElementById('asm-btn').addEventListener('click',function(){
+  if(!currentVideoUrl)return;
+  localStorage.setItem('NEURA_ACTIVE_STREAM',JSON.stringify({url:currentVideoUrl,name:'avatar_'+Date.now()+'.mp4',type:'video',duration:10}));
+  window.location.href='assembly.html';
+});
+
+// ── Log ──
+function addLog(msg) {
+  var log=document.getElementById('terminal-log');
+  var p=document.createElement('p');
+  var ok=msg.indexOf('[OK]')!==-1||msg.indexOf('✓')!==-1;
+  var err=msg.indexOf('[ERROR]')!==-1||msg.indexOf('[FAILED]')!==-1||msg.indexOf('[TIMEOUT]')!==-1;
+  p.className=ok?'text-surface-tint':err?'text-red-400':'text-on-surface-variant opacity-70';
+  p.textContent=msg;
+  log.insertBefore(p,log.firstChild);
+  while(log.children.length>10)log.removeChild(log.lastChild);
+}
+
+// Init
+addLog('[OK] SYSTEM READY — INFINITETALK POWERED');
+checkWordCount();
+</script>
+</body></html><div class="p-3 space-y-0.5 shrink-0" id="cat-filters">
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-surface-tint border-l-2 border-surface-tint bg-white/5" data-cat="all">● ALL</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="PILOT">○ PILOT</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="FASHION">○ FASHION</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="ARCHITECT">○ ARCHITECT</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="SCIENTIST">○ SCIENTIST</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="TECH CREATOR">○ TECH CREATOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="NEWS ANCHOR">○ NEWS ANCHOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="JOURNALIST">○ JOURNALIST</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="CULINARY">○ CULINARY</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="PODCASTER">○ PODCASTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="TECH REPORTER">○ TECH REPORTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="COMMENTATOR">○ COMMENTATOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="REPORTER">○ REPORTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white" data-cat="ACADEMIC">○ ACADEMIC</button>
+  </div>TYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MERCADREAM | Avatar Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{colors:{"surface-tint":"#a8d700","surface":"#131313","on-surface-variant":"#c4caac","surface-container":"#1f2020","on-surface":"#e4e2e1","surface-container-lowest":"#0e0e0e","surface-container-high":"#2a2a2a","background":"#131313","error":"#ffb4ab","error-container":"#93000a"},fontFamily:{"headline-md":["Orbitron"],"label-caps":["IBM Plex Mono"],"ui-data-sm":["IBM Plex Mono"],"ui-data-lg":["IBM Plex Mono"]}}}
+}
+</script>
+<style>
+body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(168,215,0,0.05) 1px,transparent 1px);background-size:32px 32px;color:#e4e2e1;overflow:hidden;height:100vh;}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+.neo-glow{box-shadow:0 0 20px rgba(168,215,0,0.2);}
+.neo-glow-active{box-shadow:0 0 25px rgba(168,215,0,0.4);border-color:#a8d700 !important;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:#333;}
+::-webkit-scrollbar-thumb:hover{background:#a8d700;}
+.talent-card{position:relative;width:100%;padding-bottom:133.33%;overflow:hidden;}
+.talent-card>*{position:absolute;inset:0;}
+.talent-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);}
+.talent-card:hover img{transform:scale(1.05);}
+.plan-btn.active{background-color:#a8d700;color:#000;}
+.terminal-text{text-shadow:0 0 5px rgba(168,215,0,0.5);}
+</style>
+</head>
+<body class="flex flex-col md:flex-row h-screen w-full">
+
+<!-- COL 1: Talent Roster -->
+<aside class="hidden md:flex flex-col w-[280px] h-full border-r border-white/10 bg-surface-container-lowest/80 backdrop-blur-sm z-30">
+  <div class="p-4 border-b border-white/10">
+    <h2 class="font-headline-md text-sm text-surface-tint tracking-widest uppercase">Talent Roster</h2>
+  </div>
+  <div class="p-3 space-y-1 shrink-0" id="cat-filters">
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-surface-tint border-l-2 border-surface-tint bg-white/5 transition-all" data-cat="all">ALL TALENT</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="REPORTER">REPORTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="ACADEMIC">ACADEMIC</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="PRESENTER">PRESENTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="CULINARY">CULINARY</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="NEWS ANCHOR">NEWS ANCHOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="PODCASTER">PODCASTER</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="COMMENTATOR">COMMENTATOR</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="TECH REVIEWER">TECH</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="KEYNOTE SPEAKER">KEYNOTE</button>
+    <button class="cat-btn w-full text-left px-3 py-1.5 font-label-caps text-[10px] text-on-surface-variant hover:text-white transition-all" data-cat="FORECASTER">FORECASTER</button>
+  </div>
+  <div class="flex-1 overflow-y-auto p-3">
+    <div class="grid grid-cols-2 gap-2" id="talent-grid"></div>
+  </div>
+</aside>
+
+<!-- COL 2: Director's Panel -->
+<main class="flex-1 flex flex-col h-full border-r border-white/10 bg-black/40 z-20 overflow-y-auto">
+  <header class="p-4 border-b border-white/10 flex justify-between items-center bg-surface/80 sticky top-0 z-40 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 border border-surface-tint p-0.5 overflow-hidden flex-shrink-0">
+        <img class="w-full h-full object-cover" id="active-thumb" src="https://images.pexels.com/photos/1438761/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"/>
+      </div>
+      <div>
+        <h1 class="font-headline-md text-sm text-white uppercase" id="active-name">CAPTAIN ELIAS</h1>
+        <p class="font-label-caps text-[9px] text-surface-tint" id="active-status">● PILOT | READY</p>
+      </div>
+    </div>
+    <div class="bg-surface-container px-3 py-1.5 border border-white/10 font-ui-data-sm text-surface-tint text-sm" id="gns-balance">
+      <span id="balance-display">0</span> GNS
+    </div>
+  </header>
+
+  <section class="p-5 space-y-5">
+    <!-- Script -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-end">
+        <label class="font-label-caps text-[10px] text-on-surface-variant">CINEMATIC SCRIPT</label>
+        <span class="font-ui-data-sm text-[10px] text-on-surface-variant">
+          <span id="word-count">0</span> / <span id="word-limit">150</span> WORDS
+        </span>
+      </div>
+      <textarea class="w-full h-44 bg-surface-container-lowest border-b-2 border-white/20 focus:border-surface-tint outline-none p-4 font-ui-data-sm text-white placeholder:text-white/20 transition-all resize-none" id="script-area" placeholder="Enter your script here..."></textarea>
+      <div class="h-1 w-full bg-surface-container overflow-hidden">
+        <div class="h-full bg-surface-tint transition-all duration-300" id="word-progress-bar" style="width:0%"></div>
+      </div>
+      <div class="hidden items-center justify-between p-3 bg-error-container/20 border border-error/50" id="word-warning">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-error text-sm">warning</span>
+          <p class="font-ui-data-sm text-error text-xs" id="word-warning-msg">SCRIPT EXCEEDS PLAN LIMIT</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="px-2 py-1 font-label-caps text-[9px] border border-error/50 text-error hover:bg-error hover:text-black transition-all" id="btn-edit-script">EDIT</button>
+          <button class="px-2 py-1 font-label-caps text-[9px] bg-error text-black" id="btn-upgrade-plan">UPGRADE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice & Language -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="space-y-1">
+        <label class="font-label-caps text-[9px] text-on-surface-variant">VOICE PROFILE</label>
+        <select class="w-full bg-surface-container border border-white/10 p-2 font-ui-data-sm text-white text-xs focus:border-surface-tint" id="voice-select">
+          <option value="Chelsie">Chelsie — Female</option>
+          <option value="Serena">Serena — Female</option>
+          <option value="Vivian">Vivian — Female</option>
+          <option value="Ethan">Ethan — Male</option>
+          <option value="Dylan">Dylan — Male</option>
+          <option value="Ryan">Ryan — Male</option>
+          <option value="Eric">Eric — Male</option>
+          <option value="Ono_Anna">Anna — Female</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="font-label-caps text-[9px] text-on-surface-variant">LANGUAGE</label>
+        <select class="w-full bg-surface-container border border-white/10 p-2 font-ui-data-sm text-white text-xs focus:border-surface-tint" id="lang-select">
+          <option value="English">English</option>
+          <option value="Arabic">Arabic</option>
+          <option value="Spanish">Spanish</option>
+          <option value="French">French</option>
+          <option value="German">German</option>
+          <option value="Chinese">Chinese</option>
+          <option value="Japanese">Japanese</option>
+          <option value="auto">Auto Detect</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Script Plans -->
+    <div class="space-y-2">
+      <label class="font-label-caps text-[9px] text-on-surface-variant">SCRIPT PLAN</label>
+      <div class="grid grid-cols-4 gap-2">
+        <button class="plan-btn active p-3 border border-white/10 flex flex-col items-center gap-1 transition-all" data-words="150" data-cost="200">
+          <span class="font-headline-md text-xs">150</span>
+          <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
+          <span class="font-label-caps text-[8px] opacity-60">200 GNS</span>
+        </button>
+        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="400" data-cost="450">
+          <span class="font-headline-md text-xs">400</span>
+          <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
+          <span class="font-label-caps text-[8px] opacity-60">450 GNS</span>
+        </button>
+        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="700" data-cost="750">
+          <span class="font-headline-md text-xs">700</span>
+          <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
+          <span class="font-label-caps text-[8px] opacity-60">750 GNS</span>
+        </button>
+        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="1300" data-cost="1300">
+          <span class="font-headline-md text-xs">1300</span>
+          <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
+          <span class="font-label-caps text-[8px] opacity-60">1300 GNS</span>
+        </button>
+      </div>
+      <input type="hidden" id="selected-words" value="150"/>
+      <input type="hidden" id="selected-cost" value="200"/>
+    </div>
+
+    <!-- Cost Summary -->
+    <div class="p-3 bg-surface-tint/5 border-l-4 border-surface-tint flex justify-between items-center">
+      <div class="font-ui-data-sm text-surface-tint text-xs">
+        <span id="plan-words-display">150</span> WORDS ALLOCATED
+      </div>
+      <div class="text-right">
+        <span class="font-headline-md text-surface-tint text-sm" id="cost-total">200</span>
+        <span class="font-label-caps text-[9px] text-on-surface-variant"> GNS</span>
+      </div>
+    </div>
+
+    <!-- Generate -->
+    <div class="space-y-3">
+      <button class="w-full bg-surface-tint py-4 text-black font-headline-md text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(168,215,0,0.3)]" id="render-btn">
+        ⚡ GENERATE AVATAR
+      </button>
+      <div class="hidden space-y-1" id="render-progress-wrap">
+        <div class="flex justify-between font-label-caps text-[9px]">
+          <span>PROCESSING...</span>
+          <span id="render-percent">0%</span>
+        </div>
+        <div class="h-1 bg-white/10 overflow-hidden">
+          <div class="h-full bg-surface-tint transition-all" id="render-progress" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- COL 3: Output Screen -->
+<aside class="hidden md:flex flex-col w-[340px] h-full border-l border-white/10 bg-surface-container-lowest/80 backdrop-blur-sm z-30 overflow-y-auto">
+  <div class="p-4 border-b border-white/10">
+    <h2 class="font-headline-md text-sm text-surface-tint tracking-widest uppercase">Output Monitor</h2>
+  </div>
+  <div class="p-4 space-y-4">
+    <!-- Video Player -->
+    <div class="relative">
+      <div class="aspect-video bg-black border border-white/10 relative overflow-hidden" id="video-box">
+        <video id="result-video" class="w-full h-full object-contain hidden absolute inset-0"></video>
+        <div class="absolute inset-0 flex flex-col items-center justify-center" id="video-placeholder">
+          <span class="material-symbols-outlined text-4xl text-white/20 mb-2">videocam_off</span>
+          <p class="font-label-caps text-[9px] text-white/20">AWAITING RENDER</p>
+        </div>
+        <div class="hidden absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-6 text-center space-y-3" id="render-overlay">
+          <div class="w-10 h-10 border-2 border-surface-tint border-t-transparent animate-spin rounded-full"></div>
+          <p class="font-ui-data-sm text-surface-tint text-xs">يتم الآن توليد الفيديو الخاص بك، الرجاء الانتظار. في حال تأخر التوليد فذلك بسبب الضغط الكبير على الخدمة، يرجى الانتظار إلى أن يظهر الفيديو في الشاشة.</p>
+        </div>
+      </div>
+      <div class="p-2 bg-surface border-x border-b border-white/10 flex items-center gap-2" id="video-controls">
+        <button class="text-surface-tint hover:scale-110 transition-transform" id="play-btn">
+          <span class="material-symbols-outlined text-xl">play_arrow</span>
+        </button>
+        <div class="flex-1 h-1 bg-white/10 relative">
+          <div class="absolute h-full bg-surface-tint" id="seek-progress" style="width:0%"></div>
+          <input class="absolute w-full h-1 opacity-0 cursor-pointer" id="seek-bar" max="100" min="0" type="range" value="0"/>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm text-on-surface-variant">volume_up</span>
+          <input class="w-12 h-1" id="volume-slider" max="100" min="0" type="range" value="80" style="accent-color:#a8d700"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <button class="flex items-center justify-center gap-1 py-2 border border-white/10 hover:border-surface-tint font-label-caps text-[9px] text-on-surface-variant hover:text-surface-tint transition-all" id="dl-btn">
+        <span class="material-symbols-outlined text-xs">download</span> DOWNLOAD
+      </button>
+      <button class="flex items-center justify-center gap-1 py-2 border border-white/10 hover:border-surface-tint font-label-caps text-[9px] text-on-surface-variant hover:text-surface-tint transition-all" id="asm-btn">
+        <span class="material-symbols-outlined text-xs">layers</span> ASSEMBLE
+      </button>
+    </div>
+
+    <div class="flex items-center gap-3 py-2">
+      <div class="h-px flex-1 bg-white/10"></div>
+      <span class="font-label-caps text-[8px] text-white/20 whitespace-nowrap">OR CREATE CUSTOM</span>
+      <div class="h-px flex-1 bg-white/10"></div>
+    </div>
+
+    <!-- Upload -->
+    <div class="border-2 border-dashed border-white/10 hover:border-surface-tint/50 p-5 flex flex-col items-center justify-center gap-2 cursor-pointer group transition-all relative overflow-hidden" id="upload-zone">
+      <input class="hidden" id="file-input" type="file" accept="image/*"/>
+      <span class="material-symbols-outlined text-2xl text-white/10 group-hover:text-surface-tint transition-colors">cloud_upload</span>
+      <p class="font-label-caps text-[9px] text-white/20 group-hover:text-white transition-colors">UPLOAD PHOTO — FREE</p>
+      <img id="upload-preview" src="" class="hidden absolute inset-0 w-full h-full object-cover"/>
+    </div>
+
+    <!-- AI Generate -->
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <label class="font-label-caps text-[9px] text-on-surface-variant">AI CHARACTER GENERATOR</label>
+        <span class="font-label-caps text-[8px] text-surface-tint border border-surface-tint/30 px-1">6 GNS</span>
+      </div>
+      <textarea class="w-full h-16 bg-surface-container border border-white/10 p-2 font-ui-data-sm text-white text-xs placeholder:text-white/10 outline-none focus:border-surface-tint resize-none" id="ai-prompt" placeholder="Describe your character..."></textarea>
+      <div class="flex flex-wrap gap-1" id="ai-tags">
+        <button class="px-2 py-0.5 bg-white/5 border border-white/10 font-label-caps text-[8px] hover:border-surface-tint hover:text-surface-tint transition-all" data-tag="Professional">Professional</button>
+        <button class="px-2 py-0.5 bg-white/5 border border-white/10 font-label-caps text-[8px] hover:border-surface-tint hover:text-surface-tint transition-all" data-tag="Doctor">Doctor</button>
+        <button class="px-2 py-0.5 bg-white/5 border border-white/10 font-label-caps text-[8px] hover:border-surface-tint hover:text-surface-tint transition-all" data-tag="Female">Female</button>
+        <button class="px-2 py-0.5 bg-white/5 border border-white/10 font-label-caps text-[8px] hover:border-surface-tint hover:text-surface-tint transition-all" data-tag="Male">Male</button>
+        <button class="px-2 py-0.5 bg-white/5 border border-white/10 font-label-caps text-[8px] hover:border-surface-tint hover:text-surface-tint transition-all" data-tag="Studio lighting">Studio</button>
+        <button class="px-2 py-0.5 bg-white/5 border border-white/10 font-label-caps text-[8px] hover:border-surface-tint hover:text-surface-tint transition-all" data-tag="Business">Business</button>
+      </div>
+      <div id="ai-preview-wrap" class="hidden relative h-20 border border-surface-tint overflow-hidden">
+        <img id="ai-preview-img" src="" class="w-full h-full object-cover"/>
+        <div class="absolute top-1 right-1 bg-surface-tint text-black text-[7px] px-1 font-label-caps">AI GEN</div>
+      </div>
+      <button class="w-full py-2 border border-surface-tint text-surface-tint font-label-caps text-[9px] hover:bg-surface-tint hover:text-black transition-all" id="btn-gen-ai">
+        GENERATE CHARACTER — 6 GNS
+      </button>
+      <div id="ai-loading" class="hidden text-center font-ui-data-sm text-[9px] text-surface-tint animate-pulse">SYNTHESIZING...</div>
+    </div>
+
+    <!-- Terminal Log -->
+    <div class="bg-black/80 border border-white/10 p-3 h-36 overflow-hidden">
+      <p class="font-label-caps text-[8px] text-surface-tint/40 tracking-widest border-b border-white/5 pb-1 mb-2">SYSTEM LOG</p>
+      <div class="space-y-0.5 overflow-hidden font-ui-data-sm text-[9px] terminal-text" id="terminal-log">
+        <p class="text-surface-tint">[OK] SYSTEM READY — INFINITETALK</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+// ── State ──
+var credits = parseInt(localStorage.getItem('md_credits')||'0');
+var selectedCharImg = 'https://images.pexels.com/photos/1438761/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop';
+var selectedCharName = 'Captain Elias';
+var currentVideoUrl = null;
+var currentPlanWords = 150;
+var currentPlanCost = 200;
+
+// ── Talent Roster Data ──
+var talentRoster = [
+  {name:"Captain Elias",  category:"PILOT",        img:"https://images.pexels.com/photos/1438761/pexels-photo-1438761.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Bella V.",        category:"FASHION",      img:"https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Marcus H.",       category:"ARCHITECT",    img:"https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Dr. Elena",       category:"SCIENTIST",    img:"https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Leo Tech",        category:"TECH CREATOR", img:"https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Alex Carter",     category:"NEWS ANCHOR",  img:"https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Sarah Mitchell",  category:"JOURNALIST",   img:"https://images.pexels.com/photos/3776932/pexels-photo-3776932.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Chef Marco",      category:"CULINARY",     img:"https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Elara V.",        category:"PODCASTER",    img:"https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Serena J.",       category:"PODCASTER",    img:"https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"May Ling",        category:"TECH REPORTER",img:"https://images.pexels.com/photos/3771089/pexels-photo-3771089.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Jackson Ford",    category:"COMMENTATOR",  img:"https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Clara White",     category:"REPORTER",     img:"https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+  {name:"Prof. Gale",      category:"ACADEMIC",     img:"https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop"},
+];
+
+// ── Balance ──
+function updateBalance() {
+  document.getElementById('gns-balance').innerHTML = '<span id="balance-display">'+credits.toLocaleString()+'</span> GNS';
+}
+updateBalance();
+
+// ── Firebase ──
+try {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) return;
+    localStorage.setItem('md_user_id', user.uid);
+    firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc) {
+      if (!doc.exists) return;
+      credits = doc.data().credits || 0;
+      localStorage.setItem('md_credits', credits);
+      updateBalance();
+    });
+  });
+} catch(e) {}
+
+// ── Build Grid ──
+var currentCat = 'all';
+function buildGrid(cat) {
+  var grid = document.getElementById('talent-grid');
+  grid.innerHTML = '';
+  var filtered = cat === 'all' ? talentRoster : talentRoster.filter(function(t){return t.category===cat;});
+  filtered.forEach(function(t) {
+    var div = document.createElement('div');
+    div.className = 'talent-card group relative overflow-hidden cursor-pointer border border-white/10 transition-all duration-300';
+    div.style.cssText='position:relative;width:100%;padding-top:133.33%;';
+    div.innerHTML =
+      '<img src="'+t.img+'" class="w-full h-full object-cover" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400\'">'
       +'<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>'
       +'<div class="absolute bottom-0 left-0 p-2 w-full">'
       +'<p class="font-label-caps text-[7px] text-surface-tint">'+t.category+'</p>'
