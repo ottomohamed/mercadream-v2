@@ -139,29 +139,29 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
     <div class="space-y-2">
       <label class="font-label-caps text-[9px] text-on-surface-variant">SCRIPT PLAN</label>
       <div class="grid grid-cols-4 gap-2">
-        <button class="plan-btn active p-3 border border-white/10 flex flex-col items-center gap-1 transition-all" data-words="150" data-cost="50">
+        <button class="plan-btn active p-3 border border-white/10 flex flex-col items-center gap-1 transition-all" data-words="150" data-cost="200">
           <span class="font-headline-md text-xs">150</span>
           <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
-          <span class="font-label-caps text-[8px] opacity-60">50 GNS</span>
+          <span class="font-label-caps text-[8px] opacity-60">200 GNS</span>
         </button>
-        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="400" data-cost="120">
+        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="400" data-cost="450">
           <span class="font-headline-md text-xs">400</span>
           <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
-          <span class="font-label-caps text-[8px] opacity-60">120 GNS</span>
+          <span class="font-label-caps text-[8px] opacity-60">450 GNS</span>
         </button>
-        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="700" data-cost="180">
+        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="700" data-cost="750">
           <span class="font-headline-md text-xs">700</span>
           <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
-          <span class="font-label-caps text-[8px] opacity-60">180 GNS</span>
+          <span class="font-label-caps text-[8px] opacity-60">750 GNS</span>
         </button>
-        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="1300" data-cost="300">
+        <button class="plan-btn p-3 border border-white/10 flex flex-col items-center gap-1 transition-all hover:border-surface-tint" data-words="1300" data-cost="1300">
           <span class="font-headline-md text-xs">1300</span>
           <span class="font-label-caps text-[8px] opacity-70">WORDS</span>
-          <span class="font-label-caps text-[8px] opacity-60">300 GNS</span>
+          <span class="font-label-caps text-[8px] opacity-60">1300 GNS</span>
         </button>
       </div>
       <input type="hidden" id="selected-words" value="150"/>
-      <input type="hidden" id="selected-cost" value="50"/>
+      <input type="hidden" id="selected-cost" value="200"/>
     </div>
 
     <!-- Cost Summary -->
@@ -209,7 +209,7 @@ body{background-color:#000;background-image:linear-gradient(rgba(168,215,0,0.05)
         </div>
         <div class="hidden absolute inset-0 bg-black/80 flex flex-col items-center justify-center p-6 text-center space-y-3" id="render-overlay">
           <div class="w-10 h-10 border-2 border-surface-tint border-t-transparent animate-spin rounded-full"></div>
-          <p class="font-ui-data-sm text-surface-tint text-xs">INFINITETALK RENDERING...</p>
+          <p class="font-ui-data-sm text-surface-tint text-xs">GENERATING YOUR AVATAR  THIS MAY TAKE SOME TIME. PLEASE WAIT...</p>
         </div>
       </div>
       <div class="p-2 bg-surface border-x border-b border-white/10 flex items-center gap-2" id="video-controls">
@@ -544,7 +544,7 @@ document.getElementById('render-btn').addEventListener('click', async function()
     if(!avData.taskId) throw new Error('InfiniteTalk: '+(avData.error||'no task'));
     addLog('[AV] JOB: '+avData.taskId); pFill.style.width='60%';
 
-    var attempts=0,maxAttempts=180;
+    var attempts=0,maxAttempts=360;
     var poll=setInterval(async function(){
       attempts++;
       if(attempts>maxAttempts){
