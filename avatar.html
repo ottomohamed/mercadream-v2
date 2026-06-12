@@ -345,21 +345,34 @@ function buildGrid(cat) {
   var filtered = cat === 'all' ? talentRoster : talentRoster.filter(function(t){return t.category===cat;});
   filtered.forEach(function(t) {
     var div = document.createElement('div');
-    div.className = 'talent-card group relative overflow-hidden cursor-pointer border border-white/10 transition-all duration-300';
-    div.style.cssText='position:relative;width:100%;padding-top:133.33%;';
-    div.innerHTML =
-      '<img src="'+t.img+'" class="w-full h-full object-cover" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400\'">'
-      +'<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>'
-      +'<div class="absolute bottom-0 left-0 p-2 w-full">'
-      +'<p class="font-label-caps text-[7px] text-surface-tint">'+t.category+'</p>'
-      +'<p class="font-headline-md text-[9px] truncate text-white">'+t.name+'</p>'
-      +'</div>'
-      +'<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-surface-tint/20 transition-opacity">'
-      +'<button class="bg-surface-tint text-black font-label-caps px-2 py-1 text-[9px]">SELECT</button>'
-      +'</div>';
+    div.style.cssText = 'position:relative;width:100%;padding-bottom:133%;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,0.1);transition:border-color 0.3s;';
+    var img = document.createElement('img');
+    img.src = t.img;
+    img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform 0.5s;';
+    img.onerror = function(){ this.src='https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400'; };
+    var grad = document.createElement('div');
+    grad.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);';
+    var info = document.createElement('div');
+    info.style.cssText = 'position:absolute;bottom:0;left:0;padding:8px;width:100%;';
+    var pCat = document.createElement('p');
+    pCat.style.cssText = 'font-size:7px;color:#a8d700;text-transform:uppercase;font-family:IBM Plex Mono,monospace;margin:0;';
+    pCat.textContent = t.category;
+    var pName = document.createElement('p');
+    pName.style.cssText = 'font-size:9px;color:white;text-transform:uppercase;font-family:Orbitron,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;';
+    pName.textContent = t.name;
+    info.appendChild(pCat); info.appendChild(pName);
+    var sel = document.createElement('div');
+    sel.style.cssText = 'position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(168,215,0,0.15);';
+    var selBtn = document.createElement('button');
+    selBtn.textContent = 'SELECT';
+    selBtn.style.cssText = 'background:#a8d700;color:black;font-size:9px;padding:4px 10px;border:none;cursor:pointer;font-family:IBM Plex Mono,monospace;';
+    sel.appendChild(selBtn);
+    div.appendChild(img); div.appendChild(grad); div.appendChild(info); div.appendChild(sel);
+    div.addEventListener('mouseenter',function(){img.style.transform='scale(1.05)';sel.style.display='flex';});
+    div.addEventListener('mouseleave',function(){img.style.transform='scale(1)';sel.style.display='none';});
     div.addEventListener('click', function() {
-      document.querySelectorAll('.talent-card').forEach(function(c){c.classList.remove('neo-glow-active');});
-      div.classList.add('neo-glow-active');
+      document.querySelectorAll('#talent-grid > div').forEach(function(c){c.style.borderColor='rgba(255,255,255,0.1)';c.style.boxShadow='none';});
+      div.style.borderColor='#a8d700'; div.style.boxShadow='0 0 20px rgba(168,215,0,0.4)';
       selectedCharImg = t.img;
       selectedCharName = t.name;
       document.getElementById('active-thumb').src = t.img;
@@ -998,21 +1011,34 @@ function buildGrid(cat) {
   var filtered = cat === 'all' ? talentRoster : talentRoster.filter(function(t){return t.category===cat;});
   filtered.forEach(function(t) {
     var div = document.createElement('div');
-    div.className = 'talent-card group relative overflow-hidden cursor-pointer border border-white/10 transition-all duration-300';
-    div.style.cssText='position:relative;width:100%;padding-top:133.33%;';
-    div.innerHTML =
-      '<img src="'+t.img+'" class="w-full h-full object-cover" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400\'">'
-      +'<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>'
-      +'<div class="absolute bottom-0 left-0 p-2 w-full">'
-      +'<p class="font-label-caps text-[7px] text-surface-tint">'+t.category+'</p>'
-      +'<p class="font-headline-md text-[9px] truncate text-white">'+t.name+'</p>'
-      +'</div>'
-      +'<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-surface-tint/20 transition-opacity">'
-      +'<button class="bg-surface-tint text-black font-label-caps px-2 py-1 text-[9px]">SELECT</button>'
-      +'</div>';
+    div.style.cssText = 'position:relative;width:100%;padding-bottom:133%;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,0.1);transition:border-color 0.3s;';
+    var img = document.createElement('img');
+    img.src = t.img;
+    img.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform 0.5s;';
+    img.onerror = function(){ this.src='https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&cs=tinysrgb&w=400'; };
+    var grad = document.createElement('div');
+    grad.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);';
+    var info = document.createElement('div');
+    info.style.cssText = 'position:absolute;bottom:0;left:0;padding:8px;width:100%;';
+    var pCat = document.createElement('p');
+    pCat.style.cssText = 'font-size:7px;color:#a8d700;text-transform:uppercase;font-family:IBM Plex Mono,monospace;margin:0;';
+    pCat.textContent = t.category;
+    var pName = document.createElement('p');
+    pName.style.cssText = 'font-size:9px;color:white;text-transform:uppercase;font-family:Orbitron,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;';
+    pName.textContent = t.name;
+    info.appendChild(pCat); info.appendChild(pName);
+    var sel = document.createElement('div');
+    sel.style.cssText = 'position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(168,215,0,0.15);';
+    var selBtn = document.createElement('button');
+    selBtn.textContent = 'SELECT';
+    selBtn.style.cssText = 'background:#a8d700;color:black;font-size:9px;padding:4px 10px;border:none;cursor:pointer;font-family:IBM Plex Mono,monospace;';
+    sel.appendChild(selBtn);
+    div.appendChild(img); div.appendChild(grad); div.appendChild(info); div.appendChild(sel);
+    div.addEventListener('mouseenter',function(){img.style.transform='scale(1.05)';sel.style.display='flex';});
+    div.addEventListener('mouseleave',function(){img.style.transform='scale(1)';sel.style.display='none';});
     div.addEventListener('click', function() {
-      document.querySelectorAll('.talent-card').forEach(function(c){c.classList.remove('neo-glow-active');});
-      div.classList.add('neo-glow-active');
+      document.querySelectorAll('#talent-grid > div').forEach(function(c){c.style.borderColor='rgba(255,255,255,0.1)';c.style.boxShadow='none';});
+      div.style.borderColor='#a8d700'; div.style.boxShadow='0 0 20px rgba(168,215,0,0.4)';
       selectedCharImg = t.img;
       selectedCharName = t.name;
       document.getElementById('active-thumb').src = t.img;
