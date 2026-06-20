@@ -8,14 +8,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
 <style>
-:root{--acid:#c8ff00;--void:#0a0a0a;--surf:#141414;--surf2:#1c1c1c;--line:rgba(200,255,0,.15)}
+:root{--acid:#c8ff00;--void:#0a0a0a;--surf:#141414;--line:rgba(200,255,0,.15)}
 *{box-sizing:border-box}
 body{background:var(--void);background-image:linear-gradient(rgba(200,255,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,.025) 1px,transparent 1px);background-size:36px 36px;color:#e8e8e3;font-family:'Inter',sans-serif;min-height:100vh;margin:0;padding-bottom:60px}
-.mono{font-family:'IBM Plex Mono',monospace}
-.font-display{font-family:'Orbitron',sans-serif}
 header{position:sticky;top:0;background:rgba(10,10,10,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:16px 28px;display:flex;justify-content:space-between;align-items:center;z-index:50}
 .logo{font-family:'Orbitron';font-weight:900;color:var(--acid);font-size:17px;letter-spacing:1.5px;cursor:pointer;display:flex;align-items:center;gap:8px}
-.badge-free{background:rgba(200,255,0,.08);border:1px solid var(--acid);color:var(--acid);padding:5px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono'}
+.badge-credits{background:rgba(200,255,0,.08);border:1px solid var(--acid);color:var(--acid);padding:5px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono'}
 main{max-width:1100px;margin:0 auto;padding:40px 24px}
 .hero{text-align:center;margin-bottom:36px}
 .hero h1{font-family:'Orbitron';font-size:34px;font-weight:900;color:#fff;letter-spacing:1px;margin:0 0 6px}
@@ -26,7 +24,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 24px}
 .panel{background:var(--surf);border:1px solid var(--line);padding:24px;position:relative}
 .panel-label{font-family:'IBM Plex Mono';font-size:10px;color:var(--acid);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .panel-label .material-symbols-outlined{font-size:16px}
-textarea{width:100%;background:#000;border:1px solid #2a2a2a;color:#e8e8e3;font-family:'Inter';font-size:14.5px;line-height:1.6;padding:16px;resize:vertical;min-height:160px;outline:none;transition:border-color .2s}
+textarea{width:100%;background:#000;border:1px solid #2a2a2a;color:#e8e8e3;font-family:'Inter';font-size:14.5px;line-height:1.6;padding:16px;resize:vertical;min-height:140px;outline:none;transition:border-color .2s}
 textarea:focus{border-color:var(--acid)}
 .meta-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-family:'IBM Plex Mono';font-size:10px;color:#666}
 .meta-row .est{color:var(--acid)}
@@ -39,15 +37,18 @@ textarea:focus{border-color:var(--acid)}
 .voice-card.active .voice-icon{background:var(--acid);color:#000}
 .voice-name{font-size:12.5px;font-weight:500;color:#e8e8e3}
 .voice-lang{font-family:'IBM Plex Mono';font-size:9px;color:#777;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.slider-block{margin-top:18px}
-.slider-head{display:flex;justify-content:space-between;font-family:'IBM Plex Mono';font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin-bottom:8px}
-.slider-head .val{color:var(--acid);font-weight:700}
-input[type=range]{width:100%;-webkit-appearance:none;height:3px;background:#2a2a2a;outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--acid);cursor:pointer;border-radius:50%;box-shadow:0 0 8px rgba(200,255,0,.5)}
 .style-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chip{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:7px 13px;border:1px solid #2a2a2a;color:#999;cursor:pointer;transition:.15s}
+.chip{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:8px 14px;border:1px solid #2a2a2a;color:#999;cursor:pointer;transition:.15s}
 .chip:hover{border-color:#555;color:#ccc}
 .chip.active{border-color:var(--acid);color:var(--acid);background:rgba(200,255,0,.06)}
+.chip-desc{font-family:'IBM Plex Mono';font-size:9.5px;color:#666;margin-top:10px;line-height:1.5;min-height:28px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:18px;border-top:1px solid #232323}
+.toggle-label{font-family:'IBM Plex Mono';font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#999}
+.toggle-label small{display:block;color:#666;font-size:9px;letter-spacing:0;text-transform:none;margin-top:3px}
+.switch{position:relative;width:42px;height:22px;background:#2a2a2a;border-radius:11px;cursor:pointer;transition:.2s;flex-shrink:0}
+.switch.on{background:var(--acid)}
+.switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s}
+.switch.on::after{left:23px;background:#000}
 .gen-btn{width:100%;background:var(--acid);color:#000;border:none;padding:17px;font-family:'Orbitron';font-weight:700;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;margin-top:22px;display:flex;align-items:center;justify-content:center;gap:10px;transition:.2s}
 .gen-btn:hover{box-shadow:0 0 24px rgba(200,255,0,.4)}
 .gen-btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
@@ -67,7 +68,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .progress-fill{position:absolute;left:0;top:0;height:100%;background:var(--acid);width:0%}
 .time-label{font-family:'IBM Plex Mono';font-size:10px;color:#777;min-width:70px;text-align:right}
 .action-row{display:flex;gap:10px;margin-top:18px}
-.action-btn{flex:1;background:transparent;border:1px solid #2a2a2a;color:#ccc;padding:12px;font-family:'IBM Plex Mono';font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
+.action-btn{flex:1;background:transparent;border:1px solid #2a2a2a;color:#ccc;padding:12px;font-family:'IBM Plex Mono';font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s;text-decoration:none}
 .action-btn:hover{border-color:var(--acid);color:var(--acid)}
 .action-btn.primary{background:var(--acid);color:#000;border-color:var(--acid)}
 .action-btn.primary:hover{box-shadow:0 0 16px rgba(200,255,0,.4)}
@@ -79,6 +80,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .history-text span{font-family:'IBM Plex Mono';font-size:9px;color:#666}
 .empty-state{text-align:center;padding:30px 10px;color:#555;font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:1px}
 .empty-state .material-symbols-outlined{font-size:32px;display:block;margin:0 auto 10px;opacity:.4}
+.info-box{background:rgba(200,255,0,.04);border-left:2px solid var(--acid);padding:12px 14px;margin-top:14px;font-family:'IBM Plex Mono';font-size:10px;color:#aaa;line-height:1.6}
+.info-box b{color:var(--acid)}
 </style>
 </head>
 <body>
@@ -87,20 +90,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <span class="material-symbols-outlined" style="font-size:20px">graphic_eq</span>
     MERCADREAM
   </div>
-  <div class="badge-free">100% FREE GENERATION</div>
+  <div class="badge-credits" id="credits-badge">— CREDITS</div>
 </header>
 
 <main>
   <div class="hero">
     <h1>NEURAL <span>VOICE</span> STUDIO</h1>
-    <p>Text-to-Speech &middot; Google Neural Engine &middot; Director-Level Control</p>
+    <p>Text-to-Speech &middot; Google Neural2 Engine &middot; SSML Director Control</p>
   </div>
 
   <div class="grid">
     <div>
       <div class="panel">
         <div class="panel-label"><span class="material-symbols-outlined">edit_note</span> SCRIPT INPUT</div>
-        <textarea id="text-input" maxlength="5000" placeholder="Type your narration, dialogue, or voiceover script...">Welcome to MercaDream. Your idea, your film, in minutes. No crew. No budget. No limits.</textarea>
+        <textarea id="text-input" maxlength="5000" placeholder="Type your narration, dialogue, or voiceover script. Separate sentences with periods for natural pacing.">Welcome to MercaDream. Your idea, your film, in minutes. No crew. No budget. No limits.</textarea>
         <div class="meta-row">
           <span><span id="char-count">0</span> / 5000 characters</span>
           <span class="est">~<span id="est-duration">0</span>s estimated audio</span>
@@ -109,29 +112,33 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
         <div class="section-gap">
           <div class="panel-label"><span class="material-symbols-outlined">theater_comedy</span> DELIVERY STYLE</div>
           <div class="style-chips" id="style-chips">
-            <div class="chip active" data-rate="1.0" data-pitch="0">Natural</div>
-            <div class="chip" data-rate="0.85" data-pitch="-2">Calm</div>
-            <div class="chip" data-rate="1.15" data-pitch="2">Energetic</div>
-            <div class="chip" data-rate="0.8" data-pitch="-4">Dramatic</div>
-            <div class="chip" data-rate="1.25" data-pitch="3">Excited</div>
-            <div class="chip" data-rate="0.9" data-pitch="-1">Documentary</div>
+            <div class="chip active" data-style="natural">Natural</div>
+            <div class="chip" data-style="calm">Calm</div>
+            <div class="chip" data-style="energetic">Energetic</div>
+            <div class="chip" data-style="dramatic">Dramatic</div>
+            <div class="chip" data-style="documentary">Documentary</div>
+            <div class="chip" data-style="announcement">Announcement</div>
           </div>
+          <div class="chip-desc" id="style-desc">Balanced, even pacing with natural sentence pauses. Best for general narration.</div>
         </div>
 
-        <div class="slider-block">
-          <div class="slider-head"><span>Speaking Rate</span><span class="val" id="rate-val">1.0x</span></div>
-          <input type="range" id="rate-slider" min="0.5" max="2.0" step="0.05" value="1.0"/>
+        <div class="toggle-row">
+          <div class="toggle-label">
+            SSML Director Mode
+            <small>Adds natural pauses between sentences + emphasis on key phrases</small>
+          </div>
+          <div class="switch on" id="ssml-toggle" onclick="toggleSSML()"></div>
         </div>
-        <div class="slider-block">
-          <div class="slider-head"><span>Pitch</span><span class="val" id="pitch-val">0 st</span></div>
-          <input type="range" id="pitch-slider" min="-10" max="10" step="1" value="0"/>
+
+        <div class="info-box" id="ssml-info">
+          <b>SSML Mode active.</b> Sentences are separated with natural breaks (350-700ms), and the engine applies stable prosody control — this avoids the jittery/glitchy audio that can happen with raw pitch/rate sliders on Neural2 voices.
         </div>
 
         <button class="gen-btn" id="gen-btn" onclick="generateVoice()">
           <span class="material-symbols-outlined" style="font-size:18px">bolt</span>
           GENERATE VOICE
         </button>
-        <div class="cost-tag">Cost: <b>10 credits</b> per generation &middot; Engine cost to platform: $0.00</div>
+        <div class="cost-tag">Cost: <b>10 credits</b> per generation</div>
         <div class="status-line" id="status"></div>
       </div>
 
@@ -179,6 +186,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 
 <audio id="audio-player" style="display:none"></audio>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
+  authDomain:"mercadream-4b4b3.firebaseapp.com",
+  projectId:"mercadream-4b4b3",
+  storageBucket:"mercadream-4b4b3.firebasestorage.app",
+  messagingSenderId:"257560928442",
+  appId:"1:257560928442:web:06983f27629a13eeed6283"
+});
+</script>
+
 <script>
 var VOICES = [
   {id:'en-US-Neural2-F', name:'Sarah', lang:'English US — Female', icon:'woman'},
@@ -190,8 +211,19 @@ var VOICES = [
   {id:'es-ES-Neural2-A', name:'Sofia', lang:'Spanish — Female', icon:'woman'},
   {id:'fr-FR-Neural2-A', name:'Claire', lang:'French — Female', icon:'woman'}
 ];
+
+var STYLES = {
+  natural:      { desc: 'Balanced, even pacing with natural sentence pauses. Best for general narration.', rate:'100%', pitch:'+0st', breakMs:400, emphasis:false },
+  calm:         { desc: 'Slower pace, gentle tone, longer pauses. Best for meditative or documentary intros.', rate:'88%', pitch:'-1st', breakMs:600, emphasis:false },
+  energetic:    { desc: 'Faster pace, upbeat tone, shorter pauses. Best for ads and trailers.', rate:'112%', pitch:'+1st', breakMs:250, emphasis:true },
+  dramatic:     { desc: 'Slow, weighted delivery with long dramatic pauses and emphasis on key words.', rate:'90%', pitch:'-1st', breakMs:700, emphasis:true },
+  documentary:  { desc: 'Measured, authoritative pace — like a nature documentary narrator.', rate:'92%', pitch:'+0st', breakMs:500, emphasis:false },
+  announcement: { desc: 'Clear, confident, slightly emphasized — like a cinema trailer voiceover.', rate:'95%', pitch:'+1st', breakMs:450, emphasis:true }
+};
+
 var selectedVoice = VOICES[0].id;
-var selectedRate = 1.0, selectedPitch = 0;
+var selectedStyle = 'natural';
+var ssmlMode = true;
 var history = JSON.parse(localStorage.getItem('md_voice_history')||'[]');
 var currentAudioUrl = null;
 
@@ -215,25 +247,16 @@ document.querySelectorAll('.chip').forEach(function(chip){
   chip.addEventListener('click', function(){
     document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
     chip.classList.add('active');
-    selectedRate = parseFloat(chip.dataset.rate);
-    selectedPitch = parseFloat(chip.dataset.pitch);
-    document.getElementById('rate-slider').value = selectedRate;
-    document.getElementById('pitch-slider').value = selectedPitch;
-    document.getElementById('rate-val').textContent = selectedRate.toFixed(2)+'x';
-    document.getElementById('pitch-val').textContent = selectedPitch+' st';
+    selectedStyle = chip.dataset.style;
+    document.getElementById('style-desc').textContent = STYLES[selectedStyle].desc;
   });
 });
 
-var rateSlider = document.getElementById('rate-slider');
-var pitchSlider = document.getElementById('pitch-slider');
-rateSlider.addEventListener('input', function(){
-  selectedRate = parseFloat(rateSlider.value);
-  document.getElementById('rate-val').textContent = selectedRate.toFixed(2)+'x';
-});
-pitchSlider.addEventListener('input', function(){
-  selectedPitch = parseFloat(pitchSlider.value);
-  document.getElementById('pitch-val').textContent = selectedPitch+' st';
-});
+function toggleSSML(){
+  ssmlMode = !ssmlMode;
+  document.getElementById('ssml-toggle').classList.toggle('on', ssmlMode);
+  document.getElementById('ssml-info').style.display = ssmlMode ? 'block' : 'none';
+}
 
 var textInput = document.getElementById('text-input');
 function updateMeta(){
@@ -245,6 +268,28 @@ function updateMeta(){
 }
 textInput.addEventListener('input', updateMeta);
 updateMeta();
+
+function escapeXml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildSSML(text, style){
+  var cfg = STYLES[style];
+  var sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  var inner = sentences.map(function(s, i){
+    var clean = escapeXml(s.trim());
+    var content = clean;
+    if(cfg.emphasis && i === 0){
+      var words = clean.split(' ');
+      if(words.length > 2){
+        content = '<emphasis level="moderate">'+words.slice(0,2).join(' ')+'</emphasis> '+words.slice(2).join(' ');
+      }
+    }
+    return '<s>'+content+'</s>';
+  }).join('<break time="'+cfg.breakMs+'ms"/>');
+
+  return '<speak><prosody rate="'+cfg.rate+'" pitch="'+cfg.pitch+'">'+inner+'</prosody></speak>';
+}
 
 function buildWaveform(){
   var wv = document.getElementById('wave-visual');
@@ -277,11 +322,21 @@ async function generateVoice(){
   btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">hourglass_top</span> GENERATING...';
   setStatus('Synthesizing with Neural Engine...', '');
 
+  var payload = { voice: selectedVoice };
+  if(ssmlMode){
+    payload.ssml = buildSSML(text, selectedStyle);
+  } else {
+    payload.text = text;
+    var cfg = STYLES[selectedStyle];
+    payload.speakingRate = parseFloat(cfg.rate)/100;
+    payload.pitch = parseFloat(cfg.pitch);
+  }
+
   try {
     var res = await fetch('/api/voice', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ text: text, voice: selectedVoice, speakingRate: selectedRate, pitch: selectedPitch })
+      body: JSON.stringify(payload)
     });
     var data = await res.json();
 
@@ -294,6 +349,10 @@ async function generateVoice(){
 
     var newCredits = credits - 10;
     localStorage.setItem('md_credits', newCredits);
+    var uid = localStorage.getItem('md_user_id');
+    if(uid){ try{ firebase.firestore().collection('users').doc(uid).update({credits:newCredits}); }catch(e){} }
+    var b = document.getElementById('credits-badge');
+    if(b) b.textContent = newCredits.toLocaleString() + ' CREDITS';
 
     currentAudioUrl = 'data:audio/mp3;base64,' + data.audioContent;
     var player = document.getElementById('audio-player');
@@ -303,7 +362,7 @@ async function generateVoice(){
     buildWaveform();
 
     var voiceName = VOICES.find(function(v){return v.id===selectedVoice;}).name;
-    var entry = { text: text.substring(0,60), voice: voiceName, date: new Date().toISOString(), url: currentAudioUrl };
+    var entry = { text: text.substring(0,60), voice: voiceName, style: selectedStyle, date: new Date().toISOString(), url: currentAudioUrl };
     history.unshift(entry);
     history = history.slice(0,5);
     localStorage.setItem('md_voice_history', JSON.stringify(history));
@@ -335,7 +394,7 @@ function renderHistory(){
     var time = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
     return '<div class="history-item" onclick="playHistory(\''+h.url.replace(/'/g,"\\'")+'\')">'+
       '<div class="history-icon"><span class="material-symbols-outlined" style="font-size:14px">play_arrow</span></div>'+
-      '<div class="history-text"><p>'+h.text+'</p><span>'+h.voice+' &middot; '+time+'</span></div>'+
+      '<div class="history-text"><p>'+h.text+'</p><span>'+h.voice+' &middot; '+(h.style||'natural')+' &middot; '+time+'</span></div>'+
     '</div>';
   }).join('');
 }
@@ -379,6 +438,18 @@ function seekAudio(e){
   var pct = (e.clientX - rect.left) / rect.width;
   player.currentTime = pct * player.duration;
 }
+
+firebase.auth().onAuthStateChanged(function(user){
+  if(!user) return;
+  localStorage.setItem('md_user_id', user.uid);
+  firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc){
+    if(!doc.exists) return;
+    var c = doc.data().credits || 0;
+    localStorage.setItem('md_credits', c);
+    var b = document.getElementById('credits-badge');
+    if(b) b.textContent = c.toLocaleString() + ' CREDITS';
+  });
+});
 </script>
 </body>
 </html>
