@@ -1,4 +1,4 @@
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // MERCADREAM â€” api/index.js
 // UNIFIED ROUTER v3 â€” Clean, no duplicates
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -437,8 +437,8 @@ async function handle_director(req, res) {
 async function handle_checkout(req, res) {
   if (req.method!=='POST') return res.status(405).json({ error:'POST only.' });
   if (!STRIPE_KEY) return res.status(500).json({ error:'STRIPE_SECRET_KEY not configured.' });
-  const { credits, userId } = req.body||{};
-  const creditAmount = parseInt(credits)||100;
+  const { credits, amount, userId } = req.body||{};
+  const creditAmount = parseInt(credits||amount)||100;
   const priceInCents = creditAmount * 10;
   try {
     const Stripe = require('stripe');
@@ -864,6 +864,7 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
+
 
 
 
