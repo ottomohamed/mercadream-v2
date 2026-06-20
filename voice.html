@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -80,19 +80,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .empty-state{text-align:center;padding:30px 10px;color:#555;font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:1px}
 .empty-state .material-symbols-outlined{font-size:32px;display:block;margin:0 auto 10px;opacity:.4}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script>
-firebase.initializeApp({
-  apiKey:"AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-  authDomain:"mercadream-4b4b3.firebaseapp.com",
-  projectId:"mercadream-4b4b3",
-  storageBucket:"mercadream-4b4b3.firebasestorage.app",
-  messagingSenderId:"257560928442",
-  appId:"1:257560928442:web:06983f27629a13eeed6283"
-});
-</script>
 </head>
 <body>
 <header>
@@ -100,7 +87,7 @@ firebase.initializeApp({
     <span class="material-symbols-outlined" style="font-size:20px">graphic_eq</span>
     MERCADREAM
   </div>
-  <div class="badge-free" id="credits-badge"> CR</div>
+  <div class="badge-free">100% FREE GENERATION</div>
 </header>
 
 <main>
@@ -205,7 +192,7 @@ var VOICES = [
 ];
 var selectedVoice = VOICES[0].id;
 var selectedRate = 1.0, selectedPitch = 0;
-var voiceHistory = JSON.parse(localStorage.getItem('md_voice_history')||'[]');
+var history = JSON.parse(localStorage.getItem('md_voice_history')||'[]');
 var currentAudioUrl = null;
 
 function buildVoiceGrid(){
@@ -223,18 +210,6 @@ function selectVoice(id, el){
   el.classList.add('active');
 }
 buildVoiceGrid();
-
-firebase.auth().onAuthStateChanged(function(user){
-  if(!user) return;
-  localStorage.setItem('md_user_id', user.uid);
-  firebase.firestore().collection('users').doc(user.uid).onSnapshot(function(doc){
-    if(!doc.exists) return;
-    var c = doc.data().credits || 0;
-    localStorage.setItem('md_credits', c);
-    var b = document.getElementById('credits-badge');
-    if(b) b.textContent = c.toLocaleString() + ' CREDITS';
-  });
-});
 
 document.querySelectorAll('.chip').forEach(function(chip){
   chip.addEventListener('click', function(){
@@ -319,10 +294,6 @@ async function generateVoice(){
 
     var newCredits = credits - 10;
     localStorage.setItem('md_credits', newCredits);
-    var uid = localStorage.getItem('md_user_id');
-    if(uid){
-      try{ firebase.firestore().collection('users').doc(uid).update({credits: newCredits}); }catch(e){}
-    }
 
     currentAudioUrl = 'data:audio/mp3;base64,' + data.audioContent;
     var player = document.getElementById('audio-player');
@@ -333,9 +304,9 @@ async function generateVoice(){
 
     var voiceName = VOICES.find(function(v){return v.id===selectedVoice;}).name;
     var entry = { text: text.substring(0,60), voice: voiceName, date: new Date().toISOString(), url: currentAudioUrl };
-    voiceHistory.unshift(entry);
-    voiceHistory = voiceHistory.slice(0,5);
-    localStorage.setItem('md_voice_history', JSON.stringify(voiceHistory));
+    history.unshift(entry);
+    history = history.slice(0,5);
+    localStorage.setItem('md_voice_history', JSON.stringify(history));
     renderHistory();
 
     localStorage.setItem('md_send_to_assembly', JSON.stringify({
@@ -355,11 +326,11 @@ async function generateVoice(){
 
 function renderHistory(){
   var list = document.getElementById('history-list');
-  if(!voiceHistory.length){
+  if(!history.length){
     list.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">graphic_eq</span>No generations yet</div>';
     return;
   }
-  list.innerHTML = voiceHistory.map(function(h){
+  list.innerHTML = history.map(function(h){
     var d = new Date(h.date);
     var time = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
     return '<div class="history-item" onclick="playHistory(\''+h.url.replace(/'/g,"\\'")+'\')">'+
@@ -411,6 +382,3 @@ function seekAudio(e){
 </script>
 </body>
 </html>
-
-
-

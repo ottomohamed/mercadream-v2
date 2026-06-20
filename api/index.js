@@ -419,19 +419,27 @@ async function handle_semantic(req, res) {
 
 async function handle_voice(req, res) {
   const GOOGLE_TTS_KEY = process.env.GOOGLE_TTS_KEY;
-  const { text, voice, languageCode, speakingRate, pitch } = req.body||{};
-  if (!text) return res.status(400).json({ error: 'text required.' });
+  const { text, ssml, voice, languageCode, speakingRate, pitch } = req.body||{};
+  if (!text && !ssml) return res.status(400).json({ error: 'text or ssml required.' });
   if (!GOOGLE_TTS_KEY) return res.status(500).json({ error: 'GOOGLE_TTS_KEY not set.' });
   const voiceName = voice || 'en-US-Neural2-F';
   const langCode = languageCode || voiceName.split('-').slice(0,2).join('-') || 'en-US';
+
+  const input = ssml ? { ssml } : { text };
+  const audioConfig = { audioEncoding: 'MP3' };
+  if (!ssml) {
+    audioConfig.speakingRate = speakingRate || 1.0;
+    audioConfig.pitch = pitch || 0;
+  }
+
   try {
     const r = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key=' + GOOGLE_TTS_KEY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        input: { text },
+        input,
         voice: { languageCode: langCode, name: voiceName },
-        audioConfig: { audioEncoding: 'MP3', speakingRate: speakingRate||1.0, pitch: pitch||0 }
+        audioConfig
       })
     });
     const d = await r.json();
@@ -887,6 +895,7 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
+
 
 
 
