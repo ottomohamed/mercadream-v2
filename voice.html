@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -87,7 +87,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
     <span class="material-symbols-outlined" style="font-size:20px">graphic_eq</span>
     MERCADREAM
   </div>
-  <div class="badge-free">100% FREE GENERATION</div>
+  <div class="badge-free" id="credits-badge"> CR</div>
 </header>
 
 <main>
@@ -210,6 +210,11 @@ function selectVoice(id, el){
   el.classList.add('active');
 }
 buildVoiceGrid();
+(function(){
+  var c = parseInt(localStorage.getItem('md_credits')||'0');
+  var b = document.getElementById('credits-badge');
+  if(b) b.textContent = c.toLocaleString() + ' CREDITS';
+})();
 
 document.querySelectorAll('.chip').forEach(function(chip){
   chip.addEventListener('click', function(){
@@ -382,3 +387,4 @@ function seekAudio(e){
 </script>
 </body>
 </html>
+
