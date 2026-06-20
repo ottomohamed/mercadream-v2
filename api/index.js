@@ -417,6 +417,28 @@ async function handle_semantic(req, res) {
 }
 
 
+async function handle_voice(req, res) {
+  const GOOGLE_TTS_KEY = process.env.GOOGLE_TTS_KEY;
+  const { text, voice, languageCode, speakingRate, pitch } = req.body||{};
+  if (!text) return res.status(400).json({ error: 'text required.' });
+  if (!GOOGLE_TTS_KEY) return res.status(500).json({ error: 'GOOGLE_TTS_KEY not set.' });
+  const voiceName = voice || 'en-US-Neural2-F';
+  const langCode = languageCode || voiceName.split('-').slice(0,2).join('-') || 'en-US';
+  try {
+    const r = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key=' + GOOGLE_TTS_KEY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: { text },
+        voice: { languageCode: langCode, name: voiceName },
+        audioConfig: { audioEncoding: 'MP3', speakingRate: speakingRate||1.0, pitch: pitch||0 }
+      })
+    });
+    const d = await r.json();
+    if (!d.audioContent) return res.status(500).json({ error: (d.error && d.error.message) || 'TTS failed', raw: d });
+    return res.json({ audioContent: d.audioContent, mime: 'audio/mp3' });
+  } catch(e) { return res.status(500).json({ error: e.message }); }
+}
 async function handle_director(req, res) {
   const { concept, director, genre, duration } = req.body||{};
   if (!concept) return res.status(400).json({ error: 'concept required.' });
@@ -840,6 +862,7 @@ module.exports = async function handler(req, res) {
     upscale:     handle_upscale,
     semantic:    handle_semantic,
     director:    handle_director,
+    voice:       handle_voice,
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
@@ -864,6 +887,7 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
+
 
 
 
