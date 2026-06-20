@@ -205,7 +205,7 @@ var VOICES = [
 ];
 var selectedVoice = VOICES[0].id;
 var selectedRate = 1.0, selectedPitch = 0;
-var history = JSON.parse(localStorage.getItem('md_voice_history')||'[]');
+var voiceHistory = JSON.parse(localStorage.getItem('md_voice_history')||'[]');
 var currentAudioUrl = null;
 
 function buildVoiceGrid(){
@@ -333,9 +333,9 @@ async function generateVoice(){
 
     var voiceName = VOICES.find(function(v){return v.id===selectedVoice;}).name;
     var entry = { text: text.substring(0,60), voice: voiceName, date: new Date().toISOString(), url: currentAudioUrl };
-    history.unshift(entry);
-    history = history.slice(0,5);
-    localStorage.setItem('md_voice_history', JSON.stringify(history));
+    voiceHistory.unshift(entry);
+    voiceHistory = voiceHistory.slice(0,5);
+    localStorage.setItem('md_voice_history', JSON.stringify(voiceHistory));
     renderHistory();
 
     localStorage.setItem('md_send_to_assembly', JSON.stringify({
@@ -355,11 +355,11 @@ async function generateVoice(){
 
 function renderHistory(){
   var list = document.getElementById('history-list');
-  if(!history.length){
+  if(!voiceHistory.length){
     list.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined">graphic_eq</span>No generations yet</div>';
     return;
   }
-  list.innerHTML = history.map(function(h){
+  list.innerHTML = voiceHistory.map(function(h){
     var d = new Date(h.date);
     var time = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
     return '<div class="history-item" onclick="playHistory(\''+h.url.replace(/'/g,"\\'")+'\')">'+
@@ -411,5 +411,6 @@ function seekAudio(e){
 </script>
 </body>
 </html>
+
 
 
