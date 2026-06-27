@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -810,8 +810,7 @@ if (txBtn) {
       .limit(10)
       .get()
       .then(function(snap) {
-        var msg = 'YOUR GENESIS COLLECTION (' + snap.size + ' items):
-
+        var msg = 'YOUR GENESIS COLLECTION (' + snap.size + ' items)\n' + 
 ';
         snap.forEach(function(doc) {
           var d = doc.data();
@@ -876,5 +875,7 @@ function loadLedger(uid) {
 </script>
 </body>
 </html>
+
+
 
 
