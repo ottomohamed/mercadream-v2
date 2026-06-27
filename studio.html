@@ -1,4 +1,4 @@
-<html class="dark" lang="en"><head>
+﻿<html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MERCADREAM Studio | Production Suite</title>
@@ -877,6 +877,8 @@
                             }
                         } catch(fe) { console.warn('Firestore save failed:', fe); }
                         if (resultDiv) {
+                            resultDiv.classList.remove('hidden');
+                            resultDiv.className = 'mt-sm block';
                             resultDiv.innerHTML = '';
                             var vid = document.createElement('video');
                             vid.src = pd.videoUrl; vid.controls = true; vid.autoplay = true;
@@ -1005,3 +1007,4 @@
 
 </script>
 </body></html>
+
