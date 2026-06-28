@@ -13,6 +13,42 @@ const PEXELS_KEY     = process.env.PEXELS_API_KEY;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const FIREBASE_PROJECT = 'mercadream-4b4b3';
+
+// Firebase Admin - server-side only
+let adminDb = null;
+async function getAdminDb() {
+  if (adminDb) return adminDb;
+  try {
+    const admin = require('firebase-admin');
+    if (!admin.apps.length) {
+      const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
+      admin.initializeApp({ credential: admin.credential.cert(sa) });
+    }
+    adminDb = admin.firestore();
+    return adminDb;
+  } catch(e) { console.error('Admin init:', e.message); return null; }
+}
+async function serverDeductCredits(uid, cost) {
+  const db = await getAdminDb();
+  if (!db) throw new Error('DB unavailable');
+  const ref = db.collection('users').doc(uid);
+  const doc = await ref.get();
+  if (!doc.exists) throw new Error('User not found');
+  const current = doc.data().credits || 0;
+  if (current < cost) throw new Error('Insufficient credits: need ' + cost + ', have ' + current);
+  await ref.update({ credits: current - cost });
+  return current - cost;
+}
+async function serverRefundCredits(uid, cost) {
+  try {
+    const db = await getAdminDb();
+    if (!db) return;
+    const ref = db.collection('users').doc(uid);
+    const doc = await ref.get();
+    if (!doc.exists) return;
+    await ref.update({ credits: (doc.data().credits || 0) + cost });
+  } catch(e) { console.error('Refund failed:', e.message); }
+}
 const FIREBASE_URL     = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 const BASE_URL         = 'https://www.mercadream.com';
 const WAVESPEED_BASE   = 'https://api.wavespeed.ai/api/v3';
@@ -179,9 +215,18 @@ async function handle_pexels(req, res) {
 }
 
 async function handle_wavespeed(req, res) {
-  const { prompt, duration, model, image_url } = req.body||{};
+  const { prompt, duration, model, image_url, uid, cost } = req.body||{};
   if (!prompt) return res.status(400).json({ error: 'prompt required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  // Server-side credit verification
+  const creditCost = parseInt(cost) || 15;
+  if (uid) {
+    try {
+      await serverDeductCredits(uid, creditCost);
+    } catch(e) {
+      return res.status(402).json({ error: e.message, code: 'INSUFFICIENT_CREDITS' });
+    }
+  }
   const modelId = model||'wavespeed-ai/wan-2.1/t2v-480p';
   try {
     // WaveSpeed API v3 - model-specific endpoint
@@ -895,6 +940,7 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
+
 
 
 
