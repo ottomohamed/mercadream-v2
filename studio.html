@@ -830,7 +830,7 @@
             const res = await fetch('/api/wavespeed', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({prompt, duration: 5, model: 'bytedance/seedance-2.0-fast/text-to-video', uid: localStorage.getItem('md_user_id') || '', cost: parseInt(document.getElementById('model-cost')?.value || '15')})
+                body: JSON.stringify({prompt, duration: 5, model: 'bytedance/seedance-2.0-fast/text-to-video', uid: localStorage.getItem('md_user_id') || '', cost: costTable[document.querySelector('input[name="director"]:checked')?.value || 'Drama'] || 15})
             });
             const data = await res.json();
             if (!data.taskId) throw new Error(data.error || 'No task ID');
@@ -1007,6 +1007,7 @@
 
 </script>
 </body></html>
+
 
 
 
