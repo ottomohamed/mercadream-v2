@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -767,16 +767,7 @@ async function generateSceneVideo(idx) {
 
   } catch(e) {
     addLog('ERROR: ' + e.message);
-    // Refund on error
-    credits += cost;
-    updateCreditsUI();
-    if (uid) {
-      try {
-        await firebase.firestore().collection('users').doc(uid).update({
-          credits: firebase.firestore.FieldValue.increment(cost)
-        });
-      } catch(fe) {}
-    }
+    // No refund on error - user absorbs the cost
     if (resultDiv) resultDiv.innerHTML = '<p class="font-label-technical text-error p-2">ERROR: ' + e.message + '</p>';
     if (btn) { btn.disabled = false; btn.innerHTML = 'RETRY (' + cost + ' GNS)'; }
     activeGenerations[idx] = false;
@@ -837,3 +828,4 @@ window.addEventListener('load', function() {
 </script>
 </body>
 </html>
+
