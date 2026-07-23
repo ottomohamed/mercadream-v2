@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -370,8 +370,7 @@
                     attempts++;
                     if (attempts > 80) {
                         clearInterval(pollInterval);
-                        addLog('ERROR: TIMEOUT');
-                        updateCredits(state.credits + cost);
+                        addLog('ERROR: TIMEOUT - credits not refunded');
                         state.isGenerating = false;
                         document.getElementById('generate-btn').disabled = false;
                         document.getElementById('generate-btn').innerText = 'GENERATE SONG';
@@ -401,8 +400,7 @@
                 }, 5000);
 
             } catch (err) {
-                addLog('ERROR: ' + err.message);
-                updateCredits(state.credits + (state.numberOfSongs || 1) * 5);
+                addLog('ERROR: ' + err.message + ' - credits not refunded');
                 state.isGenerating = false;
                 document.getElementById('generate-btn').disabled = false;
                 document.getElementById('generate-btn').innerText = 'GENERATE SONG';
