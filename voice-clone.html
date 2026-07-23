@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -263,10 +263,7 @@ async function startClone() {
     }
   } catch(e) {
     addLog('ERROR: ' + e.message);
-    // Refund
-    credits += 5;
-    localStorage.setItem('md_credits', credits);
-    document.getElementById('gns-balance').textContent = credits + ' GNS';
+    // No refund on error
   } finally {
     btn.innerHTML = '<span class="material-symbols-outlined">record_voice_over</span> CLONE VOICE (5 GNS)';
     btn.disabled = false;
@@ -316,3 +313,4 @@ function addLog(msg) {
 }
 </script>
 </body></html>
+

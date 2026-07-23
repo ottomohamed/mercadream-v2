@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -384,9 +384,7 @@ document.getElementById('generate-btn').addEventListener('click', async function
       attempts++;
       if (attempts > 120) {
         clearInterval(poll);
-        credits += totalCost;
-        localStorage.setItem('md_credits', credits);
-        addLog('TIMEOUT — credits refunded');
+        addLog('TIMEOUT - credits not refunded');
         btn.disabled=false; btn.textContent='GENERATE DIALOGUE VIDEO';
         return;
       }
@@ -458,3 +456,4 @@ document.getElementById('asm-btn').addEventListener('click', function() {
 });
 </script>
 </body></html>
+

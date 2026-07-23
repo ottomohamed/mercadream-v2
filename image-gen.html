@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -341,8 +341,7 @@ async function generateImage() {
       attempts++;
       if (attempts > 60) {
         clearInterval(poll);
-        credits += 6; localStorage.setItem('md_credits', credits);
-        logTerminal('TIMEOUT — refunded');
+        logTerminal('TIMEOUT - credits not refunded');
         loader.style.display='none'; placeholder.style.display='';
         return;
       }
@@ -420,8 +419,7 @@ async function applyEdit() {
       attempts++;
       if (attempts > 60) {
         clearInterval(poll);
-        credits += 6; localStorage.setItem('md_credits', credits);
-        logTerminal('TIMEOUT — refunded');
+        logTerminal('TIMEOUT - credits not refunded');
         editLoader.style.display='none'; return;
       }
       try {

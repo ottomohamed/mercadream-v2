@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -501,8 +501,7 @@
                     attempts++;
                     if (attempts > 80) {
                         clearInterval(pollInterval);
-                        addLog('TIMEOUT — refunding credits', 'ERROR');
-                        credits += cost; updateUI(); return;
+                        addLog('TIMEOUT - credits not refunded', 'ERROR'); return;
                     }
                     try {
                         const pr = await fetch('/api/video?id=' + data.taskId);

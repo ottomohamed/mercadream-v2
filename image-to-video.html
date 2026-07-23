@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -413,9 +413,7 @@
                     attempts++;
                     if (attempts > 80) {
                         clearInterval(poll);
-                        userCredits += 15;
-                        creditsDisplay.textContent = `${userCredits} GNS`;
-                        alert('Generation timed out. Credits refunded.');
+                        alert('Generation timed out.');
                         resetState();
                         return;
                     }
