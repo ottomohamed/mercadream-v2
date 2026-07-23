@@ -40,14 +40,8 @@ async function serverDeductCredits(uid, cost) {
   return current - cost;
 }
 async function serverRefundCredits(uid, cost) {
-  try {
-    const db = await getAdminDb();
-    if (!db) return;
-    const ref = db.collection('users').doc(uid);
-    const doc = await ref.get();
-    if (!doc.exists) return;
-    await ref.update({ credits: (doc.data().credits || 0) + cost });
-  } catch(e) { console.error('Refund failed:', e.message); }
+  // DISABLED - no refunds on error. User absorbs the cost.
+  console.log('Refund requested but disabled. uid:', uid, 'cost:', cost);
 }
 const FIREBASE_URL     = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 const BASE_URL         = 'https://www.mercadream.com';
@@ -940,6 +934,7 @@ module.exports = async function handler(req, res) {
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
+
 
 
 
