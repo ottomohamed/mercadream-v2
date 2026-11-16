@@ -125,7 +125,7 @@ nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-be
 }
 
 /* STAGE BANNER */
-.stage{position:relative;min-height:560px;display:flex;align-items:center;overflow:hidden;border-top:1px solid var(--line);background:#05070d}
+.stage{position:relative;min-height:min(680px,calc(100vh - 70px));display:flex;align-items:center;overflow:hidden;background:#05070d}
 .stage-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:75% 15%}
 .stage-shade{position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0a 0%,rgba(10,10,10,.85) 30%,rgba(10,10,10,.2) 60%,rgba(10,10,10,0) 100%),linear-gradient(0deg,#0a0a0a 0%,rgba(10,10,10,0) 30%),linear-gradient(180deg,#0a0a0a 0%,rgba(10,10,10,0) 20%)}
 .stage-text{position:relative;z-index:1;display:flex;flex-direction:column;gap:20px;width:100%}
@@ -214,6 +214,18 @@ footer{border-top:1px solid var(--line)}
 </header>
 
 <main>
+<!-- STAGE BANNER: singer + blue neon (billboard) -->
+<section class="stage" aria-label="On stage">
+  <img class="stage-img" src="media/singer.jpg" alt="Singer holding a gold microphone under blue neon light" fetchpriority="high" onerror="this.closest('section').classList.add('hidden')"/>
+  <div class="stage-shade" aria-hidden="true"></div>
+  <div class="wrap stage-text">
+    <p class="eyebrow">MercaDream Studio</p>
+    <h2 class="h2 stage-h">Every story deserves<br/>a voice.</h2>
+    <p class="lead" style="max-width:440px">Pick a style, choose a voice, and hear your lyrics sung like a studio release.</p>
+    <div class="row" style="gap:14px"><a class="btn btn-gold" href="music.html">Hear your song</a><a class="btn btn-ghost" href="#how">How it works</a></div>
+  </div>
+</section>
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-text">
@@ -257,18 +269,6 @@ footer{border-top:1px solid var(--line)}
       <source src="media/hero2.mp4" type="video/mp4"/>
       <source src="media/hero1.mp4" type="video/mp4"/>
     </video>
-  </div>
-</section>
-
-<!-- STAGE BANNER: singer + blue neon -->
-<section class="stage" aria-label="On stage">
-  <img class="stage-img" src="media/singer.jpg" alt="Singer holding a gold microphone under blue neon light" loading="lazy" onerror="this.closest('section').classList.add('hidden')"/>
-  <div class="stage-shade" aria-hidden="true"></div>
-  <div class="wrap stage-text">
-    <p class="eyebrow">Your voice on stage</p>
-    <h2 class="h2 stage-h">Every story deserves<br/>a voice.</h2>
-    <p class="lead" style="max-width:440px">Pick a style, choose a voice, and hear your lyrics sung like a studio release.</p>
-    <div><a class="btn btn-gold" href="music.html">Hear your song</a></div>
   </div>
 </section>
 
