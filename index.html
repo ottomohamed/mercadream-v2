@@ -1,580 +1,437 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MercaDream | AI FILM STUDIO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MercaDream Studio | Your words. Your song. Your music video.</title>
 <meta name="google-site-verification" content="eTzJ9icZqwR2H3k8VTkvcpYjUUm5EzycTRDINEMbyD8" />
-<meta content="MercaDream is the world's first AI-powered film production platform." name="description"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-tailwind.config={darkMode:"class",theme:{extend:{colors:{
-  "surface-container-lowest":"#0e0e0e","surface-container-low":"#1c1b1b",
-  "surface-container":"#201f1f","surface-container-high":"#2a2a2a",
-  "on-surface":"#e5e2e1","on-surface-variant":"#c4caac",
-  "outline-variant":"#434933","outline":"#8e9479",
-  "background":"#131313","surface":"#131313",
-  "primary":"#ffffff","neon-acid":"#c8ff00",
-  "primary-fixed":"#c0f500","primary-fixed-dim":"#a8d700","on-primary":"#273500"
-},borderRadius:{"DEFAULT":"0px","full":"9999px"},
-spacing:{"margin-mobile":"20px","margin-desktop":"40px","unit":"8px","gutter":"16px"},
-fontFamily:{"technical":["JetBrains Mono"],"headline":["Orbitron"],"body":["Sora"]}}}}
-</script>
+<meta name="description" content="Write a title and lyrics, or let AI write them with you. MercaDream Studio sings your song and turns it into a music video for YouTube, Shorts and TikTok."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-.scanning-line{width:100%;height:2px;background:linear-gradient(90deg,transparent,#c8ff00,transparent);opacity:.2;position:absolute;top:0;left:0;pointer-events:none;animation:scan 8s linear infinite}
-@keyframes scan{0%{top:0}100%{top:100%}}
-.micro-grid{background-image:linear-gradient(rgba(200,255,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(200,255,0,.05) 1px,transparent 1px);background-size:30px 30px}
-.corner-accent{position:absolute;width:10px;height:10px;border-color:#c8ff00}
-.ca-tl{top:0;left:0;border-top:2px solid;border-left:2px solid}
-.service-card-bg{background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-.service-card:hover .service-card-bg{transform:scale(1.1)}
-.service-card:hover .service-overlay{background:rgba(0,0,0,.3)}
-.service-card:hover .neon-glow{text-shadow:0 0 10px #c8ff00,0 0 20px #c8ff00}
+:root{
+  --gold:#E8B92F; --gold-hi:#F6D365; --gold-dim:#4d3d0a;
+  --bg:#0a0a0a; --bg2:#0d0d0d; --card:#111111; --line:#1f1f1f; --line2:#2a2a2a;
+  --text:#ececec; --soft:#bdbdbd; --muted:#a3a3a3; --white:#ffffff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-hi)}
+img,video{max-width:100%;display:block}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.eyebrow{margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.h2{margin:0;font-family:Orbitron,sans-serif;font-weight:700;font-size:38px;line-height:1.15;color:var(--white)}
+.lead{margin:0;font-size:17px;line-height:1.6;color:var(--soft)}
+.section{border-top:1px solid var(--line);padding:88px 0}
+.section.alt{background:var(--bg2)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;flex-wrap:wrap;gap:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:6px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;font-family:Inter,sans-serif}
+.btn-gold{background:var(--gold);color:#0a0a0a}
+.btn-gold:hover{background:var(--gold-hi);color:#0a0a0a}
+.btn-ghost{border-color:#3a3a3a;color:var(--text);background:transparent}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.card{flex:1 1 240px;min-width:0;border:1px solid var(--line2);border-radius:10px;padding:28px;background:var(--card);display:flex;flex-direction:column;gap:12px}
+.card h3{margin:0;font-size:20px;font-weight:600;color:var(--white)}
+.card p{margin:0;font-size:16px;line-height:1.6;color:var(--soft)}
+.num{font-family:Orbitron,sans-serif;font-size:30px;font-weight:700;color:var(--gold)}
+.badge{display:inline-block;width:fit-content;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--gold);border:1px solid var(--gold-dim);border-radius:4px;padding:3px 8px}
+.hidden{display:none!important}
+
+/* NAV */
+header{position:sticky;top:0;z-index:50;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;max-width:1200px;margin:0 auto}
+.logo{display:flex;align-items:baseline;gap:10px;font-family:Orbitron,sans-serif;font-weight:700;font-size:21px;letter-spacing:.08em;color:var(--gold)}
+.logo small{font-size:12px;font-weight:600;letter-spacing:.3em}
+.links{display:flex;flex-wrap:wrap;gap:26px;font-size:15px}
+.links a{color:#cfcfcf}
+.links a:hover{color:var(--gold)}
+.navright{display:flex;align-items:center;gap:10px}
+.balance{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--gold);border:1px solid var(--gold-dim);border-radius:6px;padding:9px 12px}
+.linkbtn{background:none;border:0;color:var(--text);font-size:15px;padding:12px 14px;cursor:pointer;font-family:Inter,sans-serif}
+.linkbtn:hover{color:var(--gold)}
+
+/* HERO */
+.hero{display:flex;flex-wrap:wrap;gap:56px;align-items:center;padding:80px 24px 88px;max-width:1200px;margin:0 auto}
+.hero-text{flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.hero h1{margin:0;font-family:Orbitron,sans-serif;font-weight:700;font-size:54px;line-height:1.08;color:var(--white)}
+.hero-media{flex:1 1 520px;min-width:0;position:relative}
+.hero-media video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid var(--line2);background:#161616}
+
+/* SHOWCASE */
+.vid{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:12px;color:var(--text)}
+.vid .thumb{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line2);background:#161616}
+.vid .thumb img{width:100%;height:100%;object-fit:cover}
+.vid .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.vid .play span{width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.6);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center}
+.vid h3{margin:0;font-size:18px;font-weight:600;color:var(--white)}
+.vid:hover h3{color:var(--gold)}
+
+/* FOUNDER */
+.founder{display:flex;flex-wrap:wrap;gap:56px;align-items:center}
+.founder .cover{flex:0 1 320px;min-width:0}
+.founder .cover img{width:100%;border-radius:10px;border:1px solid var(--line2)}
+.founder .text{flex:1 1 480px;min-width:0;display:flex;flex-direction:column;gap:20px}
+
+/* FOR WHOM */
+.who{flex:1 1 300px;min-width:0;border-top:2px solid var(--gold);padding-top:20px;display:flex;flex-direction:column;gap:10px}
+.who h3{margin:0;font-size:20px;font-weight:600;color:var(--white)}
+.who p{margin:0;font-size:16px;line-height:1.6;color:var(--soft)}
+
+/* PRICING */
+.price{font-family:Orbitron,sans-serif;font-size:32px;font-weight:700;color:var(--white);margin:0}
+.usd{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--gold);margin:0}
+
+/* FAQ */
+.faq{max-width:860px}
+details{border-bottom:1px solid var(--line2);padding:20px 0}
+summary{cursor:pointer;font-size:18px;font-weight:600;color:var(--white);list-style:none;display:flex;justify-content:space-between;gap:16px;min-height:44px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:22px}
+details[open] summary::after{content:'−'}
+details p{margin:10px 0 0;font-size:16px;line-height:1.6;color:var(--soft)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:center;padding:40px 24px;max-width:1200px;margin:0 auto}
+.foot nav{display:flex;flex-wrap:wrap;gap:22px;font-size:14px}
+.foot nav a{color:#cfcfcf}
+.foot nav a:hover{color:var(--gold)}
+
+@media (max-width:720px){
+  .hero{padding:48px 24px 56px;gap:36px}
+  .hero h1{font-size:38px}
+  .h2{font-size:30px}
+  .section{padding:64px 0}
+  .links{display:none}
+}
 </style>
-<script src="/js/md-auth.js"></script></head>
-<body class="bg-surface-container-lowest text-on-surface font-body selection:bg-neon-acid selection:text-black overflow-x-hidden">
+
+<!-- Firebase: login + real balance -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/js/md-firebase.js"></script>
+<script src="/js/md-auth.js"></script>
+</head>
+<body>
 
 <!-- NAV -->
-<nav class="fixed top-0 w-full z-[100] bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/30 h-20 flex items-center px-margin-mobile md:px-margin-desktop justify-between" id="main-nav">
-<div class="flex items-center gap-4">
-  <div class="font-headline text-xl md:text-2xl tracking-[0.2em] text-white font-black uppercase cursor-pointer" onclick="window.location.href='index.html'">MercaDream</div>
-  <div class="hidden lg:block font-technical text-[10px] text-neon-acid tracking-widest opacity-70 uppercase ml-4">AI Film Studio // v1.0.5</div>
-</div>
-<div class="hidden md:flex items-center gap-8">
-  <a class="font-technical text-xs uppercase tracking-widest text-neon-acid" href="index.html">01_Portal</a>
-  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="studio.html">02_Studio</a>
-  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="assembly.html">03_Assembly</a>
-  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="profile.html">04_Profile</a>
-  <a class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors" href="pricing.html">05_Pricing</a>
-  <div class="relative">
-    <button class="font-technical text-xs uppercase tracking-widest hover:text-neon-acid transition-colors flex items-center gap-1" id="more-menu-trigger">MORE ▾</button>
-    <div class="absolute top-full right-0 mt-2 bg-surface-container-lowest border border-outline-variant/30 py-2 min-w-40 hidden z-50 shadow-2xl" id="more-menu-dropdown">
-      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="stockreel.html">Stock Reel</a>
-      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="faceswap.html">Face Swap</a>
-      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="lipsync.html">Lip Sync</a>
-      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="upscale.html">Upscaler</a>
-      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3 border-b border-outline-variant/10" href="lab-index.html">Secret Lab</a>
-      <a class="block font-technical text-[10px] uppercase tracking-widest hover:bg-neon-acid hover:text-black transition-colors px-4 py-3" href="api.html">API Docs</a>
-    </div>
+<header>
+<nav class="main" aria-label="Main">
+  <a href="index.html" class="logo"><span>MERCADREAM</span><small>STUDIO</small></a>
+  <div class="links">
+    <a href="#how">How it works</a>
+    <a href="#showcase" data-needs="videos">Showcase</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
   </div>
-</div>
-<div class="flex items-center gap-4">
-  <div class="flex items-center gap-2 font-technical text-xs border border-neon-acid/20 px-3 py-1.5 bg-neon-acid/5">
-    <span class="material-symbols-outlined text-sm text-neon-acid">bolt</span>
-    <span class="text-neon-acid font-bold" id="user-credits">0 GNS</span>
+  <div class="navright">
+    <span class="balance hidden" id="nav-balance">0 GNS</span>
+    <button class="linkbtn" id="nav-auth" type="button">Log in</button>
+    <a class="btn btn-gold" id="nav-cta" href="register.html">Start free</a>
   </div>
-  <button class="px-5 py-2 border border-white text-[10px] font-technical uppercase hover:bg-white hover:text-black transition-all" id="nav-auth-btn">LOG IN</button>
-  <button class="px-5 py-2 bg-neon-acid text-black text-[10px] font-technical font-bold uppercase hover:bg-white transition-all" id="nav-action-btn" onclick="window.location.href='register.html'">START FREE</button>
-</div>
 </nav>
+</header>
 
-<main class="pt-20">
+<main>
 <!-- HERO -->
-<section class="relative h-[calc(100vh-80px)] w-full overflow-hidden">
-<div class="absolute inset-0 z-0">
-  <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60" onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'">
-    <source src="media/hero3.mp4" type="video/mp4"/>
-    <source src="media/hero2.mp4" type="video/mp4"/>
-    <source src="media/hero1.mp4" type="video/mp4"/>
-  </video>
-  <div id="hero-fallback" style="display:none;position:absolute;inset:0;background:linear-gradient(135deg,#040404,#0a0a0a,#040404)"></div>
-  <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/30"></div>
-  <div class="scanning-line"></div>
-</div>
-<div class="relative z-20 h-full w-full px-margin-mobile md:px-margin-desktop py-12 flex flex-col justify-between">
-  <div class="max-w-4xl">
-    <h1 class="font-headline tracking-tight leading-none text-white text-4xl md:text-7xl lg:text-8xl flex flex-col gap-2">
-      <span class="block">MERCADREAM</span>
-      <span class="block text-neon-acid tracking-[0.2em] opacity-80 text-xl md:text-3xl lg:text-4xl">AI FILM STUDIO</span>
-    </h1>
-    <div class="mt-8 flex items-center gap-4 text-neon-acid/60">
-      <div class="w-16 h-px bg-neon-acid/40"></div>
-      <span class="font-technical text-xs uppercase tracking-widest">System_Online // v1.0.5</span>
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">AI music video studio</p>
+    <h1>Your words.<br/>Your song.<br/>Your music video.</h1>
+    <p class="lead" style="font-size:19px;max-width:520px">Write a title and lyrics — or let AI write them with you. MercaDream Studio sings your song, finds the right scenes and edits a music video ready for YouTube, Shorts and TikTok.</p>
+    <div class="row" style="gap:14px;padding-top:8px">
+      <a class="btn btn-gold" id="hero-cta" href="register.html" style="font-size:17px;min-height:54px">Create your first song</a>
+      <a class="btn btn-ghost" href="#showcase" data-needs="videos" style="font-size:17px;min-height:54px">Watch examples</a>
     </div>
+    <p class="mono hidden" id="free-line" style="margin:0;font-size:13px;color:var(--muted)"></p>
   </div>
-  <div class="flex flex-col md:flex-row items-end justify-between gap-8 pb-8">
-    <div class="max-w-md">
-      <p class="font-technical text-xs md:text-sm text-on-surface-variant uppercase tracking-[0.15em] leading-relaxed border-l-2 border-neon-acid/40 pl-6">
-        Autonomous cinematic generation.<br/>Neural direction.<br/>Real-time dream extraction.
-      </p>
-    </div>
-    <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-      <button class="px-12 py-6 bg-neon-acid text-black font-headline font-bold text-lg uppercase group relative overflow-hidden transition-all hover:pr-16" id="hero-primary-cta" onclick="window.location.href='register.html'">
-        <span class="relative z-10">START FREE</span>
-        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">arrow_forward</span>
-      </button>
-      <button class="px-12 py-6 border border-outline/50 text-white font-headline font-bold text-lg uppercase hover:border-neon-acid hover:text-neon-acid transition-all bg-black/20" onclick="window.location.href='studio.html'">
-        ENTER STUDIO
-      </button>
-    </div>
+  <div class="hero-media">
+    <video autoplay muted loop playsinline preload="metadata" aria-label="MercaDream Studio showreel">
+      <source src="media/hero3.mp4" type="video/mp4"/>
+      <source src="media/hero2.mp4" type="video/mp4"/>
+      <source src="media/hero1.mp4" type="video/mp4"/>
+    </video>
   </div>
-</div>
 </section>
 
-<!-- STATS -->
-<section class="py-12 border-y border-outline-variant/20 bg-surface-container-low micro-grid px-margin-mobile md:px-margin-desktop">
-<div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-gutter">
-  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
-    <div class="corner-accent ca-tl"></div>
-    <div class="font-technical text-[10px] text-on-surface-variant uppercase">GPU Load</div>
-    <div class="flex items-baseline gap-2"><span class="font-headline text-2xl text-neon-acid" id="gpu-load">82.4</span><span class="font-technical text-xs">%</span></div>
-    <div class="w-full bg-white/5 h-1 mt-2"><div class="bg-neon-acid h-full transition-all duration-500" id="gpu-bar" style="width:82%"></div></div>
+<!-- HOW IT WORKS -->
+<section class="section alt" id="how">
+  <div class="wrap" style="display:flex;flex-direction:column;gap:48px">
+    <div class="stack" style="max-width:680px">
+      <p class="eyebrow">How it works</p>
+      <h2 class="h2">From an idea to a finished music video, in four steps</h2>
+    </div>
+    <div class="row">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>Title &amp; lyrics</h3>
+        <p>Write your own lyrics, or give AI your idea and shape the words together.</p>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Your song</h3>
+        <p>Pick a style and a voice. Get a full song with vocals, and keep the version you love.</p>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>The scenes</h3>
+        <p>AI reads every line and finds matching footage. Swap any scene you don't like.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+      <div class="card">
+        <span class="num">04</span>
+        <h3>The montage</h3>
+        <p>Cut on the beat, lyrics on screen, your intro and outro. Download for YouTube and Shorts.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+    </div>
   </div>
-  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
-    <div class="corner-accent ca-tl"></div>
-    <div class="font-technical text-[10px] text-on-surface-variant uppercase">Active Clusters</div>
-    <span class="font-headline text-2xl text-white" id="active-clusters">1,402</span>
-    <div class="font-technical text-[9px] text-neon-acid uppercase">Region: Nominal</div>
-  </div>
-  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
-    <div class="corner-accent ca-tl"></div>
-    <div class="font-technical text-[10px] text-on-surface-variant uppercase">Renders</div>
-    <span class="font-headline text-2xl text-white" id="render-count">48,291</span>
-    <div class="font-technical text-[9px] text-on-surface-variant uppercase">+24 IN LAST 60S</div>
-  </div>
-  <div class="p-6 border border-outline-variant/30 bg-black/40 flex flex-col gap-2 relative">
-    <div class="corner-accent ca-tl"></div>
-    <div class="font-technical text-[10px] text-on-surface-variant uppercase">Latency</div>
-    <div class="flex items-baseline gap-2"><span class="font-headline text-2xl text-neon-acid">0.04</span><span class="font-technical text-xs">ms</span></div>
-    <div class="font-technical text-[9px] text-white/40 uppercase">Hyper-Link Active</div>
-  </div>
-</div>
 </section>
 
-<!-- SERVICES -->
-<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
-<div class="max-w-7xl mx-auto">
-  <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-    <div>
-      <h2 class="font-headline text-3xl md:text-5xl text-white uppercase tracking-tighter">Cinematic Services</h2>
-      <p class="font-technical text-xs text-on-surface-variant uppercase mt-2 tracking-widest">Select process to initialize node</p>
+<!-- SHOWCASE (hidden until CONFIG.VIDEOS is filled) -->
+<section class="section" id="showcase" data-needs="videos">
+  <div class="wrap" style="display:flex;flex-direction:column;gap:40px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+      <div class="stack" style="max-width:680px">
+        <p class="eyebrow">Made with MercaDream Studio</p>
+        <h2 class="h2">Real songs. Real views.</h2>
+        <p class="lead">Every video below was written, sung and edited with MercaDream Studio, and published on our YouTube channel.</p>
+      </div>
+      <a id="channel-link" href="#" target="_blank" rel="noopener" style="font-size:16px;font-weight:500" data-needs="channel">See the channel →</a>
     </div>
-    <div class="h-px flex-1 bg-outline-variant/20 mx-8 mb-4 hidden md:block"></div>
-    <a class="font-technical text-xs text-neon-acid border-b border-neon-acid pb-1 hover:text-white hover:border-white transition-all uppercase" href="studio.html">Enter Studio</a>
+    <div class="row" id="videos"></div>
   </div>
-
-
-    <div style="padding:16px 0 8px;margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:4px;height:24px;background:#c8ff00"></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase">SIGNATURE TOOLS — OUR EXCLUSIVES</div>
-      <div style="flex:1;height:1px;background:#1a1a1a"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='avatar.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AV-201</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">record_voice_over</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Avatar Studio</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">100 characters across 10 professions. Write your script, pick a voice, generate a talking video with perfect lip sync.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='avatar-multi.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AM-202</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">group</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Avatar Multi</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">One photo. Two people. Two voices. Generate a realistic dialogue video with independent lip sync for each speaker.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='motion.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3823488/pexels-photo-3823488.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: MT-501</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">transfer_within_a_station</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Motion Mimic</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Transfer motion from any reference video onto your character image. PixVerse + Kling V3 Pro engines.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='studio.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/7988213/pexels-photo-7988213.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: ST-001</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">movie_filter</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">AI Studio</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">6 director protocols. Drama, Action, Comedy, Docs, Ads, Music Video. AI generates your full cinematic screenplay.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='music.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/1626481/pexels-photo-1626481.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: MU-601</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">music_note</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Music Studio</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Generate complete songs with vocals or background music from text. Powered by Mureka V9.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='image-gen.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: IG-401</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">auto_awesome</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Image Studio</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">GPT Image 2 text-to-image and image editing. Describe reality. Render it in seconds.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='voice-clone.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: VC-302</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">voice_selection</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Voice Clone</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Upload a voice sample. Generate unlimited speech in that exact voice. Qwen3 voice cloning engine.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <div style="padding:16px 0 8px;margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:4px;height:24px;background:#a8d700"></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase">CONTENT LIBRARY</div>
-      <div style="flex:1;height:1px;background:#1a1a1a"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='stockreel.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/2599244/pexels-photo-2599244.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: SR-042</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">video_library</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Stock Reel</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Browse thousands of licensed cinematic stock footage reels. Ready to use in your productions instantly.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <div style="padding:16px 0 8px;margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:4px;height:24px;background:#c8ff00"></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase">AUDIO & VOICE</div>
-      <div style="flex:1;height:1px;background:#1a1a1a"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='elevenlabs.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: EL-301</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">spatial_audio_pro</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">ElevenLabs V3</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Premium AI voice synthesis with human-like intonation. 18 voices. Multi-language. Studio quality output.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='voice.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/7988079/pexels-photo-7988079.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: NV-114</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">mic</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Neural Voice</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Qwen3-TTS text-to-speech engine. 9 cinematic voices. Narration, dialogue, and multilingual content.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <div style="padding:16px 0 8px;margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:4px;height:24px;background:#c8ff00"></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase">VISUAL TOOLS</div>
-      <div style="flex:1;height:1px;background:#1a1a1a"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='studio-3d.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3945313/pexels-photo-3945313.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: 3D-501</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">view_in_ar</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">3D Studio</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Generate production-ready 3D models from text, image, or multiview photos. Export GLB, OBJ, FBX.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='image-to-video.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3945313/pexels-photo-3945313.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: I2V-101</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">slow_motion_video</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Image to Video</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Turn any static image into a cinematic video. WAN 2.2 Spicy + WAN 2.5 Premium engines.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='faceswap.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3568520/pexels-photo-3568520.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: FS-201</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">face_retouching_natural</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Face Swap</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Neural face fusion for images and videos. WaveSpeedAI precision. 1 GNS per image, 5 GNS per video.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='upscale.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: UP-401</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">auto_fix_high</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Upscaler</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">720p in. 4K out. RE-ESRGAN neural upscaling for production-grade cinematic output quality.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <div style="padding:16px 0 8px;margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:4px;height:24px;background:#c8ff00"></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c4caac;letter-spacing:3px;text-transform:uppercase">PRODUCTION</div>
-      <div style="flex:1;height:1px;background:#1a1a1a"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='assembly.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/1367269/pexels-photo-1367269.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: AS-305</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">movie_edit</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Assembly</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Combine AI-generated clips into full cinematic sequences. The professional non-linear editing suite.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='lipsync.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/6804581/pexels-photo-6804581.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: LS-301</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">forum</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Lip Sync</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Neural phoneme mapping. Sync any audio to any video. Perfect multilingual synchronization.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <div style="padding:16px 0 8px;margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:4px;height:24px;background:#434933"></div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a4a4a;letter-spacing:3px;text-transform:uppercase">FREE CREATIVE TOOLS</div>
-      <div style="flex:1;height:1px;background:#1a1a1a"></div>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='text3d.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/3825529/pexels-photo-3825529.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: 3DT-001 // FREE</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">format_size</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">3D Text</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Cinematic 3D titles in Gold, Chrome, Neon, Glass. Animate and export free.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-    <div class="service-card relative h-[450px] overflow-hidden border border-outline-variant/30 group cursor-pointer" onclick="window.location.href='glitch.html'">
-      <div class="service-card-bg absolute inset-0 z-0" style="background-image:url('https://images.pexels.com/photos/7991486/pexels-photo-7991486.jpeg?auto=compress&cs=tinysrgb&w=1260')"></div>
-      <div class="service-overlay absolute inset-0 z-10 bg-black/75 transition-all duration-500"></div>
-      <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-      <div class="relative z-20 h-full p-8 flex flex-col justify-between">
-        <div class="flex justify-between items-start">
-          <div><div class="font-technical text-[10px] text-neon-acid uppercase tracking-widest">Node ID: GE-099 // FREE</div></div>
-          <span class="material-symbols-outlined text-neon-acid neon-glow">dynamic_feed</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-2xl text-white uppercase mb-4 tracking-tighter">Glitch Engine</h3>
-          <p class="font-body text-sm text-white/70 mb-8 leading-relaxed">Green screen compositor. Replace backgrounds in browser. Zero upload required.</p>
-          <button class="w-full py-4 border border-neon-acid/50 text-neon-acid font-technical text-[10px] uppercase font-bold tracking-widest hover:bg-neon-acid hover:text-black transition-all">Launch Node</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
 </section>
 
-<!-- CTA -->
-<section class="py-32 bg-black relative overflow-hidden border-t border-outline-variant/30 flex items-center justify-center text-center">
-<div class="relative z-10 px-margin-mobile">
-  <h2 class="font-headline text-4xl md:text-7xl text-white mb-8 tracking-tighter">THE FUTURE IS COMPUTING</h2>
-  <p class="font-technical text-neon-acid uppercase tracking-[0.4em] mb-12 text-sm opacity-60">Architect your dream. Frame by frame.</p>
-  <button class="px-16 py-6 bg-neon-acid text-black font-headline font-black text-2xl uppercase tracking-tighter hover:scale-105 active:scale-95 transition-transform relative" id="footer-cta" onclick="window.location.href='register.html'">
-    START FREE
-    <span class="absolute -right-3 -bottom-3 w-6 h-6 border-r-2 border-b-2 border-neon-acid"></span>
-    <span class="absolute -left-3 -top-3 w-6 h-6 border-l-2 border-t-2 border-neon-acid"></span>
-  </button>
-</div>
+<!-- FOUNDER (hidden until CONFIG.AUTHOR_NAME is filled) -->
+<section class="section alt" data-needs="author">
+  <div class="wrap founder">
+    <div class="cover" data-needs="cover"><img id="book-cover" src="" alt="Book cover"/></div>
+    <div class="text">
+      <p class="eyebrow">Built by an author, for creators</p>
+      <h2 class="h2" style="font-size:34px;line-height:1.2">I built MercaDream Studio to promote my own books.</h2>
+      <p class="lead" style="font-size:18px;line-height:1.7">As a novelist I needed trailers and songs that sounded like my stories — without a studio budget. Now every song on our channel starts the same way yours will: a title, a few lines, and a story worth telling.</p>
+      <p style="margin:0;font-size:16px;color:var(--text)">— <span id="author-name"></span><span data-needs="book">, author of <a id="book-link" href="#" target="_blank" rel="noopener"></a></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section class="section">
+  <div class="wrap" style="display:flex;flex-direction:column;gap:40px">
+    <h2 class="h2">Made for people with a story to tell</h2>
+    <div class="row">
+      <div class="who"><h3>Authors</h3><p>A theme song and a trailer for your book, from its own words.</p></div>
+      <div class="who"><h3>YouTube &amp; TikTok creators</h3><p>Original music videos for your channel, in landscape and vertical.</p></div>
+      <div class="who"><h3>Small brands</h3><p>A jingle and a short ad that nobody else has.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section alt" id="pricing">
+  <div class="wrap" style="display:flex;flex-direction:column;gap:40px">
+    <div class="stack" style="max-width:680px">
+      <p class="eyebrow">Pricing</p>
+      <h2 class="h2">Pay only for what you create</h2>
+      <p class="lead">Buy GNS credits once, use them anytime. 1 GNS = $0.10. No subscription.</p>
+    </div>
+    <div class="row">
+      <div class="card">
+        <p style="margin:0;font-size:16px;color:var(--soft)">Full song with vocals</p>
+        <p class="price">5 GNS</p>
+        <p class="usd">= $0.50</p>
+      </div>
+      <div class="card" style="border-color:var(--gold-dim)">
+        <p style="margin:0;font-size:16px;color:var(--soft)">Music video montage</p>
+        <p class="price" id="montage-price">Soon</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+      <div class="card">
+        <p style="margin:0;font-size:16px;color:var(--soft)">AI-generated scene (5 s)</p>
+        <p class="price">15 GNS</p>
+        <p class="usd">= $1.50</p>
+      </div>
+    </div>
+    <div class="row" style="gap:14px;align-items:center">
+      <a class="btn btn-gold" href="pricing.html">Buy credits</a>
+      <span style="font-size:15px;color:var(--muted)">Secure payment by Stripe</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="wrap faq" style="display:flex;flex-direction:column;gap:12px">
+    <h2 class="h2" style="margin-bottom:12px">Questions</h2>
+    <details>
+      <summary>Do I need any music or editing skills?</summary>
+      <p>No. You write — or co-write with AI — the lyrics. MercaDream Studio composes and sings the song for you.</p>
+    </details>
+    <details>
+      <summary>How do credits work?</summary>
+      <p>You buy GNS credits once (1 GNS = $0.10) and spend them when you create. There is no subscription. A full song costs 5 GNS.</p>
+    </details>
+    <details>
+      <summary>What happens if a generation fails?</summary>
+      <p>If our provider rejects your request before creating anything, your credits are returned automatically.</p>
+    </details>
+    <details>
+      <summary>Is my payment secure?</summary>
+      <p>Yes. Payments are processed by Stripe. We never see or store your card details.</p>
+    </details>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="section alt">
+  <div class="wrap" style="display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center">
+    <h2 class="h2" style="font-size:42px">Your next song starts with a title.</h2>
+    <a class="btn btn-gold" id="final-cta" href="register.html" style="font-size:17px;min-height:54px">Create your first song</a>
+  </div>
 </section>
 </main>
 
-<footer class="bg-surface-container-lowest border-t border-outline-variant/20 py-12 px-margin-mobile md:px-margin-desktop">
-<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-  <div><div class="font-headline text-xl text-white tracking-widest mb-2 uppercase">MercaDream</div>
-  <div class="font-technical text-[10px] text-on-surface-variant uppercase">© 2026 AI CINEMA STUDIO.</div></div>
-  <div class="flex flex-wrap justify-center gap-8 font-technical text-[10px] uppercase tracking-widest text-on-surface-variant">
-    <a class="hover:text-neon-acid transition-colors" href="ethics.html">Ethics</a>
-    <a class="hover:text-neon-acid transition-colors" href="pricing.html">Pricing</a>
-    <a class="hover:text-neon-acid transition-colors" href="api.html">API</a>
-    <a class="hover:text-neon-acid transition-colors" href="login.html">Sign In</a>
+<!-- FOOTER -->
+<footer>
+  <div class="foot">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span class="logo" style="font-size:18px"><span>MERCADREAM</span><small>STUDIO</small></span>
+      <span style="font-size:14px;color:var(--muted)">© 2026 MercaDream Studio</span>
+    </div>
+    <nav aria-label="Footer">
+      <a href="pricing.html">Pricing</a>
+      <a href="ethics.html">Ethics</a>
+      <a id="contact-link" href="#" data-needs="email">Contact</a>
+      <a id="yt-link" href="#" target="_blank" rel="noopener" data-needs="channel">YouTube</a>
+      <a id="books-link" href="#" target="_blank" rel="noopener" data-needs="book">Our books</a>
+      <a href="login.html">Log in</a>
+    </nav>
   </div>
-</div>
 </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Dropdown
-  var trigger = document.getElementById('more-menu-trigger');
-  var dropdown = document.getElementById('more-menu-dropdown');
-  if(trigger && dropdown){
-    trigger.addEventListener('click', function(e){ e.stopPropagation(); dropdown.classList.toggle('hidden'); });
-    document.addEventListener('click', function(){ dropdown.classList.add('hidden'); });
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — fill these in. Anything left empty is hidden.
+   ═══════════════════════════════════════════════════════════ */
+var CONFIG = {
+  YOUTUBE_CHANNEL: "",          // e.g. "https://www.youtube.com/@yourchannel"
+  AUTHOR_NAME: "",              // your pen name
+  BOOK_TITLE: "",               // e.g. "The River Book"
+  BOOK_URL: "",                 // e.g. Amazon link
+  BOOK_COVER: "",               // e.g. "media/book-cover.jpg"
+  CONTACT_EMAIL: "",            // e.g. "hello@mercadream.com"
+  FREE_GNS: 0,                  // free credits on sign-up (0 = hide the line)
+  MONTAGE_LIVE: false,          // true when steps 3-4 are live
+  MONTAGE_GNS: 0,               // montage price in GNS (when live)
+  VIDEOS: [
+    // { title: "Beneath Your Skies", youtube: "https://www.youtube.com/watch?v=XXXXXXXXXXX", meta: "Romantic ballad" },
+  ]
+};
+
+/* ── Fill the page from CONFIG ─────────────────────────────── */
+(function () {
+  function has(key) {
+    if (key === 'videos') return CONFIG.VIDEOS.length > 0;
+    if (key === 'channel') return !!CONFIG.YOUTUBE_CHANNEL;
+    if (key === 'author') return !!CONFIG.AUTHOR_NAME;
+    if (key === 'book') return !!(CONFIG.BOOK_TITLE && CONFIG.BOOK_URL);
+    if (key === 'cover') return !!CONFIG.BOOK_COVER;
+    if (key === 'email') return !!CONFIG.CONTACT_EMAIL;
+    return true;
   }
-  // Telemetry
-  setInterval(function(){
-    var g = document.getElementById('gpu-load');
-    var b = document.getElementById('gpu-bar');
-    var a = document.getElementById('active-clusters');
-    var r = document.getElementById('render-count');
-    if(g&&b){ var v=(80+Math.random()*8).toFixed(1); g.innerText=v; b.style.width=v+'%'; }
-    if(a) a.innerText=(1400+Math.floor(Math.random()*15)).toLocaleString();
-    if(r){ var c=parseInt(r.innerText.replace(/,/g,''))||48291; r.innerText=(c+Math.floor(Math.random()*3)).toLocaleString(); }
-  }, 3000);
-  // Auth
-  var isLoggedIn = localStorage.getItem('md_user_id');
-  var authBtn = document.getElementById('nav-auth-btn');
-  var actionBtn = document.getElementById('nav-action-btn');
-  var heroCta = document.getElementById('hero-primary-cta');
-  var footerCta = document.getElementById('footer-cta');
-  if(isLoggedIn){
-    if(authBtn) authBtn.innerText='LOG OUT';
-    [actionBtn,heroCta,footerCta].forEach(function(b){ if(b) b.innerText='ENTER STUDIO'; });
-    if(actionBtn) actionBtn.onclick=function(){ window.location.href='studio.html'; };
-    if(heroCta) heroCta.onclick=function(){ window.location.href='studio.html'; };
-    if(footerCta) footerCta.onclick=function(){ window.location.href='studio.html'; };
+  document.querySelectorAll('[data-needs]').forEach(function (el) {
+    if (!has(el.getAttribute('data-needs'))) el.classList.add('hidden');
+  });
+
+  if (CONFIG.YOUTUBE_CHANNEL) {
+    document.getElementById('channel-link').href = CONFIG.YOUTUBE_CHANNEL;
+    document.getElementById('yt-link').href = CONFIG.YOUTUBE_CHANNEL;
   }
-  if(authBtn) authBtn.onclick=function(){
-    if(localStorage.getItem('md_user_id')){ localStorage.clear(); location.reload(); }
-    else { window.location.href='login.html'; }
-  };
-  var credits = localStorage.getItem('md_credits')||'0';
-  var el = document.getElementById('user-credits');
-  if(el) el.innerText=credits+' GNS';
-});
+  if (CONFIG.AUTHOR_NAME) document.getElementById('author-name').textContent = CONFIG.AUTHOR_NAME;
+  if (CONFIG.BOOK_TITLE) {
+    var bl = document.getElementById('book-link');
+    bl.textContent = CONFIG.BOOK_TITLE; bl.href = CONFIG.BOOK_URL;
+    document.getElementById('books-link').href = CONFIG.BOOK_URL;
+  }
+  if (CONFIG.BOOK_COVER) {
+    var bc = document.getElementById('book-cover');
+    bc.src = CONFIG.BOOK_COVER; bc.alt = 'Cover of ' + (CONFIG.BOOK_TITLE || 'the book');
+  }
+  if (CONFIG.CONTACT_EMAIL) document.getElementById('contact-link').href = 'mailto:' + CONFIG.CONTACT_EMAIL;
+  if (CONFIG.FREE_GNS > 0) {
+    var fl = document.getElementById('free-line');
+    fl.textContent = CONFIG.FREE_GNS + ' free GNS on sign-up · No card required';
+    fl.classList.remove('hidden');
+  }
+  if (CONFIG.MONTAGE_LIVE) {
+    document.querySelectorAll('.soon').forEach(function (b) { b.classList.add('hidden'); });
+    if (CONFIG.MONTAGE_GNS) document.getElementById('montage-price').textContent = CONFIG.MONTAGE_GNS + ' GNS';
+  }
+
+  // Showcase cards with YouTube thumbnails
+  function ytId(url) {
+    var m = /(?:v=|youtu\.be\/|shorts\/|embed\/)([A-Za-z0-9_-]{11})/.exec(url || '');
+    return m ? m[1] : null;
+  }
+  var box = document.getElementById('videos');
+  CONFIG.VIDEOS.forEach(function (v) {
+    var id = ytId(v.youtube);
+    var a = document.createElement('a');
+    a.className = 'vid'; a.href = v.youtube; a.target = '_blank'; a.rel = 'noopener';
+    var thumb = document.createElement('div'); thumb.className = 'thumb';
+    if (id) {
+      var img = document.createElement('img');
+      img.src = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+      img.alt = ''; img.loading = 'lazy';
+      thumb.appendChild(img);
+    }
+    var play = document.createElement('div'); play.className = 'play';
+    play.innerHTML = '<span><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="#E8B92F"><path d="M8 5v14l11-7z"/></svg></span>';
+    thumb.appendChild(play);
+    var h = document.createElement('h3'); h.textContent = v.title;
+    a.appendChild(thumb); a.appendChild(h);
+    if (v.meta) { var p = document.createElement('p'); p.className = 'mono'; p.style.cssText = 'margin:0;font-size:13px;color:#a3a3a3'; p.textContent = v.meta; a.appendChild(p); }
+    box.appendChild(a);
+  });
+})();
+
+/* ── Login state + real balance ────────────────────────────── */
+(function () {
+  var authBtn = document.getElementById('nav-auth');
+  var bal = document.getElementById('nav-balance');
+  var ctas = ['nav-cta', 'hero-cta', 'final-cta'].map(function (id) { return document.getElementById(id); });
+
+  window.addEventListener('creditsUpdated', function (e) {
+    bal.textContent = Number(e.detail.credits || 0).toLocaleString() + ' GNS';
+  });
+
+  if (!window.mdAuthReady) return;
+  window.mdAuthReady.then(function (user) {
+    if (user) {
+      authBtn.textContent = 'Log out';
+      bal.classList.remove('hidden');
+      ctas.forEach(function (b) { if (b) { b.href = 'music.html'; } });
+      ctas[0].textContent = 'Create a song';
+    }
+  });
+
+  authBtn.addEventListener('click', function () {
+    if (window.MD_USER) {
+      firebase.auth().signOut().then(function () {
+        ['md_credits', 'md_user_id', 'md_user', 'md_email', 'md_name', 'sb_session'].forEach(function (k) { localStorage.removeItem(k); });
+        location.reload();
+      });
+    } else {
+      location.href = 'login.html';
+    }
+  });
+})();
 </script>
 </body>
 </html>
