@@ -124,6 +124,19 @@ nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-be
   .knob .ring{transition:none}
 }
 
+/* STAGE BANNER */
+.stage{position:relative;min-height:560px;display:flex;align-items:center;overflow:hidden;border-top:1px solid var(--line);background:#05070d}
+.stage-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:75% 15%}
+.stage-shade{position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0a 0%,rgba(10,10,10,.85) 30%,rgba(10,10,10,.2) 60%,rgba(10,10,10,0) 100%),linear-gradient(0deg,#0a0a0a 0%,rgba(10,10,10,0) 30%),linear-gradient(180deg,#0a0a0a 0%,rgba(10,10,10,0) 20%)}
+.stage-text{position:relative;z-index:1;display:flex;flex-direction:column;gap:20px;width:100%}
+.stage-h{font-size:44px;text-shadow:0 0 24px rgba(60,140,255,.35)}
+@media (max-width:720px){
+  .stage{min-height:620px;align-items:flex-end;padding-bottom:48px}
+  .stage-img{object-position:70% top}
+  .stage-shade{background:linear-gradient(0deg,#0a0a0a 0%,rgba(10,10,10,.88) 45%,rgba(10,10,10,0) 75%)}
+  .stage-h{font-size:32px}
+}
+
 /* SHOWCASE */
 .vid{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:12px;color:var(--text)}
 .vid .thumb{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--line2);background:#161616}
@@ -244,6 +257,18 @@ footer{border-top:1px solid var(--line)}
       <source src="media/hero2.mp4" type="video/mp4"/>
       <source src="media/hero1.mp4" type="video/mp4"/>
     </video>
+  </div>
+</section>
+
+<!-- STAGE BANNER: singer + blue neon -->
+<section class="stage" aria-label="On stage">
+  <img class="stage-img" src="media/singer.jpg" alt="Singer holding a gold microphone under blue neon light" loading="lazy" onerror="this.closest('section').classList.add('hidden')"/>
+  <div class="stage-shade" aria-hidden="true"></div>
+  <div class="wrap stage-text">
+    <p class="eyebrow">Your voice on stage</p>
+    <h2 class="h2 stage-h">Every story deserves<br/>a voice.</h2>
+    <p class="lead" style="max-width:440px">Pick a style, choose a voice, and hear your lyrics sung like a studio release.</p>
+    <div><a class="btn btn-gold" href="music.html">Hear your song</a></div>
   </div>
 </section>
 
