@@ -88,7 +88,41 @@ nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-be
 @media (prefers-reduced-motion:reduce){
   .chain .dot,.chain .lbl,.chain .link{transition:none}
 }
-.hero-media video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid var(--line2);background:#161616}
+.hero-media{display:flex;flex-direction:column;gap:16px}
+.hero-media video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid var(--line2);background:#161616;transition:border-color .4s,box-shadow .4s}
+.hero-media video.live{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-dim),0 0 28px rgba(232,185,47,.18)}
+
+/* STUDIO CONSOLE */
+.console{border:1px solid #3a2f0e;border-radius:14px;padding:16px 18px 18px;background:linear-gradient(180deg,#161411 0%,#0e0d0b 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 30px rgba(0,0,0,.45)}
+.console-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.console-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;color:#b89a4a;text-transform:uppercase}
+.vu{display:flex;align-items:flex-end;gap:3px;height:18px}
+.vu i{display:block;width:4px;border-radius:1px;background:linear-gradient(0deg,#7a6216 0%,#E8B92F 60%,#ffe9a8 100%);animation:vu 1s ease-in-out infinite alternate}
+.vu i:nth-child(1){animation-duration:.62s}.vu i:nth-child(2){animation-duration:.81s}.vu i:nth-child(3){animation-duration:.55s}
+.vu i:nth-child(4){animation-duration:.93s}.vu i:nth-child(5){animation-duration:.7s}.vu i:nth-child(6){animation-duration:.58s}
+.vu i:nth-child(7){animation-duration:.86s}.vu i:nth-child(8){animation-duration:.66s}.vu i:nth-child(9){animation-duration:.77s}
+.vu i:nth-child(10){animation-duration:.6s}.vu i:nth-child(11){animation-duration:.9s}.vu i:nth-child(12){animation-duration:.69s}
+@keyframes vu{0%{height:15%}100%{height:100%}}
+.knobs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.knob{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;color:#d9d2bf;font-size:12px;font-weight:500;letter-spacing:.02em;text-align:center;text-decoration:none;min-height:44px}
+.knob .ring{position:relative;width:56px;height:56px;border-radius:50%;padding:3px;background:conic-gradient(from 210deg,#7a6216,#F6D365,#b8921f,#7a6216,#F6D365,#7a6216);box-shadow:0 4px 12px rgba(0,0,0,.6);transition:transform .2s,box-shadow .3s}
+.knob .cap{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2b2924 0%,#121110 70%);display:flex;align-items:center;justify-content:center;color:#E8B92F}
+.knob .cap svg{width:22px;height:22px}
+.knob .led{position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:#3b3423;border:1px solid #0a0a0a;transition:background .3s,box-shadow .3s}
+.knob:hover{color:#ffffff}
+.knob:hover .ring{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.7),0 0 18px rgba(232,185,47,.25)}
+.knob.lit .led{background:#ffd34d;box-shadow:0 0 8px #ffd34d,0 0 14px rgba(255,211,77,.6)}
+.knob.lit .ring{box-shadow:0 4px 12px rgba(0,0,0,.6),0 0 22px rgba(232,185,47,.35)}
+.knob .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#E8B92F;color:#0a0a0a;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;padding:3px 7px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .2s}
+.knob.soon:hover .tip,.knob.soon:focus .tip{opacity:1}
+.knob.soon{cursor:default}
+@media (max-width:520px){
+  .knobs{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .vu i{animation:none;height:60%}
+  .knob .ring{transition:none}
+}
 
 /* SHOWCASE */
 .vid{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:12px;color:var(--text)}
@@ -191,7 +225,21 @@ footer{border-top:1px solid var(--line)}
     <li class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span><span class="lbl"><b>05</b>Edit the video</span></li>
   </ol>
   <div class="hero-media">
-    <video autoplay muted loop playsinline preload="metadata" aria-label="MercaDream Studio showreel">
+    <div class="console" aria-label="MercaDream Studio console">
+      <div class="console-top">
+        <span class="console-title">Studio console</span>
+        <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="knobs">
+        <a class="knob" data-step="0" href="music.html"><span class="ring"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span class="led"></span></span>Lyrics</a>
+        <a class="knob" data-step="1" href="music.html"><span class="ring"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="led"></span></span>Melody</a>
+        <a class="knob" data-step="1" href="music.html"><span class="ring"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21 12 3l6 18"/><path d="M8.5 13h7"/><path d="M12 3v10"/></svg></span><span class="led"></span></span>Rhythm</a>
+        <a class="knob" data-step="2" href="music.html"><span class="ring"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg></span><span class="led"></span></span>Voice</a>
+        <span class="knob soon" data-step="3" tabindex="0" aria-disabled="true"><span class="tip">COMING SOON</span><span class="ring"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/></svg></span><span class="led"></span></span>Scenes</span>
+        <span class="knob soon" data-step="4" tabindex="0" aria-disabled="true"><span class="tip">COMING SOON</span><span class="ring"><span class="cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span><span class="led"></span></span>Montage</span>
+      </div>
+    </div>
+    <video id="hero-video" autoplay muted loop playsinline preload="metadata" aria-label="MercaDream Studio showreel">
       <source src="media/hero3.mp4" type="video/mp4"/>
       <source src="media/hero2.mp4" type="video/mp4"/>
       <source src="media/hero1.mp4" type="video/mp4"/>
@@ -415,7 +463,7 @@ var CONFIG = {
     fl.classList.remove('hidden');
   }
   if (CONFIG.MONTAGE_LIVE) {
-    document.querySelectorAll('.soon').forEach(function (b) { b.classList.add('hidden'); });
+    document.querySelectorAll('.badge.soon').forEach(function (b) { b.classList.add('hidden'); });
     if (CONFIG.MONTAGE_GNS) document.getElementById('montage-price').textContent = CONFIG.MONTAGE_GNS + ' GNS';
   }
 
@@ -452,12 +500,16 @@ var CONFIG = {
   if (!chain) return;
   var steps = chain.querySelectorAll('.step');
   var links = chain.querySelectorAll('.link');
+  var knobs = document.querySelectorAll('.knob[data-step]');
+  var video = document.getElementById('hero-video');
   function show(active) {
     steps.forEach(function (s, i) {
       s.classList.toggle('done', i < active);
       s.classList.toggle('on', i === active);
     });
     links.forEach(function (l, i) { l.classList.toggle('done', i < active); });
+    knobs.forEach(function (k) { k.classList.toggle('lit', Number(k.getAttribute('data-step')) <= active); });
+    if (video) video.classList.toggle('live', active >= 3);
   }
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     show(steps.length); return;
