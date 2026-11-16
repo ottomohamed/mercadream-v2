@@ -1037,11 +1037,9 @@ module.exports = async function handler(req, res) {
     video:       paid('video', handle_video),          // GET (polling) stays free
     audioforge:  paid('audioforge', handle_audioforge),
     bgremover:   paid('bgremover', handle_bgremover),
-    faceswap:    paid('faceswap', handle_faceswap),
     imagegen:    paid('imagegen', handle_imagegen),
     animate:     paid('animate', handle_animate),
     lipsync:     paid('lipsync', handle_lipsync),
-    deaging:     paid('deaging', handle_deaging),
     convert:     paid('convert', handle_convert),
     upscale:     paid('upscale', handle_upscale),
     tts:         paid('tts', handle_tts),
@@ -1052,9 +1050,7 @@ module.exports = async function handler(req, res) {
     music:       paid('music', handle_music),
     tripo3d:     paid('tripo3d', handle_tripo3d),
     motion:      paid('motion', handle_motion),
-    imagefaceswap: paid('imagefaceswap', handle_imagefaceswap),
-    videofaceswap: paid('videofaceswap', handle_videofaceswap),
-    i2v:         paid('i2v', handle_i2v),
+    // DISABLED (deepfake / adult-content risk): faceswap, imagefaceswap, videofaceswap, deaging, i2v
   };
 
   const fn = routes[service];
