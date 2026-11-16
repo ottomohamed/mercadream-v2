@@ -1,468 +1,583 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MUREKA | AI MUSIC STUDIO</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Orbitron:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100..900&family=Orbitron:wght@100..900&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-container": "#1f1f1f",
-                    "inverse-primary": "#4f6600",
-                    "on-primary": "#273500",
-                    "error-container": "#93000a",
-                    "on-primary-fixed-variant": "#3b4d00",
-                    "primary-fixed": "#c0f500",
-                    "on-surface-variant": "#c4caac",
-                    "error": "#ffb4ab",
-                    "on-secondary-fixed": "#1c1b1b",
-                    "on-tertiary-fixed-variant": "#474747",
-                    "surface-container-high": "#2a2a2a",
-                    "outline-variant": "#434933",
-                    "tertiary-fixed": "#e4e2e1",
-                    "surface-dim": "#131313",
-                    "surface-container-low": "#1b1b1b",
-                    "on-surface": "#e2e2e2",
-                    "secondary-fixed-dim": "#c8c6c5",
-                    "surface": "#131313",
-                    "on-primary-fixed": "#161f00",
-                    "tertiary-container": "#e4e2e1",
-                    "outline": "#8e9479",
-                    "primary-fixed-dim": "#a8d700",
-                    "on-background": "#e2e2e2",
-                    "inverse-surface": "#e2e2e2",
-                    "on-tertiary-container": "#656464",
-                    "surface-bright": "#393939",
-                    "surface-variant": "#353535",
-                    "secondary-fixed": "#e5e2e1",
-                    "on-tertiary": "#303030",
-                    "secondary": "#c8c6c5",
-                    "on-tertiary-fixed": "#1b1c1c",
-                    "surface-container-lowest": "#0e0e0e",
-                    "on-secondary-fixed-variant": "#474746",
-                    "on-secondary": "#313030",
-                    "on-error": "#690005",
-                    "surface-tint": "#a8d700",
-                    "secondary-container": "#474746",
-                    "tertiary-fixed-dim": "#c8c6c6",
-                    "primary": "#ffffff",
-                    "tertiary": "#ffffff",
-                    "background": "#131313",
-                    "inverse-on-surface": "#303030",
-                    "on-primary-container": "#546d00",
-                    "primary-container": "#c0f500",
-                    "surface-container-highest": "#353535",
-                    "on-error-container": "#ffdad6",
-                    "on-secondary-container": "#b7b5b4"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0px",
-                    "lg": "0px",
-                    "xl": "0px",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "margin-sm": "16px",
-                    "base": "4px",
-                    "margin-md": "32px",
-                    "gutter": "1px",
-                    "margin-lg": "48px",
-                    "grid-unit": "24px"
-            },
-            "fontFamily": {
-                    "mono-data": ["IBM Plex Mono"],
-                    "headline-lg": ["Orbitron"],
-                    "display-lg": ["Orbitron"],
-                    "label-sm": ["IBM Plex Mono"]
-            }
-          }
-        }
-      }
-    </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Song Studio | MercaDream Studio</title>
+<meta name="description" content="Write your lyrics with AI, choose the sound and produce a full song with vocals in minutes."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-        body {
-            background-color: #000000;
-            background-image: 
-                linear-gradient(to right, #1a1a1a 1px, transparent 1px),
-                linear-gradient(to bottom, #1a1a1a 1px, transparent 1px);
-            background-size: 24px 24px;
-            color: #e2e2e2;
-        }
+:root{
+  --gold:#E8B92F; --gold-hi:#F6D365; --gold-dim:#4d3d0a;
+  --bg:#0a0a0a; --bg2:#0d0d0d; --card:#111111; --line:#1f1f1f; --line2:#2a2a2a;
+  --text:#ececec; --soft:#bdbdbd; --muted:#a3a3a3; --white:#ffffff; --red:#ff6b6b; --green:#5fd38a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-hi)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+.hidden{display:none!important}
+.eyebrow{margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.mono{font-family:'IBM Plex Mono',monospace}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:6px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;font-family:Inter,sans-serif;background:none;color:var(--text)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:#0a0a0a}
+.btn-gold:hover:not(:disabled){background:var(--gold-hi);color:#0a0a0a}
+.btn-ghost{border-color:#3a3a3a}
+.btn-ghost:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+.btn-big{min-height:58px;font-size:18px;width:100%}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-        .glow-neon {
-            box-shadow: 0 0 8px rgba(200, 255, 0, 0.4);
-        }
+/* NAV */
+header{position:sticky;top:0;z-index:50;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;max-width:1200px;margin:0 auto}
+.logo{display:flex;align-items:baseline;gap:10px;font-family:Orbitron,sans-serif;font-weight:700;font-size:21px;letter-spacing:.08em;color:var(--gold)}
+.logo small{font-size:12px;font-weight:600;letter-spacing:.3em}
+.navright{display:flex;align-items:center;gap:10px}
+.balance{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--gold);border:1px solid var(--gold-dim);border-radius:6px;padding:9px 12px}
+.linkbtn{background:none;border:0;color:var(--text);font-size:15px;padding:12px 14px;cursor:pointer;font-family:Inter,sans-serif}
+.linkbtn:hover{color:var(--gold)}
 
-        .border-neon {
-            border-color: #c8ff00;
-        }
+/* PAGE HEAD */
+.head{padding:56px 0 32px;display:flex;flex-direction:column;gap:14px}
+.head h1{margin:0;font-family:Orbitron,sans-serif;font-weight:700;font-size:44px;line-height:1.1;color:var(--white)}
+.head p.sub{margin:0;font-size:17px;color:var(--soft);max-width:620px}
 
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
+/* STEPPER */
+.stepper{display:flex;align-items:center;gap:0;list-style:none;margin:8px 0 0;padding:0}
+.stepper li{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.stepper .n{width:30px;height:30px;border-radius:50%;border:2px solid #3a3a3a;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:13px}
+.stepper .bar{width:48px;height:2px;background:#2a2a2a;margin:0 12px}
+.stepper li.ok{color:var(--text)}
+.stepper li.ok .n{border-color:var(--gold);color:var(--gold)}
 
-        .scanline {
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(200, 255, 0, 0.05) 50%
-            );
-            background-size: 100% 4px;
-        }
+/* PANELS */
+.panel{border:1px solid var(--line2);border-radius:12px;background:var(--card);padding:28px;margin-bottom:24px;display:flex;flex-direction:column;gap:22px}
+.panel-h{display:flex;align-items:baseline;gap:14px}
+.panel-h .num{font-family:Orbitron,sans-serif;font-size:26px;font-weight:700;color:var(--gold)}
+.panel-h h2{margin:0;font-size:22px;font-weight:600;color:var(--white)}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label,.lbl{font-size:14px;font-weight:600;color:var(--text)}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+input[type=text],select,textarea{width:100%;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:var(--text);font-family:Inter,sans-serif;font-size:16px;padding:12px 14px}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none}
+textarea{resize:vertical;line-height:1.6}
+#lyrics{min-height:300px;font-family:'IBM Plex Mono',monospace;font-size:15px}
+#idea{min-height:90px}
+.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--soft);background:#161616;border:1px solid #333;border-radius:4px;padding:6px 9px;cursor:pointer;min-height:32px}
+.tag:hover{border-color:var(--gold);color:var(--gold)}
+.count{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted)}
+.count.over{color:var(--red)}
+.ai-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.msg{font-size:14px;margin:0}
+.msg.err{color:var(--red)}
+.msg.ok{color:var(--green)}
 
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0e0e0e;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #333333;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #c8ff00;
-        }
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#141414;border:1px solid #333;color:var(--soft);border-radius:999px;padding:9px 16px;font-size:14px;cursor:pointer;min-height:40px;font-family:Inter,sans-serif}
+.chip:hover{border-color:#5a5a5a;color:var(--white)}
+.chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0a0a0a;font-weight:600}
+.preview{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--soft);background:#0a0a0a;border:1px dashed #333;border-radius:8px;padding:12px 14px;margin:0}
+.preview b{color:var(--gold);font-weight:500}
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .terminal-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background: #c8ff00;
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-        }
+/* QUALITY */
+.quality{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.qcard{position:relative;border:1px solid #333;border-radius:10px;padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:6px;background:#0d0d0d}
+.qcard input{position:absolute;opacity:0;pointer-events:none}
+.qcard .qt{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.qcard .qn{font-size:17px;font-weight:600;color:var(--white)}
+.qcard .qp{font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;color:var(--gold);white-space:nowrap}
+.qcard .qd{font-size:14px;color:var(--soft)}
+.qcard .qm{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.qcard:has(input:checked){border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 24px rgba(232,185,47,.12)}
+.qcard:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.qbadge{position:absolute;top:-10px;right:14px;background:var(--gold);color:#0a0a0a;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;padding:3px 8px;border-radius:4px}
+.summary{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--line2);padding-top:18px}
+.summary .cost{font-size:16px;color:var(--soft)}
+.summary .cost b{font-family:Orbitron,sans-serif;font-size:22px;color:var(--white);margin-right:4px}
 
-        .waveform-bar {
-            transition: height 0.2s ease;
-        }
-       </style>
-<!-- Firebase (login + real balance) -->
+/* RESULTS */
+.status{display:flex;align-items:center;gap:16px;border:1px solid var(--gold-dim);background:#14110a;border-radius:10px;padding:18px}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid #3a2f0e;border-top-color:var(--gold);animation:spin 1s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status .st{font-weight:600;color:var(--white)}
+.status .sm{font-size:14px;color:var(--soft)}
+.track{border:1px solid var(--line2);border-radius:10px;padding:18px;background:#0d0d0d;display:flex;flex-direction:column;gap:12px}
+.track-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.track-h h3{margin:0;font-size:18px;font-weight:600;color:var(--white)}
+.track audio{width:100%}
+.track-a{display:flex;flex-wrap:wrap;gap:10px}
+.soon{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;padding:2px 6px}
+.mylist{display:flex;flex-direction:column;gap:10px}
+.myrow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding:10px 0}
+.myrow .t{flex:1 1 200px;min-width:0}
+.myrow .t b{display:block;color:var(--white);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.myrow .t span{font-size:13px;color:var(--muted)}
+.myrow audio{flex:1 1 260px;min-width:0;height:40px}
+
+footer{border-top:1px solid var(--line);margin-top:48px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center;padding:32px 24px;max-width:1200px;margin:0 auto;font-size:14px;color:var(--muted)}
+.foot nav{display:flex;gap:20px}
+.foot nav a{color:#cfcfcf}
+
+@media (max-width:720px){
+  .head h1{font-size:32px}
+  .grid2,.quality{grid-template-columns:1fr}
+  .panel{padding:20px}
+  .stepper .bar{width:20px;margin:0 6px}
+  .stepper .t{display:none}
+}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+
+<!-- Firebase: login + real balance -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="/js/md-firebase.js"></script>
-<script src="/js/md-auth.js"></script></head>
-<body class="font-mono-data text-mono-data min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed">
-<!-- TopAppBar -->
-<header class="docked full-width top-0 bg-surface dark:bg-surface border-b border-outline-variant flex justify-between items-center w-full px-margin-sm h-16 z-50">
-<div class="flex items-center gap-4">
-<img alt="MUREKA Logo" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLsrpXNlmNsEjlYrNCadoSILiRlkzDY-t7s2AgYtbV9slIrdwcquS80UtP_q1rZMlubJ-5j8yxTspQQLoBORv7LrU98SHYz7aThshdII4kupRhur7Y1o2n1085mfWO9Rkz2qp_pAOOm7r-r4Waq7RN5kzxlWeZUVOTRiqE4_2l5mK0kytmN2rFAS9bpjNhjASatNxtpbJzi15HQduymSpEU7BLr2pg7Qx6yMyv25Iz-5yK4ynq77cafvNbo"/>
-<span class="font-display-lg text-[24px] text-primary-fixed tracking-tighter uppercase">MUREKA</span>
-</div>
-<nav class="hidden md:flex gap-margin-md items-center h-full">
-<a class="text-primary-fixed border-b-2 border-primary-fixed pb-1 h-full flex items-center transition-all" href="#">Studio</a>
-<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all h-full flex items-center" href="#">Mixer</a>
-<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all h-full flex items-center" href="#">Mastering</a>
-<a class="text-on-surface-variant hover:text-primary-fixed hover:glow-sm transition-all h-full flex items-center" href="#">Samples</a>
+<script src="/js/md-auth.js"></script>
+</head>
+<body>
+
+<header>
+<nav class="main" aria-label="Main">
+  <a href="index.html" class="logo"><span>MERCADREAM</span><small>STUDIO</small></a>
+  <div class="navright">
+    <span class="balance hidden" id="nav-balance">0 GNS</span>
+    <a class="linkbtn" href="pricing.html">Buy credits</a>
+    <button class="linkbtn" id="nav-auth" type="button">Log in</button>
+  </div>
 </nav>
-<div class="flex items-center gap-4">
-<div class="hidden sm:flex flex-col items-end mr-2">
-<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Available Credits</span>
-<span class="text-primary-fixed font-bold" id="credit-display">0 GNS</span>
-</div>
-<button class="bg-primary-fixed text-on-primary-fixed px-4 py-2 font-bold text-label-sm uppercase hover:brightness-110 active:scale-95 transition-all">
-                Buy Credits
-            </button>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-fixed">account_balance_wallet</span>
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-fixed">notifications</span>
-</div>
-</div>
 </header>
-<main class="flex-grow flex flex-col p-margin-sm md:p-margin-md max-w-[1440px] mx-auto w-full gap-8">
-<!-- Header -->
-<section class="border-l-4 border-primary-fixed pl-6 py-2">
-<h1 class="font-display-lg text-display-lg text-primary-fixed leading-none mb-2">MUREKA MUSIC STUDIO</h1>
-<p class="text-on-surface-variant max-w-2xl text-body-md">
-                Generate complete songs or background music with AI. Powered by Mureka V9. Precise spectral modeling and neural orchestration for the next generation of creators.
-            </p>
-</section>
-<!-- Tabs -->
-<div class="flex border-b border-outline-variant gap-gutter">
-<button class="px-8 py-4 bg-surface-container-low border-t-2 border-primary-fixed text-primary-fixed font-bold tracking-widest text-label-sm">
-                GENERATE SONG
-            </button>
-<button class="px-8 py-4 text-on-tertiary-container hover:bg-surface-container hover:text-on-surface transition-colors font-bold tracking-widest text-label-sm">
-                GENERATE BGM
-            </button>
-</div>
-<!-- Main Content (Two-Panel) -->
-<div class="grid grid-cols-1 lg:grid-cols-12 border border-outline-variant bg-surface-container-lowest overflow-hidden">
-<!-- Left Panel (Inputs) -->
-<div class="lg:col-span-5 border-r border-outline-variant p-6 flex flex-col gap-6 scanline">
-<div class="flex flex-col gap-2">
-<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Lyrical Input</label>
-<textarea class="w-full h-48 bg-black border border-outline-variant p-4 text-body-md text-on-surface focus:border-primary-fixed focus:ring-0 resize-none transition-colors" id="lyrics-input" placeholder="Type your lyrics here or describe a story..."></textarea>
-</div>
-<div class="flex flex-col gap-2">
-<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Style Prompt</label>
-<input class="w-full bg-black border border-outline-variant p-4 text-body-md text-on-surface focus:border-primary-fixed focus:ring-0 transition-colors" id="style-input" placeholder="e.g. Acid Techno, 135 BPM, distorted bassline, industrial pads" type="text"/>
-</div>
-<div class="grid grid-cols-2 gap-4">
-<div class="flex flex-col gap-2">
-<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Format</label>
-<div class="flex border border-outline-variant h-12">
-<button class="flex-1 bg-primary-fixed text-on-primary-fixed text-label-sm font-bold">MP3</button>
-<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface">WAV</button>
-<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface">FLAC</button>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<label class="text-label-sm text-primary-fixed uppercase tracking-tighter">Variations</label>
-<div class="flex border border-outline-variant h-12">
-<button class="flex-1 bg-surface-container text-on-surface text-label-sm font-bold border-r border-outline-variant">1</button>
-<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface border-r border-outline-variant">2</button>
-<button class="flex-1 text-on-surface-variant text-label-sm hover:text-on-surface">3</button>
-</div>
-</div>
-</div>
-<div class="mt-auto pt-6 border-t border-outline-variant flex justify-between items-end">
-<div>
-<span class="block text-[10px] text-on-surface-variant uppercase tracking-widest">Compute Cost</span>
-<span class="text-headline-lg text-primary-fixed leading-none">5 GNS <span class="text-label-sm text-on-surface-variant">/ song</span></span>
-</div>
-<button class="bg-primary-fixed text-on-primary-fixed px-8 py-4 font-bold text-label-sm uppercase hover:brightness-110 active:scale-95 transition-all glow-neon flex items-center gap-2" id="generate-btn">
-<span class="material-symbols-outlined">auto_awesome</span>
-                        GENERATE SONG
-                    </button>
-</div>
-</div>
-<!-- Right Panel (Results) -->
-<div class="lg:col-span-7 p-6 flex flex-col gap-4 relative min-h-[500px]">
-<div class="flex justify-between items-center mb-2">
-<h2 class="text-label-sm text-primary-fixed uppercase font-bold tracking-widest">Output Terminal</h2>
-<div class="flex gap-2">
-<div class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></div>
-<span class="text-[10px] text-primary-fixed uppercase">System Online</span>
-</div>
-</div>
-<div class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2 h-full" id="results-container">
-<!-- Empty State -->
-<div class="flex-grow flex flex-col items-center justify-center border border-dashed border-outline-variant opacity-40 py-20" id="empty-state">
-<div class="flex items-end gap-1 mb-6 h-12">
-<div class="w-1 bg-primary-fixed h-4 animate-[bounce_1s_infinite_0s]"></div>
-<div class="w-1 bg-primary-fixed h-8 animate-[bounce_1s_infinite_0.1s]"></div>
-<div class="w-1 bg-primary-fixed h-12 animate-[bounce_1s_infinite_0.2s]"></div>
-<div class="w-1 bg-primary-fixed h-6 animate-[bounce_1s_infinite_0.3s]"></div>
-<div class="w-1 bg-primary-fixed h-10 animate-[bounce_1s_infinite_0.4s]"></div>
-<div class="w-1 bg-primary-fixed h-4 animate-[bounce_1s_infinite_0.5s]"></div>
-<div class="w-1 bg-primary-fixed h-12 animate-[bounce_1s_infinite_0.6s]"></div>
-</div>
-<p class="text-label-sm uppercase tracking-[0.2em]">Awaiting Input Sequence...</p>
-</div>
-<!-- Audio Players Stack (Hidden by default, shown by JS) -->
-<div class="hidden flex flex-col gap-4" id="track-list">
-<!-- Template for track list items -->
-</div>
-</div>
-<!-- Terminal Log (Bottom Right Overlay) -->
-<div class="absolute bottom-6 right-6 w-72 bg-black/90 border border-primary-fixed/30 p-3 font-mono-data text-[10px] text-primary-fixed/80 max-h-32 overflow-hidden pointer-events-none">
-<div id="terminal-content">
-<div>[10:42:01] MUREKA: ENGINE READY...</div>
-<div>[10:42:02] KERNEL: V9.4.1 LOADED</div>
-<div>[10:42:03] STATUS: WAITING_FOR_PROMPT</div>
-</div>
-<span class="terminal-cursor"></span>
-</div>
-</div>
-</div>
+
+<main class="wrap">
+  <section class="head">
+    <p class="eyebrow">Song studio</p>
+    <h1>Create your song</h1>
+    <p class="sub">Write the lyrics — or let AI write them with you — choose the sound, and get a full song with vocals in a few minutes.</p>
+    <ol class="stepper" aria-label="Progress">
+      <li id="s1"><span class="n">1</span><span class="t">Lyrics</span></li>
+      <li class="bar" aria-hidden="true"></li>
+      <li id="s2"><span class="n">2</span><span class="t">Sound</span></li>
+      <li class="bar" aria-hidden="true"></li>
+      <li id="s3"><span class="n">3</span><span class="t">Produce</span></li>
+    </ol>
+  </section>
+
+  <!-- 1. LYRICS -->
+  <section class="panel" aria-labelledby="h1">
+    <div class="panel-h"><span class="num">01</span><h2 id="h1">Lyrics</h2></div>
+    <div class="grid2">
+      <div class="field">
+        <label for="title">Song title</label>
+        <input type="text" id="title" maxlength="120" placeholder="e.g. Beneath Your Skies"/>
+      </div>
+      <div class="field">
+        <label for="language">Language</label>
+        <select id="language">
+          <option>English</option><option>Arabic</option><option>French</option><option>Spanish</option>
+          <option>Portuguese</option><option>Italian</option><option>German</option><option>Turkish</option>
+          <option>Hindi</option><option>Japanese</option><option>Korean</option><option>Chinese</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="idea">Your idea <span style="font-weight:400;color:var(--muted)">(for the AI songwriter)</span></label>
+      <textarea id="idea" maxlength="1500" placeholder="What is the song about? A story, a feeling, a person, a scene from your book…"></textarea>
+      <div class="ai-row">
+        <button class="btn btn-ghost" id="ai-btn" type="button">✦ Write lyrics with AI</button>
+        <p class="msg" id="ai-msg" role="status"></p>
+      </div>
+    </div>
+    <div class="field">
+      <div class="tools">
+        <label for="lyrics">Lyrics</label>
+        <div class="tags" aria-label="Insert a section tag">
+          <button class="tag" type="button" data-tag="[Verse]">[Verse]</button>
+          <button class="tag" type="button" data-tag="[Chorus]">[Chorus]</button>
+          <button class="tag" type="button" data-tag="[Bridge]">[Bridge]</button>
+          <button class="tag" type="button" data-tag="[Outro]">[Outro]</button>
+        </div>
+      </div>
+      <textarea id="lyrics" placeholder="[Verse]&#10;Write your first lines here…&#10;&#10;[Chorus]&#10;The part everyone will sing…"></textarea>
+      <div class="tools">
+        <p class="hint">Tip: section tags like [Chorus] help the singer structure the song.</p>
+        <span class="count" id="count">0 / 3000</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SOUND -->
+  <section class="panel" aria-labelledby="h2">
+    <div class="panel-h"><span class="num">02</span><h2 id="h2">Sound</h2></div>
+    <div class="field">
+      <span class="lbl" id="lb-genre">Genre</span>
+      <div class="chips" data-group="genre" data-max="1" role="group" aria-labelledby="lb-genre">
+        <button class="chip" type="button" aria-pressed="true">Pop</button>
+        <button class="chip" type="button" aria-pressed="false">Ballad</button>
+        <button class="chip" type="button" aria-pressed="false">R&amp;B</button>
+        <button class="chip" type="button" aria-pressed="false">Rock</button>
+        <button class="chip" type="button" aria-pressed="false">Hip-hop</button>
+        <button class="chip" type="button" aria-pressed="false">Dance</button>
+        <button class="chip" type="button" aria-pressed="false">Acoustic</button>
+        <button class="chip" type="button" aria-pressed="false">Cinematic</button>
+        <button class="chip" type="button" aria-pressed="false">Arabic pop</button>
+        <button class="chip" type="button" aria-pressed="false">Latin</button>
+        <button class="chip" type="button" aria-pressed="false">Jazz</button>
+        <button class="chip" type="button" aria-pressed="false">Country</button>
+      </div>
+    </div>
+    <div class="field">
+      <span class="lbl" id="lb-mood">Mood <span style="font-weight:400;color:var(--muted)">(up to 2)</span></span>
+      <div class="chips" data-group="mood" data-max="2" role="group" aria-labelledby="lb-mood">
+        <button class="chip" type="button" aria-pressed="true">Romantic</button>
+        <button class="chip" type="button" aria-pressed="false">Sad</button>
+        <button class="chip" type="button" aria-pressed="false">Hopeful</button>
+        <button class="chip" type="button" aria-pressed="false">Epic</button>
+        <button class="chip" type="button" aria-pressed="false">Happy</button>
+        <button class="chip" type="button" aria-pressed="false">Dark</button>
+        <button class="chip" type="button" aria-pressed="false">Nostalgic</button>
+        <button class="chip" type="button" aria-pressed="false">Calm</button>
+      </div>
+    </div>
+    <div class="grid2" style="grid-template-columns:1fr 1fr">
+      <div class="field">
+        <span class="lbl" id="lb-voice">Voice</span>
+        <div class="chips" data-group="voice" data-max="1" role="group" aria-labelledby="lb-voice">
+          <button class="chip" type="button" aria-pressed="true" data-v="female">Female</button>
+          <button class="chip" type="button" aria-pressed="false" data-v="male">Male</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lbl" id="lb-tempo">Tempo</span>
+        <div class="chips" data-group="tempo" data-max="1" role="group" aria-labelledby="lb-tempo">
+          <button class="chip" type="button" aria-pressed="false">Slow</button>
+          <button class="chip" type="button" aria-pressed="true">Medium</button>
+          <button class="chip" type="button" aria-pressed="false">Fast</button>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="extra">Extra details <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <input type="text" id="extra" maxlength="300" placeholder="e.g. piano and strings, 90s feel, big final chorus"/>
+    </div>
+    <p class="preview" id="preview"></p>
+  </section>
+
+  <!-- 3. PRODUCE -->
+  <section class="panel" aria-labelledby="h3">
+    <div class="panel-h"><span class="num">03</span><h2 id="h3">Produce</h2></div>
+    <div class="quality" role="radiogroup" aria-label="Quality">
+      <label class="qcard">
+        <input type="radio" name="quality" value="standard" checked/>
+        <span class="qm">Standard</span>
+        <span class="qt"><span class="qn">Fast song</span><span class="qp" id="p-std">5 GNS</span></span>
+        <span class="qd">Good for drafts and ideas. Get up to 2 versions to choose from.</span>
+      </label>
+      <label class="qcard">
+        <span class="qbadge">BEST</span>
+        <input type="radio" name="quality" value="studio"/>
+        <span class="qm">Studio</span>
+        <span class="qt"><span class="qn">Studio song</span><span class="qp" id="p-pro">10 GNS</span></span>
+        <span class="qd">Richer vocals and arrangement. Longer lyrics. One version.</span>
+      </label>
+    </div>
+    <div class="field" id="versions-field" style="max-width:260px">
+      <label for="versions">Versions</label>
+      <select id="versions"><option value="1">1 version</option><option value="2">2 versions</option></select>
+    </div>
+    <div class="summary">
+      <span class="cost">Cost: <b id="cost">5</b>GNS · Your balance: <span id="bal" class="mono">—</span></span>
+      <span class="hint">Takes 1–3 minutes. Credits are used when production starts.</span>
+    </div>
+    <button class="btn btn-gold btn-big" id="go" type="button">Produce my song</button>
+    <p class="msg" id="go-msg" role="alert"></p>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="panel hidden" id="results" aria-labelledby="hr" aria-live="polite">
+    <div class="panel-h"><span class="num">♪</span><h2 id="hr">Your song</h2></div>
+    <div class="status" id="status">
+      <span class="spin" aria-hidden="true"></span>
+      <div><div class="st" id="st">Producing your song…</div><div class="sm" id="sm">This usually takes 1–3 minutes. You can stay on this page.</div></div>
+    </div>
+    <div id="tracks" style="display:flex;flex-direction:column;gap:14px"></div>
+  </section>
+
+  <!-- MY SONGS -->
+  <section class="panel hidden" id="mysongs" aria-labelledby="hm">
+    <div class="panel-h"><span class="num">≡</span><h2 id="hm">My recent songs</h2></div>
+    <p class="hint">Saved on this device. Download the songs you want to keep — the links may expire.</p>
+    <div class="mylist" id="mylist"></div>
+  </section>
 </main>
-<!-- Footer -->
-<footer class="docked full-width bottom-0 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center w-full px-margin-sm py-4 mt-auto">
-<div class="flex items-center gap-4">
-<span class="font-label-sm text-label-sm text-primary-fixed uppercase">© 2024 MUREKA_SYSTEM_OS v4.2.1</span>
-</div>
-<div class="flex gap-margin-md">
-<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">Documentation</a>
-<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">API</a>
-<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">Status</a>
-<a class="text-on-tertiary-container hover:text-primary-fixed hover:underline transition-colors duration-200 text-label-sm" href="#">Legal</a>
-</div>
+
+<footer>
+  <div class="foot">
+    <span>© 2026 MercaDream Studio</span>
+    <nav aria-label="Footer"><a href="index.html">Home</a><a href="pricing.html">Pricing</a><a href="ethics.html">Ethics</a></nav>
+  </div>
 </footer>
+
 <script>
-        // --- State Management ---
-        // Balance comes ONLY from Firestore (via md-firebase.js). No free credits.
-        const state = {
-            credits: parseInt(localStorage.getItem('md_credits') || '0', 10) || 0,
-            isGenerating: false,
-            logs: []
-        };
+(function () {
+  var PRICE = { standard: 5, studio: 10 };
+  var LIMIT = { standard: 3000, studio: 5000 };
+  var $ = function (id) { return document.getElementById(id); };
+  var credits = null, user = null, busy = false;
 
-        const showCredits = (amount) => {
-            state.credits = amount;
-            document.getElementById('credit-display').innerText = `${state.credits} GNS`;
-        };
+  /* ── helpers ───────────────────────────────────────────── */
+  function quality() { return document.querySelector('input[name=quality]:checked').value; }
+  function versions() { return quality() === 'studio' ? 1 : Number($('versions').value); }
+  function cost() { return quality() === 'studio' ? PRICE.studio : PRICE.standard * versions(); }
+  function picked(group) {
+    return Array.prototype.map.call(document.querySelectorAll('[data-group="' + group + '"] .chip[aria-pressed="true"]'), function (b) { return b; });
+  }
+  function pickedText(group) { return picked(group).map(function (b) { return b.textContent.trim(); }); }
+  function stylePrompt() {
+    var parts = [];
+    var g = pickedText('genre'), m = pickedText('mood'), t = pickedText('tempo'), v = pickedText('voice');
+    if (g.length) parts.push(g[0]);
+    if (m.length) parts.push(m.join(' and ').toLowerCase() + ' mood');
+    if (t.length) parts.push(t[0].toLowerCase() + ' tempo');
+    if (v.length) parts.push(v[0].toLowerCase() + ' vocals');
+    var x = $('extra').value.trim(); if (x) parts.push(x);
+    return parts.join(', ').slice(0, 1000);
+  }
+  function gender() { var v = picked('voice'); return v.length ? v[0].getAttribute('data-v') : ''; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function setMsg(el, text, kind) { el.textContent = text || ''; el.className = 'msg' + (kind ? ' ' + kind : ''); }
 
-        const addLog = (msg) => {
-            const terminal = document.getElementById('terminal-content');
-            const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            const line = document.createElement('div');
-            line.innerText = `[${time}] ${msg}`;
-            terminal.appendChild(line);
-            if (terminal.children.length > 8) terminal.removeChild(terminal.firstChild);
-        };
+  /* ── live UI ───────────────────────────────────────────── */
+  function refresh() {
+    var q = quality(), n = $('lyrics').value.length, lim = LIMIT[q];
+    $('count').textContent = n + ' / ' + lim;
+    $('count').classList.toggle('over', n > lim);
+    $('versions-field').classList.toggle('hidden', q === 'studio');
+    $('cost').textContent = cost();
+    $('preview').innerHTML = '<b>Style:</b> ' + esc(stylePrompt() || '—');
+    $('s1').classList.toggle('ok', $('lyrics').value.trim().length > 0);
+    $('s2').classList.toggle('ok', stylePrompt().length > 0);
+    $('s3').classList.toggle('ok', !!document.querySelector('.track audio'));
+    $('bal').textContent = credits === null ? '—' : credits + ' GNS';
+    var go = $('go');
+    if (busy) { go.disabled = true; go.textContent = 'Producing…'; return; }
+    go.disabled = false;
+    if (!user) go.textContent = 'Log in to create';
+    else if (credits !== null && credits < cost()) go.textContent = 'Buy credits (' + cost() + ' GNS needed)';
+    else go.textContent = 'Produce my song — ' + cost() + ' GNS';
+  }
 
-        const resetButton = () => {
-            state.isGenerating = false;
-            const b = document.getElementById('generate-btn');
-            b.disabled = false;
-            b.innerText = 'GENERATE SONG';
-        };
+  document.querySelectorAll('.chips').forEach(function (group) {
+    var max = Number(group.getAttribute('data-max')) || 1;
+    group.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip'); if (!b) return;
+      var on = b.getAttribute('aria-pressed') === 'true';
+      if (max === 1) {
+        group.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+      } else if (on) {
+        b.setAttribute('aria-pressed', 'false');
+      } else {
+        var cur = group.querySelectorAll('.chip[aria-pressed="true"]');
+        if (cur.length >= max) cur[0].setAttribute('aria-pressed', 'false');
+        b.setAttribute('aria-pressed', 'true');
+      }
+      refresh();
+    });
+  });
+  document.querySelectorAll('.tag').forEach(function (t) {
+    t.addEventListener('click', function () {
+      var ta = $('lyrics'), tag = t.getAttribute('data-tag');
+      var s = ta.selectionStart, before = ta.value.slice(0, s), after = ta.value.slice(ta.selectionEnd);
+      var ins = (before && !before.endsWith('\n') ? '\n\n' : '') + tag + '\n';
+      ta.value = before + ins + after;
+      ta.focus(); ta.selectionStart = ta.selectionEnd = (before + ins).length;
+      refresh();
+    });
+  });
+  ['lyrics', 'extra', 'versions'].forEach(function (id) { $(id).addEventListener('input', refresh); });
+  document.querySelectorAll('input[name=quality]').forEach(function (r) { r.addEventListener('change', refresh); });
 
-        // --- Initialization ---
-        showCredits(state.credits);
-        window.addEventListener('creditsUpdated', (e) => showCredits(e.detail.credits));
+  /* ── account ───────────────────────────────────────────── */
+  window.addEventListener('creditsUpdated', function (e) {
+    credits = Number(e.detail.credits || 0);
+    $('nav-balance').textContent = credits.toLocaleString() + ' GNS';
+    refresh();
+  });
+  $('nav-auth').addEventListener('click', function () {
+    if (window.MD_USER) firebase.auth().signOut().then(function () { localStorage.removeItem('md_credits'); location.reload(); });
+    else location.href = 'login.html';
+  });
+  if (window.mdAuthReady) window.mdAuthReady.then(function (u) {
+    user = u;
+    if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
+    refresh();
+    resumePending();
+  });
 
-        // "Buy Credits" button -> pricing page
-        document.querySelectorAll('header button').forEach(b => {
-            if (b.textContent.trim().toUpperCase() === 'BUY CREDITS') b.addEventListener('click', () => location.href = '/pricing.html');
-        });
+  /* ── AI lyrics ─────────────────────────────────────────── */
+  $('ai-btn').addEventListener('click', async function () {
+    if (!user) { location.href = 'login.html'; return; }
+    var idea = $('idea').value.trim(), title = $('title').value.trim();
+    if (!idea && !title) { setMsg($('ai-msg'), 'Write a title or a few words about your idea first.', 'err'); $('idea').focus(); return; }
+    if ($('lyrics').value.trim() && !confirm('Replace the lyrics you already have?')) return;
+    var btn = this; btn.disabled = true; btn.textContent = '✦ Writing…';
+    setMsg($('ai-msg'), 'The AI songwriter is working (about 10 seconds)…');
+    try {
+      var r = await fetch('/api/lyrics', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idea: idea, title: title, language: $('language').value, genre: pickedText('genre')[0] || '', mood: pickedText('mood').join(', ') })
+      });
+      var d = await r.json().catch(function () { return {}; });
+      if (r.status === 401) { location.href = 'login.html'; return; }
+      if (!r.ok || !d.lyrics) throw new Error(d.error || 'The songwriter could not answer. Try again.');
+      $('lyrics').value = d.lyrics;
+      if (!title && d.title) $('title').value = d.title;
+      setMsg($('ai-msg'), 'Done — edit the lyrics as you like.', 'ok');
+    } catch (e) { setMsg($('ai-msg'), e.message, 'err'); }
+    btn.disabled = false; btn.textContent = '✦ Write lyrics with AI';
+    refresh();
+  });
 
-        // --- Logic ---
-        document.getElementById('generate-btn').addEventListener('click', async () => {
-            if (state.isGenerating) return;
+  /* ── produce ───────────────────────────────────────────── */
+  $('go').addEventListener('click', async function () {
+    var msg = $('go-msg'); setMsg(msg, '');
+    if (!user) { location.href = 'login.html'; return; }
+    if (credits !== null && credits < cost()) { location.href = 'pricing.html'; return; }
+    var lyrics = $('lyrics').value.trim(), q = quality();
+    if (!lyrics) { setMsg(msg, 'Add your lyrics first (step 1).', 'err'); $('lyrics').focus(); return; }
+    if (lyrics.length > LIMIT[q]) { setMsg(msg, 'Your lyrics are too long for ' + q + ' (max ' + LIMIT[q] + ' characters).', 'err'); return; }
+    var title = $('title').value.trim() || 'Untitled song';
+    if (!confirm('Produce "' + title + '" for ' + cost() + ' GNS?')) return;
 
-            // Must be logged in: the server charges the real account
-            const user = await window.mdAuthReady;
-            if (!user) {
-                alert('Please log in to generate music.');
-                location.href = '/login.html';
-                return;
-            }
+    busy = true; refresh();
+    try {
+      var body = { type: 'song', quality: q, lyrics: lyrics, prompt: stylePrompt(), number_of_songs: versions() };
+      if (q === 'studio' && gender()) body.gender = gender();
+      var r = await fetch('/api/music', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      var d = await r.json().catch(function () { return {}; });
+      if (r.status === 401) { alert('Please log in again.'); location.href = 'login.html'; return; }
+      if (r.status === 402) { busy = false; refresh(); if (confirm('Not enough credits. Buy credits now?')) location.href = 'pricing.html'; return; }
+      if (!d.taskId) {
+        var t = d.error || 'Production could not start.';
+        if (d.refunded) t += ' Your ' + d.refunded + ' GNS were returned.';
+        throw new Error(t);
+      }
+      var job = { taskId: d.taskId, title: title, n: versions(), q: q, at: Date.now() };
+      localStorage.setItem('md_pending_song', JSON.stringify(job));
+      track(job);
+    } catch (e) {
+      busy = false; refresh();
+      setMsg(msg, e.message, 'err');
+    }
+  });
 
-            const numSongs = state.numberOfSongs || 1;
-            const cost = numSongs * 5;
-            if (state.credits < cost) {
-                if (confirm('Insufficient credits (' + state.credits + ' GNS). Buy credits now?')) location.href = '/pricing.html';
-                return;
-            }
+  function showStatus(title, sub, spinning) {
+    $('results').classList.remove('hidden');
+    $('status').classList.remove('hidden');
+    $('st').textContent = title; $('sm').textContent = sub;
+    $('status').querySelector('.spin').classList.toggle('hidden', !spinning);
+  }
 
-            const lyrics = document.getElementById('lyrics-input').value;
-            const style = document.getElementById('style-input').value;
-            if (!lyrics || !style) {
-                alert("Please provide both lyrics and style prompt.");
-                return;
-            }
+  function urlOf(o) { return typeof o === 'string' ? o : (o && (o.url || o.audio_url || o.audio)) || null; }
 
-            state.isGenerating = true;
-            document.getElementById('generate-btn').disabled = true;
-            document.getElementById('generate-btn').innerText = "GENERATING...";
-            addLog("MUREKA: INITIATING SONG GENERATION...");
-
-            try {
-                // The SERVER checks the balance and deducts. Nothing is deducted here.
-                const activeTab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'song';
-                const res = await fetch('/api/music', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        type: activeTab,
-                        lyrics: lyrics,
-                        prompt: style,
-                        number_of_songs: numSongs,
-                        format: state.format || 'mp3'
-                    })
-                });
-                const data = await res.json();
-                if (typeof data.balance === 'number') showCredits(data.balance);
-
-                if (res.status === 401) { alert('Session expired. Please log in again.'); location.href = '/login.html'; return; }
-                if (res.status === 402) {
-                    resetButton();
-                    if (confirm('Insufficient credits. Buy credits now?')) location.href = '/pricing.html';
-                    return;
-                }
-                if (!data.taskId) throw new Error(data.error || 'No task ID');
-                addLog('JOB: ' + data.taskId + ' — ' + (data.charged || cost) + ' GNS');
-
-                // Show placeholders
-                document.getElementById('empty-state').classList.add('hidden');
-                document.getElementById('track-list').classList.remove('hidden');
-                const trackList = document.getElementById('track-list');
-                trackList.innerHTML = '';
-                for (let i = 0; i < numSongs; i++) {
-                    trackList.appendChild(createTrackElement('MUREKA_GEN_' + (i+1), true));
-                }
-
-                // Poll real API
-                let attempts = 0;
-                const pollInterval = setInterval(async () => {
-                    attempts++;
-                    if (attempts > 80) {
-                        clearInterval(pollInterval);
-                        addLog('TIMEOUT — job ' + data.taskId + ' may still finish');
-                        resetButton();
-                        return;
-                    }
-                    try {
-                        const pr = await fetch('/api/video?id=' + data.taskId);
-                        const pd = await pr.json();
-                        addLog('POLL ' + attempts + ': ' + (pd.status||'').toUpperCase());
-                        if (pd.status === 'completed') {
-                            clearInterval(pollInterval);
-                            const urls = Array.isArray(pd.videoUrl) ? pd.videoUrl : [pd.videoUrl];
-                            trackList.innerHTML = '';
-                            urls.forEach((url, i) => {
-                                trackList.appendChild(createTrackElement('MUREKA_' + (i+1), false, url));
-                            });
-                            addLog('MUREKA: ' + urls.length + ' TRACK(S) READY');
-                            resetButton();
-                        } else if (pd.status === 'failed') {
-                            clearInterval(pollInterval);
-                            addLog('ERROR: GENERATION FAILED');
-                            resetButton();
-                        }
-                    } catch(pe) { addLog('POLL ERR: ' + pe.message); }
-                }, 5000);
-
-            } catch (err) {
-                addLog('ERROR: ' + err.message);
-                resetButton();
-            }
-        });
-
-        function createTrackElement(title, isPlaceholder = false, audioUrl = null) {
-            const div = document.createElement('div');
-            div.className = `border border-outline-variant bg-black p-4 flex flex-col gap-3 transition-all hover:border-primary-fixed group ${isPlaceholder ? 'opacity-50' : ''}`;
-            const audio = audioUrl ? `<audio id="audio-${title}" src="${audioUrl}" class="hidden"></audio>` : '';
-            div.innerHTML = `
-                ${audio}
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary-fixed cursor-pointer play-track-btn" data-url="${audioUrl||''}">${isPlaceholder ? 'hourglass_empty' : 'play_circle'}</span>
-                        <span class="text-label-sm font-bold text-on-surface uppercase tracking-widest">${title}</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        ${audioUrl ? `<a href="${audioUrl}" download="${title}.mp3" class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer transition-colors">download</a>` : '<span class="material-symbols-outlined text-outline-variant">download</span>'}
-                    </div>
-                </div>
-                <div class="flex items-end gap-1 h-8 px-2">
-                    ${Array.from({length: 40}).map(() => `
-                        <div class="flex-1 bg-outline-variant group-hover:bg-primary-fixed/40 transition-all" style="height: ${Math.random() * 100}%"></div>
-                    `).join('')}
-                </div>
-            `;
-            if (audioUrl) {
-                div.querySelector('.play-track-btn').addEventListener('click', function() {
-                    const allAudios = document.querySelectorAll('audio');
-                    allAudios.forEach(a => { if (a.src !== audioUrl) a.pause(); });
-                    const a = div.querySelector('audio');
-                    if (a.paused) { a.play(); this.textContent = 'pause_circle'; }
-                    else { a.pause(); this.textContent = 'play_circle'; }
-                });
-            }
-            return div;
+  function track(job) {
+    busy = true; refresh();
+    $('tracks').innerHTML = '';
+    showStatus('Producing "' + job.title + '"…', 'This usually takes 1–3 minutes. You can stay on this page.', true);
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var tries = 0, started = job.at || Date.now();
+    var timer = setInterval(async function () {
+      tries++;
+      var secs = Math.round((Date.now() - started) / 1000);
+      $('sm').textContent = 'Working… ' + Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0') + ' — usually 1–3 minutes.';
+      if (secs > 15 * 60) {
+        clearInterval(timer); busy = false; refresh();
+        showStatus('This is taking longer than usual', 'Reload this page later — your song will appear here when it is ready.', false);
+        return;
+      }
+      try {
+        var r = await fetch('/api/video?id=' + encodeURIComponent(job.taskId));
+        var d = await r.json();
+        if (d.status === 'completed') {
+          clearInterval(timer);
+          var list = (d.outputs && d.outputs.length ? d.outputs : [d.videoUrl]).map(urlOf).filter(Boolean);
+          localStorage.removeItem('md_pending_song');
+          busy = false;
+          finish(job, list);
+        } else if (d.status === 'failed') {
+          clearInterval(timer);
+          localStorage.removeItem('md_pending_song');
+          busy = false; refresh();
+          showStatus('Production failed', 'The music engine could not finish this song. Try changing the lyrics or style, or contact us.', false);
         }
-    </script>
-</body></html>
+      } catch (e) { /* network hiccup: keep trying */ }
+    }, 5000);
+  }
+
+  function finish(job, urls) {
+    $('status').classList.add('hidden');
+    var box = $('tracks'); box.innerHTML = '';
+    if (!urls.length) { showStatus('Finished, but no audio was returned', 'Please contact us with the time of your order.', false); refresh(); return; }
+    urls.forEach(function (u, i) {
+      var name = job.title + (urls.length > 1 ? ' (v' + (i + 1) + ')' : '');
+      var el = document.createElement('div'); el.className = 'track';
+      el.innerHTML =
+        '<div class="track-h"><h3></h3><span class="mono" style="font-size:12px;color:var(--muted)">' + (job.q === 'studio' ? 'STUDIO' : 'STANDARD') + '</span></div>' +
+        '<audio controls preload="metadata"></audio>' +
+        '<div class="track-a"><a class="btn btn-gold" target="_blank" rel="noopener" download>Download MP3</a>' +
+        '<button class="btn btn-ghost" type="button" disabled>Make a music video <span class="soon">SOON</span></button></div>';
+      el.querySelector('h3').textContent = name;
+      el.querySelector('audio').src = u;
+      el.querySelector('a').href = u;
+      box.appendChild(el);
+      saveSong(name, u);
+    });
+    var audios = box.querySelectorAll('audio');
+    audios.forEach(function (a) { a.addEventListener('play', function () { audios.forEach(function (b) { if (b !== a) b.pause(); }); }); });
+    renderMine(); refresh();
+  }
+
+  function resumePending() {
+    try {
+      var job = JSON.parse(localStorage.getItem('md_pending_song') || 'null');
+      if (job && job.taskId && Date.now() - job.at < 2 * 3600 * 1000 && user) track(job);
+      else localStorage.removeItem('md_pending_song');
+    } catch (e) { localStorage.removeItem('md_pending_song'); }
+  }
+
+  /* ── my songs (this device) ────────────────────────────── */
+  function mine() { try { return JSON.parse(localStorage.getItem('md_songs') || '[]'); } catch (e) { return []; } }
+  function saveSong(title, url) {
+    var l = mine().filter(function (s) { return s.url !== url; });
+    l.unshift({ title: title, url: url, at: Date.now() });
+    localStorage.setItem('md_songs', JSON.stringify(l.slice(0, 20)));
+  }
+  function renderMine() {
+    var l = mine(), box = $('mylist');
+    $('mysongs').classList.toggle('hidden', !l.length);
+    box.innerHTML = '';
+    l.forEach(function (s) {
+      var row = document.createElement('div'); row.className = 'myrow';
+      row.innerHTML = '<div class="t"><b></b><span></span></div><audio controls preload="none"></audio><a target="_blank" rel="noopener" download>Download</a>';
+      row.querySelector('b').textContent = s.title;
+      row.querySelector('span').textContent = new Date(s.at).toLocaleString();
+      row.querySelector('audio').src = s.url;
+      row.querySelector('a').href = s.url;
+      box.appendChild(row);
+    });
+  }
+
+  renderMine();
+  refresh();
+})();
+</script>
+</body>
+</html>
