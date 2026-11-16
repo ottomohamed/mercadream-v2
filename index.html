@@ -34,7 +34,7 @@ img,video{max-width:100%;display:block}
 .btn-gold:hover{background:var(--gold-hi);color:#0a0a0a}
 .btn-ghost{border-color:#3a3a3a;color:var(--text);background:transparent}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
-.card{flex:1 1 240px;min-width:0;border:1px solid var(--line2);border-radius:10px;padding:28px;background:var(--card);display:flex;flex-direction:column;gap:12px}
+.card{flex:1 1 200px;min-width:0;border:1px solid var(--line2);border-radius:10px;padding:28px;background:var(--card);display:flex;flex-direction:column;gap:12px}
 .card h3{margin:0;font-size:20px;font-weight:600;color:var(--white)}
 .card p{margin:0;font-size:16px;line-height:1.6;color:var(--soft)}
 .num{font-family:Orbitron,sans-serif;font-size:30px;font-weight:700;color:var(--gold)}
@@ -55,10 +55,39 @@ nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-be
 .linkbtn:hover{color:var(--gold)}
 
 /* HERO */
-.hero{display:flex;flex-wrap:wrap;gap:56px;align-items:center;padding:80px 24px 88px;max-width:1200px;margin:0 auto}
-.hero-text{flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.hero{display:flex;flex-wrap:wrap;gap:40px;align-items:center;padding:80px 24px 88px;max-width:1200px;margin:0 auto}
+.hero-text{flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:24px}
 .hero h1{margin:0;font-family:Orbitron,sans-serif;font-weight:700;font-size:54px;line-height:1.08;color:var(--white)}
-.hero-media{flex:1 1 520px;min-width:0;position:relative}
+.hero-media{flex:1 1 440px;min-width:0;position:relative}
+
+/* BUILD CHAIN (5 circles) */
+.chain{flex:0 0 172px;list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.chain .step{display:flex;align-items:center;gap:12px}
+.chain .dot{width:44px;height:44px;flex-shrink:0;border-radius:50%;border:2px solid #3a3a3a;background:#111;display:flex;align-items:center;justify-content:center;color:#8a8a8a;transition:background .35s,border-color .35s,color .35s,box-shadow .35s}
+.chain .dot svg{width:20px;height:20px}
+.chain .lbl{font-size:14px;line-height:1.25;color:#a3a3a3;transition:color .35s}
+.chain .lbl b{display:block;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.12em;color:#7d7d7d;transition:color .35s}
+.chain .link{width:2px;height:16px;margin-left:21px;background:#2a2a2a;transition:background .35s}
+.chain .done .dot{border-color:var(--gold);color:var(--gold)}
+.chain .done .lbl{color:var(--text)}
+.chain .done .lbl b{color:var(--gold)}
+.chain .link.done{background:var(--gold)}
+.chain .on .dot{background:var(--gold);border-color:var(--gold);color:#0a0a0a;box-shadow:0 0 0 6px rgba(232,185,47,.15)}
+.chain .on .lbl{color:var(--white)}
+.chain .on .lbl b{color:var(--gold)}
+@media (max-width:1100px){
+  .chain{flex:1 1 100%;flex-direction:row;align-items:flex-start}
+  .chain .step{flex-direction:column;gap:8px;text-align:center;width:88px}
+  .chain .link{flex:1;width:auto;height:2px;margin:21px 0 0}
+}
+@media (max-width:520px){
+  .chain .step{width:60px}
+  .chain .lbl{font-size:12px}
+  .chain .lbl b{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .chain .dot,.chain .lbl,.chain .link{transition:none}
+}
 .hero-media video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid var(--line2);background:#161616}
 
 /* SHOWCASE */
@@ -150,6 +179,17 @@ footer{border-top:1px solid var(--line)}
     </div>
     <p class="mono hidden" id="free-line" style="margin:0;font-size:13px;color:var(--muted)"></p>
   </div>
+  <ol class="chain" id="chain" aria-label="How your song is built">
+    <li class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><span class="lbl"><b>01</b>Write the lyrics</span></li>
+    <li class="link" aria-hidden="true"></li>
+    <li class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="lbl"><b>02</b>Melody &amp; rhythm</span></li>
+    <li class="link" aria-hidden="true"></li>
+    <li class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h2M6 8v8M10 4v16M14 7v10M18 10v4M22 12h0"/></svg></span><span class="lbl"><b>03</b>Produce the song</span></li>
+    <li class="link" aria-hidden="true"></li>
+    <li class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="m17 10 5-3v10l-5-3"/></svg></span><span class="lbl"><b>04</b>Pick the footage</span></li>
+    <li class="link" aria-hidden="true"></li>
+    <li class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span><span class="lbl"><b>05</b>Edit the video</span></li>
+  </ol>
   <div class="hero-media">
     <video autoplay muted loop playsinline preload="metadata" aria-label="MercaDream Studio showreel">
       <source src="media/hero3.mp4" type="video/mp4"/>
@@ -164,28 +204,33 @@ footer{border-top:1px solid var(--line)}
   <div class="wrap" style="display:flex;flex-direction:column;gap:48px">
     <div class="stack" style="max-width:680px">
       <p class="eyebrow">How it works</p>
-      <h2 class="h2">From an idea to a finished music video, in four steps</h2>
+      <h2 class="h2">From an idea to a finished music video, in five steps</h2>
     </div>
     <div class="row">
       <div class="card">
         <span class="num">01</span>
-        <h3>Title &amp; lyrics</h3>
-        <p>Write your own lyrics, or give AI your idea and shape the words together.</p>
+        <h3>Write the lyrics</h3>
+        <p>Give your song a title and write the words, or tell AI your idea and shape them together.</p>
       </div>
       <div class="card">
         <span class="num">02</span>
-        <h3>Your song</h3>
-        <p>Pick a style and a voice. Get a full song with vocals, and keep the version you love.</p>
+        <h3>Melody &amp; rhythm</h3>
+        <p>Choose the style, the mood, the tempo and the voice that fit your story.</p>
       </div>
       <div class="card">
         <span class="num">03</span>
-        <h3>The scenes</h3>
-        <p>AI reads every line and finds matching footage. Swap any scene you don't like.</p>
-        <span class="badge soon">Coming soon</span>
+        <h3>Produce the song</h3>
+        <p>Get a full song with vocals in minutes, then keep the version you love.</p>
       </div>
       <div class="card">
         <span class="num">04</span>
-        <h3>The montage</h3>
+        <h3>Pick the footage</h3>
+        <p>AI reads every line and finds matching videos. Keep them, swap them, or search your own.</p>
+        <span class="badge soon">Coming soon</span>
+      </div>
+      <div class="card">
+        <span class="num">05</span>
+        <h3>Edit the video</h3>
         <p>Cut on the beat, lyrics on screen, your intro and outro. Download for YouTube and Shorts.</p>
         <span class="badge soon">Coming soon</span>
       </div>
@@ -399,6 +444,30 @@ var CONFIG = {
     if (v.meta) { var p = document.createElement('p'); p.className = 'mono'; p.style.cssText = 'margin:0;font-size:13px;color:#a3a3a3'; p.textContent = v.meta; a.appendChild(p); }
     box.appendChild(a);
   });
+})();
+
+/* ── Build chain: light the steps one by one ──────────────── */
+(function () {
+  var chain = document.getElementById('chain');
+  if (!chain) return;
+  var steps = chain.querySelectorAll('.step');
+  var links = chain.querySelectorAll('.link');
+  function show(active) {
+    steps.forEach(function (s, i) {
+      s.classList.toggle('done', i < active);
+      s.classList.toggle('on', i === active);
+    });
+    links.forEach(function (l, i) { l.classList.toggle('done', i < active); });
+  }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    show(steps.length); return;
+  }
+  var i = 0;
+  show(0);
+  setInterval(function () {
+    i = (i + 1) % (steps.length + 2);   // a short pause with all steps lit before restarting
+    show(Math.min(i, steps.length));
+  }, 1300);
 })();
 
 /* ── Login state + real balance ────────────────────────────── */
