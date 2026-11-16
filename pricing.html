@@ -142,7 +142,8 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
 
-</head>
+<script src="/js/md-firebase.js"></script>
+<script src="/js/md-auth.js"></script></head>
 <body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen font-body-md relative overflow-x-hidden"><script src="md-engine.js"></script>
 <div class="fixed inset-0 scanline-overlay z-[100] opacity-30 pointer-events-none"></div>
 <!-- TopAppBar -->
@@ -158,7 +159,7 @@ const db = firebase.firestore();
 <div class="flex items-center gap-8">
 <div class="flex flex-col items-end">
 <span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Active Genesis</span>
-<span class="font-technical-sm text-technical-sm text-primary-container">2,450 GENESIS</span>
+<span class="font-technical-sm text-technical-sm text-primary-container">0 GENESIS</span>
 </div>
 <a href="profile.html" title="My Profile" class="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-all"><span class="material-symbols-outlined text-primary text-3xl">account_circle</span></a>
 </div>
@@ -224,7 +225,7 @@ const db = firebase.firestore();
 </div>
 <div class="text-center py-8">
 <span class="font-label-xs text-label-xs text-on-surface-variant uppercase block mb-2">Available Processing Power</span>
-<div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">2,450</div>
+<div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">0</div>
 <div class="flex justify-center">
 <span id="genesis-label" class="text-primary-container text-xs font-technical-sm tracking-widest">GENESIS</span>
 </div>
@@ -277,13 +278,13 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">?</span> 100 Genesis / mo
+<span class="text-primary-container text-[10px]">✓</span> 100 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">?</span> Standard 1080p
+<span class="text-primary-container text-[10px]">✓</span> Standard 1080p
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">?</span> Public Asset Gallery
+<span class="text-primary-container text-[10px]">✓</span> Public Asset Gallery
                         </li>
 </ul>
 <button class="w-full py-4 border border-outline-variant font-technical-sm text-technical-sm uppercase text-on-surface-variant bg-surface-variant/20 cursor-default">
@@ -307,16 +308,16 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 1,200 Genesis / mo
+<span class="text-primary-container text-[10px]">✓</span> 1,200 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 4K Ultra Rendering
+<span class="text-primary-container text-[10px]">✓</span> 4K Ultra Rendering
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> Private Asset Vault
+<span class="text-primary-container text-[10px]">✓</span> Private Asset Vault
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> Commercial Rights
+<span class="text-primary-container text-[10px]">✓</span> Commercial Rights
                         </li>
 </ul>
 <button class="w-full py-4 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
@@ -341,16 +342,16 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 5,500 Genesis / mo
+<span class="text-primary-container text-[10px]">✓</span> 5,500 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 8K Production Grade
+<span class="text-primary-container text-[10px]">✓</span> 8K Production Grade
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> Early API Access
+<span class="text-primary-container text-[10px]">✓</span> Early API Access
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> Priority GPU Queue
+<span class="text-primary-container text-[10px]">✓</span> Priority GPU Queue
                         </li>
 </ul>
 <button class="w-full py-4 bg-secondary text-on-secondary font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_15px_rgba(255,186,63,0.3)]">
@@ -374,16 +375,16 @@ const db = firebase.firestore();
 </div>
 <ul class="space-y-4 mb-10 flex-grow">
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> 15,000 Genesis / mo
+<span class="text-primary-container text-[10px]">✓</span> 15,000 Genesis / mo
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> Enterprise API Access
+<span class="text-primary-container text-[10px]">✓</span> Enterprise API Access
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> White Label Export
+<span class="text-primary-container text-[10px]">✓</span> White Label Export
                         </li>
 <li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">?</span> Dedicated Account Mgr
+<span class="text-primary-container text-[10px]">✓</span> Dedicated Account Mgr
                         </li>
 </ul>
 <button class="w-full py-4 bg-primary text-background font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
@@ -453,18 +454,20 @@ const db = firebase.firestore();
 </footer>
 <script src="/js/navigation.js"></script><script>
 var RATE=0.10,currentPlan=localStorage.getItem("md_plan")||"free";
+var MIN_GNS=50; // server minimum (= $5)
 
-//  Update balance display 
+//  Balance display: REAL balance from Firestore (md-firebase.js keeps md_credits up to date)
 function updateBalance(){
-  var c=parseInt(localStorage.getItem("md_genesis")||"0");
+  var c=parseInt(localStorage.getItem("md_credits")||"0",10)||0;
   var el=document.querySelector(".font-display-lg.text-primary-container.text-\\[64px\\]");
   if(el)el.textContent=c.toLocaleString();
   var hel=document.querySelector(".font-technical-sm.text-technical-sm.text-primary-container");
   if(hel)hel.textContent=c.toLocaleString()+" GENESIS";
   updateShield();
 }
+window.addEventListener("creditsUpdated",updateBalance);
 
-//  Shield system 
+//  Shield system
 function updateShield(){
   var shields={free:{label:"UNPROTECTED / NO PLAN",tier:"NONE",color:"#a1a1a1"},creator:{label:"CREATOR SHIELD",tier:"CREATOR",color:"#a8d700"},pro:{label:"PRO SHIELD",tier:"PRO",color:"#ffba3f"},studio:{label:"STUDIO SHIELD ",tier:"STUDIO",color:"#ffffff"}};
   var s=shields[currentPlan]||shields.free;
@@ -476,21 +479,22 @@ function updateShield(){
   if(shieldIcon)shieldIcon.style.color=s.color;
 }
 
-//  Calculator 
+//  Calculator
 var input=document.querySelector("input[type=number]");
 var totalEl=document.querySelector(".font-headline-lg.text-primary-container");
 var buyBtn=document.querySelector("button.bg-primary-container.w-full");
+if(input)input.min=MIN_GNS;
 
 function calcTotal(){
   var amt=parseInt(input.value)||0;
   var total=(amt*RATE).toFixed(2);
   if(totalEl)totalEl.textContent="$"+total;
-  if(buyBtn){var span=buyBtn.querySelector("span:last-child")||buyBtn;buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" GENESIS  $"+total;}
+  if(buyBtn){buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" GENESIS  $"+total;}
 }
 
 if(input)input.oninput=calcTotal;
 
-//  Quick amounts 
+//  Quick amounts
 document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
   btn.onclick=function(){
     var txt=btn.textContent.trim();
@@ -502,91 +506,50 @@ document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
   };
 });
 
-//  Buy genesis via Stripe
+//  Buy genesis via Stripe (credits are added by the server ONLY after Stripe confirms payment)
 if(buyBtn)buyBtn.onclick=async function(){
   var amt=parseInt(input?input.value:0)||0;
-  if(amt<1){alert("Enter amount.");return;}
+  if(amt<MIN_GNS){alert("Minimum purchase is "+MIN_GNS+" genesis ($"+(MIN_GNS*RATE).toFixed(2)+").");return;}
+  var user=await window.mdAuthReady;
+  if(!user){alert("Please log in to buy genesis.");window.location.href="/login.html";return;}
   var cost=(amt*RATE).toFixed(2);
   if(!confirm("Buy "+amt+" genesis for $"+cost+"?"))return;
   buyBtn.disabled=true;buyBtn.textContent="REDIRECTING TO STRIPE...";
-  var userId=localStorage.getItem("md_user_id")||("guest_"+Date.now());
-  localStorage.setItem("md_user_id",userId);
-  localStorage.setItem("md_pending_genesis",amt);
   try{
     var r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({type:"genesis",amount:amt,userId:userId})});
+      body:JSON.stringify({credits:amt})});
     var d=await r.json();
-    if(d.url){window.location.href=d.url;}
-    else{alert("Error: "+(d.error||"Unknown"));buyBtn.disabled=false;buyBtn.textContent="BUY GENESIS";}
-  }catch(e){alert("Error: "+e.message);buyBtn.disabled=false;buyBtn.textContent="BUY GENESIS";}
+    if(d.url){window.location.href=d.url;return;}
+    if(r.status===401){alert("Session expired. Please log in again.");window.location.href="/login.html";return;}
+    alert("Error: "+(d.error||"Unknown"));
+  }catch(e){alert("Error: "+e.message);}
+  buyBtn.disabled=false;calcTotal();
 };
 
-//  Subscription upgrade 
-document.querySelectorAll(".grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 button").forEach(function(btn){
-  var txt=btn.textContent.trim().toUpperCase();
-  return; // Subscriptions coming soon
-    if(!txt.includes("UPGRADE") && !txt.includes("NOW"))return;
-  btn.onclick=function(){
-    var card=btn.closest(".surgical-border,.bg-surface-container-low");
-    var planName=card&&card.querySelector('h3')?card.querySelector('h3').textContent.trim().toLowerCase():'creator';
-    btn.disabled=true;btn.textContent='REDIRECTING...';
-    var userId=localStorage.getItem('md_user_id')||('guest_'+Date.now());
-    localStorage.setItem('md_user_id',userId);
-    localStorage.setItem('md_pending_plan',planName);
-    fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({type:'subscription',plan:planName,billing:'monthly',userId:userId})})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(d.url){window.location.href=d.url;}
-      else{alert('Error: '+(d.error||'Price not configured in Stripe'));btn.disabled=false;btn.textContent='UPGRADE NOW';}
-    }).catch(function(e){alert('Error: '+e.message);btn.disabled=false;btn.textContent='UPGRADE NOW';});
-  };
-});
+//  Subscriptions: coming soon (buttons do nothing for now)
 
-//  Back button 
+//  Back button
 var bb=document.querySelector("header button");
 if(bb)bb.onclick=function(){window.location.href="profile.html";};
 
-//  Monthly/Yearly toggle 
+//  Monthly/Yearly toggle
 var toggleBtns=document.querySelectorAll(".flex.items-center.gap-4.p-1 button");
 if(toggleBtns[1])toggleBtns[1].onclick=function(){
   toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
   this.style.background="#c8ff00";this.style.color="#060606";
-  // Subscriptions coming soon
 };
 if(toggleBtns[0])toggleBtns[0].onclick=function(){
   toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
   this.style.background="#c8ff00";this.style.color="#060606";
-  document.querySelectorAll(".font-display-lg.text-\\[32px\\]").forEach(function(el){
-    var base={"$39":49,"$159":199,"$399":499};
-    if(base[el.textContent])el.textContent="$"+base[el.textContent];
-  });
 };
 
-//  Init + Stripe return handler
+//  Init + Stripe return (NOTHING is added here — the server webhook adds the credits)
 window.addEventListener("load",function(){
   updateBalance();calcTotal();
   var params=new URLSearchParams(window.location.search);
   var status=params.get("status");
   if(status==="success"){
-    var pc=parseInt(localStorage.getItem("md_pending_genesis")||"0");
-    var pp=localStorage.getItem("md_pending_plan")||"";
-    if(pc>0){
-      var cur=parseInt(localStorage.getItem("md_genesis")||"0");
-      var newTotal=cur+pc;
-      localStorage.setItem("md_genesis",newTotal);
-      localStorage.removeItem("md_pending_genesis");
-      // Also update Firestore if user is logged in
-      var uid=localStorage.getItem("md_user_id");
-      if(uid && window.firebase){
-        try{
-          firebase.firestore().collection("users").doc(uid).update({genesis: newTotal});
-        }catch(e){console.warn("Firestore update failed:",e);}
-      }
-      updateBalance();
-      alert("✅ "+pc+" genesis added! New balance: "+newTotal.toLocaleString()+" GNS");
-    }
-    if(pp){localStorage.setItem("md_plan",pp);localStorage.removeItem("md_pending_plan");currentPlan=pp;updateBalance();alert("✅ Upgraded to "+pp.toUpperCase()+"!");}
+    alert("✅ Payment received. Your genesis will appear in your balance within a few seconds.");
     window.history.replaceState({},"","/pricing.html");
   } else if(status==="cancelled"){
     alert("Payment cancelled.");
@@ -594,10 +557,3 @@ window.addEventListener("load",function(){
   }
 });
 </script></body></html>
-
-
-
-
-
-
-

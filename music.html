@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
@@ -146,8 +146,13 @@
         .waveform-bar {
             transition: height 0.2s ease;
         }
-    </style>
-</head>
+       </style>
+<!-- Firebase (login + real balance) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/js/md-firebase.js"></script>
+<script src="/js/md-auth.js"></script></head>
 <body class="font-mono-data text-mono-data min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed">
 <!-- TopAppBar -->
 <header class="docked full-width top-0 bg-surface dark:bg-surface border-b border-outline-variant flex justify-between items-center w-full px-margin-sm h-16 z-50">
@@ -287,15 +292,15 @@
 </footer>
 <script>
         // --- State Management ---
+        // Balance comes ONLY from Firestore (via md-firebase.js). No free credits.
         const state = {
-            credits: parseInt(localStorage.getItem('md_credits')) || 100,
+            credits: parseInt(localStorage.getItem('md_credits') || '0', 10) || 0,
             isGenerating: false,
             logs: []
         };
 
-        const updateCredits = (amount) => {
+        const showCredits = (amount) => {
             state.credits = amount;
-            localStorage.setItem('md_credits', state.credits);
             document.getElementById('credit-display').innerText = `${state.credits} GNS`;
         };
 
@@ -308,20 +313,43 @@
             if (terminal.children.length > 8) terminal.removeChild(terminal.firstChild);
         };
 
+        const resetButton = () => {
+            state.isGenerating = false;
+            const b = document.getElementById('generate-btn');
+            b.disabled = false;
+            b.innerText = 'GENERATE SONG';
+        };
+
         // --- Initialization ---
-        updateCredits(state.credits);
+        showCredits(state.credits);
+        window.addEventListener('creditsUpdated', (e) => showCredits(e.detail.credits));
+
+        // "Buy Credits" button -> pricing page
+        document.querySelectorAll('header button').forEach(b => {
+            if (b.textContent.trim().toUpperCase() === 'BUY CREDITS') b.addEventListener('click', () => location.href = '/pricing.html');
+        });
 
         // --- Logic ---
         document.getElementById('generate-btn').addEventListener('click', async () => {
             if (state.isGenerating) return;
-            if (state.credits < 5) {
-                alert("Insufficient Credits");
+
+            // Must be logged in: the server charges the real account
+            const user = await window.mdAuthReady;
+            if (!user) {
+                alert('Please log in to generate music.');
+                location.href = '/login.html';
+                return;
+            }
+
+            const numSongs = state.numberOfSongs || 1;
+            const cost = numSongs * 5;
+            if (state.credits < cost) {
+                if (confirm('Insufficient credits (' + state.credits + ' GNS). Buy credits now?')) location.href = '/pricing.html';
                 return;
             }
 
             const lyrics = document.getElementById('lyrics-input').value;
             const style = document.getElementById('style-input').value;
-
             if (!lyrics || !style) {
                 alert("Please provide both lyrics and style prompt.");
                 return;
@@ -333,27 +361,30 @@
             addLog("MUREKA: INITIATING SONG GENERATION...");
 
             try {
-                // Deduct credits
-                const numSongs = state.numberOfSongs || 1;
-                const cost = numSongs * 5;
-                updateCredits(state.credits - cost);
-
-                // Real API call
+                // The SERVER checks the balance and deducts. Nothing is deducted here.
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'song';
                 const res = await fetch('/api/music', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         type: activeTab,
-                        lyrics: document.getElementById('lyrics-input')?.value || '',
-                        prompt: document.getElementById('style-input')?.value || document.getElementById('prompt-input')?.value || '',
+                        lyrics: lyrics,
+                        prompt: style,
                         number_of_songs: numSongs,
                         format: state.format || 'mp3'
                     })
                 });
                 const data = await res.json();
+                if (typeof data.balance === 'number') showCredits(data.balance);
+
+                if (res.status === 401) { alert('Session expired. Please log in again.'); location.href = '/login.html'; return; }
+                if (res.status === 402) {
+                    resetButton();
+                    if (confirm('Insufficient credits. Buy credits now?')) location.href = '/pricing.html';
+                    return;
+                }
                 if (!data.taskId) throw new Error(data.error || 'No task ID');
-                addLog('JOB: ' + data.taskId);
+                addLog('JOB: ' + data.taskId + ' — ' + (data.charged || cost) + ' GNS');
 
                 // Show placeholders
                 document.getElementById('empty-state').classList.add('hidden');
@@ -370,10 +401,8 @@
                     attempts++;
                     if (attempts > 80) {
                         clearInterval(pollInterval);
-                        addLog('ERROR: TIMEOUT - credits not refunded');
-                        state.isGenerating = false;
-                        document.getElementById('generate-btn').disabled = false;
-                        document.getElementById('generate-btn').innerText = 'GENERATE SONG';
+                        addLog('TIMEOUT — job ' + data.taskId + ' may still finish');
+                        resetButton();
                         return;
                     }
                     try {
@@ -385,25 +414,21 @@
                             const urls = Array.isArray(pd.videoUrl) ? pd.videoUrl : [pd.videoUrl];
                             trackList.innerHTML = '';
                             urls.forEach((url, i) => {
-                                const el = createTrackElement('MUREKA_' + (i+1), false, url);
-                                trackList.appendChild(el);
+                                trackList.appendChild(createTrackElement('MUREKA_' + (i+1), false, url));
                             });
                             addLog('MUREKA: ' + urls.length + ' TRACK(S) READY');
-                            state.isGenerating = false;
-                            document.getElementById('generate-btn').disabled = false;
-                            document.getElementById('generate-btn').innerText = 'GENERATE SONG';
+                            resetButton();
                         } else if (pd.status === 'failed') {
                             clearInterval(pollInterval);
-                            throw new Error('Generation failed');
+                            addLog('ERROR: GENERATION FAILED');
+                            resetButton();
                         }
                     } catch(pe) { addLog('POLL ERR: ' + pe.message); }
                 }, 5000);
 
             } catch (err) {
-                addLog('ERROR: ' + err.message + ' - credits not refunded');
-                state.isGenerating = false;
-                document.getElementById('generate-btn').disabled = false;
-                document.getElementById('generate-btn').innerText = 'GENERATE SONG';
+                addLog('ERROR: ' + err.message);
+                resetButton();
             }
         });
 
@@ -439,29 +464,5 @@
             }
             return div;
         }
-
-        function finalizeTracks() {
-            const trackList = document.getElementById('track-list');
-            trackList.innerHTML = '';
-            
-            const titles = ["NEON_DREAMS_V9", "ACID_ORCHESTRA_X", "SILICON_SOUL"];
-            titles.forEach(title => {
-                trackList.appendChild(createTrackElement(title));
-            });
-
-            addLog("MUREKA: GENERATION COMPLETE.");
-            state.isGenerating = false;
-            document.getElementById('generate-btn').disabled = false;
-            document.getElementById('generate-btn').innerText = "GENERATE SONG";
-        }
-
-        // Micro-interactions
-        document.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
-                audio.volume = 0.1;
-                // audio.play().catch(() => {}); // Optional click sound
-            });
-        });
     </script>
 </body></html>

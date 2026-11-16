@@ -1,7 +1,14 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// MERCADREAM â€” api/index.js
-// UNIFIED ROUTER v3 â€” Clean, no duplicates
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+﻿// ═══════════════════════════════════════════════════════════════
+// MERCADREAM — api/index.js
+// UNIFIED ROUTER v4 — SECURE CREDITS
+//  • Every paid service: login verified on the server (Firebase ID token)
+//  • Price decided by the SERVER (COSTS table), never by the browser
+//  • Credits deducted in a Firestore transaction BEFORE calling the provider
+//  • Refund ONLY if the provider never created a task (rejected / bad input).
+//    No refund for timeouts, network errors or failed jobs: they may cost you.
+//  • Stripe credits added ONLY by the signed webhook, once per session
+//  • /api/deduct and /api/refund can no longer change any balance
+// ═══════════════════════════════════════════════════════════════
 'use strict';
 
 const WAVESPEED_KEY  = process.env.WAVESPEED_API_KEY;
@@ -13,41 +20,167 @@ const PEXELS_KEY     = process.env.PEXELS_API_KEY;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const FIREBASE_PROJECT = 'mercadream-4b4b3';
-
-// Firebase Admin - server-side only
-let adminDb = null;
-async function getAdminDb() {
-  if (adminDb) return adminDb;
-  try {
-    const admin = require('firebase-admin');
-    if (!admin.apps.length) {
-      const sa = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
-      admin.initializeApp({ credential: admin.credential.cert(sa) });
-    }
-    adminDb = admin.firestore();
-    return adminDb;
-  } catch(e) { console.error('Admin init:', e.message); return null; }
-}
-async function serverDeductCredits(uid, cost) {
-  const db = await getAdminDb();
-  if (!db) throw new Error('DB unavailable');
-  const ref = db.collection('users').doc(uid);
-  const doc = await ref.get();
-  if (!doc.exists) throw new Error('User not found');
-  const current = doc.data().credits || 0;
-  if (current < cost) throw new Error('Insufficient credits: need ' + cost + ', have ' + current);
-  await ref.update({ credits: current - cost });
-  return current - cost;
-}
-async function serverRefundCredits(uid, cost) {
-  // DISABLED - no refunds on error. User absorbs the cost.
-  console.log('Refund requested but disabled. uid:', uid, 'cost:', cost);
-}
 const FIREBASE_URL     = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 const BASE_URL         = 'https://www.mercadream.com';
 const WAVESPEED_BASE   = 'https://api.wavespeed.ai/api/v3';
 
-// â”€â”€ FIRESTORE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── PRICES (GNS). 1 GNS = $0.10 (checkout: credits * 10 cents) ──
+// Check each one against the WaveSpeed price so you never sell below cost.
+const COSTS = {
+  wavespeed: 15, video: 15, animate: 15, convert: 15, i2v: 15,
+  audioforge: 5, music: 5,
+  bgremover: 3, deaging: 5, upscale: 5,
+  faceswap: 10, imagefaceswap: 5, videofaceswap: 20,
+  imagegen: 6, lipsync: 10,
+  tts: 3, voiceclone: 5, elevenlabs: 5,
+  avatar: 20, avatarmulti: 30,
+  tripo3d: 20,
+  motion: 15,
+};
+function priceFor(service, body) {
+  let cost = COSTS[service];
+  if (service === 'wavespeed' || service === 'video') {
+    cost = cost * Math.max(1, Math.ceil((parseInt(body.duration) || 5) / 5));
+  }
+  if (service === 'music' || service === 'audioforge') {
+    cost = cost * Math.min(Math.max(parseInt(body.number_of_songs) || 1, 1), 4);
+  }
+  if (service === 'avatar') {
+    cost = Math.max(cost, Math.ceil(parseInt(body.duration) || 10) * 2);
+  }
+  if (service === 'motion') {
+    if (body.engine === 'kling-pro') cost = 40;
+    else if (body.engine === 'kling-std') cost = 25;
+  }
+  return cost;
+}
+
+// Free AI endpoints (cost you money, not the user): login + daily cap per user
+const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50 };
+
+// ── FIREBASE ADMIN (server only) ──────────────────────────────
+let _admin = null;
+function getAdmin() {
+  if (_admin) return _admin;
+  const admin = require('firebase-admin');
+  if (!admin.apps.length) {
+    const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (!raw) throw new Error('Server not configured: FIREBASE_SERVICE_ACCOUNT missing.');
+    const sa = JSON.parse(raw);
+    if (sa.private_key) sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+    admin.initializeApp({ credential: admin.credential.cert(sa) });
+  }
+  _admin = admin;
+  return admin;
+}
+function db() { return getAdmin().firestore(); }
+function inc(n) { return getAdmin().firestore.FieldValue.increment(n); }
+function nowIso() { return new Date().toISOString(); }
+
+// Verify "Authorization: Bearer <Firebase ID token>"
+async function getUser(req) {
+  const h = req.headers['authorization'] || req.headers['Authorization'] || '';
+  const m = /^Bearer\s+(.+)$/i.exec(h);
+  if (!m) return null;
+  try { return await getAdmin().auth().verifyIdToken(m[1]); }
+  catch (e) { return null; }
+}
+
+async function chargeCredits(uid, cost, service) {
+  const ref = db().collection('users').doc(uid);
+  return db().runTransaction(async (t) => {
+    const snap = await t.get(ref);
+    if (!snap.exists) throw new Error('User not found.');
+    const current = Number(snap.data().credits) || 0;
+    if (current < cost) throw new Error('Insufficient credits: need ' + cost + ', have ' + current);
+    const after = current - cost;
+    t.update(ref, { credits: after, lastDeduct: nowIso(), lastService: service });
+    t.set(db().collection('transactions').doc(), {
+      uid, type: 'deduct', amount: cost, service,
+      balanceBefore: current, balanceAfter: after, createdAt: nowIso()
+    });
+    return after;
+  });
+}
+
+async function refundCredits(uid, cost, service, reason) {
+  const ref = db().collection('users').doc(uid);
+  await ref.update({ credits: inc(cost) });
+  await db().collection('transactions').add({
+    uid, type: 'refund', amount: cost, service, reason: reason || 'service_failed', createdAt: nowIso()
+  });
+}
+
+// Keep a record of every paid task (history / support), no automatic refund
+async function recordJob(taskId, uid, cost, service) {
+  await db().collection('jobs').doc(String(taskId)).set({
+    uid, cost, service, refunded: false, createdAt: nowIso()
+  });
+}
+// Wrap a paid handler: auth → charge → run → refund on failure → record job
+function paid(service, handler) {
+  return async function (req, res) {
+    if (req.method === 'GET') return handler(req, res); // polling stays free
+    const user = await getUser(req);
+    if (!user) return res.status(401).json({ error: 'Please log in again.', code: 'AUTH_REQUIRED' });
+    const cost = priceFor(service, req.body || {});
+    let balance;
+    try { balance = await chargeCredits(user.uid, cost, service); }
+    catch (e) { return res.status(402).json({ error: e.message, code: 'INSUFFICIENT_CREDITS' }); }
+
+    // Capture the handler's response instead of sending it straight away
+    const realJson = res.json.bind(res);
+    let out = null;
+    res.json = (body) => { out = body; return res; };
+    try { await handler(req, res); }
+    catch (e) { res.statusCode = 500; out = { error: e.message }; }
+    res.json = realJson;
+
+    const failed = res.statusCode >= 400 || !out || out.error || !out.taskId;
+    if (failed) {
+      // Refund ONLY when it is certain nothing was created at the provider:
+      //  - 400 = missing input, the provider was never called
+      //  - provider answered but gave no task ID (rejected the request)
+      // A crash / network error / timeout is NOT refunded (the job may exist and cost you).
+      const neverCreated = res.statusCode === 400 ||
+        (out && out.error && !out.taskId && (out.raw || out.error === 'No task ID'));
+      let refunded = 0;
+      if (neverCreated) {
+        try { await refundCredits(user.uid, cost, service, 'provider_rejected'); balance += cost; refunded = cost; }
+        catch (e) { console.error('refund failed', e.message); }
+      }
+      const code = res.statusCode >= 400 ? res.statusCode : 500;
+      return res.status(code).json(Object.assign({}, out || { error: 'Service failed.' }, { refunded, balance }));
+    }
+    if (out.taskId) {
+      try { await recordJob(out.taskId, user.uid, cost, service); }
+      catch (e) { console.error('recordJob', e.message); }
+    }
+    return res.status(200).json(Object.assign({}, out, { charged: cost, balance, success: true }));
+  };
+}
+
+// Wrap a free-but-costly handler: auth + daily cap
+function limited(key, handler) {
+  return async function (req, res) {
+    const user = await getUser(req);
+    if (!user) return res.status(401).json({ error: 'Please log in again.', code: 'AUTH_REQUIRED' });
+    const day = nowIso().slice(0, 10);
+    const ref = db().collection('usage').doc(user.uid + '_' + key + '_' + day);
+    const max = DAILY_LIMITS[key] || 30;
+    const allowed = await db().runTransaction(async (t) => {
+      const s = await t.get(ref);
+      const n = s.exists ? (s.data().count || 0) : 0;
+      if (n >= max) return false;
+      t.set(ref, { uid: user.uid, key, day, count: n + 1 }, { merge: true });
+      return true;
+    });
+    if (!allowed) return res.status(429).json({ error: 'Daily limit reached. Try again tomorrow.', code: 'DAILY_LIMIT' });
+    return handler(req, res);
+  };
+}
+
+// ── FIRESTORE REST (only used by Genesis Vault) ───────────────
 async function fsWrite(col, docId, fields) {
   const url = docId
     ? `${FIREBASE_URL}/${col}/${docId}?key=${FIREBASE_KEY}`
@@ -69,7 +202,7 @@ async function fsGet(col, docId) {
   return r.json();
 }
 
-// â”€â”€ WAVESPEED â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── WAVESPEED ─────────────────────────────────────────────────
 async function wsPost(model, input) {
   const r = await fetch(`${WAVESPEED_BASE}/predictions`, {
     method: 'POST',
@@ -85,7 +218,7 @@ async function wsPoll(taskId) {
   return r.json();
 }
 
-// â”€â”€ GENESIS VAULT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── GENESIS VAULT ─────────────────────────────────────────────
 function makeGenesisId(uid) {
   return `GNS-${Date.now().toString(36).toUpperCase()}-${(uid||'ANON').slice(0,6).toUpperCase()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
 }
@@ -118,8 +251,7 @@ async function findMatch(hashes, threshold) {
   }
   return bestScore >= threshold ? best : null;
 }
-
-// â”€â”€ HANDLERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── HANDLERS ──────────────────────────────────────────────
 
 async function handle_fingerprint(req, res) {
   const { action } = req.body||{};
@@ -209,18 +341,10 @@ async function handle_pexels(req, res) {
 }
 
 async function handle_wavespeed(req, res) {
-  const { prompt, duration, model, image_url, uid, cost } = req.body||{};
+  // Credits are charged by the paid() wrapper. Client "uid" and "cost" are ignored.
+  const { prompt, duration, model } = req.body||{};
   if (!prompt) return res.status(400).json({ error: 'prompt required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  // Server-side credit verification
-  const creditCost = parseInt(cost) || 15;
-  if (uid) {
-    try {
-      await serverDeductCredits(uid, creditCost);
-    } catch(e) {
-      return res.status(402).json({ error: e.message, code: 'INSUFFICIENT_CREDITS' });
-    }
-  }
   const modelId = model||'wavespeed-ai/wan-2.1/t2v-480p';
   try {
     // WaveSpeed API v3 - model-specific endpoint
@@ -395,7 +519,6 @@ async function handle_upscale(req, res) {
   if (!taskId) return res.status(500).json({ error: 'No task ID' });
   return res.json({ taskId });
 }
-
 async function handle_semantic(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
   const { text, params } = req.body||{};
@@ -503,63 +626,6 @@ async function handle_director(req, res) {
   return res.json({ prompts, director:director||'AI Director' });
 }
 
-async function handle_checkout(req, res) {
-  if (req.method!=='POST') return res.status(405).json({ error:'POST only.' });
-  if (!STRIPE_KEY) return res.status(500).json({ error:'STRIPE_SECRET_KEY not configured.' });
-  const { credits, amount, userId } = req.body||{};
-  const creditAmount = parseInt(credits||amount)||100;
-  const priceInCents = creditAmount * 10;
-  try {
-    const Stripe = require('stripe');
-    const stripe = new Stripe(STRIPE_KEY);
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types:['card'],
-      line_items:[{ price_data:{
-        currency:'usd',
-        product_data:{ name:`MercaDream â€” ${creditAmount.toLocaleString()} GNS Credits`, description:`${creditAmount} GNS Â· AI Cinema Credits` },
-        unit_amount: priceInCents
-      }, quantity:1 }],
-      mode:'payment',
-      success_url:`${BASE_URL}/pricing.html?status=success&credits=${creditAmount}&uid=${userId}`,
-      cancel_url:`${BASE_URL}/pricing.html?status=cancelled`,
-      metadata:{ userId:userId||'', credits:creditAmount.toString() },
-      client_reference_id: userId||''
-    });
-    return res.json({ url: session.url });
-  } catch(e) {
-    return res.status(500).json({ error: e.message });
-  }
-}
-
-async function handle_webhook(req, res) {
-  if (!WEBHOOK_SECRET) return res.status(500).json({ error:'STRIPE_WEBHOOK_SECRET not configured.' });
-  try {
-    const Stripe = require('stripe');
-    const stripe = new Stripe(STRIPE_KEY);
-    const chunks = [];
-    await new Promise((resolve,reject) => { req.on('data',c=>chunks.push(c)); req.on('end',resolve); req.on('error',reject); });
-    const rawBody = Buffer.concat(chunks);
-    const sig = req.headers['stripe-signature'];
-    let event;
-    try { event = stripe.webhooks.constructEvent(rawBody, sig, WEBHOOK_SECRET); }
-    catch(e) { return res.status(400).json({ error:'Webhook signature failed.' }); }
-    if (event.type==='checkout.session.completed') {
-      const session = event.data.object;
-      const userId = session.metadata?.userId||session.client_reference_id;
-      const credits = parseInt(session.metadata?.credits)||100;
-      if (userId) {
-        const userDoc = await fsGet('users', userId);
-        const current = parseInt(userDoc?.fields?.credits?.integerValue)||0;
-        await fsWrite('users', userId, { credits:{integerValue:current+credits}, lastTopup:{stringValue:new Date().toISOString()} });
-        await fsWrite('transactions', null, { userId:{stringValue:userId}, type:{stringValue:'topup'},
-          credits:{integerValue:credits}, sessionId:{stringValue:session.id}, createdAt:{stringValue:new Date().toISOString()} });
-      }
-    }
-    return res.json({ received:true });
-  } catch(e) { return res.status(500).json({ error:e.message }); }
-}
-
-
 async function handle_chat(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
   const { message, director='Drama', sceneCount=3, dreamBrief=null } = req.body||{};
@@ -612,9 +678,6 @@ async function handle_chat(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
-
-// â”€â”€ ROUTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 
 async function handle_tts(req, res) {
   const { text, voice, language, style } = req.body||{};
@@ -846,100 +909,157 @@ async function handle_i2v(req, res) {
     return res.json({ taskId });
   } catch(e) { return res.status(500).json({ error: e.message }); }
 }
-
-
-async function handle_deduct(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
-  const { uid, amount, service } = req.body||{};
-  if (!uid || !amount || amount <= 0) return res.status(400).json({ error: 'uid and amount required.' });
+// ── STRIPE ────────────────────────────────────────────────────
+async function handle_checkout(req, res) {
+  if (req.method!=='POST') return res.status(405).json({ error:'POST only.' });
+  if (!STRIPE_KEY) return res.status(500).json({ error:'STRIPE_SECRET_KEY not configured.' });
+  const user = await getUser(req);
+  if (!user) return res.status(401).json({ error:'Please log in to buy credits.', code:'AUTH_REQUIRED' });
+  const { credits, amount } = req.body||{};
+  const creditAmount = parseInt(credits||amount, 10);
+  if (!Number.isInteger(creditAmount) || creditAmount < 50 || creditAmount > 100000) {
+    return res.status(400).json({ error:'Invalid credit amount (50 - 100,000).' });
+  }
+  const priceInCents = creditAmount * 10;
   try {
-    const userDoc = await fsGet('users', uid);
-    if (!userDoc) return res.status(404).json({ error: 'User not found.' });
-    const current = parseInt(userDoc.fields?.credits?.integerValue) || 0;
-    if (current < amount) return res.status(402).json({ error: 'Insufficient credits.', current });
-    const newBalance = current - Math.abs(amount);
-    await fsWrite('users', uid, { credits:{integerValue:newBalance}, lastDeduct:{stringValue:new Date().toISOString()}, lastService:{stringValue:service||'unknown'} });
-    await fsWrite('transactions', null, { uid:{stringValue:uid}, type:{stringValue:'deduct'}, amount:{integerValue:Math.abs(amount)}, service:{stringValue:service||'unknown'}, balanceBefore:{integerValue:current}, balanceAfter:{integerValue:newBalance}, createdAt:{stringValue:new Date().toISOString()} });
-    return res.json({ success: true, balance: newBalance, deducted: amount });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
+    const Stripe = require('stripe');
+    const stripe = new Stripe(STRIPE_KEY);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types:['card'],
+      line_items:[{ price_data:{
+        currency:'usd',
+        product_data:{ name:`MercaDream - ${creditAmount.toLocaleString()} GNS Credits`, description:`${creditAmount} GNS - AI Cinema Credits` },
+        unit_amount: priceInCents
+      }, quantity:1 }],
+      mode:'payment',
+      // No credits / uid in the URL any more: the page only shows "processing"
+      success_url:`${BASE_URL}/pricing.html?status=success`,
+      cancel_url:`${BASE_URL}/pricing.html?status=cancelled`,
+      metadata:{ userId:user.uid, credits:String(creditAmount) },
+      client_reference_id: user.uid,
+      customer_email: user.email || undefined
+    });
+    return res.json({ url: session.url });
+  } catch(e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
 
-async function handle_refund(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
-  const { uid, amount, service, reason } = req.body||{};
-  if (!uid || !amount || amount <= 0) return res.status(400).json({ error: 'uid and amount required.' });
+async function handle_webhook(req, res) {
+  if (!WEBHOOK_SECRET) return res.status(500).json({ error:'STRIPE_WEBHOOK_SECRET not configured.' });
   try {
-    const userDoc = await fsGet('users', uid);
-    if (!userDoc) return res.status(404).json({ error: 'User not found.' });
-    const current = parseInt(userDoc.fields?.credits?.integerValue) || 0;
-    const newBalance = current + Math.abs(amount);
-    await fsWrite('users', uid, { credits:{integerValue:newBalance} });
-    await fsWrite('transactions', null, { uid:{stringValue:uid}, type:{stringValue:'refund'}, amount:{integerValue:Math.abs(amount)}, service:{stringValue:service||'unknown'}, reason:{stringValue:reason||'service_failed'}, balanceBefore:{integerValue:current}, balanceAfter:{integerValue:newBalance}, createdAt:{stringValue:new Date().toISOString()} });
-    return res.json({ success: true, balance: newBalance, refunded: amount });
-  } catch(e) { return res.status(500).json({ error: e.message }); }
+    const Stripe = require('stripe');
+    const stripe = new Stripe(STRIPE_KEY);
+    const chunks = [];
+    await new Promise((resolve,reject) => { req.on('data',c=>chunks.push(c)); req.on('end',resolve); req.on('error',reject); });
+    const rawBody = Buffer.concat(chunks);
+    const sig = req.headers['stripe-signature'];
+    let event;
+    try { event = stripe.webhooks.constructEvent(rawBody, sig, WEBHOOK_SECRET); }
+    catch(e) { return res.status(400).json({ error:'Webhook signature failed.' }); }
+
+    if (event.type==='checkout.session.completed' || event.type==='checkout.session.async_payment_succeeded') {
+      const s = event.data.object;
+      if (s.payment_status !== 'paid') return res.json({ received:true, skipped:'not paid yet' });
+      const userId  = s.metadata?.userId || s.client_reference_id;
+      const credits = parseInt(s.metadata?.credits, 10) || 0;
+      if (userId && credits > 0) {
+        const txRef   = db().collection('transactions').doc('stripe_' + s.id); // one per session = no double credit
+        const userRef = db().collection('users').doc(userId);
+        await db().runTransaction(async (t) => {
+          const done = await t.get(txRef);
+          if (done.exists) return;
+          t.set(txRef, { userId, type:'topup', credits, sessionId:s.id,
+            amountPaid: s.amount_total, currency: s.currency, livemode: !!event.livemode, createdAt: nowIso() });
+          t.set(userRef, { credits: inc(credits), recharges: inc(1), lastTopup: nowIso() }, { merge:true });
+        });
+      }
+    }
+    return res.json({ received:true });
+  } catch(e) { return res.status(500).json({ error:e.message }); }
+}
+
+// ── OLD ENDPOINTS kept so old pages don't break — they can NOT change balances ──
+async function readBalance(req) {
+  const user = await getUser(req);
+  const uid = user ? user.uid : (req.body||{}).uid;
+  if (!uid) return null;
+  const snap = await db().collection('users').doc(uid).get();
+  return snap.exists ? (Number(snap.data().credits) || 0) : null;
+}
+async function handle_deduct(req, res) {
+  // Real deduction now happens inside each paid service.
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const balance = await readBalance(req);
+  if (balance === null) return res.status(404).json({ error: 'User not found.' });
+  const amount = Math.abs(parseInt((req.body||{}).amount, 10) || 0);
+  if (balance < amount) return res.status(402).json({ error: 'Insufficient credits.', current: balance });
+  return res.json({ success: true, balance, deducted: 0, note: 'charged by service' });
+}
+async function handle_refund(req, res) {
+  // Refunds are decided by the server only. This endpoint only reports the balance.
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const balance = await readBalance(req);
+  if (balance === null) return res.status(404).json({ error: 'User not found.' });
+  return res.json({ success: true, balance, refunded: 0, note: 'refunds are decided by the server only' });
 }
 async function handle_analyze(req, res) {
   const analyzeApi = require('./analyze');
   return await analyzeApi(req, res);
 }
 
+// ── ROUTER ────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', BASE_URL);
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, stripe-signature');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, stripe-signature');
   if (req.method==='OPTIONS') return res.status(200).end();
 
   const url = req.url||'';
   const service = url.split('/').filter(Boolean).pop()?.split('?')[0];
 
   const routes = {
-    chat:        handle_chat,
+    // free / utility
     fingerprint: handle_fingerprint,
     pexels:      handle_pexels,
-    wavespeed:   handle_wavespeed,
-    video:       handle_video,
-    audioforge:  handle_audioforge,
-    bgremover:   handle_bgremover,
-    faceswap:    handle_faceswap,
-    imagegen:    handle_imagegen,
-    animate:     handle_animate,
-    lipsync:     handle_lipsync,
-    deaging:     handle_deaging,
-    convert:     handle_convert,
-    upscale:     handle_upscale,
-    semantic:    handle_semantic,
-    director:    handle_director,
-    voice:       handle_voice,
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
     deduct:      handle_deduct,
     refund:      handle_refund,
-    tts:         handle_tts,
-    voiceclone:  handle_voiceclone,
-    elevenlabs:  handle_elevenlabs,
-    avatar:      handle_avatar,
-    avatarmulti: handle_avatarmulti,
-    music:       handle_music,
-    tripo3d:     handle_tripo3d,
-    motion:      handle_motion,
-    imagefaceswap: handle_imagefaceswap,
-    videofaceswap: handle_videofaceswap,
-    i2v:         handle_i2v,
+    // free for the user but costs you: login + daily cap
+    chat:        limited('chat', handle_chat),
+    director:    limited('director', handle_director),
+    semantic:    limited('semantic', handle_semantic),
+    voice:       limited('voice', handle_voice),
+    // paid: login + server price + server deduction (refund only if provider rejected)
+    wavespeed:   paid('wavespeed', handle_wavespeed),
+    video:       paid('video', handle_video),          // GET (polling) stays free
+    audioforge:  paid('audioforge', handle_audioforge),
+    bgremover:   paid('bgremover', handle_bgremover),
+    faceswap:    paid('faceswap', handle_faceswap),
+    imagegen:    paid('imagegen', handle_imagegen),
+    animate:     paid('animate', handle_animate),
+    lipsync:     paid('lipsync', handle_lipsync),
+    deaging:     paid('deaging', handle_deaging),
+    convert:     paid('convert', handle_convert),
+    upscale:     paid('upscale', handle_upscale),
+    tts:         paid('tts', handle_tts),
+    voiceclone:  paid('voiceclone', handle_voiceclone),
+    elevenlabs:  paid('elevenlabs', handle_elevenlabs),
+    avatar:      paid('avatar', handle_avatar),
+    avatarmulti: paid('avatarmulti', handle_avatarmulti),
+    music:       paid('music', handle_music),
+    tripo3d:     paid('tripo3d', handle_tripo3d),
+    motion:      paid('motion', handle_motion),
+    imagefaceswap: paid('imagefaceswap', handle_imagefaceswap),
+    videofaceswap: paid('videofaceswap', handle_videofaceswap),
+    i2v:         paid('i2v', handle_i2v),
   };
 
   const fn = routes[service];
-  if (!fn) return res.status(404).json({ error:'Unknown service: '+service, available:Object.keys(routes) });
+  if (!fn) return res.status(404).json({ error:'Unknown service: '+service });
 
   try { await fn(req, res); }
   catch(e) { console.error('['+service+']', e.message); return res.status(500).json({ error:e.message }); }
 };
-
-
-
-
-
-
-
-
-
