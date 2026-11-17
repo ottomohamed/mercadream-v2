@@ -67,6 +67,10 @@ select:focus{border-color:var(--gold);outline:none}
 .meta b{color:var(--soft);font-weight:500}
 .acts{display:flex;gap:8px;margin-top:auto;padding-top:8px;flex-wrap:wrap}
 .acts .btn{flex:1;min-height:38px;padding:0 10px;font-size:13px}
+.btn.idea.locked{background:#161206;color:var(--gold);border-color:var(--gold-dim)}
+.btn.idea.locked:hover{border-color:var(--gold);background:#1d170a}
+.lockbox{display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--soft)}
+.lockbox b{color:var(--white)}
 
 .panel{border:1px solid var(--line2);border-radius:12px;background:var(--card);padding:18px 20px;display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
 .panel h2{margin:0;font-size:17px;font-weight:600;color:var(--white)}
@@ -145,7 +149,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
       <h2 id="h-how">&#x2726; Ride the wave, own the song</h2>
       <ol>
         <li>Pick a trending song in your country.</li>
-        <li>Press <b>Song in this vibe</b>. Our AI producer explains why it works and writes a brief for a <b>new, original</b> song.</li>
+        <li>Press <b>Song in this vibe</b> (free for members with credits). Our AI producer explains why it works and writes a brief for a <b>new, original</b> song.</li>
         <li>Open it in the Song studio: genre, mood, tempo and idea are filled in for you.</li>
       </ol>
       <p class="note">We borrow the energy, never the melody, the words or the artist's name. Your song stays yours, and your ownership contract stays valid.</p>
@@ -171,6 +175,10 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     <p class="src" id="d-src"></p>
     <div id="d-load" style="display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px"><span class="spin"></span> Our producer is studying this trend.</div>
     <p class="msg hidden" id="d-err" style="color:var(--red);margin:0;font-size:14px"></p>
+    <div class="lockbox hidden" id="d-lock">
+      <p style="margin:0">&#128274; <b>Trend analysis is free for members with credits.</b></p>
+      <p style="margin:0">Browsing trends stays free for everyone. To unlock the AI producer, add credits once, from $5. The same credits produce your songs and ownership contracts, and the analysis itself never costs you a credit.</p>
+    </div>
     <div id="d-res" class="hidden" style="display:flex;flex-direction:column;gap:14px">
       <div class="why" id="d-why"></div>
       <dl class="brief">
@@ -188,6 +196,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     <div class="dacts">
       <button class="btn btn-ghost" id="d-close" type="button">Close</button>
       <button class="btn btn-gold hidden" id="d-go" type="button">Open in Song studio &#8594;</button>
+      <a class="btn btn-gold hidden" id="d-buy" href="pricing.html">Buy credits &#8594;</a>
     </div>
   </div>
 </dialog>
@@ -198,7 +207,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var REGIONS = ['MA','DZ','TN','EG','SA','AE','IQ','JO','LB','KW','QA','FR','ES','IT','DE','GB','US','CA','BR','MX','TR','IN','ID','NG','JP','KR'];
-  var user = null, brief = null, reqNo = 0;
+  var user = null, brief = null, reqNo = 0, credits = null;
   var state = { region: 'US', cat: 'music' };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -281,6 +290,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
       c.querySelector('.idea').addEventListener('click', function () { makeBrief(v); });
       g.appendChild(c);
     });
+    paintLocks();
   }
 
   $('region').addEventListener('change', function () { state.region = this.value; try { localStorage.setItem('md_trend_region', state.region); } catch (e) {} load(); });
@@ -290,19 +300,41 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     state.cat = b.getAttribute('data-v'); load();
   });
 
+  /* lock: the AI analysis opens only for members with credits */
+  function locked() { return !user || (credits !== null && credits <= 0); }
+  function paintLocks() {
+    document.querySelectorAll('.btn.idea').forEach(function (b) {
+      var l = locked();
+      b.classList.toggle('locked', l);
+      b.innerHTML = (l ? '&#128274; ' : '&#x2726; ') + 'Song in this vibe';
+      b.title = !user ? 'Log in to use the AI producer' : (l ? 'Free for members with credits' : '');
+    });
+  }
+  function openDlg() { if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', ''); }
+  function showLock() {
+    $('d-title').textContent = 'Unlock the AI producer';
+    $('d-src').textContent = '';
+    ['d-load', 'd-res', 'd-err', 'd-go'].forEach(function (id) { $(id).classList.add('hidden'); });
+    $('d-lock').classList.remove('hidden'); $('d-buy').classList.remove('hidden');
+    openDlg();
+  }
+
   /* AI brief */
   var dlg = $('dlg');
   async function makeBrief(v) {
     if (!user) { location.href = 'login.html'; return; }
+    if (credits !== null && credits <= 0) { showLock(); return; }
     brief = null;
+    $('d-lock').classList.add('hidden'); $('d-buy').classList.add('hidden');
     $('d-title').textContent = 'Listening to the trend\u2026';
     $('d-src').textContent = 'Inspired by: ' + v.title + ' \u2014 ' + v.channel;
     $('d-load').classList.remove('hidden'); $('d-res').classList.add('hidden'); $('d-err').classList.add('hidden'); $('d-go').classList.add('hidden');
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    openDlg();
     try {
       var r = await fetch('/api/trendidea', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: v.id }) });
       var d = await r.json().catch(function () { return {}; });
       if (r.status === 401) { location.href = 'login.html'; return; }
+      if (r.status === 402) { credits = 0; paintLocks(); showLock(); return; }
       if (r.status === 429) throw new Error('You reached today\'s limit of trend briefs. Come back tomorrow.');
       if (!r.ok) throw new Error(d.error || 'Something went wrong. Try again.');
       brief = d;
@@ -335,13 +367,14 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   });
 
   /* account */
-  window.addEventListener('creditsUpdated', function (e) { $('nav-balance').textContent = Number(e.detail.credits || 0).toLocaleString() + ' GNS'; });
+  window.addEventListener('creditsUpdated', function (e) { credits = Number(e.detail.credits || 0); paintLocks(); $('nav-balance').textContent = Number(e.detail.credits || 0).toLocaleString() + ' GNS'; });
   $('nav-auth').addEventListener('click', function () {
     if (window.MD_USER) firebase.auth().signOut().then(function () { localStorage.removeItem('md_credits'); location.reload(); });
     else location.href = 'login.html';
   });
   if (window.mdAuthReady) window.mdAuthReady.then(function (u) {
     user = u;
+    paintLocks();
     if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
   });
 

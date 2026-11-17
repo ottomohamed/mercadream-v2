@@ -165,6 +165,19 @@ function paid(service, handler) {
   };
 }
 
+// Opens a free tool only for members who hold credits (no credit is charged)
+function membersOnly(handler) {
+  return async function (req, res) {
+    const user = await getUser(req);
+    if (!user) return res.status(401).json({ error: 'Please log in again.', code: 'AUTH_REQUIRED' });
+    let credits = 0;
+    try { const s = await db().collection('users').doc(user.uid).get(); credits = s.exists ? (Number(s.data().credits) || 0) : 0; }
+    catch (e) { return res.status(500).json({ error: 'Could not check your account. Try again.' }); }
+    if (credits <= 0) return res.status(402).json({ error: 'Trend analysis is free for members with credits.', code: 'TOPUP_REQUIRED' });
+    return handler(req, res);
+  };
+}
+
 // Wrap a free-but-costly handler: auth + daily cap
 function limited(key, handler) {
   return async function (req, res) {
@@ -1478,7 +1491,7 @@ module.exports = async function handler(req, res) {
     voice:       limited('voice', handle_voice),
     lyrics:      limited('lyrics', handle_lyrics),
     scenes:      limited('scenes', handle_scenes),
-    trendidea:   limited('trendidea', handle_trendidea),
+    trendidea:   membersOnly(limited('trendidea', handle_trendidea)),
     // paid: login + server price + server deduction (refund only if provider rejected)
     wavespeed:   paid('wavespeed', handle_wavespeed),
     video:       paid('video', handle_video),          // GET (polling) stays free
