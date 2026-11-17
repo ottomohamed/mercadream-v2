@@ -106,6 +106,19 @@ textarea{resize:vertical;line-height:1.6}
 .newsong:hover{border-color:var(--gold);color:var(--gold)}
 .bar-right{display:flex;align-items:center;gap:12px}
 .ownnote{font-size:13px;color:var(--gold);border-top:1px solid var(--line2);padding-top:10px;margin:0}
+.helpbtn{background:none;border:0;color:var(--gold);text-decoration:underline;cursor:pointer;font-size:13px;padding:0;font-family:Inter,sans-serif}
+.decl{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--soft);cursor:pointer}
+.decl input{margin-top:3px;width:18px;height:18px;accent-color:#E8B92F;flex-shrink:0}
+.issued{border:1px solid var(--gold);border-radius:10px;padding:14px;background:#14110a;display:flex;flex-direction:column;gap:10px}
+.issued .no{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:15px}
+dialog{max-width:620px;width:calc(100% - 32px);background:#111;color:var(--text);border:1px solid var(--gold-dim);border-radius:14px;padding:0}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+.dlg{padding:24px 26px;display:flex;flex-direction:column;gap:14px;max-height:85vh;overflow:auto}
+.dlg h2{margin:0;font-family:Orbitron,sans-serif;font-size:20px;color:var(--gold)}
+.dlg ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15px;color:var(--soft)}
+.dlg ol b{color:var(--white)}
+.dlg h3{margin:4px 0 0;font-size:15px;color:var(--white)}
+.dlg ul{margin:0;padding-left:20px;font-size:14px;color:var(--soft);display:flex;flex-direction:column;gap:4px}
 
 /* CHIPS */
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -212,6 +225,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   <a href="index.html" class="logo"><span>MERCADREAM</span><small>STUDIO</small></a>
   <div class="navright">
     <span class="balance hidden" id="nav-balance">0 GNS</span>
+    <a class="linkbtn" href="certificate.html">My contracts</a>
     <a class="linkbtn" href="pricing.html">Buy credits</a>
     <button class="linkbtn" id="nav-auth" type="button">Log in</button>
   </div>
@@ -244,7 +258,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   <!-- 1. LYRICS -->
   <section class="panel" aria-labelledby="h1">
     <div class="panel-h"><span class="num">01</span><h2 id="h1">Lyrics</h2></div>
-    <p class="contract" id="contract-hint"><span aria-hidden="true">🔒</span><span>Want an <b>ownership contract</b> for this song? Lock the title, then lock the lyrics, before you produce. Your contract (10 GNS) is issued after the song is ready.</span></p>
+    <p class="contract" id="contract-hint"><span aria-hidden="true">🔒</span><span>Want an <b>ownership contract</b> for this song? Lock the title, then lock the lyrics, before you produce. Your contract (10 GNS) is issued after the song is ready. <button class="helpbtn" type="button" data-help>How does it work?</button></span></p>
     <div class="grid2">
       <div class="field">
         <label for="title">Song title</label>
@@ -394,6 +408,37 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     <div id="tracks" style="display:flex;flex-direction:column;gap:14px"></div>
   </section>
 
+  <!-- OWNERSHIP CONTRACT -->
+  <section class="panel hidden" id="contract-panel" aria-labelledby="hc">
+    <div class="panel-h"><span class="num">&#128274;</span><h2 id="hc">Ownership contract</h2></div>
+    <div id="issue-form" style="display:flex;flex-direction:column;gap:14px">
+      <p class="hint">Issue the contract for "<b id="c-title" style="color:var(--white)"></b>". The holder's name cannot be changed after issue. <button class="helpbtn" type="button" data-help>How does it work?</button></p>
+      <div class="field">
+        <span class="lbl" id="lb-htype">The holder is</span>
+        <div class="chips" data-group="htype" data-max="1" role="group" aria-labelledby="lb-htype">
+          <button class="chip" type="button" aria-pressed="true" data-v="individual">A person</button>
+          <button class="chip" type="button" aria-pressed="false" data-v="company">A company</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="h-name">Full legal name</label>
+        <input type="text" id="h-name" maxlength="100" placeholder="e.g. Jane Writer, or Writer Media Ltd"/>
+      </div>
+      <div class="field">
+        <label for="h-artist">Artist or channel name <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+        <input type="text" id="h-artist" maxlength="100" placeholder="e.g. Jane W Music"/>
+      </div>
+      <label class="decl"><input type="checkbox" id="h-ok"/><span>I confirm that the title, idea and lyrics I supplied are my own or used with permission, and do not copy existing songs.</span></label>
+      <button class="btn btn-gold btn-big" id="issue" type="button">Issue my contract &#8212; 10 GNS</button>
+      <p class="msg" id="issue-msg" role="alert"></p>
+    </div>
+    <div class="issued hidden" id="issued">
+      <span>&#10003; Contract issued and registered</span>
+      <span class="no" id="c-no"></span>
+      <div class="track-a"><a class="btn btn-gold" id="c-open" href="#" target="_blank" rel="noopener">Open contract (PDF)</a><a class="btn btn-ghost" id="c-verify" href="#" target="_blank" rel="noopener">Verify page</a></div>
+    </div>
+  </section>
+
   <!-- MY SONGS -->
   <section class="panel hidden" id="mysongs" aria-labelledby="hm">
     <div class="panel-h"><span class="num">≡</span><h2 id="hm">My recent songs</h2></div>
@@ -402,6 +447,33 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   </section>
   </div>
 </main>
+
+<dialog id="help" aria-labelledby="help-t">
+  <div class="dlg">
+    <h2 id="help-t">How to get an ownership contract</h2>
+    <ol>
+      <li><b>Lock the title.</b> Click &#128274; Lock next to the title. The date and time are recorded.</li>
+      <li><b>Write and lock the lyrics.</b> Write them yourself or with the AI songwriter, edit as you like, then click &#128274; Lock lyrics. We measure the share you wrote yourself.</li>
+      <li><b>Produce the song.</b> The genre, mood, voice, tempo and music engine are recorded.</li>
+      <li><b>Issue the contract &#8212; 10 GNS.</b> Enter the holder's full legal name: a person or a company. You can add your artist or channel name.</li>
+    </ol>
+    <h3>What the contract contains</h3>
+    <ul>
+      <li>An authorship record: what you created and what the AI generated.</li>
+      <li>MercaDream Studio's assignment to you of any rights it may hold in the song, and a waiver of royalties.</li>
+      <li>The digital fingerprint of the audio file and the lyrics.</li>
+      <li>A unique contract number and QR code that anyone can check on our verify page.</li>
+    </ul>
+    <h3>Good to know</h3>
+    <ul>
+      <li>A contract is available only for songs whose title and lyrics were locked before production.</li>
+      <li>The holder should be a real person or a company &#8212; a channel is not a legal owner. Put your channel name in the "artist or channel name" field.</li>
+      <li>The holder's name cannot be changed after the contract is issued.</li>
+      <li>A contract song is produced in one version.</li>
+    </ul>
+    <button class="btn btn-gold" type="button" id="help-close">Got it</button>
+  </div>
+</dialog>
 
 <footer>
   <div class="foot">
@@ -419,7 +491,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
 
   /* ── helpers ───────────────────────────────────────────── */
   function quality() { return document.querySelector('input[name=quality]:checked').value; }
-  function versions() { return quality() === 'studio' ? 1 : Number($('versions').value); }
+  function versions() { return (quality() === 'studio' || record) ? 1 : Number($('versions').value); }
   function cost() { return quality() === 'studio' ? PRICE.studio : PRICE.standard * versions(); }
   function picked(group) {
     return Array.prototype.map.call(document.querySelectorAll('[data-group="' + group + '"] .chip[aria-pressed="true"]'), function (b) { return b; });
@@ -446,7 +518,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     var q = quality(), n = $('lyrics').value.length, lim = LIMIT[q];
     $('count').textContent = n + ' / ' + lim;
     $('count').classList.toggle('over', n > lim);
-    $('versions-field').classList.toggle('hidden', q === 'studio');
+    $('versions-field').classList.toggle('hidden', q === 'studio' || !!record);
     $('cost').textContent = cost();
     $('preview').innerHTML = '<b>Style:</b> ' + esc(stylePrompt() || '—');
     $('s1').classList.toggle('ok', $('lyrics').value.trim().length > 0);
@@ -471,6 +543,18 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     if (lLocked) $('lyrics-info').textContent = 'Locked · ' + when(record.lyricsLockedAt) + ' · human-written ' + record.humanPct + '%';
     $('rec').classList.toggle('hidden', !tLocked);
     $('contract-hint').classList.toggle('hidden', lLocked);
+    var showC = !!(record && record.taskId);
+    $('contract-panel').classList.toggle('hidden', !showC);
+    if (showC) {
+      $('c-title').textContent = record.title || '';
+      $('issue-form').classList.toggle('hidden', !!record.certNo);
+      $('issued').classList.toggle('hidden', !record.certNo);
+      if (record.certNo) {
+        $('c-no').textContent = record.certNo;
+        $('c-open').href = 'certificate.html?rec=' + encodeURIComponent(record.recordId);
+        $('c-verify').href = 'verify.html?id=' + encodeURIComponent(record.certNo);
+      }
+    }
     var go = $('go');
     document.body.classList.toggle('busy', busy);
     if (busy) { go.disabled = true; go.textContent = 'Producing…'; return; }
@@ -653,7 +737,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     });
     if (job.recordId) {
       var note = document.createElement('p'); note.className = 'ownnote';
-      note.textContent = '🔒 Title, lyrics and style were recorded for your ownership contract. Contract issuing (10 GNS) arrives in the next update.';
+      note.textContent = '🔒 Title, lyrics and style were recorded. You can now issue your ownership contract below.';
       box.appendChild(note);
     }
     var audios = box.querySelectorAll('audio');
@@ -735,13 +819,35 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     $('tracks').innerHTML = ''; $('results').classList.add('hidden');
     refresh();
   });
+  $('issue').addEventListener('click', async function () {
+    var m = $('issue-msg'); setMsg(m, '');
+    if (!record || !record.taskId) return;
+    var name = $('h-name').value.trim().replace(/\s+/g, ' ');
+    var hb = picked('htype')[0], htype = hb ? hb.getAttribute('data-v') : 'individual';
+    var artist = $('h-artist').value.trim();
+    if (name.length < 3) { setMsg(m, 'Write the full legal name of the contract holder.', 'err'); $('h-name').focus(); return; }
+    if (!$('h-ok').checked) { setMsg(m, 'Please tick the declaration first.', 'err'); return; }
+    if (credits !== null && credits < 10) { if (confirm('The contract costs 10 GNS. Buy credits now?')) location.href = 'pricing.html'; return; }
+    if (!confirm('Issue the ownership contract for "' + record.title + '" to ' + name + (artist ? ' (known as ' + artist + ')' : '') + ' for 10 GNS?\n\nThe holder\'s name cannot be changed after issue.')) return;
+    var btn = this; btn.disabled = true; btn.textContent = 'Issuing\u2026';
+    try {
+      var d = await recordCall({ action: 'issue', recordId: record.recordId, holderName: name, holderType: htype, artistName: artist, confirm: true });
+      record.certNo = d.certNo; saveRecord();
+      if (typeof d.balance === 'number') window.dispatchEvent(new CustomEvent('creditsUpdated', { detail: { credits: d.balance } }));
+    } catch (e) { setMsg(m, e.message, 'err'); }
+    btn.disabled = false; btn.textContent = 'Issue my contract \u2014 10 GNS';
+    refresh();
+  });
+  document.querySelectorAll('[data-help]').forEach(function (b) { b.addEventListener('click', function () { $('help').showModal(); }); });
+  $('help-close').addEventListener('click', function () { $('help').close(); });
+
   async function restoreRecord() {
     var saved = null;
     try { saved = JSON.parse(localStorage.getItem('md_record') || 'null'); } catch (e) {}
     if (!saved || !saved.recordId || !user) return;
     try {
       var d = await recordCall({ action: 'get', recordId: saved.recordId });
-      record = { recordId: d.recordId, title: d.title, titleLockedAt: d.titleLockedAt, lyricsLockedAt: d.lyricsLockedAt, humanPct: d.humanPct, lyrics: d.lyrics, taskId: d.taskId };
+      record = { recordId: d.recordId, title: d.title, titleLockedAt: d.titleLockedAt, lyricsLockedAt: d.lyricsLockedAt, humanPct: d.humanPct, lyrics: d.lyrics, taskId: d.taskId, certNo: d.certNo || null };
       $('title').value = d.title || '';
       if (d.lyrics) $('lyrics').value = d.lyrics;
       saveRecord();

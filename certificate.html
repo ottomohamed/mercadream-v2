@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ownership contract | MercaDream Studio</title>
+<meta name="robots" content="noindex"/>
+<style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+.hidden{display:none!important}
+body{margin:0;font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;background:#2b2b2b}
+/* toolbar (screen only) */
+.bar{position:sticky;top:0;z-index:5;background:#0a0a0a;border-bottom:1px solid #1f1f1f;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 20px;font-family:Arial,Helvetica,sans-serif}
+.bar a.logo{font-weight:700;letter-spacing:.14em;color:#E8B92F;text-decoration:none;font-size:15px}
+.bar .btns{display:flex;gap:10px;flex-wrap:wrap}
+.bar button,.bar a.b{font-family:Arial,sans-serif;font-size:14px;font-weight:600;border-radius:6px;padding:10px 16px;cursor:pointer;border:1px solid #3a3a3a;background:none;color:#ececec;text-decoration:none}
+.bar button.gold{background:#E8B92F;border-color:#E8B92F;color:#0a0a0a}
+.tip{font-family:Arial,sans-serif;font-size:13px;color:#bdbdbd;text-align:center;padding:10px 20px 0}
+.msg{font-family:Arial,sans-serif;color:#ececec;text-align:center;padding:60px 20px;font-size:16px}
+.msg a{color:#E8B92F}
+.list{max-width:760px;margin:30px auto;font-family:Arial,sans-serif;color:#ececec}
+.list h1{font-size:22px;font-weight:600}
+.list a.row{display:flex;justify-content:space-between;gap:12px;border:1px solid #2a2a2a;border-radius:8px;padding:14px 16px;margin:10px 0;color:#ececec;text-decoration:none;background:#111}
+.list a.row:hover{border-color:#E8B92F}
+.list .no{font-family:'Courier New',monospace;color:#E8B92F;font-size:13px}
+.sheet{width:210mm;margin:20px auto;box-shadow:0 10px 40px rgba(0,0,0,.5);background:#fff}
+@media print{
+  body{background:#fff}
+  .bar,.tip,.noprint{display:none!important}
+  .sheet{margin:0;box-shadow:none}
+}
+.page{width:210mm;height:297mm;padding:16mm 18mm 14mm;position:relative;page-break-after:always;overflow:hidden;background:#fff}
+.page:last-child{page-break-after:auto}
+.frame{position:absolute;inset:8mm;border:1.2px solid #c9a227;pointer-events:none}
+.frame::after{content:"";position:absolute;inset:2.2mm;border:.5px solid #e3cf86}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10mm}
+.brand{font-family:Arial,Helvetica,sans-serif;font-weight:700;letter-spacing:.14em;font-size:15px;color:#a8840f}
+.brand small{display:block;font-size:8.5px;letter-spacing:.42em;color:#7a6a3a;margin-top:2px}
+.idbox{text-align:right;font-family:'Courier New',monospace;font-size:9.5px;color:#444;line-height:1.5}
+.idbox b{color:#1a1a1a}
+h1.t{font-family:Georgia,serif;font-weight:normal;font-size:24px;letter-spacing:.04em;text-align:center;margin:9mm 0 1mm;color:#111}
+.sub{text-align:center;font-family:Arial,sans-serif;font-size:9px;letter-spacing:.3em;color:#a8840f;text-transform:uppercase;margin:0 0 7mm}
+.song{border-top:1px solid #c9a227;border-bottom:1px solid #c9a227;padding:4mm 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3mm 6mm;margin-bottom:6mm}
+.kv{font-family:Arial,sans-serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#7a6a3a}
+.kv span{display:block;font-family:Georgia,serif;font-size:12.5px;letter-spacing:0;text-transform:none;color:#111;margin-top:1mm;unicode-bidi:plaintext}
+.kv span small{display:block;font-size:10px;color:#555}
+.kv.wide{grid-column:span 3}
+h2{font-family:Arial,sans-serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#a8840f;margin:5mm 0 2.5mm;display:flex;align-items:center;gap:3mm}
+h2::after{content:"";flex:1;height:.5px;background:#e3cf86}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{font-family:Arial,sans-serif;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#7a6a3a;text-align:left;font-weight:normal;border-bottom:.5px solid #ccc;padding:1.5mm 2mm}
+td{padding:2mm;border-bottom:.5px solid #eee;vertical-align:top;line-height:1.4}
+td.who{width:28%;font-weight:bold}
+.tag{display:inline-block;font-family:Arial,sans-serif;font-size:8px;letter-spacing:.1em;padding:.6mm 1.8mm;border-radius:2px}
+.h{background:#1a1a1a;color:#fff}
+.ai{border:.6px solid #a8840f;color:#a8840f}
+.meter{display:flex;align-items:center;gap:3mm;font-family:Arial,sans-serif;font-size:10px;margin:1mm 0 0}
+.mbar{flex:1;height:3mm;background:#f2ead0;border-radius:2px;overflow:hidden;display:flex}
+.mbar i{display:block;height:100%;background:#1a1a1a}
+.mbar em{display:block;height:100%;background:#c9a227}
+.legend{font-family:Arial,sans-serif;font-size:8.5px;color:#666;margin-top:1.5mm}
+p.clause{font-size:10.6px;line-height:1.55;margin:0 0 2.6mm;text-align:justify}
+p.clause b{font-family:Arial,sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#7a6a3a;margin-right:1.5mm}
+.sign{display:grid;grid-template-columns:1fr 1fr auto;gap:8mm;align-items:end;margin-top:7mm}
+.sig{border-top:.6px solid #333;padding-top:1.5mm;font-family:Arial,sans-serif;font-size:8.5px;color:#555;letter-spacing:.08em}
+.sig .s{font-family:'Brush Script MT','Segoe Script',cursive;font-size:20px;color:#1a1a1a;margin-bottom:-1mm;display:block;letter-spacing:0}
+.seal{width:30mm;height:30mm;border-radius:50%;border:1.2px solid #c9a227;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:Arial,sans-serif;color:#a8840f;font-size:7px;letter-spacing:.18em;position:relative}
+.seal::before{content:"";position:absolute;inset:1.6mm;border-radius:50%;border:.5px dashed #c9a227}
+.seal b{font-size:11px;letter-spacing:.12em;margin:1mm 0}
+.verify{display:flex;gap:5mm;align-items:center;margin-top:5mm;font-family:Arial,sans-serif;font-size:9px;color:#444}
+.qr{width:26mm;height:26mm;flex-shrink:0}
+.qr svg{width:100%;height:100%}
+.hash{font-family:'Courier New',monospace;font-size:8.6px;word-break:break-all;color:#333}
+.lyrics{columns:2;column-gap:10mm;font-size:10.5px;line-height:1.5}
+.lyrics div{min-height:1.5em;unicode-bidi:plaintext;break-inside:avoid}
+.lyrics .sec{font-family:Arial,sans-serif;font-size:8.5px;letter-spacing:.16em;color:#a8840f;text-transform:uppercase}
+.lyrics .ed span{background:#fff3c4}
+.foot{position:absolute;left:18mm;right:18mm;bottom:12mm;display:flex;justify-content:space-between;font-family:Arial,sans-serif;font-size:8px;color:#888;letter-spacing:.06em}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/js/md-firebase.js"></script>
+<script src="/js/md-auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+</head>
+<body>
+<div class="bar">
+  <a class="logo" href="index.html">MERCADREAM STUDIO</a>
+  <div class="btns">
+    <a class="b" href="music.html">Song studio</a>
+    <a class="b" href="certificate.html">My contracts</a>
+    <a class="b hidden" id="verify-link" href="#" target="_blank" rel="noopener">Verify page</a>
+    <button class="gold" id="print" type="button" disabled>Download PDF</button>
+  </div>
+</div>
+<p class="tip" id="tip" style="display:none">In the window that opens, choose <b>"Save as PDF"</b> as the printer, then <b>Save</b>.</p>
+<div id="view"><p class="msg">Loading…</p></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var params = new URLSearchParams(location.search);
+  var rec = params.get('rec');
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function day(iso) { if (!iso) return '—'; var d = new Date(iso); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' + d.toISOString().slice(11, 16) + ' UTC'; }
+  function dur(s) { return s ? Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') : '—'; }
+  function msg(html) { $('view').innerHTML = '<p class="msg">' + html + '</p>'; }
+  async function call(payload) {
+    var r = await fetch('/api/record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    var d = await r.json().catch(function () { return {}; });
+    if (!r.ok) throw new Error(d.error || 'Could not load.');
+    return d;
+  }
+  function verifyUrl(no) { return location.origin + '/verify.html?id=' + encodeURIComponent(no); }
+  function qrSvg(text) {
+    if (!window.qrcode) return '';
+    var q = qrcode(0, 'M'); q.addData(text); q.make();
+    return q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  }
+
+  function render(c) {
+    var vurl = verifyUrl(c.certNo);
+    var sp = c.styleParts || {};
+    var styleTxt = [sp.genre, sp.mood ? sp.mood + ' mood' : '', sp.tempo ? sp.tempo + ' tempo' : '', sp.voice ? sp.voice + ' vocals' : '', sp.extra].filter(Boolean).join(', ') || '—';
+    var engine = (c.quality === 'studio' ? 'Studio' : 'Standard') + (c.engine ? ' · ' + c.engine.replace(/^mureka-ai\//, 'Mureka ').replace(/\/generate-song$/, '').replace('mureka-v', 'V') : '');
+    var holder = esc(c.holderName) + (c.holderType === 'company' ? ' <small>(company)</small>' : '') + (c.artistName ? '<small>known as ' + esc(c.artistName) + '</small>' : '');
+    var pct = Math.max(0, Math.min(100, Number(c.humanPct) || 0));
+    var lines = String(c.lyrics || '').split('\n'), kinds = c.lineKinds || [];
+    var lyr = lines.map(function (l, i) {
+      var k = kinds[i] || '';
+      if (k === 'tag') return '<div class="sec">' + esc(l) + '</div>';
+      if (!l.trim()) return '<div>&nbsp;</div>';
+      return '<div class="' + (k === 'human' ? 'ed' : '') + '"><span>' + esc(l) + '</span></div>';
+    }).join('');
+    var foot = function (p) { return '<div class="foot"><span>MercaDream Studio · mercadream.com</span><span>Contract ' + esc(c.certNo) + ' · Page ' + p + ' of 2</span></div>'; };
+    var html =
+    '<div class="sheet">' +
+    '<section class="page"><div class="frame"></div>' +
+      '<div class="top"><div class="brand">MERCADREAM<small>STUDIO</small></div>' +
+      '<div class="idbox">Contract No. <b>' + esc(c.certNo) + '</b><br/>Issued: ' + day(c.issuedAt) + '<br/>Verify: ' + esc(vurl.replace(/^https?:\/\//, '')) + '</div></div>' +
+      '<h1 class="t">Certificate of Authorship<br/>&amp; Rights Assignment</h1><p class="sub">Song ownership contract</p>' +
+      '<div class="song">' +
+        '<div class="kv wide">Song title<span>' + esc(c.title) + '</span></div>' +
+        '<div class="kv">Holder<span>' + holder + '</span></div>' +
+        '<div class="kv">Title locked<span>' + day(c.titleLockedAt) + '</span></div>' +
+        '<div class="kv">Lyrics locked<span>' + day(c.lyricsLockedAt) + '</span></div>' +
+        '<div class="kv">Produced<span>' + day(c.producedAt) + '</span></div>' +
+        '<div class="kv">Engine<span>' + esc(engine) + '</span></div>' +
+        '<div class="kv">Duration<span>' + dur(c.durationSec) + '</span></div>' +
+      '</div>' +
+      '<h2>A · Authorship record</h2>' +
+      '<table><tr><th>Element</th><th>Created by</th><th>Record from the platform log</th></tr>' +
+        '<tr><td class="who">Title</td><td><span class="tag h">HUMAN</span></td><td>Written and locked by the holder.</td></tr>' +
+        '<tr><td class="who">Lyrics</td><td><span class="tag h">HUMAN</span>' + (pct < 100 ? ' <span class="tag ai">AI-ASSISTED</span>' : '') + '</td><td>' +
+          (pct < 100 ? 'Partly suggested by the AI songwriter and edited by the holder.' : 'Written by the holder. No AI draft matches these lines.') +
+          '<div class="meter"><span>Human-written</span><div class="mbar"><i style="width:' + pct + '%"></i><em style="width:' + (100 - pct) + '%"></em></div><b>' + pct + '%</b></div>' +
+          '<div class="legend">Measured by comparing the locked lyrics with every AI draft produced for this account.</div></td></tr>' +
+        '<tr><td class="who">Style direction</td><td><span class="tag h">HUMAN</span></td><td>Chosen by the holder: ' + esc(styleTxt) + '.</td></tr>' +
+        '<tr><td class="who">Melody &amp; composition</td><td><span class="tag ai">AI-GENERATED</span></td><td>Generated by the music engine from the lyrics and style above.</td></tr>' +
+        '<tr><td class="who">Vocals &amp; arrangement</td><td><span class="tag ai">AI-GENERATED</span></td><td>Synthetic voice and instrumentation. No real singer\'s voice was cloned.</td></tr>' +
+      '</table>' +
+      '<h2>B · Digital fingerprint</h2>' +
+      '<div class="verify"><div class="qr">' + qrSvg(vurl) + '</div><div>' +
+        '<div style="margin-bottom:1.5mm">Scan the code or open <b>' + esc(vurl.replace(/^https?:\/\//, '')) + '</b> to confirm this contract is genuine.</div>' +
+        '<div>Audio file SHA-256</div><div class="hash">' + esc(c.audioSha256) + '</div>' +
+        '<div style="margin-top:1mm">Lyrics SHA-256</div><div class="hash">' + esc(c.lyricsSha256) + '</div></div></div>' +
+      foot(1) +
+    '</section>' +
+    '<section class="page"><div class="frame"></div>' +
+      '<div class="top"><div class="brand">MERCADREAM<small>STUDIO</small></div><div class="idbox">Contract No. <b>' + esc(c.certNo) + '</b><br/>Song: <b>' + esc(c.title) + '</b></div></div>' +
+      '<h2 style="margin-top:8mm">C · Assignment and waiver</h2>' +
+      '<p class="clause"><b>1. Assignment.</b> In consideration of the fee paid for this production, MercaDream Studio irrevocably assigns and transfers to the Holder all right, title and interest, if any, that MercaDream Studio holds or may hold in the song identified above — including its lyrics, melody and composition, and sound recording — worldwide and for the full duration of any such rights.</p>' +
+      '<p class="clause"><b>2. Waiver.</b> Where a right cannot be assigned, MercaDream Studio waives it and will not assert it against the Holder or anyone the Holder licenses the song to. MercaDream Studio claims no royalties, credit or share of income from the song.</p>' +
+      '<p class="clause"><b>3. Human contributions.</b> The elements marked HUMAN in Section A were created by the Holder and always belonged to the Holder. This contract records them; it does not grant them.</p>' +
+      '<p class="clause"><b>4. Commercial use.</b> The Holder may publish, monetize, distribute and license the song, including on YouTube, streaming services and social media. Generation was performed through paid access to third-party AI providers whose terms permit commercial use of the output.</p>' +
+      '<p class="clause"><b>5. Generated melody.</b> MercaDream Studio assigns to the Holder whatever rights it may hold in the melody generated for this song. MercaDream Studio does not claim, and does not transfer, ownership of any melody, or part of a melody, that existed before the production date shown above. If the generated melody resembles an earlier work, the rights in that earlier work remain with its owners, and this contract grants no rights in it.</p>' +
+      '<p class="clause"><b>6. Limits.</b> This contract transfers only what MercaDream Studio may hold. It does not create rights that the law does not recognize: in some countries, material generated by AI without sufficient human authorship is not protected by copyright.</p>' +
+      '<p class="clause"><b>7. Holder\'s input.</b> The Holder confirmed, before this contract was issued, that the title, idea and lyrics they supplied are their own or used with permission, and do not copy existing songs.</p>' +
+      '<p class="clause"><b>8. Record.</b> Section A was produced automatically from the platform\'s own log at the time each step was locked, and cannot be edited by the Holder or by MercaDream Studio after issue. The contract number is registered at mercadream.com/verify.</p>' +
+      '<div class="sign"><div class="sig"><span class="s">MercaDream Studio</span>For MercaDream Studio</div>' +
+      '<div class="sig"><span class="s">&nbsp;</span>Holder — ' + esc(c.holderName) + '</div>' +
+      '<div class="seal">MERCADREAM<b>CERTIFIED</b>ORIGINAL<br/>' + String(c.issuedAt || '').slice(0, 4) + '</div></div>' +
+      '<h2 style="margin-top:8mm">D · Final lyrics (as locked)</h2>' +
+      '<div class="lyrics" dir="auto">' + lyr + '</div>' +
+      '<p class="legend" style="margin-top:2mm"><span style="background:#fff3c4;padding:0 1mm">Highlighted</span> lines were written or changed by the Holder.</p>' +
+      foot(2) +
+    '</section></div>';
+    $('view').innerHTML = html;
+    document.title = c.certNo + ' — ' + c.title;
+    $('print').disabled = false;
+    $('tip').style.display = 'block';
+    $('verify-link').href = vurl; $('verify-link').classList.remove('hidden');
+  }
+
+  function renderList(list) {
+    if (!list.length) { msg('You have no ownership contracts yet.<br/><br/><a href="music.html">Create a song with a contract →</a>'); return; }
+    $('view').innerHTML = '<div class="list"><h1>My ownership contracts</h1>' + list.map(function (x) {
+      return '<a class="row" href="certificate.html?rec=' + encodeURIComponent(x.recordId) + '"><span><b>' + esc(x.title) + '</b><br/><span class="no">' + esc(x.certNo) + '</span></span><span>' + day(x.issuedAt) + '</span></a>';
+    }).join('') + '</div>';
+  }
+
+  $('print').addEventListener('click', function () { window.print(); });
+
+  if (!window.mdAuthReady) { msg('Could not load. Please refresh the page.'); return; }
+  window.mdAuthReady.then(async function (u) {
+    if (!u) { msg('Please <a href="login.html">log in</a> to see your contracts.'); return; }
+    try {
+      if (rec) { var d = await call({ action: 'cert', recordId: rec }); if (!d.cert) throw new Error('Contract not found.'); render(d.cert); }
+      else { var l = await call({ action: 'mine' }); renderList(l.list || []); }
+    } catch (e) { msg(esc(e.message) + '<br/><br/><a href="certificate.html">My contracts</a>'); }
+  });
+})();
+</script>
+</body>
+</html>

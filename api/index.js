@@ -819,7 +819,7 @@ async function handle_music(req, res) {
       if (gender === 'female' || gender === 'male') body.gender = gender;
     } else {
       model = 'mureka-ai/mureka-v9/generate-song';
-      body = { lyrics: text, prompt: style, number_of_songs: Math.min(Math.max(parseInt(number_of_songs)||1, 1), 2), output_format: 'mp3' };
+      body = { lyrics: text, prompt: style, number_of_songs: rec ? 1 : Math.min(Math.max(parseInt(number_of_songs)||1, 1), 2), output_format: 'mp3' };
     }
   }
   try {
@@ -983,6 +983,12 @@ async function handle_record(req, res) {
     await ref.set({ uid: user.uid, email: user.email || '', name: user.name || '', status: 'title', title, titleLockedAt: at, createdAt: at });
     return res.json({ recordId: ref.id, status: 'title', title, titleLockedAt: at });
   }
+  if (b.action === 'mine') {
+    const q = await db().collection('certificates').where('uid', '==', user.uid).limit(100).get();
+    const list = q.docs.map(x => x.data()).map(c => ({ certNo: c.certNo, recordId: c.recordId, title: c.title, holderName: c.holderName, issuedAt: c.issuedAt }));
+    list.sort((p, n) => String(n.issuedAt).localeCompare(String(p.issuedAt)));
+    return res.json({ list });
+  }
   const rec = await loadRecord(user.uid, b.recordId);
   if (!rec) return res.status(404).json({ error: 'Record not found.' });
   if (b.action === 'lyrics') {
@@ -997,12 +1003,107 @@ async function handle_record(req, res) {
     await rec.ref.update({ status: 'lyrics', lyrics, lyricsLockedAt: at, humanPct: a.humanPct, lineKinds: a.kinds, aiDraftsCompared: drafts.length });
     return res.json({ recordId: rec.ref.id, status: 'lyrics', lyricsLockedAt: at, humanPct: a.humanPct });
   }
+  if (b.action === 'issue') return issueCertificate(user, rec, b, res);
+  if (b.action === 'cert') {
+    if (!rec.data.certNo) return res.status(404).json({ error: 'No contract issued yet.' });
+    const c = await db().collection('certificates').doc(rec.data.certNo).get();
+    return res.json({ cert: c.exists ? c.data() : null });
+  }
   if (b.action === 'get') {
     const d = rec.data;
     return res.json({ recordId: rec.ref.id, status: d.status, title: d.title, titleLockedAt: d.titleLockedAt,
-      lyrics: d.lyrics || null, lyricsLockedAt: d.lyricsLockedAt || null, humanPct: (d.humanPct === undefined ? null : d.humanPct), taskId: d.taskId || null });
+      lyrics: d.lyrics || null, lyricsLockedAt: d.lyricsLockedAt || null, humanPct: (d.humanPct === undefined ? null : d.humanPct), taskId: d.taskId || null, certNo: d.certNo || null });
   }
   return res.status(400).json({ error: 'Unknown action.' });
+}
+// -- CONTRACT (certificate) issuing + public verification --
+const CERT_PRICE = 10;
+function sha256Hex(buf) { return require('crypto').createHash('sha256').update(buf).digest('hex'); }
+function mp3Seconds(buf) {
+  try {
+    let i = 0;
+    if (buf.length > 10 && buf.toString('latin1', 0, 3) === 'ID3') {
+      i = 10 + (((buf[6] & 0x7f) << 21) | ((buf[7] & 0x7f) << 14) | ((buf[8] & 0x7f) << 7) | (buf[9] & 0x7f));
+    }
+    for (; i < buf.length - 4; i++) { if (buf[i] === 0xff && (buf[i + 1] & 0xe0) === 0xe0) break; }
+    if (i >= buf.length - 4) return null;
+    const ver = (buf[i + 1] >> 3) & 3, layer = (buf[i + 1] >> 1) & 3;
+    const brIdx = buf[i + 2] >> 4, srIdx = (buf[i + 2] >> 2) & 3, mono = (buf[i + 3] >> 6) === 3;
+    if (layer !== 1 || brIdx === 0 || brIdx === 15 || srIdx === 3) return null;
+    const rates = { 3: [44100, 48000, 32000], 2: [22050, 24000, 16000], 0: [11025, 12000, 8000] }[ver];
+    if (!rates) return null;
+    const sampleRate = rates[srIdx], spf = ver === 3 ? 1152 : 576;
+    const kbps = (ver === 3 ? [0,32,40,48,56,64,80,96,112,128,160,192,224,256,320] : [0,8,16,24,32,40,48,56,64,80,96,112,128,144,160])[brIdx];
+    const x = i + 4 + (ver === 3 ? (mono ? 17 : 32) : (mono ? 9 : 17));
+    const tag = buf.toString('latin1', x, x + 4);
+    if ((tag === 'Xing' || tag === 'Info') && (buf.readUInt32BE(x + 4) & 1)) return Math.round(buf.readUInt32BE(x + 8) * spf / sampleRate);
+    if (buf.toString('latin1', i + 36, i + 40) === 'VBRI') return Math.round(buf.readUInt32BE(i + 36 + 14) * spf / sampleRate);
+    return Math.round((buf.length - i) * 8 / (kbps * 1000));
+  } catch (e) { return null; }
+}
+function newCertNo() { return 'MDS-' + new Date().getUTCFullYear() + '-' + require('crypto').randomBytes(4).toString('hex').toUpperCase(); }
+function publicCert(d) {
+  return { valid: true, certNo: d.certNo, title: d.title, holderName: d.holderName, holderType: d.holderType, artistName: d.artistName || '',
+    issuedAt: d.issuedAt, titleLockedAt: d.titleLockedAt, lyricsLockedAt: d.lyricsLockedAt, producedAt: d.producedAt,
+    humanPct: d.humanPct, quality: d.quality, durationSec: d.durationSec, audioSha256: d.audioSha256, lyricsSha256: d.lyricsSha256 };
+}
+async function issueCertificate(user, rec, b, res) {
+  const d = rec.data;
+  if (d.certNo) {
+    const c = await db().collection('certificates').doc(d.certNo).get();
+    return res.json({ certNo: d.certNo, cert: c.exists ? c.data() : null, already: true });
+  }
+  if (d.status !== 'produced' || !d.taskId) return res.status(409).json({ error: 'Produce the song first.' });
+  const holderName = String(b.holderName || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+  const holderType = b.holderType === 'company' ? 'company' : 'individual';
+  const artistName = String(b.artistName || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+  if (holderName.length < 3) return res.status(400).json({ error: 'Write the full legal name of the contract holder.' });
+  if (b.confirm !== true) return res.status(400).json({ error: 'Please confirm the declaration.' });
+  const r = await fetch('https://api.wavespeed.ai/api/v3/predictions/' + d.taskId + '/result', { headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY } });
+  const j = await r.json();
+  if (j?.data?.status !== 'completed') return res.status(409).json({ error: 'Your song is not ready yet.' });
+  const outs = j.data.outputs, first = Array.isArray(outs) ? outs[0] : outs;
+  const audioUrl = typeof first === 'string' ? first : (first && (first.url || first.audio_url)) || null;
+  if (!audioUrl) return res.status(502).json({ error: 'Could not read the song file. Try again.' });
+  const ar = await fetch(audioUrl);
+  if (!ar.ok) return res.status(502).json({ error: 'Could not read the song file. Try again.' });
+  const buf = Buffer.from(await ar.arrayBuffer());
+  // lock the record so a double click cannot charge twice
+  const locked = await db().runTransaction(async (t) => {
+    const s = await t.get(rec.ref);
+    if (!s.exists || s.data().status !== 'produced') return false;
+    t.update(rec.ref, { status: 'issuing' });
+    return true;
+  });
+  if (!locked) return res.status(409).json({ error: 'This contract is already being issued.' });
+  let balance;
+  try { balance = await chargeCredits(user.uid, CERT_PRICE, 'certificate'); }
+  catch (e) { await rec.ref.update({ status: 'produced' }); return res.status(402).json({ error: e.message, code: 'INSUFFICIENT_CREDITS' }); }
+  const certNo = newCertNo(), issuedAt = nowIso();
+  const cert = { certNo, recordId: rec.ref.id, uid: user.uid, holderName, holderType, artistName,
+    title: d.title, titleLockedAt: d.titleLockedAt, lyrics: d.lyrics, lyricsLockedAt: d.lyricsLockedAt,
+    humanPct: d.humanPct, lineKinds: d.lineKinds || [], styleParts: d.styleParts || {}, quality: d.quality || 'standard',
+    engine: d.engine || '', producedAt: d.producedAt, taskId: d.taskId, audioUrl,
+    audioSha256: sha256Hex(buf), lyricsSha256: sha256Hex(Buffer.from(d.lyrics || '', 'utf8')),
+    durationSec: mp3Seconds(buf), issuedAt, price: CERT_PRICE };
+  try {
+    await db().collection('certificates').doc(certNo).set(cert);
+    await rec.ref.update({ status: 'certified', certNo, issuedAt });
+  } catch (e) {
+    console.error('certificate', e.message);
+    await refundCredits(user.uid, CERT_PRICE, 'certificate', 'issue_failed');
+    await rec.ref.update({ status: 'produced' });
+    return res.status(500).json({ error: 'Could not issue the contract. Your credits were returned.' });
+  }
+  return res.json({ certNo, cert, balance });
+}
+async function handle_verify(req, res) {
+  const raw = (req.query && req.query.id) || ((req.url || '').split('id=')[1] || '').split('&')[0];
+  const id = decodeURIComponent(String(raw || '')).trim().toUpperCase();
+  if (!/^MDS-\d{4}-[0-9A-F]{8}$/.test(id)) return res.status(400).json({ valid: false, error: 'Invalid contract number.' });
+  const c = await db().collection('certificates').doc(id).get();
+  if (!c.exists) return res.status(404).json({ valid: false, error: 'No contract with this number.' });
+  return res.json(publicCert(c.data()));
 }
 // AI songwriter (free for the user, daily cap via limited())
 async function handle_lyrics(req, res) {
@@ -1159,6 +1260,7 @@ module.exports = async function handler(req, res) {
     // free / utility
     fingerprint: handle_fingerprint,
     record:      handle_record,
+    verify:      handle_verify,
     pexels:      handle_pexels,
     checkout:    handle_checkout,
     webhook:     handle_webhook,
