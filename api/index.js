@@ -983,6 +983,7 @@ async function handle_record(req, res) {
     await ref.set({ uid: user.uid, email: user.email || '', name: user.name || '', status: 'title', title, titleLockedAt: at, createdAt: at });
     return res.json({ recordId: ref.id, status: 'title', title, titleLockedAt: at });
   }
+  if (b.action === 'price') return res.json(await certPriceNow());
   if (b.action === 'mine') {
     const q = await db().collection('certificates').where('uid', '==', user.uid).limit(100).get();
     const list = q.docs.map(x => x.data()).map(c => ({ certNo: c.certNo, recordId: c.recordId, title: c.title, holderName: c.holderName, issuedAt: c.issuedAt }));
@@ -1017,7 +1018,12 @@ async function handle_record(req, res) {
   return res.status(400).json({ error: 'Unknown action.' });
 }
 // -- CONTRACT (certificate) issuing + public verification --
-const CERT_PRICE = 10;
+const CERT_PRICE_LAUNCH = 10, CERT_PRICE = 50, CERT_LAUNCH_COUNT = 100;   // first 100 contracts: 10 GNS, then 50 GNS
+async function certPriceNow() {
+  const s = await db().collection('stats').doc('contracts').get();
+  const issued = s.exists ? (Number(s.data().issued) || 0) : 0;
+  return { price: issued < CERT_LAUNCH_COUNT ? CERT_PRICE_LAUNCH : CERT_PRICE, issued, launchLeft: Math.max(0, CERT_LAUNCH_COUNT - issued) };
+}
 function sha256Hex(buf) { return require('crypto').createHash('sha256').update(buf).digest('hex'); }
 function mp3Seconds(buf) {
   try {
@@ -1117,7 +1123,8 @@ async function issueCertificate(user, rec, b, res) {
   });
   if (!locked) return res.status(409).json({ error: 'This contract is already being issued.' });
   let balance;
-  try { balance = await chargeCredits(user.uid, CERT_PRICE, 'certificate'); }
+  const price = (await certPriceNow()).price;
+  try { balance = await chargeCredits(user.uid, price, 'certificate'); }
   catch (e) { await rec.ref.update({ status: 'produced' }); return res.status(402).json({ error: e.message, code: 'INSUFFICIENT_CREDITS' }); }
   const certNo = newCertNo(), issuedAt = nowIso();
   const cert = { certNo, recordId: rec.ref.id, uid: user.uid, holderName, holderType, artistName,
@@ -1125,16 +1132,17 @@ async function issueCertificate(user, rec, b, res) {
     humanPct: d.humanPct, lineKinds: d.lineKinds || [], styleParts: d.styleParts || {}, quality: d.quality || 'standard',
     engine: d.engine || '', producedAt: d.producedAt, taskId: d.taskId, audioUrl,
     audioSha256: sha256Hex(buf), lyricsSha256: sha256Hex(Buffer.from(d.lyrics || '', 'utf8')),
-    durationSec: mp3Seconds(buf), issuedAt, price: CERT_PRICE };
+    durationSec: mp3Seconds(buf), issuedAt, price };
   try {
     await db().collection('certificates').doc(certNo).set(cert);
     await rec.ref.update({ status: 'certified', certNo, issuedAt });
   } catch (e) {
     console.error('certificate', e.message);
-    await refundCredits(user.uid, CERT_PRICE, 'certificate', 'issue_failed');
+    await refundCredits(user.uid, price, 'certificate', 'issue_failed');
     await rec.ref.update({ status: 'produced' });
     return res.status(500).json({ error: 'Could not issue the contract. Your credits were returned.' });
   }
+  try { await db().collection('stats').doc('contracts').set({ issued: inc(1), updatedAt: nowIso() }, { merge: true }); } catch (e) { console.error('contract count', e.message); }
   try { await registerOnGithub(cert); } catch (e) { console.error('registry', e.message); }
   return res.json({ certNo, cert, balance });
 }

@@ -258,7 +258,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   <!-- 1. LYRICS -->
   <section class="panel" aria-labelledby="h1">
     <div class="panel-h"><span class="num">01</span><h2 id="h1">Lyrics</h2></div>
-    <p class="contract" id="contract-hint"><span aria-hidden="true">🔒</span><span>Want an <b>ownership contract</b> for this song? Lock the title, then lock the lyrics, before you produce. Your contract (10 GNS) is issued after the song is ready. <button class="helpbtn" type="button" data-help>How does it work?</button></span></p>
+    <p class="contract" id="contract-hint"><span aria-hidden="true">🔒</span><span>Want an <b>ownership contract</b> for this song? Lock the title, then lock the lyrics, before you produce. Your contract (<span class="cprice">10</span> GNS) is issued after the song is ready. <button class="helpbtn" type="button" data-help>How does it work?</button></span></p>
     <div class="grid2">
       <div class="field">
         <label for="title">Song title</label>
@@ -413,6 +413,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     <div class="panel-h"><span class="num">&#128274;</span><h2 id="hc">Ownership contract</h2></div>
     <div id="issue-form" style="display:flex;flex-direction:column;gap:14px">
       <p class="hint">Issue the contract for "<b id="c-title" style="color:var(--white)"></b>". The holder's name cannot be changed after issue. <button class="helpbtn" type="button" data-help>How does it work?</button></p>
+      <p class="hint" id="c-offer" style="color:var(--gold)"></p>
       <div class="field">
         <span class="lbl" id="lb-htype">The holder is</span>
         <div class="chips" data-group="htype" data-max="1" role="group" aria-labelledby="lb-htype">
@@ -455,7 +456,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
       <li><b>Lock the title.</b> Click &#128274; Lock next to the title. The date and time are recorded.</li>
       <li><b>Write and lock the lyrics.</b> Write them yourself or with the AI songwriter, edit as you like, then click &#128274; Lock lyrics. We measure the share you wrote yourself.</li>
       <li><b>Produce the song.</b> The genre, mood, voice, tempo and music engine are recorded.</li>
-      <li><b>Issue the contract &#8212; 10 GNS.</b> Enter the holder's full legal name: a person or a company. You can add your artist or channel name.</li>
+      <li><b>Issue the contract &#8212; <span class="cprice">10</span> GNS.</b> Enter the holder's full legal name: a person or a company. You can add your artist or channel name.</li>
     </ol>
     <h3>What the contract contains</h3>
     <ul>
@@ -610,6 +611,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
     refresh();
     restoreRecord();
+    if (u) loadCertPrice();
     resumePending();
   });
 
@@ -827,19 +829,29 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     var artist = $('h-artist').value.trim();
     if (name.length < 3) { setMsg(m, 'Write the full legal name of the contract holder.', 'err'); $('h-name').focus(); return; }
     if (!$('h-ok').checked) { setMsg(m, 'Please tick the declaration first.', 'err'); return; }
-    if (credits !== null && credits < 10) { if (confirm('The contract costs 10 GNS. Buy credits now?')) location.href = 'pricing.html'; return; }
-    if (!confirm('Issue the ownership contract for "' + record.title + '" to ' + name + (artist ? ' (known as ' + artist + ')' : '') + ' for 10 GNS?\n\nThe holder\'s name cannot be changed after issue.')) return;
+    if (credits !== null && credits < certPrice) { if (confirm('The contract costs ' + certPrice + ' GNS. Buy credits now?')) location.href = 'pricing.html'; return; }
+    if (!confirm('Issue the ownership contract for "' + record.title + '" to ' + name + (artist ? ' (known as ' + artist + ')' : '') + ' for ' + certPrice + ' GNS?\n\nThe holder\'s name cannot be changed after issue.')) return;
     var btn = this; btn.disabled = true; btn.textContent = 'Issuing\u2026';
     try {
       var d = await recordCall({ action: 'issue', recordId: record.recordId, holderName: name, holderType: htype, artistName: artist, confirm: true });
       record.certNo = d.certNo; saveRecord();
       if (typeof d.balance === 'number') window.dispatchEvent(new CustomEvent('creditsUpdated', { detail: { credits: d.balance } }));
     } catch (e) { setMsg(m, e.message, 'err'); }
-    btn.disabled = false; btn.textContent = 'Issue my contract \u2014 10 GNS';
+    btn.disabled = false; btn.textContent = 'Issue my contract \u2014 ' + certPrice + ' GNS';
     refresh();
   });
   document.querySelectorAll('[data-help]').forEach(function (b) { b.addEventListener('click', function () { $('help').showModal(); }); });
   $('help-close').addEventListener('click', function () { $('help').close(); });
+  var certPrice = 10;
+  async function loadCertPrice() {
+    try {
+      var p = await recordCall({ action: 'price' });
+      certPrice = p.price;
+      document.querySelectorAll('.cprice').forEach(function (x) { x.textContent = certPrice; });
+      if (!$('issue').disabled) $('issue').textContent = 'Issue my contract \u2014 ' + certPrice + ' GNS';
+      $('c-offer').textContent = p.launchLeft > 0 ? 'Launch offer: ' + p.launchLeft + ' of the first 100 contracts left at 10 GNS. Then 50 GNS.' : '';
+    } catch (e) {}
+  }
 
   async function restoreRecord() {
     var saved = null;
