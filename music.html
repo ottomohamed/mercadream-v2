@@ -88,6 +88,25 @@ textarea{resize:vertical;line-height:1.6}
 .msg.err{color:var(--red)}
 .msg.ok{color:var(--green)}
 
+/* LOCKS (ownership contract) */
+.lockrow{display:flex;gap:8px}
+.lockrow input{flex:1;min-width:0}
+.lockbtn{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:#141414;border:1px solid var(--gold-dim);color:var(--gold);border-radius:8px;padding:0 14px;min-height:44px;font-family:Inter,sans-serif;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.lockbtn:hover:not(:disabled){background:var(--gold);color:#0a0a0a}
+.lockbtn:disabled{opacity:.45;cursor:not-allowed}
+.lockbtn.done{background:var(--gold);color:#0a0a0a;border-color:var(--gold);cursor:default;opacity:1}
+.lockinfo{margin:0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold)}
+.locked{border-color:var(--gold-dim)!important;background:#100e08!important;color:#e9dfc2!important}
+.contract{display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--gold-dim);border-radius:8px;padding:10px 12px;background:#0f0d07;font-size:13px;color:var(--soft);margin:0}
+.contract b{color:var(--gold)}
+.rec{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#ff6b6b;border:1px solid #5a1f1f;border-radius:4px;padding:3px 8px}
+.rec::before{content:"";width:7px;height:7px;border-radius:50%;background:#ff4d4d;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.newsong{background:none;border:1px solid #3a3a3a;color:var(--soft);border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;min-height:34px}
+.newsong:hover{border-color:var(--gold);color:var(--gold)}
+.bar-right{display:flex;align-items:center;gap:12px}
+.ownnote{font-size:13px;color:var(--gold);border-top:1px solid var(--line2);padding-top:10px;margin:0}
+
 /* CHIPS */
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:#141414;border:1px solid #333;color:var(--soft);border-radius:999px;padding:9px 16px;font-size:14px;cursor:pointer;min-height:40px;font-family:Inter,sans-serif}
@@ -143,7 +162,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   .stepper .bar{width:20px;margin:0 6px}
   .stepper .t{display:none}
 }
-@media (prefers-reduced-motion:reduce){.spin,.vu i{animation:none}.vu i{height:60%}}
+@media (prefers-reduced-motion:reduce){.spin,.vu i,.rec::before{animation:none}.vu i{height:60%}}
 /* DESKTOP: three columns side by side */
 @media (min-width:1100px){
   .studio{display:grid;grid-template-columns:1.3fr 1fr 1fr;align-items:start}
@@ -212,7 +231,11 @@ footer{border-top:1px solid var(--line);margin-top:48px}
       <li class="bar" aria-hidden="true"></li>
       <li id="s3"><span class="n">3</span><span class="t">Produce</span></li>
     </ol>
-    <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+    <div class="bar-right">
+      <span class="rec hidden" id="rec" title="Your steps are being recorded for the ownership contract">REC · CONTRACT</span>
+      <button class="newsong" id="new-song" type="button">+ New song</button>
+      <span class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+    </div>
   </div>
 </div>
 
@@ -221,10 +244,15 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   <!-- 1. LYRICS -->
   <section class="panel" aria-labelledby="h1">
     <div class="panel-h"><span class="num">01</span><h2 id="h1">Lyrics</h2></div>
+    <p class="contract" id="contract-hint"><span aria-hidden="true">🔒</span><span>Want an <b>ownership contract</b> for this song? Lock the title, then lock the lyrics, before you produce. Your contract (10 GNS) is issued after the song is ready.</span></p>
     <div class="grid2">
       <div class="field">
         <label for="title">Song title</label>
-        <input type="text" id="title" maxlength="120" placeholder="e.g. Beneath Your Skies"/>
+        <div class="lockrow">
+          <input type="text" id="title" maxlength="120" placeholder="e.g. Beneath Your Skies"/>
+          <button class="lockbtn" id="lock-title" type="button" title="Record the title in your ownership contract">🔒 Lock</button>
+        </div>
+        <p class="lockinfo hidden" id="title-info"></p>
       </div>
       <div class="field">
         <label for="language">Language</label>
@@ -258,8 +286,13 @@ footer{border-top:1px solid var(--line);margin-top:48px}
         <p class="hint">Tip: section tags like [Chorus] help the singer structure the song.</p>
         <span class="count" id="count">0 / 3000</span>
       </div>
+      <div class="tools">
+        <button class="lockbtn" id="lock-lyrics" type="button" disabled title="Lock the title first">🔒 Lock lyrics</button>
+        <p class="lockinfo hidden" id="lyrics-info"></p>
+      </div>
     </div>
   </section>
+
   </div>
   <div class="col col-sound">
   <!-- 2. SOUND -->
@@ -318,6 +351,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     </div>
     <p class="preview" id="preview"></p>
   </section>
+
   </div>
   <div class="col col-out">
   <!-- 3. PRODUCE -->
@@ -381,7 +415,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   var PRICE = { standard: 5, studio: 10 };
   var LIMIT = { standard: 3000, studio: 5000 };
   var $ = function (id) { return document.getElementById(id); };
-  var credits = null, user = null, busy = false;
+  var credits = null, user = null, busy = false, record = null;
 
   /* ── helpers ───────────────────────────────────────────── */
   function quality() { return document.querySelector('input[name=quality]:checked').value; }
@@ -402,6 +436,8 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     return parts.join(', ').slice(0, 1000);
   }
   function gender() { var v = picked('voice'); return v.length ? v[0].getAttribute('data-v') : ''; }
+  function styleParts() { return { genre: pickedText('genre')[0] || '', mood: pickedText('mood').join(', '), voice: pickedText('voice')[0] || '', tempo: pickedText('tempo')[0] || '', extra: $('extra').value.trim() }; }
+  function when(iso) { try { return new Date(iso).toLocaleString(); } catch (e) { return iso; } }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function setMsg(el, text, kind) { el.textContent = text || ''; el.className = 'msg' + (kind ? ' ' + kind : ''); }
 
@@ -417,6 +453,24 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     $('s2').classList.toggle('ok', stylePrompt().length > 0);
     $('s3').classList.toggle('ok', !!document.querySelector('.track audio'));
     $('bal').textContent = credits === null ? '—' : credits + ' GNS';
+    var tLocked = !!record, lLocked = !!(record && record.lyricsLockedAt);
+    $('title').readOnly = tLocked; $('title').classList.toggle('locked', tLocked);
+    $('lyrics').readOnly = lLocked; $('lyrics').classList.toggle('locked', lLocked);
+    $('lock-title').disabled = tLocked || busy;
+    $('lock-title').classList.toggle('done', tLocked);
+    $('lock-title').textContent = tLocked ? '🔒 Locked' : '🔒 Lock';
+    $('lock-lyrics').disabled = !tLocked || lLocked || busy || !$('lyrics').value.trim();
+    $('lock-lyrics').title = tLocked ? 'Record the lyrics in your ownership contract' : 'Lock the title first';
+    $('lock-lyrics').classList.toggle('done', lLocked);
+    $('lock-lyrics').textContent = lLocked ? '🔒 Lyrics locked' : '🔒 Lock lyrics';
+    $('ai-btn').disabled = lLocked || busy;
+    document.querySelectorAll('.tag').forEach(function (t) { t.disabled = lLocked; });
+    $('title-info').classList.toggle('hidden', !tLocked);
+    if (tLocked) $('title-info').textContent = 'Locked · ' + when(record.titleLockedAt);
+    $('lyrics-info').classList.toggle('hidden', !lLocked);
+    if (lLocked) $('lyrics-info').textContent = 'Locked · ' + when(record.lyricsLockedAt) + ' · human-written ' + record.humanPct + '%';
+    $('rec').classList.toggle('hidden', !tLocked);
+    $('contract-hint').classList.toggle('hidden', lLocked);
     var go = $('go');
     document.body.classList.toggle('busy', busy);
     if (busy) { go.disabled = true; go.textContent = 'Producing…'; return; }
@@ -471,6 +525,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     user = u;
     if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
     refresh();
+    restoreRecord();
     resumePending();
   });
 
@@ -494,7 +549,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
       if (!title && d.title) $('title').value = d.title;
       setMsg($('ai-msg'), 'Done — edit the lyrics as you like.', 'ok');
     } catch (e) { setMsg($('ai-msg'), e.message, 'err'); }
-    btn.disabled = false; btn.textContent = '✦ Write lyrics with AI';
+    btn.textContent = '✦ Write lyrics with AI';
     refresh();
   });
 
@@ -506,13 +561,16 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     var lyrics = $('lyrics').value.trim(), q = quality();
     if (!lyrics) { setMsg(msg, 'Add your lyrics first (step 1).', 'err'); $('lyrics').focus(); return; }
     if (lyrics.length > LIMIT[q]) { setMsg(msg, 'Your lyrics are too long for ' + q + ' (max ' + LIMIT[q] + ' characters).', 'err'); return; }
+    if (record && !record.lyricsLockedAt) { setMsg(msg, 'Your title is locked for a contract: lock the lyrics too before producing (or click "+ New song" to start without a contract).', 'err'); return; }
+    if (record && record.taskId) { setMsg(msg, 'This contract song was already produced. Click "+ New song" to create another one.', 'err'); return; }
     var title = $('title').value.trim() || 'Untitled song';
-    if (!confirm('Produce "' + title + '" for ' + cost() + ' GNS?')) return;
+    if (!confirm('Produce "' + title + '" for ' + cost() + ' GNS?' + (record ? '\n\nThe style choices will be recorded in your ownership contract.' : ''))) return;
 
     busy = true; refresh();
     try {
       var body = { type: 'song', quality: q, lyrics: lyrics, prompt: stylePrompt(), number_of_songs: versions() };
       if (q === 'studio' && gender()) body.gender = gender();
+      if (record) { body.recordId = record.recordId; body.styleParts = styleParts(); body.lyrics = record.lyrics || lyrics; }
       var r = await fetch('/api/music', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       var d = await r.json().catch(function () { return {}; });
       if (r.status === 401) { alert('Please log in again.'); location.href = 'login.html'; return; }
@@ -522,7 +580,8 @@ footer{border-top:1px solid var(--line);margin-top:48px}
         if (d.refunded) t += ' Your ' + d.refunded + ' GNS were returned.';
         throw new Error(t);
       }
-      var job = { taskId: d.taskId, title: title, n: versions(), q: q, at: Date.now() };
+      var job = { taskId: d.taskId, title: title, n: versions(), q: q, at: Date.now(), recordId: record ? record.recordId : null };
+      if (record) { record.taskId = d.taskId; saveRecord(); }
       localStorage.setItem('md_pending_song', JSON.stringify(job));
       track(job);
     } catch (e) {
@@ -592,6 +651,11 @@ footer{border-top:1px solid var(--line);margin-top:48px}
       box.appendChild(el);
       saveSong(name, u);
     });
+    if (job.recordId) {
+      var note = document.createElement('p'); note.className = 'ownnote';
+      note.textContent = '🔒 Title, lyrics and style were recorded for your ownership contract. Contract issuing (10 GNS) arrives in the next update.';
+      box.appendChild(note);
+    }
     var audios = box.querySelectorAll('audio');
     audios.forEach(function (a) { a.addEventListener('play', function () { audios.forEach(function (b) { if (b !== a) b.pause(); }); }); });
     renderMine(); refresh();
@@ -625,6 +689,64 @@ footer{border-top:1px solid var(--line);margin-top:48px}
       row.querySelector('a').href = s.url;
       box.appendChild(row);
     });
+  }
+
+  /* ── ownership record: lock title → lock lyrics → produce ── */
+  function saveRecord() { if (record) localStorage.setItem('md_record', JSON.stringify(record)); else localStorage.removeItem('md_record'); }
+  async function recordCall(payload) {
+    var r = await fetch('/api/record', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    var d = await r.json().catch(function () { return {}; });
+    if (r.status === 401) { location.href = 'login.html'; throw new Error('Please log in again.'); }
+    if (!r.ok) throw new Error(d.error || 'The server could not record this step.');
+    return d;
+  }
+  $('lock-title').addEventListener('click', async function () {
+    if (!user) { location.href = 'login.html'; return; }
+    var t = $('title').value.trim();
+    if (!t) { setMsg($('ai-msg'), 'Write the song title first.', 'err'); $('title').focus(); return; }
+    if (!confirm('Lock the title "' + t + '"?\n\nIt will be recorded in your ownership contract and cannot be changed for this song.')) return;
+    this.disabled = true;
+    try {
+      var d = await recordCall({ action: 'title', title: t });
+      record = { recordId: d.recordId, title: d.title, titleLockedAt: d.titleLockedAt };
+      saveRecord(); setMsg($('ai-msg'), '');
+    } catch (e) { setMsg($('ai-msg'), e.message, 'err'); }
+    refresh();
+  });
+  $('lock-lyrics').addEventListener('click', async function () {
+    if (!record) return;
+    var l = $('lyrics').value.trim();
+    if (!l) return;
+    if (!confirm('Lock these lyrics?\n\nAfter locking they cannot be changed, and they will be recorded in your ownership contract with the share you wrote yourself.')) return;
+    this.disabled = true;
+    try {
+      var d = await recordCall({ action: 'lyrics', recordId: record.recordId, lyrics: l });
+      record.lyricsLockedAt = d.lyricsLockedAt; record.humanPct = d.humanPct; record.lyrics = l;
+      saveRecord(); setMsg($('go-msg'), '');
+    } catch (e) { setMsg($('ai-msg'), e.message, 'err'); }
+    refresh();
+  });
+  $('new-song').addEventListener('click', function () {
+    if (busy) return;
+    if (($('title').value.trim() || $('lyrics').value.trim()) && !confirm('Start a new song? The current title and lyrics will be cleared from the page.')) return;
+    record = null; saveRecord();
+    ['title', 'idea', 'lyrics', 'extra'].forEach(function (id) { $(id).value = ''; });
+    setMsg($('ai-msg'), ''); setMsg($('go-msg'), '');
+    $('tracks').innerHTML = ''; $('results').classList.add('hidden');
+    refresh();
+  });
+  async function restoreRecord() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('md_record') || 'null'); } catch (e) {}
+    if (!saved || !saved.recordId || !user) return;
+    try {
+      var d = await recordCall({ action: 'get', recordId: saved.recordId });
+      record = { recordId: d.recordId, title: d.title, titleLockedAt: d.titleLockedAt, lyricsLockedAt: d.lyricsLockedAt, humanPct: d.humanPct, lyrics: d.lyrics, taskId: d.taskId };
+      $('title').value = d.title || '';
+      if (d.lyrics) $('lyrics').value = d.lyrics;
+      saveRecord();
+    } catch (e) { record = null; saveRecord(); }
+    refresh();
   }
 
   renderMine();

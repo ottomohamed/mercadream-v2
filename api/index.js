@@ -795,15 +795,21 @@ async function handle_avatarmulti(req, res) {
 }
 
 async function handle_music(req, res) {
-  const { type, quality, lyrics, prompt, number_of_songs, gender } = req.body||{};
+  const { type, quality, lyrics, prompt, number_of_songs, gender, recordId, styleParts } = req.body||{};
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  let rec = null;
+  if (recordId) {
+    const u = await getUser(req);
+    rec = u ? await loadRecord(u.uid, recordId) : null;
+    if (!rec || rec.data.status !== 'lyrics') return res.status(400).json({ error: 'Lock your title and lyrics before producing a song with a contract.' });
+  }
   const style = String(prompt||'').slice(0, 1024);
   let model, body;
-  if (type === 'bgm') {
+  if (type === 'bgm' && !rec) {
     model = 'mureka-ai/mureka-v9/generate-bgm';
     body = { prompt: style || 'cinematic background music', number_of_songs: 1, output_format: 'mp3' };
   } else {
-    const text = String(lyrics||'').trim();
+    const text = rec ? rec.data.lyrics : String(lyrics||'').trim();
     const max = quality === 'studio' ? 5000 : 3000;
     if (!text) return res.status(400).json({ error: 'Lyrics are required.' });
     if (text.length > max) return res.status(400).json({ error: 'Lyrics are too long (max ' + max + ' characters).' });
@@ -825,7 +831,16 @@ async function handle_music(req, res) {
     const d = await r.json();
     const taskId = d?.data?.id;
     if (!taskId) return res.status(500).json({ error: d?.message||'No task ID', raw: d });
-    return res.json({ taskId });
+    if (rec) {
+      const sp = styleParts || {};
+      const clip = (v, n) => String(v || '').slice(0, n);
+      try {
+        await rec.ref.update({ status: 'produced', taskId, producedAt: nowIso(), quality: quality === 'studio' ? 'studio' : 'standard',
+          engine: model, style, versions: body.number_of_songs || 1,
+          styleParts: { genre: clip(sp.genre, 40), mood: clip(sp.mood, 80), voice: clip(sp.voice, 20), tempo: clip(sp.tempo, 20), extra: clip(sp.extra, 300) } });
+      } catch (e) { console.error('record produce', e.message); }
+    }
+    return res.json({ taskId, recordId: rec ? rec.ref.id : undefined });
   } catch(e) { return res.status(500).json({ error: e.message }); }
 }
 
@@ -930,6 +945,65 @@ async function handle_i2v(req, res) {
     return res.json({ taskId });
   } catch(e) { return res.status(500).json({ error: e.message }); }
 }
+// -- OWNERSHIP RECORD (song contract): title -> lyrics -> production --
+function normLine(s) {
+  return String(s || '').toLowerCase().replace(/[\u064B-\u0652]/g, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+function isTagLine(s) { return /^\s*\[[^\]]+\]\s*$/.test(String(s || '')); }
+function authorship(finalLyrics, drafts) {
+  const ai = new Set();
+  (drafts || []).forEach(d => String(d || '').split('\n').forEach(l => { const n = normLine(l); if (n && !isTagLine(l)) ai.add(n); }));
+  const kinds = String(finalLyrics || '').split('\n').map(l => {
+    if (isTagLine(l)) return 'tag';
+    const n = normLine(l);
+    if (!n) return 'blank';
+    return ai.has(n) ? 'ai' : 'human';
+  });
+  const counted = kinds.filter(k => k === 'ai' || k === 'human');
+  const human = counted.filter(k => k === 'human').length;
+  return { kinds, humanPct: counted.length ? Math.round(human * 100 / counted.length) : 0 };
+}
+async function loadRecord(uid, id) {
+  if (!id || typeof id !== 'string' || id.length > 64 || id.includes('/')) return null;
+  const ref = db().collection('records').doc(id);
+  const snap = await ref.get();
+  if (!snap.exists || snap.data().uid !== uid) return null;
+  return { ref, data: snap.data() };
+}
+async function handle_record(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  const user = await getUser(req);
+  if (!user) return res.status(401).json({ error: 'Please log in again.', code: 'AUTH_REQUIRED' });
+  const b = req.body || {};
+  if (b.action === 'title') {
+    const title = String(b.title || '').trim().slice(0, 120);
+    if (!title) return res.status(400).json({ error: 'Write the title first.' });
+    const ref = db().collection('records').doc();
+    const at = nowIso();
+    await ref.set({ uid: user.uid, email: user.email || '', name: user.name || '', status: 'title', title, titleLockedAt: at, createdAt: at });
+    return res.json({ recordId: ref.id, status: 'title', title, titleLockedAt: at });
+  }
+  const rec = await loadRecord(user.uid, b.recordId);
+  if (!rec) return res.status(404).json({ error: 'Record not found.' });
+  if (b.action === 'lyrics') {
+    if (rec.data.status !== 'title') return res.status(409).json({ error: 'Lyrics are already locked.' });
+    const lyrics = String(b.lyrics || '').trim();
+    if (!lyrics) return res.status(400).json({ error: 'Write the lyrics first.' });
+    if (lyrics.length > 5000) return res.status(400).json({ error: 'Lyrics are too long (max 5000 characters).' });
+    const logs = await db().collection('lyricsLog').where('uid', '==', user.uid).limit(500).get();
+    const drafts = logs.docs.map(d => d.data().text);
+    const a = authorship(lyrics, drafts);
+    const at = nowIso();
+    await rec.ref.update({ status: 'lyrics', lyrics, lyricsLockedAt: at, humanPct: a.humanPct, lineKinds: a.kinds, aiDraftsCompared: drafts.length });
+    return res.json({ recordId: rec.ref.id, status: 'lyrics', lyricsLockedAt: at, humanPct: a.humanPct });
+  }
+  if (b.action === 'get') {
+    const d = rec.data;
+    return res.json({ recordId: rec.ref.id, status: d.status, title: d.title, titleLockedAt: d.titleLockedAt,
+      lyrics: d.lyrics || null, lyricsLockedAt: d.lyricsLockedAt || null, humanPct: (d.humanPct === undefined ? null : d.humanPct), taskId: d.taskId || null });
+  }
+  return res.status(400).json({ error: 'Unknown action.' });
+}
 // AI songwriter (free for the user, daily cap via limited())
 async function handle_lyrics(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
@@ -964,6 +1038,10 @@ async function handle_lyrics(req, res) {
     const m = text.match(/^\s*TITLE:\s*(.+)\n+([\s\S]*)$/i);
     const outTitle = m ? m[1].trim().replace(/^["']|["']$/g, '') : title;
     const outLyrics = (m ? m[2] : text).trim().slice(0, 3000);
+    try {
+      const u = await getUser(req);
+      if (u) await db().collection('lyricsLog').add({ uid: u.uid, text: outLyrics, at: nowIso() });
+    } catch (e) { console.error('lyricsLog', e.message); }
     return res.json({ title: outTitle, lyrics: outLyrics });
   } catch (e) { return res.status(500).json({ error: e.message }); }
 }
@@ -1080,6 +1158,7 @@ module.exports = async function handler(req, res) {
   const routes = {
     // free / utility
     fingerprint: handle_fingerprint,
+    record:      handle_record,
     pexels:      handle_pexels,
     checkout:    handle_checkout,
     webhook:     handle_webhook,
