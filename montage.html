@@ -87,6 +87,11 @@ select:focus,textarea:focus,input:focus{border-color:var(--gold);outline:none}
 .blk{position:relative;min-width:6px;background:#222 center/cover no-repeat;border:0;padding:0;cursor:pointer}
 .blk span{position:absolute;left:4px;top:3px;font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 3px #000}
 .blk.sel{outline:2px solid var(--gold);outline-offset:-2px}
+.addclip{flex:none;width:46px;height:46px;align-self:flex-start;background:#1a1606;border:1px dashed var(--gold);color:var(--gold);font-size:22px;font-weight:700;border-radius:6px;cursor:pointer;font-family:Inter,sans-serif}
+.addclip:hover{background:#2a2208}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tools .btn{min-height:40px;font-size:14px}
+.tools .sep{flex:1}
 .lyr{position:relative;height:12px;margin-top:4px}
 .lyr i{position:absolute;top:2px;height:8px;border-radius:2px;background:#5c4a15}
 .ph{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--gold-hi);box-shadow:0 0 6px var(--gold);pointer-events:none;left:0}
@@ -210,6 +215,12 @@ footer{border-top:1px solid var(--line);margin-top:40px}
 
   <!-- MONITOR + TIMELINE -->
   <div class="col center">
+    <div class="tools" role="toolbar" aria-label="Add to your video">
+      <button class="btn btn-gold" id="t-media" type="button">+ Videos or photos</button>
+      <button class="btn btn-ghost" id="t-audio" type="button">+ Music or sound</button>
+      <a class="btn btn-ghost" href="library.html">My Library</a>
+      <a class="btn btn-ghost" href="scenes.html">Free scenes</a>
+    </div>
     <div class="monitor">
       <div class="screen" id="screen">
         <canvas id="cv" width="1280" height="720" aria-label="Video preview"></canvas>
@@ -227,6 +238,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
           <div class="lyr" id="lyr"></div>
           <div class="ph" id="ph"></div>
         </div>
+        <button class="addclip" id="add-clip" type="button" aria-label="Add videos or photos" title="Add videos or photos">+</button>
       </div>
     </div>
 
@@ -658,6 +670,9 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   var MB = 1024 * 1024;
   $('up-audio-btn').addEventListener('click', function () { $('up-audio').click(); });
   $('up-media-btn').addEventListener('click', function () { $('up-media').click(); });
+  $('t-media').addEventListener('click', function () { $('up-media').click(); });
+  $('t-audio').addEventListener('click', function () { $('up-audio').click(); });
+  $('add-clip').addEventListener('click', function () { $('up-media').click(); });
   $('up-audio').addEventListener('change', function () {
     var f = this.files && this.files[0]; this.value = '';
     if (!f) return;
