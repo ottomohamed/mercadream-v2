@@ -161,6 +161,8 @@ footer{border-top:1px solid var(--line);margin-top:40px}
         <select id="audio"></select>
         <p class="hint" id="audio-hint"></p>
       </div>
+      <button class="btn btn-ghost btn-sm" id="up-audio-btn" type="button">&#8679; Upload a sound from your device</button>
+      <input type="file" id="up-audio" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg" hidden/>
     </section>
     <section class="panel" aria-labelledby="h-sc">
       <h2 id="h-sc">Scenes</h2>
@@ -172,7 +174,12 @@ footer{border-top:1px solid var(--line);margin-top:40px}
           <button class="chip" type="button" data-v="portrait" aria-pressed="false">9:16 Shorts, TikTok</button>
         </div>
       </div>
-      <a class="btn btn-ghost btn-sm" href="scenes.html">Change scenes</a>
+      <div class="row">
+        <a class="btn btn-ghost btn-sm" href="scenes.html">Change scenes</a>
+        <button class="btn btn-ghost btn-sm" id="up-media-btn" type="button">&#8679; Add your videos or photos</button>
+      </div>
+      <input type="file" id="up-media" accept="video/*,image/*" multiple hidden/>
+      <p class="hint" id="up-hint">Only upload files you have the right to use. Up to 300 MB per video.</p>
     </section>
     <section class="panel" aria-labelledby="h-ly">
       <h2 id="h-ly">Words on screen</h2>
@@ -305,7 +312,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   var EFFECT_CYCLE = ['zoomInSlow', 'slideLeftSlow', 'zoomOutSlow', 'slideRightSlow'];
   var FILTERS = { none: 'none', boost: 'saturate(1.35) contrast(1.06)', contrast: 'contrast(1.3)', muted: 'saturate(.6) brightness(1.04)',
     darken: 'brightness(.72) contrast(1.08)', lighten: 'brightness(1.18)', greyscale: 'grayscale(1) contrast(1.1)' };
-  var S = { format: 'landscape', audio: null, duration: 0, scenes: [], clips: [], lines: [], synced: false, font: 'clean', lyrics: true, ai: false, sel: -1 };
+  var S = { format: 'landscape', audio: null, duration: 0, scenes: [], own: [], clips: [], lines: [], synced: false, font: 'clean', lyrics: true, ai: false, sel: -1 };
   var sources = [], user = null, credits = null, busy = false;
   var aud = new Audio(); aud.preload = 'auto';
   var vids = [], clock = null, raf = 0;
@@ -326,21 +333,30 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     if (last && last.url) add({ url: last.url, title: last.title || 'My last song', kind: last.style === 'voice-over' ? 'voice' : 'song', text: last.lyrics || '' });
     songs.forEach(function (s) { add({ url: s.url, title: s.title || 'Song', kind: 'song', text: '' }); });
     voices.forEach(function (v) { add({ url: v.url, title: v.title || 'Voice-over', kind: 'voice', text: v.text || '' }); });
-    var sel = $('audio'); sel.innerHTML = '';
-    sources.forEach(function (s, i) { var o = document.createElement('option'); o.value = i; o.textContent = (s.kind === 'voice' ? 'Voice-over: ' : 'Song: ') + s.title; sel.appendChild(o); });
-    if (!sources.length) { var o = document.createElement('option'); o.textContent = 'No song or voice-over yet'; sel.appendChild(o); sel.disabled = true; }
     if (sb.lyrics && sources[0] && sources[0].kind === 'song' && !sources[0].text) sources[0].text = sb.lyrics;
-    var th = $('sc-thumbs'); th.innerHTML = '';
-    S.scenes.slice(0, 5).forEach(function (s) { var im = document.createElement('img'); im.src = s.chosen.image; im.alt = ''; th.appendChild(im); });
-    $('sc-text').innerHTML = S.scenes.length ? '<b>' + S.scenes.length + ' scenes</b> from your storyboard' : 'No scenes picked yet';
+    renderSourceSelect(); renderSceneSummary();
     press($('fmt'), S.format);
+  }
+  function renderSourceSelect() {
+    var sel = $('audio'); sel.innerHTML = ''; sel.disabled = !sources.length;
+    sources.forEach(function (s, i) { var o = document.createElement('option'); o.value = i; o.textContent = (s.upload ? 'Uploaded: ' : s.kind === 'voice' ? 'Voice-over: ' : 'Song: ') + s.title; sel.appendChild(o); });
+    if (!sources.length) { var o = document.createElement('option'); o.textContent = 'No song or voice-over yet'; sel.appendChild(o); }
+  }
+  function renderSceneSummary() {
+    var th = $('sc-thumbs'); th.innerHTML = '';
+    S.scenes.map(function (s) { return s.chosen.image; }).concat(S.own.map(function (o) { return o.thumb; })).filter(Boolean).slice(0, 5)
+      .forEach(function (u) { var im = document.createElement('img'); im.src = u; im.alt = ''; th.appendChild(im); });
+    var parts = [];
+    if (S.scenes.length) parts.push('<b>' + S.scenes.length + ' scenes</b> from your storyboard');
+    if (S.own.length) parts.push('<b>' + S.own.length + '</b> of your own');
+    $('sc-text').innerHTML = parts.length ? parts.join(' + ') : 'No scenes picked yet';
   }
   function pickAudio(i) {
     var s = sources[i]; S.audio = s || null; S.synced = false;
     if (!s) return emptyState();
     $('lyrics').value = (s.text || '').trim();
     $('f-intro').classList.toggle('hidden', s.kind !== 'song');
-    $('intro').value = s.kind === 'song' ? 8 : 0;
+    $('intro').value = s.kind === 'song' && !s.upload ? 8 : 0;
     $('audio-hint').textContent = 'Loading the sound...';
     aud.src = s.url;
   }
@@ -358,8 +374,13 @@ footer{border-top:1px solid var(--line);margin-top:40px}
       var o = keepStyle && old[i] ? old[i] : null;
       return { n: i, section: s.section || 'Scene ' + (i + 1), excerpt: s.excerpt || '', query: s.query || '', image: s.chosen.image,
         src: s.chosen.files.hd || s.chosen.files.sd, prev: s.chosen.files.sd || s.chosen.files.hd, clipDur: s.chosen.duration || 10, trim: 0,
+        weight: o ? o.weight : 1, effect: o ? o.effect : EFFECT_CYCLE[i % 4], transIn: o ? o.transIn : (i ? 'fade' : 'none'), filter: o ? o.filter : 'none', kind: 'video' };
+    }).concat(S.own.map(function (m, k) {
+      var i = S.scenes.length + k, o = keepStyle && old[i] ? old[i] : null;
+      return { n: i, section: m.name, excerpt: '', query: '', image: m.thumb, src: m.url, prev: m.url, own: m, kind: m.kind,
+        clipDur: m.kind === 'image' ? 3600 : (m.dur || 10), trim: 0,
         weight: o ? o.weight : 1, effect: o ? o.effect : EFFECT_CYCLE[i % 4], transIn: o ? o.transIn : (i ? 'fade' : 'none'), filter: o ? o.filter : 'none' };
-    });
+    }));
     timeClips();
   }
   function timeClips() {
@@ -392,8 +413,9 @@ footer{border-top:1px solid var(--line);margin-top:40px}
 
   /* ---------- video elements ---------- */
   function prepVideos() {
-    vids.forEach(function (v) { v.pause(); v.removeAttribute('src'); v.load(); });
+    vids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.pause(); v.removeAttribute('src'); v.load(); } });
     vids = S.clips.map(function (c) {
+      if (c.kind === 'image') { var im = new Image(); im.onload = function () { if (!clock) drawAt(aud.currentTime || 0); }; im.src = c.prev; return im; }
       var v = document.createElement('video');
       v.crossOrigin = 'anonymous'; v.muted = true; v.playsInline = true; v.loop = true; v.preload = 'auto'; v.src = c.prev;
       v.addEventListener('loadeddata', function () { if (!clock) drawAt(aud.currentTime || 0); });
@@ -402,7 +424,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   }
   function clipAt(t) { for (var i = 0; i < S.clips.length; i++) { var c = S.clips[i]; if (t >= c.start && t < c.start + c.length) return i; } return S.clips.length - 1; }
   function syncVideo(i, t, playing) {
-    var c = S.clips[i], v = vids[i]; if (!c || !v) return;
+    var c = S.clips[i], v = vids[i]; if (!c || !v || v.tagName !== 'VIDEO') return;
     var want = (c.trim + Math.max(0, t - c.start)) % Math.max(0.5, c.clipDur);
     if (Math.abs(v.currentTime - want) > 0.6 && v.readyState >= 1) { try { v.currentTime = want; } catch (e) {} }
     if (playing && v.paused) v.play().catch(function () {});
@@ -416,8 +438,10 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     $('screen').classList.toggle('portrait', p);
   }
   function drawClip(i, t, alpha, mode, prog) {
-    var c = S.clips[i], v = vids[i]; if (!c || !v || v.readyState < 2) return;
-    var W = cv.width, H = cv.height, vw = v.videoWidth || 16, vh = v.videoHeight || 9;
+    var c = S.clips[i], v = vids[i]; if (!c || !v) return;
+    var img = v.tagName === 'IMG';
+    if (img ? !(v.complete && v.naturalWidth) : v.readyState < 2) return;
+    var W = cv.width, H = cv.height, vw = (img ? v.naturalWidth : v.videoWidth) || 16, vh = (img ? v.naturalHeight : v.videoHeight) || 9;
     var p = Math.min(1, Math.max(0, (t - c.start) / Math.max(0.1, c.length)));
     var e = c.effect, slow = /Slow$/.test(e), amp = slow ? 0.07 : 0.14, s = 1, dx = 0, dy = 0;
     if (/^zoomIn/.test(e)) s = 1 + amp * p;
@@ -476,7 +500,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     var i = clipAt(t), c = S.clips[i];
     syncVideo(i, t, playing);
     if (playing && S.clips[i + 1] && c.start + c.length - t < 0.8) syncVideo(i + 1, S.clips[i + 1].start, true);
-    vids.forEach(function (v, k) { if (k !== i && k !== i + 1 && k !== i - 1 && !v.paused) v.pause(); });
+    vids.forEach(function (v, k) { if (v.tagName === 'VIDEO' && k !== i && k !== i + 1 && k !== i - 1 && !v.paused) v.pause(); });
     var d = /Slow$/.test(c.transIn) ? 1.2 : /Fast$/.test(c.transIn) ? 0.3 : 0.6, since = t - c.start;
     if (i > 0 && c.transIn !== 'none' && since < d) {
       var prog = since / d, mode = c.transIn.replace(/(Slow|Fast)$/, '');
@@ -498,7 +522,8 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     raf = requestAnimationFrame(loop);
   }
   function play() { if (!S.clips.length || !S.duration) return; aud.play().then(function () { $('play').innerHTML = '&#10074;&#10074;'; cancelAnimationFrame(raf); loop(); }).catch(function () {}); }
-  function pause() { aud.pause(); cancelAnimationFrame(raf); vids.forEach(function (v) { v.pause(); }); $('play').innerHTML = '&#9654;'; drawAt(aud.currentTime, false); }
+  function pauseAll() { vids.forEach(function (v) { if (v.tagName === 'VIDEO') v.pause(); }); }
+  function pause() { aud.pause(); cancelAnimationFrame(raf); pauseAll(); $('play').innerHTML = '&#9654;'; drawAt(aud.currentTime, false); }
   $('play').addEventListener('click', function () { if (aud.paused) play(); else pause(); });
   aud.addEventListener('ended', function () { pause(); if (syncing) stopSync(); });
   $('tl').addEventListener('click', function (e) {
@@ -544,7 +569,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   $('in-right').addEventListener('click', function () { move(1); });
   $('in-del').addEventListener('click', function () {
     if (S.clips.length < 2) return;
-    S.clips.splice(S.sel, 1); var v = vids.splice(S.sel, 1)[0]; if (v) v.pause(); S.sel = Math.min(S.sel, S.clips.length - 1); edited();
+    S.clips.splice(S.sel, 1); var v = vids.splice(S.sel, 1)[0]; if (v && v.tagName === 'VIDEO') v.pause(); S.sel = Math.min(S.sel, S.clips.length - 1); edited();
   });
 
   /* ---------- side controls ---------- */
@@ -587,6 +612,65 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   $('sync-stop').addEventListener('click', stopSync);
   document.addEventListener('keydown', function (e) { if (syncing && e.code === 'Space') { e.preventDefault(); tap(); } });
 
+  /* ---------- your own files ---------- */
+  var MB = 1024 * 1024;
+  $('up-audio-btn').addEventListener('click', function () { $('up-audio').click(); });
+  $('up-media-btn').addEventListener('click', function () { $('up-media').click(); });
+  $('up-audio').addEventListener('change', function () {
+    var f = this.files && this.files[0]; this.value = '';
+    if (!f) return;
+    if (!/^audio\//.test(f.type) && !/\.(mp3|wav|m4a|aac|ogg)$/i.test(f.name)) { $('audio-hint').textContent = 'That file is not a sound. Use MP3, WAV or M4A.'; return; }
+    if (f.size > 60 * MB) { $('audio-hint').textContent = 'That sound is over 60 MB. Use a shorter or compressed file (MP3).'; return; }
+    pause();
+    sources.unshift({ url: URL.createObjectURL(f), title: f.name.replace(/\.[^.]+$/, ''), kind: 'song', text: '', upload: true, file: f, remote: null });
+    renderSourceSelect(); $('audio').value = '0'; pickAudio(0); emptyState();
+  });
+  function videoInfo(url) {
+    return new Promise(function (ok) {
+      var v = document.createElement('video'); v.muted = true; v.preload = 'auto'; v.src = url;
+      var done = function (thumb) { ok({ dur: v.duration || 10, thumb: thumb }); };
+      v.onloadeddata = function () { v.currentTime = Math.min(1, (v.duration || 2) / 2); };
+      v.onseeked = function () {
+        try { var c = document.createElement('canvas'); c.width = 320; c.height = Math.round(320 * (v.videoHeight || 9) / (v.videoWidth || 16)); c.getContext('2d').drawImage(v, 0, 0, c.width, c.height); done(c.toDataURL('image/jpeg', 0.7)); }
+        catch (e) { done(''); }
+      };
+      v.onerror = function () { ok(null); };
+      setTimeout(function () { ok({ dur: v.duration || 10, thumb: '' }); }, 8000);
+    });
+  }
+  $('up-media').addEventListener('change', async function () {
+    var files = Array.prototype.slice.call(this.files || []); this.value = '';
+    var bad = [];
+    for (var k = 0; k < files.length; k++) {
+      var f = files[k], isImg = /^image\//.test(f.type), isVid = /^video\//.test(f.type);
+      if (!isImg && !isVid) { bad.push(f.name + ' (not a video or photo)'); continue; }
+      if (f.size > (isImg ? 20 : 300) * MB) { bad.push(f.name + ' (too big)'); continue; }
+      var url = URL.createObjectURL(f), item = { kind: isImg ? 'image' : 'video', file: f, url: url, name: f.name.replace(/\.[^.]+$/, '').slice(0, 40), remote: null };
+      if (isImg) item.thumb = url;
+      else { var info = await videoInfo(url); if (!info) { bad.push(f.name + ' (cannot be played)'); continue; } item.dur = info.dur; item.thumb = info.thumb; }
+      S.own.push(item);
+    }
+    $('up-hint').textContent = bad.length ? 'Skipped: ' + bad.join(', ') + '.' : 'Added. Only upload files you have the right to use.';
+    renderSceneSummary(); emptyState();
+    if (S.duration) { pause(); buildClips(true); prepVideos(); renderTimeline(); refresh(); drawAt(aud.currentTime || 0, false); }
+  });
+  // Cloud render needs your files online: they go straight from your browser to the render service
+  async function putOnline(item, label) {
+    if (item.remote) return item.remote;
+    var d = await api('/api/upload', { name: item.file.name, size: item.file.size });
+    var body = await item.file.arrayBuffer();
+    var put = await fetch(d.url, { method: 'PUT', body: body });
+    if (!put.ok) throw new Error('Upload of ' + label + ' failed. Check your connection and try again.');
+    var t0 = Date.now();
+    while (Date.now() - t0 < 5 * 60 * 1000) {
+      await new Promise(function (r) { setTimeout(r, 2500); });
+      var r = await fetch('/api/upload?id=' + encodeURIComponent(d.id)); var s = await r.json().catch(function () { return {}; });
+      if (s.status === 'ready' && s.url) { item.remote = s.url; return s.url; }
+      if (s.status === 'failed') throw new Error(label + ' could not be read by the render service. Try another file.');
+    }
+    throw new Error('Upload of ' + label + ' is taking too long. Try again.');
+  }
+
   /* ---------- API ---------- */
   async function api(path, body) {
     var r = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -624,10 +708,17 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     if (credits !== null && credits < c) { location.href = 'pricing.html'; return; }
     pause(); busy = true; refresh();
     this.innerHTML = '<span class="spin" style="border-color:#5a4a14;border-top-color:#0a0a0a"></span> Sending to the render farm';
-    var plan = { audio: S.audio.url, format: S.format, font: S.font, lyrics: S.lyrics,
-      clips: S.clips.map(function (c) { return { src: c.src, start: c.start, length: c.length, clipDur: c.clipDur, trim: c.trim, effect: c.effect, transIn: c.transIn, filter: c.filter }; }),
-      texts: S.lyrics ? S.lines.map(function (l) { return { text: l.text, start: l.start, length: l.length }; }) : [] };
     try {
+      var todo = (S.audio.upload ? [S.audio] : []).concat(S.clips.filter(function (c) { return c.own; }).map(function (c) { return c.own; }))
+        .filter(function (x, k, a) { return !x.remote && a.indexOf(x) === k; });
+      for (var k = 0; k < todo.length; k++) {
+        setMsg($('ai-msg'), 'Uploading your files: ' + (k + 1) + ' of ' + todo.length + '. Keep this page open.');
+        await putOnline(todo[k], todo[k].title || todo[k].name || 'a file');
+      }
+      var plan = { audio: S.audio.upload ? S.audio.remote : S.audio.url, format: S.format, font: S.font, lyrics: S.lyrics,
+        clips: S.clips.map(function (c) { return { src: c.own ? c.own.remote : c.src, kind: c.kind, start: c.start, length: c.length, clipDur: c.clipDur, trim: c.trim, effect: c.effect, transIn: c.transIn, filter: c.filter }; }),
+        texts: S.lyrics ? S.lines.map(function (l) { return { text: l.text, start: l.start, length: l.length }; }) : [] };
+      setMsg($('ai-msg'), 'Sending to the render farm.');
       var d = await api('/api/montage', { plan: plan });
       var job = { taskId: d.taskId, at: Date.now(), title: S.audio.title, format: S.format };
       localStorage.setItem('md_pending_montage', JSON.stringify(job));
@@ -676,7 +767,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
       var rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 }), parts = [];
       rec.ondataavailable = function (e) { if (e.data && e.data.size) parts.push(e.data); };
       var finished = new Promise(function (ok) { rec.onstop = ok; });
-      vids.forEach(function (v) { v.currentTime = 0; });
+      vids.forEach(function (v) { if (v.tagName === 'VIDEO') v.currentTime = 0; });
       bar.classList.remove('hidden'); fill.style.width = '0%';
       setMsg($('free-msg'), 'Recording. Keep this tab open and visible until it ends.');
       clock = { get currentTime() { return a2.currentTime; }, mark: true };
@@ -684,7 +775,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
       var tick = setInterval(function () { fill.style.width = Math.min(100, a2.currentTime / S.duration * 100) + '%'; if (a2.currentTime >= S.duration - 0.05) a2.pause(); }, 250);
       await new Promise(function (ok) { a2.addEventListener('pause', ok, { once: true }); a2.addEventListener('ended', ok, { once: true }); });
       clearInterval(tick); rec.stop(); await finished;
-      cancelAnimationFrame(raf); clock = null; vids.forEach(function (v) { v.pause(); }); ac.close(); URL.revokeObjectURL(url);
+      cancelAnimationFrame(raf); clock = null; pauseAll(); ac.close(); URL.revokeObjectURL(url);
       var blob = new Blob(parts, { type: mime.split(';')[0] });
       saveVid({ url: URL.createObjectURL(blob), title: S.audio.title, format: S.format, local: true, ext: /mp4/.test(mime) ? 'mp4' : 'webm' });
       fill.style.width = '100%'; setMsg($('free-msg'), 'Done. Download it below before you leave this page.', 'ok');
@@ -721,14 +812,15 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   /* ---------- state of the buttons ---------- */
   function emptyState() {
     var e = $('empty'), acts = $('empty-acts'); acts.innerHTML = '';
-    var noSc = !S.scenes.length, noAu = !sources.length;
+    var noSc = !S.scenes.length && !S.own.length, noAu = !sources.length;
     e.classList.toggle('hidden', !(noSc || noAu)); $('screen').classList.toggle('is-empty', noSc || noAu);
     if (noAu && noSc) $('empty-text').textContent = 'A montage needs a sound and some scenes. Make a song or a voice-over, then pick scenes for it.';
     else if (noAu) $('empty-text').textContent = 'Your scenes are ready. Now make the sound: a song or a voice-over.';
-    else if (noSc) $('empty-text').textContent = 'Your sound is ready. Pick free scenes to go with it.';
+    else if (noSc) $('empty-text').textContent = 'Your sound is ready. Pick free scenes to go with it, or add your own videos and photos.';
+    function btn(t, id) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-ghost'; b.textContent = t; b.addEventListener('click', function () { $(id).click(); }); acts.appendChild(b); }
     function link(h, t, gold) { var a = document.createElement('a'); a.className = 'btn ' + (gold ? 'btn-gold' : 'btn-ghost'); a.href = h; a.textContent = t; acts.appendChild(a); }
-    if (noAu) { link('music.html', 'Make a song', true); link('voice.html', 'Make a voice-over'); }
-    if (noSc) link('scenes.html', 'Pick scenes', !noAu ? true : false);
+    if (noAu) { link('music.html', 'Make a song', true); link('voice.html', 'Make a voice-over'); btn('Upload a sound', 'up-audio'); }
+    if (noSc) { link('scenes.html', 'Pick scenes', !noAu); btn('Upload videos or photos', 'up-media'); }
   }
   function refresh() {
     var ready = !!(S.audio && S.duration && S.clips.length);
@@ -761,7 +853,6 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   /* ---------- start ---------- */
   loadSources(); sizeCanvas(); emptyState(); renderVids();
   if (sources.length) pickAudio(0);
-  if (S.scenes.length && !sources.length) { S.duration = 0; }
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (aud.paused) drawAt(aud.currentTime || 0, false); });
   refresh();

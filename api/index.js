@@ -70,7 +70,7 @@ function priceFor(service, body) {
 }
 
 // Free AI endpoints (cost you money, not the user): login + daily cap per user
-const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50, lyrics: 30, pexels: 300, scenes: 30, trendidea: 20, vscript: 30, mdirector: 20 };
+const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50, lyrics: 30, pexels: 300, scenes: 30, trendidea: 20, vscript: 30, mdirector: 20, upload: 60 };
 
 // ── FIREBASE ADMIN (server only) ──────────────────────────────
 let _admin = null;
@@ -1383,7 +1383,7 @@ function mtUrl(u) { u = String(u || ''); return /^https:\/\/[^\s"'<>]{4,600}$/.t
 function montagePlan(body) {
   const p = (body && body.plan) || {};
   const clips = (Array.isArray(p.clips) ? p.clips : []).slice(0, 80).map(c => ({
-    src: mtUrl(c.src), start: mtNum(c.start, 0, MT_MAX_SECONDS, 0), length: mtNum(c.length, 0.5, 120, 4),
+    src: mtUrl(c.src), kind: c.kind === 'image' ? 'image' : 'video', start: mtNum(c.start, 0, MT_MAX_SECONDS, 0), length: mtNum(c.length, 0.5, 120, 4),
     clipDur: mtNum(c.clipDur, 0.5, 600, 10), trim: mtNum(c.trim, 0, 600, 0),
     effect: MT_EFFECTS.includes(c.effect) ? c.effect : 'none', transIn: MT_TRANS.includes(c.transIn) ? c.transIn : 'fade',
     filter: MT_FILTERS.includes(c.filter) ? c.filter : 'none'
@@ -1414,6 +1414,15 @@ async function handle_montage(req, res) {
   // video clips: a clip shorter than its slot is repeated so the screen never goes black
   const vclips = [];
   m.clips.forEach(c => {
+    if (c.kind === 'image') {
+      const len = Math.min(c.length, m.total - c.start);
+      if (len <= 0.05 || vclips.length >= 400) return;
+      const clip = { asset: { type: 'image', src: c.src }, start: +c.start.toFixed(3), length: +len.toFixed(3), fit: 'cover' };
+      if (c.effect !== 'none') clip.effect = c.effect;
+      if (c.filter !== 'none') clip.filter = c.filter;
+      if (c.transIn !== 'none') clip.transition = { in: c.transIn };
+      vclips.push(clip); return;
+    }
     let at = c.start, left = Math.min(c.length, m.total - c.start), first = true, trim = Math.min(c.trim, Math.max(0, c.clipDur - 1));
     while (left > 0.05 && vclips.length < 400) {
       const piece = Math.min(left, Math.max(0.5, c.clipDur - trim));
@@ -1444,6 +1453,31 @@ async function handle_montage(req, res) {
     const id = d && d.response && d.response.id;
     if (!id) return res.status(500).json({ error: (d && (d.message || (d.response && d.response.error))) || 'No task ID', raw: d });
     return res.json({ taskId: id, seconds: Math.round(m.total) });
+  } catch (e) { return res.status(500).json({ error: e.message }); }
+}
+
+// Direct upload of the user's own files to the render service (Shotstack Ingest). The file goes from the browser straight to storage.
+async function handle_upload(req, res) {
+  if (!SHOTSTACK_KEY) return res.status(500).json({ error: 'SHOTSTACK_API_KEY not set.' });
+  const base = 'https://api.shotstack.io/ingest/' + SHOTSTACK_ENV;
+  try {
+    if (req.method === 'GET') {
+      const id = String((req.query && req.query.id) || '');
+      if (!/^[A-Za-z0-9-]{8,64}$/.test(id)) return res.status(400).json({ error: 'id required.' });
+      const r = await fetch(base + '/sources/' + id, { headers: { 'x-api-key': SHOTSTACK_KEY, 'Accept': 'application/json' } });
+      const d = await r.json();
+      const a = (d && d.data && d.data.attributes) || {};
+      const st = String(a.status || '');
+      return res.json({ status: st === 'ready' ? 'ready' : (st === 'failed' || st === 'deleted') ? 'failed' : 'processing', url: st === 'ready' ? (a.source || a.url || null) : null });
+    }
+    const size = Number((req.body || {}).size) || 0;
+    if (size > 300 * 1024 * 1024) return res.status(400).json({ error: 'Files must be under 300 MB.' });
+    const r = await fetch(base + '/upload', { method: 'POST', headers: { 'x-api-key': SHOTSTACK_KEY, 'Accept': 'application/json' } });
+    const d = await r.json();
+    const a = (d && d.data && d.data.attributes) || {};
+    const id = (d && d.data && d.data.id) || a.id;
+    if (!id || !a.url) return res.status(502).json({ error: 'The upload service did not answer. Try again.' });
+    return res.json({ id, url: a.url });
   } catch (e) { return res.status(500).json({ error: e.message }); }
 }
 
@@ -1708,6 +1742,7 @@ module.exports = async function handler(req, res) {
     voiceover:   paid('voiceover', handle_voiceover),
     montage:     paid('montage', handle_montage),       // GET (polling) stays free
     mdirector:   limited('mdirector', handle_mdirector),
+    upload:      (req, res) => req.method === 'GET' ? handle_upload(req, res) : limited('upload', handle_upload)(req, res), // status checks are free
     vscript:     limited('vscript', handle_vscript),
     voiceclone:  paid('voiceclone', handle_voiceclone),
     elevenlabs:  paid('elevenlabs', handle_elevenlabs),
