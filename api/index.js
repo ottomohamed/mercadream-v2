@@ -1,4 +1,4 @@
-﻿// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // MERCADREAM — api/index.js
 // UNIFIED ROUTER v4 — SECURE CREDITS
 //  • Every paid service: login verified on the server (Firebase ID token)
@@ -42,8 +42,13 @@ function priceFor(service, body) {
   if (service === 'wavespeed' || service === 'video') {
     cost = cost * Math.max(1, Math.ceil((parseInt(body.duration) || 5) / 5));
   }
-  if (service === 'music' || service === 'audioforge') {
+  if (service === 'audioforge') {
     cost = cost * Math.min(Math.max(parseInt(body.number_of_songs) || 1, 1), 4);
+  }
+  if (service === 'music') {
+    if (body.type === 'bgm') cost = 5;
+    else if (body.quality === 'studio') cost = 10;   // Mureka V9.5: one song
+    else cost = cost * Math.min(Math.max(parseInt(body.number_of_songs) || 1, 1), 2);
   }
   if (service === 'avatar') {
     cost = Math.max(cost, Math.ceil(parseInt(body.duration) || 10) * 2);
@@ -56,7 +61,7 @@ function priceFor(service, body) {
 }
 
 // Free AI endpoints (cost you money, not the user): login + daily cap per user
-const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50 };
+const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50, lyrics: 30 };
 
 // ── FIREBASE ADMIN (server only) ──────────────────────────────
 let _admin = null;
@@ -386,9 +391,10 @@ async function handle_video(req, res) {
       const outputs = d?.data?.outputs;
       const videoUrl = Array.isArray(outputs) ? outputs[0] : (outputs || null);
       return res.json({
-        status: status === 'completed' ? 'completed' : status === 'failed' ? 'failed' : 'generating',
+        status: status === 'completed' ? 'completed' : ['failed','cancelled','timeout','deleted'].includes(status) ? 'failed' : 'generating',
         taskId,
-        videoUrl: videoUrl || null
+        videoUrl: videoUrl || null,
+        outputs: Array.isArray(outputs) ? outputs : (outputs ? [outputs] : [])
       });
     } catch(e) {
       return res.status(500).json({ error: e.message });
@@ -789,13 +795,28 @@ async function handle_avatarmulti(req, res) {
 }
 
 async function handle_music(req, res) {
-  const { type, lyrics, prompt, number_of_songs, format } = req.body||{};
+  const { type, quality, lyrics, prompt, number_of_songs, gender } = req.body||{};
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
+  const style = String(prompt||'').slice(0, 1024);
+  let model, body;
+  if (type === 'bgm') {
+    model = 'mureka-ai/mureka-v9/generate-bgm';
+    body = { prompt: style || 'cinematic background music', number_of_songs: 1, output_format: 'mp3' };
+  } else {
+    const text = String(lyrics||'').trim();
+    const max = quality === 'studio' ? 5000 : 3000;
+    if (!text) return res.status(400).json({ error: 'Lyrics are required.' });
+    if (text.length > max) return res.status(400).json({ error: 'Lyrics are too long (max ' + max + ' characters).' });
+    if (quality === 'studio') {
+      model = 'mureka-ai/mureka-v9.5/generate-song';
+      body = { lyrics: text, prompt: style, output_format: 'mp3' };
+      if (gender === 'female' || gender === 'male') body.gender = gender;
+    } else {
+      model = 'mureka-ai/mureka-v9/generate-song';
+      body = { lyrics: text, prompt: style, number_of_songs: Math.min(Math.max(parseInt(number_of_songs)||1, 1), 2), output_format: 'mp3' };
+    }
+  }
   try {
-    const model = type === 'bgm' ? 'mureka-ai/mureka-v9/generate-bgm' : 'mureka-ai/mureka-v9/generate-song';
-    const body = type === 'bgm'
-      ? { prompt: prompt||'cinematic background music', number_of_songs: number_of_songs||1, format: format||'mp3' }
-      : { lyrics: lyrics||'', prompt: prompt||'', number_of_songs: number_of_songs||1, format: format||'mp3' };
     const r = await fetch('https://api.wavespeed.ai/api/v3/' + model, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
@@ -909,6 +930,44 @@ async function handle_i2v(req, res) {
     return res.json({ taskId });
   } catch(e) { return res.status(500).json({ error: e.message }); }
 }
+// AI songwriter (free for the user, daily cap via limited())
+async function handle_lyrics(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set.' });
+  const b = req.body || {};
+  const clip = (v, n) => String(v || '').trim().slice(0, n);
+  const idea = clip(b.idea, 1500), title = clip(b.title, 120);
+  const language = clip(b.language, 40) || 'English', genre = clip(b.genre, 60), mood = clip(b.mood, 80);
+  if (!idea && !title) return res.status(400).json({ error: 'Give a title or an idea.' });
+  const system =
+    'You are a professional songwriter at MercaDream Studio. Write ORIGINAL song lyrics from the user\'s idea. ' +
+    'Never copy or imitate the lyrics of existing songs; if the user asks for existing lyrics, write something original instead. ' +
+    'Write the lyrics in ' + language + '. ' +
+    'Put section tags in English, in square brackets, on their own lines: [Verse 1], [Chorus], [Verse 2], [Chorus], [Bridge], [Chorus], [Outro]. ' +
+    'Make it singable: short lines, natural rhymes, a memorable chorus that repeats. Keep the whole song under 1800 characters. ' +
+    'Answer in exactly this format and nothing else: first line "TITLE: <title>", then an empty line, then the lyrics.';
+  const user = [
+    title ? 'Title: ' + title : '',
+    genre ? 'Genre: ' + genre : '',
+    mood ? 'Mood: ' + mood : '',
+    idea ? 'Idea: ' + idea : ''
+  ].filter(Boolean).join('\n');
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1500, system, messages: [{ role: 'user', content: user }] })
+    });
+    const d = await r.json();
+    const text = (d?.content || []).map(c => c.text || '').join('').trim();
+    if (!text) return res.status(502).json({ error: 'The songwriter did not answer. Try again.' });
+    const m = text.match(/^\s*TITLE:\s*(.+)\n+([\s\S]*)$/i);
+    const outTitle = m ? m[1].trim().replace(/^["']|["']$/g, '') : title;
+    const outLyrics = (m ? m[2] : text).trim().slice(0, 3000);
+    return res.json({ title: outTitle, lyrics: outLyrics });
+  } catch (e) { return res.status(500).json({ error: e.message }); }
+}
+
 // ── STRIPE ────────────────────────────────────────────────────
 async function handle_checkout(req, res) {
   if (req.method!=='POST') return res.status(405).json({ error:'POST only.' });
@@ -1032,6 +1091,7 @@ module.exports = async function handler(req, res) {
     director:    limited('director', handle_director),
     semantic:    limited('semantic', handle_semantic),
     voice:       limited('voice', handle_voice),
+    lyrics:      limited('lyrics', handle_lyrics),
     // paid: login + server price + server deduction (refund only if provider rejected)
     wavespeed:   paid('wavespeed', handle_wavespeed),
     video:       paid('video', handle_video),          // GET (polling) stays free
