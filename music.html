@@ -225,6 +225,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   <a href="index.html" class="logo"><span>MERCADREAM</span><small>STUDIO</small></a>
   <div class="navright">
     <span class="balance hidden" id="nav-balance">0 GNS</span>
+    <a class="linkbtn" href="trends.html">Trends</a>
     <a class="linkbtn" href="scenes.html">Scenes</a>
     <a class="linkbtn" href="certificate.html">My contracts</a>
     <a class="linkbtn" href="pricing.html">Buy credits</a>
@@ -607,6 +608,29 @@ footer{border-top:1px solid var(--line);margin-top:48px}
     if (window.MD_USER) firebase.auth().signOut().then(function () { localStorage.removeItem('md_credits'); location.reload(); });
     else location.href = 'login.html';
   });
+  /* -- trend seed (from trends.html) -- */
+  function applyTrendSeed() {
+    if (!/[?&]from=trend\b/.test(location.search)) return;
+    var t = null; try { t = JSON.parse(localStorage.getItem('md_trend_seed') || 'null'); } catch (e) {}
+    try { localStorage.removeItem('md_trend_seed'); history.replaceState(null, '', 'music.html'); } catch (e) {}
+    if (!t || Date.now() - (t.at || 0) > 3600 * 1000) return;
+    function setChips(group, names) {
+      var g = document.querySelector('[data-group="' + group + '"]'); if (!g) return;
+      var want = (names || []).map(function (n) { return String(n).toLowerCase(); });
+      var chips = Array.prototype.slice.call(g.querySelectorAll('.chip'));
+      var key = function (c) { return (c.getAttribute('data-v') || c.textContent.trim()).toLowerCase(); };
+      if (!chips.some(function (c) { return want.indexOf(key(c)) >= 0; })) return;
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', String(want.indexOf(key(c)) >= 0)); });
+    }
+    setChips('genre', [t.genre]); setChips('mood', t.moods); setChips('tempo', [t.tempo]); setChips('voice', [t.voice]);
+    var lang = $('language'); if (t.language && Array.prototype.some.call(lang.options, function (o) { return o.value === t.language; })) lang.value = t.language;
+    if (t.title && !$('title').value.trim() && !$('title').readOnly) $('title').value = t.title;
+    if (t.idea && !$('idea').value.trim()) $('idea').value = t.idea;
+    if (t.extra && !$('extra').value.trim()) $('extra').value = t.extra;
+    setMsg($('ai-msg'), 'Trend brief loaded. Press "Write lyrics with AI" to write your original song.', 'ok');
+    refresh();
+  }
+  applyTrendSeed();
   if (window.mdAuthReady) window.mdAuthReady.then(function (u) {
     user = u;
     if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
