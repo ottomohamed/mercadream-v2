@@ -144,13 +144,9 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   .stepper .t{display:none}
 }
 @media (prefers-reduced-motion:reduce){.spin,.vu i{animation:none}.vu i{height:60%}}
-/* DESKTOP COCKPIT: everything on one screen */
+/* DESKTOP: three columns side by side */
 @media (min-width:1100px){
-  .studio{display:grid;grid-template-columns:1.3fr 1fr 1fr;align-items:stretch;height:calc(100vh - 72px - 59px)}
-  .col{min-height:0;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#333 transparent}
-  .col-lyrics .panel{flex:1;min-height:0}
-  .col-lyrics .field.grow{flex:1;min-height:0}
-  #lyrics{flex:1;min-height:160px;resize:none}
+  .studio{display:grid;grid-template-columns:1.3fr 1fr 1fr;align-items:start}
   .panel{padding:18px 20px;gap:14px}
   .field{gap:6px}
   .panel-h{margin-bottom:-2px}
@@ -161,8 +157,25 @@ footer{border-top:1px solid var(--line);margin-top:48px}
   .quality{grid-template-columns:1fr}
   .qcard{padding:14px}
   #idea{min-height:70px}
+  #lyrics{min-height:220px}
   .btn-big{min-height:54px;font-size:17px}
+}
+/* COCKPIT: on screens tall enough, everything fits in one view, each column scrolls on its own */
+@media (min-width:1100px) and (min-height:600px){
+  .studio{align-items:stretch;height:calc(100vh - 72px - 59px)}
+  .col{min-height:0;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+  .col-lyrics .panel{flex:1 0 auto}
+  .col-lyrics .field.grow{flex:1 0 auto}
+  #lyrics{flex:1 0 auto;min-height:160px;resize:none}
   footer{display:none}
+}
+@media (min-width:1100px) and (max-height:800px){
+  .panel{padding:14px 16px;gap:10px}
+  .studio{gap:12px;padding:12px 20px}
+  .col{gap:12px}
+  .qd{display:none}
+  .bar-in{padding:10px 20px}
+  .stepper{margin:0}
 }
 </style>
 
