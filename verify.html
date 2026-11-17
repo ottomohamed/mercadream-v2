@@ -84,7 +84,7 @@ dd{margin:0;unicode-bidi:plaintext}
         '<dt>Human-written lyrics</dt><dd>' + esc(d.humanPct) + '%</dd>' +
         '<dt>Duration</dt><dd>' + dur(d.durationSec) + '</dd>' +
         '<dt>Audio SHA-256</dt><dd class="hash">' + esc(d.audioSha256) + '</dd>' +
-        '<dt>Lyrics SHA-256</dt><dd class="hash">' + esc(d.lyricsSha256) + '</dd>' +
+        '<dt>Lyrics SHA-256</dt><dd class="hash">' + esc(d.lyricsSha256) + '</dd>' + '<dt>Independent copy</dt><dd><a href="https://github.com/ottomohamed/mercadream-registry/blob/main/registry/' + encodeURIComponent(d.certNo) + '.json" target="_blank" rel="noopener">Public registry on GitHub</a></dd>' + '<dt>Independent copy</dt><dd><a href="https://git '<dt>Independent copy</dt><dd><a href="https://git '<dt>Independent copy</dt><dd><a href="https://git
         '</dl>' +
         '<div class="check"><p><b>Is this the same audio file?</b> Choose the MP3 file to compare its fingerprint with the contract. The file stays on your device.</p>' +
         '<input type="file" id="file" accept="audio/*"/><p class="res" id="res"></p></div>' +

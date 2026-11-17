@@ -1047,6 +1047,46 @@ function publicCert(d) {
     issuedAt: d.issuedAt, titleLockedAt: d.titleLockedAt, lyricsLockedAt: d.lyricsLockedAt, producedAt: d.producedAt,
     humanPct: d.humanPct, quality: d.quality, durationSec: d.durationSec, audioSha256: d.audioSha256, lyricsSha256: d.lyricsSha256 };
 }
+// -- PUBLIC REGISTRY: an independent, hash-chained copy of every contract on GitHub --
+const REGISTRY_REPO = 'ottomohamed/mercadream-registry';
+function canonicalJson(o) { return JSON.stringify(o, Object.keys(o).sort()); }
+async function registerOnGithub(cert) {
+  const crypto = require('crypto');
+  const headRef = db().collection('registry').doc('_head');
+  const entryRef = db().collection('registry').doc(cert.certNo);
+  // 1. build the entry and chain it to the previous one (atomic)
+  const entry = await db().runTransaction(async (t) => {
+    const done = await t.get(entryRef);
+    if (done.exists) return done.data().entry;
+    const h = await t.get(headRef);
+    const head = h.exists ? h.data() : { seq: 0, lastHash: 'GENESIS' };
+    const salt = crypto.randomBytes(16).toString('hex');
+    const e = {
+      platform: 'MercaDream Studio', seq: head.seq + 1, certNo: cert.certNo, title: cert.title,
+      issuedAt: cert.issuedAt, titleLockedAt: cert.titleLockedAt, lyricsLockedAt: cert.lyricsLockedAt, producedAt: cert.producedAt,
+      humanPct: cert.humanPct, durationSec: cert.durationSec, audioSha256: cert.audioSha256, lyricsSha256: cert.lyricsSha256,
+      holderNameSha256: crypto.createHash('sha256').update(salt + '|' + String(cert.holderName || '').trim().toLowerCase()).digest('hex'),
+      prevEntrySha256: head.lastHash, verify: 'https://www.mercadream.com/verify.html?id=' + cert.certNo
+    };
+    e.entrySha256 = crypto.createHash('sha256').update(canonicalJson(e)).digest('hex');
+    t.set(entryRef, { entry: e, holderSalt: salt, pushed: false, createdAt: nowIso() });
+    t.set(headRef, { seq: e.seq, lastHash: e.entrySha256, lastCertNo: cert.certNo, updatedAt: nowIso() });
+    return e;
+  });
+  // 2. publish it on GitHub (one file per contract)
+  const token = process.env.GITHUB_REGISTRY_TOKEN;
+  if (!token) { console.error('registry: GITHUB_REGISTRY_TOKEN not set'); return false; }
+  const path = 'registry/' + cert.certNo + '.json';
+  const r = await fetch('https://api.github.com/repos/' + REGISTRY_REPO + '/contents/' + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'mercadream-registry', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'Register ' + cert.certNo + ' (#' + entry.seq + ')', content: Buffer.from(JSON.stringify(entry, null, 2) + '\n', 'utf8').toString('base64') })
+  });
+  const ok = r.status === 201 || r.status === 200 || r.status === 422; // 422 = file already there
+  if (!ok) console.error('registry: GitHub answered', r.status, (await r.text()).slice(0, 300));
+  await entryRef.update({ pushed: ok, pushedAt: ok ? nowIso() : null, githubStatus: r.status });
+  return ok;
+}
 async function issueCertificate(user, rec, b, res) {
   const d = rec.data;
   if (d.certNo) {
@@ -1095,6 +1135,7 @@ async function issueCertificate(user, rec, b, res) {
     await rec.ref.update({ status: 'produced' });
     return res.status(500).json({ error: 'Could not issue the contract. Your credits were returned.' });
   }
+  try { await registerOnGithub(cert); } catch (e) { console.error('registry', e.message); }
   return res.json({ certNo, cert, balance });
 }
 async function handle_verify(req, res) {
