@@ -1,559 +1,370 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MERCADREAM | POWER STATION</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Buy credits | MercaDream Studio</title>
+<meta name="description" content="Buy GNS credits for MercaDream Studio. Pay once, no subscription. 1 GNS = $0.10."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .scanline-overlay {
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.05) 0px,
-                rgba(0, 0, 0, 0.05) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-        }
-        .surgical-border {
-            border: 1px solid #222222;
-        }
-        .neon-glow {
-            box-shadow: 0 0 12px rgba(192, 245, 0, 0.2);
-        }
-        .neon-glow-hover:hover {
-            box-shadow: 0 0 15px rgba(192, 245, 0, 0.4);
-            border-color: #c0f500;
-        }
-        .cursor-crosshair {
-            cursor: crosshair;
-        }
-    </style>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "surface-container-lowest": "#0e0e0e",
-                      "primary-container": "#c0f500",
-                      "inverse-primary": "#4f6600",
-                      "tertiary-fixed-dim": "#c8c6c5",
-                      "primary-fixed-dim": "#a8d700",
-                      "surface-dim": "#131313",
-                      "on-secondary": "#432c00",
-                      "on-background": "#e5e2e1",
-                      "on-tertiary-fixed-variant": "#474746",
-                      "on-tertiary-fixed": "#1b1c1c",
-                      "on-surface-variant": "#c4caac",
-                      "on-primary-container": "#546d00",
-                      "on-error-container": "#ffdad6",
-                      "surface-tint": "#a8d700",
-                      "error-container": "#93000a",
-                      "surface-container": "#201f1f",
-                      "on-tertiary-container": "#656464",
-                      "on-error": "#690005",
-                      "primary-fixed": "#c0f500",
-                      "outline": "#8e9479",
-                      "secondary-container": "#c48800",
-                      "surface-bright": "#3a3939",
-                      "primary": "#ffffff",
-                      "on-tertiary": "#303030",
-                      "on-primary-fixed-variant": "#3b4d00",
-                      "on-secondary-fixed-variant": "#604100",
-                      "inverse-surface": "#e5e2e1",
-                      "tertiary-container": "#e5e2e1",
-                      "surface-container-low": "#1c1b1b",
-                      "on-secondary-container": "#3e2800",
-                      "surface-variant": "#353534",
-                      "tertiary-fixed": "#e5e2e1",
-                      "inverse-on-surface": "#313030",
-                      "on-secondary-fixed": "#281900",
-                      "error": "#ffb4ab",
-                      "secondary-fixed-dim": "#ffba3f",
-                      "tertiary": "#ffffff",
-                      "on-surface": "#e5e2e1",
-                      "surface-container-high": "#2a2a2a",
-                      "surface-container-highest": "#353534",
-                      "on-primary-fixed": "#161f00",
-                      "on-primary": "#273500",
-                      "outline-variant": "#434933",
-                      "background": "#131313",
-                      "secondary-fixed": "#ffdeae",
-                      "surface": "#131313",
-                      "secondary": "#ffba3f"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "margin-desktop": "32px",
-                      "unit": "4px",
-                      "margin-mobile": "16px",
-                      "container-max": "1440px",
-                      "gutter": "16px"
-              },
-              "fontFamily": {
-                      "headline-lg-mobile": ["Sora"],
-                      "technical-sm": ["IBM Plex Mono"],
-                      "display-lg": ["Sora"],
-                      "label-xs": ["IBM Plex Mono"],
-                      "headline-lg": ["Sora"],
-                      "body-md": ["Inter"]
-              },
-              "fontSize": {
-                      "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
-                      "technical-sm": ["13px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                      "label-xs": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
-                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}]
-              }
-            },
-          },
-        }
-      </script>
-<script>
+:root{
+  --gold:#E8B92F; --gold-hi:#F6D365; --gold-dim:#4d3d0a;
+  --bg:#0a0a0a; --bg2:#0d0d0d; --card:#111111; --line:#1f1f1f; --line2:#2a2a2a;
+  --text:#ececec; --soft:#bdbdbd; --muted:#a3a3a3; --white:#ffffff; --red:#ff6b6b; --green:#5fd38a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-hi)}
+.hidden{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.eyebrow{margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.mono{font-family:'IBM Plex Mono',monospace}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:6px;font-weight:600;font-size:16px;cursor:pointer;border:1px solid transparent;font-family:Inter,sans-serif;background:none;color:var(--text);text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:#0a0a0a}
+.btn-gold:hover:not(:disabled){background:var(--gold-hi);color:#0a0a0a}
+.btn-ghost{border-color:#3a3a3a}
+.btn-ghost:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
-</script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBjVzVwEa5tTOjsYtsCB2h3kcqUhyxYOTg",
-    authDomain: "mercadream-4b4b3.firebaseapp.com",
-    projectId: "mercadream-4b4b3",
-    storageBucket: "mercadream-4b4b3.firebasestorage.app",
-    messagingSenderId: "257560928442",
-    appId: "1:257560928442:web:06983f27629a13eeed6283",
-    measurementId: "G-F0CLDJCV42"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
+/* NAV */
+header{position:sticky;top:0;z-index:50;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;max-width:1200px;margin:0 auto}
+.logo{display:flex;align-items:baseline;gap:10px;font-family:Orbitron,sans-serif;font-weight:700;font-size:21px;letter-spacing:.08em;color:var(--gold)}
+.logo small{font-size:12px;font-weight:600;letter-spacing:.3em}
+.navright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.balance{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--gold);border:1px solid var(--gold-dim);border-radius:6px;padding:9px 12px}
+.linkbtn{background:none;border:0;color:var(--text);font-size:15px;padding:12px 14px;cursor:pointer;font-family:Inter,sans-serif}
+.linkbtn:hover{color:var(--gold)}
 
+/* HEAD */
+.head{padding:56px 0 28px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.head h1{margin:0;font-family:Orbitron,sans-serif;font-weight:700;font-size:44px;line-height:1.1;color:var(--white)}
+.head p.sub{margin:0;font-size:18px;color:var(--soft);max-width:640px}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.fact{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--soft);border:1px solid var(--line2);border-radius:999px;padding:6px 12px}
+.fact b{color:var(--gold);font-weight:500}
+
+/* STATUS BANNER */
+.banner{border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.banner.ok{border:1px solid #1f5a35;background:#0c1510}
+.banner.wait{border:1px solid var(--gold-dim);background:#14110a}
+.banner.bad{border:1px solid #5a1f1f;background:#150c0c}
+.banner .t{font-weight:600;color:var(--white);font-size:17px}
+.banner .s{font-size:14px;color:var(--soft)}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid #3a2f0e;border-top-color:var(--gold);animation:spin 1s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;color:#0a0a0a}
+.ok .icon{background:var(--green)} .bad .icon{background:var(--red)}
+
+/* PACKS */
+.packs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pack{position:relative;border:1px solid var(--line2);border-radius:14px;background:var(--card);padding:24px 20px;display:flex;flex-direction:column;gap:14px}
+.pack.best{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 30px rgba(232,185,47,.12)}
+.pack .tagline{position:absolute;top:-11px;left:20px;background:var(--gold);color:#0a0a0a;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;padding:3px 8px;border-radius:4px}
+.pack .name{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.pack .gns{font-family:Orbitron,sans-serif;font-size:34px;font-weight:700;color:var(--white);line-height:1}
+.pack .gns small{font-size:14px;color:var(--gold);margin-left:4px}
+.pack .usd{font-size:20px;font-weight:600;color:var(--gold)}
+.pack ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--soft)}
+.pack ul li::before{content:"✓";color:var(--gold);margin-right:8px}
+.pack .btn{margin-top:auto;width:100%}
+
+/* CUSTOM */
+.custom{margin-top:20px;border:1px dashed var(--line2);border-radius:14px;padding:20px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;background:var(--bg2)}
+.custom .field{display:flex;flex-direction:column;gap:6px}
+.custom label{font-size:14px;font-weight:600}
+.custom input{width:180px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:18px;padding:11px 14px}
+.custom input:focus{border-color:var(--gold);outline:none}
+.custom .eq{font-size:16px;color:var(--soft);padding-bottom:12px}
+.custom .eq b{color:var(--gold);font-family:Orbitron,sans-serif;font-size:20px}
+.msg{font-size:14px;margin:0}
+.msg.err{color:var(--red)}
+
+/* PRICES TABLE */
+.section{padding:56px 0 0}
+.section h2{margin:0 0 18px;font-family:Orbitron,sans-serif;font-size:26px;color:var(--white)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500;border-bottom:1px solid var(--line2);padding:10px 12px}
+td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td.p{font-family:'IBM Plex Mono',monospace;color:var(--gold);white-space:nowrap}
+td small{display:block;color:var(--muted);font-size:13px}
+.soon{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;padding:2px 6px;margin-left:6px}
+
+/* FAQ */
+details{border-bottom:1px solid var(--line2);padding:16px 0}
+summary{cursor:pointer;font-size:17px;font-weight:600;color:var(--white);list-style:none;display:flex;justify-content:space-between;gap:16px;min-height:40px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:22px}
+details[open] summary::after{content:'−'}
+details p{margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--soft)}
+.secure{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px;font-size:14px;color:var(--muted)}
+
+footer{border-top:1px solid var(--line);margin-top:64px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;align-items:center;padding:32px 24px;max-width:1200px;margin:0 auto;font-size:14px;color:var(--muted)}
+.foot nav{display:flex;gap:20px;flex-wrap:wrap}
+.foot nav a{color:#cfcfcf}
+
+@media (max-width:980px){ .packs{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){
+  .packs{grid-template-columns:1fr}
+  .head h1{font-size:32px}
+  .custom input{width:100%}
+  .custom .field{flex:1 1 100%}
+  th:nth-child(3),td:nth-child(3){display:none}
+}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+
+<!-- Firebase: login + real balance -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="/js/md-firebase.js"></script>
-<script src="/js/md-auth.js"></script></head>
-<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen font-body-md relative overflow-x-hidden"><script src="md-engine.js"></script>
-<div class="fixed inset-0 scanline-overlay z-[100] opacity-30 pointer-events-none"></div>
-<!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant flex justify-between items-center h-16 px-4 md:px-margin-desktop">
-<div class="flex items-center gap-gutter">
-<button class="active:scale-95 transition-transform flex items-center gap-2 group">
-<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-container">arrow_back</span>
-<span class="font-technical-sm text-technical-sm text-on-surface-variant group-hover:text-primary-container uppercase">Back</span>
-</button>
-<div class="h-6 w-[1px] bg-outline-variant"></div>
-<h1 class="font-display-lg text-[24px] uppercase tracking-tighter text-primary">MERCADREAM | POWER STATION</h1>
-</div>
-<div class="flex items-center gap-8">
-<div class="flex flex-col items-end">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Active Genesis</span>
-<span class="font-technical-sm text-technical-sm text-primary-container">0 GENESIS</span>
-</div>
-<a href="profile.html" title="My Profile" class="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-all"><span class="material-symbols-outlined text-primary text-3xl">account_circle</span></a>
-</div>
-</header>
-<main class="pt-24 pb-16 px-4 md:px-margin-desktop max-w-container-max mx-auto space-y-12">
-<!-- SECTION 1: RECHARGE -->
-<section class="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant border border-outline-variant">
-<!-- LEFT: CREDIT CALCULATOR -->
-<div class="bg-surface-container-low p-8 flex flex-col justify-between space-y-8">
-<div>
-<div class="flex items-center gap-2 mb-6">
-<div class="w-1 h-4 bg-primary-container"></div>
-<h2 class="font-technical-sm text-technical-sm uppercase text-on-surface-variant">Genesis Acquisition Protocol</h2>
-</div>
-<div class="space-y-6">
-<div class="space-y-2">
-<label class="font-label-xs text-label-xs text-on-surface-variant uppercase">How many genesis?</label>
-<div class="relative">
-<input class="w-full bg-surface border border-outline-variant focus:border-primary-container focus:ring-0 text-primary-container font-technical-sm p-4 text-xl outline-none transition-colors" type="number" value="1000"/>
-<span class="absolute right-4 top-1/2 -translate-y-1/2 font-technical-sm text-on-surface-variant text-sm">CRDS</span>
-</div>
-</div>
-<div class="grid grid-cols-4 gap-2">
-<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">100</button>
-<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">500</button>
-<button class="surgical-border p-3 font-technical-sm text-technical-sm border-primary-container text-primary-container bg-primary-container/10 active:scale-95">1K</button>
-<button class="surgical-border p-3 font-technical-sm text-technical-sm hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">5K</button>
-</div>
-</div>
-</div>
-<div class="pt-8 border-t border-outline-variant">
-<div class="flex justify-between items-end mb-6">
-<div>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Unit Cost</span>
-<span class="font-technical-sm text-technical-sm text-primary">$0.10/GNS</span>
-</div>
-<div class="text-right">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Total Cost</span>
-<span class="font-headline-lg text-headline-lg text-primary-container">$100.00</span>
-</div>
-</div>
-<button class="w-full bg-primary-container text-on-primary-container py-4 font-headline-lg text-xl uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all neon-glow">
-<span class="material-symbols-outlined" data-weight="fill">bolt</span>
-                        BUY GENESIS
-                    </button>
-</div>
-</div>
-<!-- RIGHT: LIVE BALANCE -->
-<div class="bg-surface-container p-8 flex flex-col justify-between border-l border-outline-variant">
-<div class="relative overflow-hidden group">
-<div class="flex justify-between items-start mb-12">
-<div class="space-y-1">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">Live Engine Status</span>
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
-<span class="font-technical-sm text-technical-sm text-primary uppercase">System Optimal</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Member Since</span>
-<span class="font-technical-sm text-technical-sm text-primary">MAY 2026</span>
-</div>
-</div>
-<div class="text-center py-8">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block mb-2">Available Processing Power</span>
-<div class="font-display-lg text-primary-container text-[64px] tracking-tighter leading-none mb-4">0</div>
-<div class="flex justify-center">
-<span id="genesis-label" class="text-primary-container text-xs font-technical-sm tracking-widest">GENESIS</span>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-low border border-outline-variant p-6 flex items-center justify-between">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 flex items-center justify-center surgical-border bg-surface-dim text-on-surface-variant">
-<span class="material-symbols-outlined text-3xl">shield</span>
-</div>
-<div>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase block">Current Shield</span>
-<span class="font-technical-sm text-technical-sm text-primary uppercase">UNPROTECTED / NO PLAN</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Tier</span>
-<span class="font-technical-sm text-technical-sm text-on-surface-variant uppercase">NONE</span>
-</div>
-</div>
-</div>
-</section>
-<!-- SECTION 2: SUBSCRIPTIONS -->
-<section class="space-y-8">
-<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-outline-variant pb-6 gap-4">
-<div>
-<h2 class="font-headline-lg text-headline-lg uppercase text-primary mb-2">Upgrade Your Arsenal</h2>
-<p class="font-body-md text-on-surface-variant max-w-2xl">Elevate your production workflow with dedicated hardware allocation, priority rendering, and commercial usage rights.</p>
-</div>
-<div class="flex items-center gap-4 p-1 bg-surface-container border border-outline-variant">
-<button class="px-6 py-2 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase">Monthly</button>
-<button class="px-6 py-2 hover:text-primary-container transition-colors font-technical-sm text-technical-sm uppercase">Yearly <span class="text-primary-fixed-dim">(-20%)</span></button>
-</div>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-<!-- FREE -->
-<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-on-surface-variant transition-colors group cursor-crosshair">
-<div class="flex justify-between items-start mb-8">
-<div class="w-10 h-10 surgical-border flex items-center justify-center text-on-surface-variant group-hover:bg-on-surface-variant/10">
-<span class="material-symbols-outlined">shield</span>
-</div>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase border border-on-surface-variant/20 px-2 py-1">Standard</span>
-</div>
-<div class="mb-8">
-<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">FREE</h3>
-<div class="flex items-baseline gap-1">
-<span class="font-display-lg text-[32px] text-primary">$0</span>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
-</div>
-</div>
-<ul class="space-y-4 mb-10 flex-grow">
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">✓</span> 100 Genesis / mo
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">✓</span> Standard 1080p
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface-variant">
-<span class="text-primary-container text-[10px]">✓</span> Public Asset Gallery
-                        </li>
-</ul>
-<button class="w-full py-4 border border-outline-variant font-technical-sm text-technical-sm uppercase text-on-surface-variant bg-surface-variant/20 cursor-default">
-                        CURRENT PLAN
-                    </button>
-</div>
-<!-- CREATOR -->
-<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-primary-fixed-dim transition-all group neon-glow-hover cursor-crosshair">
-<div class="flex justify-between items-start mb-8">
-<div class="w-10 h-10 surgical-border flex items-center justify-center text-primary-fixed-dim border-primary-fixed-dim/40 group-hover:border-primary-fixed-dim group-hover:bg-primary-fixed-dim/10">
-<span class="material-symbols-outlined" data-weight="fill">shield</span>
-</div>
-<span class="font-label-xs text-label-xs text-primary-fixed-dim uppercase border border-primary-fixed-dim/40 px-2 py-1">+20% Bonus</span>
-</div>
-<div class="mb-8">
-<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">CREATOR</h3>
-<div class="flex items-baseline gap-1">
-<span class="font-display-lg text-[32px] text-primary">$49</span>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
-</div>
-</div>
-<ul class="space-y-4 mb-10 flex-grow">
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> 1,200 Genesis / mo
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> 4K Ultra Rendering
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> Private Asset Vault
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> Commercial Rights
-                        </li>
-</ul>
-<button class="w-full py-4 bg-primary-container text-on-primary-container font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
-                        UPGRADE NOW
-                    </button>
-</div>
-<!-- PRO -->
-<div class="surgical-border bg-surface-container-low p-6 flex flex-col border-secondary/40 hover:border-secondary transition-all group cursor-crosshair relative">
-<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-on-secondary px-3 py-1 font-label-xs text-label-xs uppercase">Elite Choice</div>
-<div class="flex justify-between items-start mb-8">
-<div class="w-10 h-10 border border-secondary/40 flex items-center justify-center text-secondary group-hover:bg-secondary/10">
-<span class="material-symbols-outlined" data-weight="fill">shield</span>
-</div>
-<span class="font-label-xs text-label-xs text-secondary uppercase border border-secondary/40 px-2 py-1">+30% Bonus</span>
-</div>
-<div class="mb-8">
-<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">PRO</h3>
-<div class="flex items-baseline gap-1">
-<span class="font-display-lg text-[32px] text-primary">$199</span>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
-</div>
-</div>
-<ul class="space-y-4 mb-10 flex-grow">
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> 5,500 Genesis / mo
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> 8K Production Grade
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> Early API Access
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> Priority GPU Queue
-                        </li>
-</ul>
-<button class="w-full py-4 bg-secondary text-on-secondary font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95 shadow-[0_0_15px_rgba(255,186,63,0.3)]">
-                        UPGRADE NOW
-                    </button>
-</div>
-<!-- STUDIO -->
-<div class="surgical-border bg-surface-container-low p-6 flex flex-col hover:border-primary transition-all group cursor-crosshair">
-<div class="flex justify-between items-start mb-8">
-<div class="w-10 h-10 surgical-border flex items-center justify-center text-primary group-hover:bg-primary/10">
-<span class="material-symbols-outlined" data-weight="fill">diamond</span>
-</div>
-<span class="font-label-xs text-label-xs text-primary uppercase border border-primary/40 px-2 py-1">+40% Bonus</span>
-</div>
-<div class="mb-8">
-<h3 class="font-headline-lg text-xl uppercase text-primary mb-1">STUDIO</h3>
-<div class="flex items-baseline gap-1">
-<span class="font-display-lg text-[32px] text-primary">$499</span>
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">/ mo</span>
-</div>
-</div>
-<ul class="space-y-4 mb-10 flex-grow">
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> 15,000 Genesis / mo
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> Enterprise API Access
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> White Label Export
-                        </li>
-<li class="flex items-center gap-3 font-technical-sm text-technical-sm text-on-surface">
-<span class="text-primary-container text-[10px]">✓</span> Dedicated Account Mgr
-                        </li>
-</ul>
-<button class="w-full py-4 bg-primary text-background font-technical-sm text-technical-sm uppercase tracking-widest hover:brightness-110 transition-all active:scale-95">
-                        UPGRADE NOW
-                    </button>
-</div>
-</div>
-</section>
-<!-- DATA VISUALIZER (Visual Break) -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant surgical-border">
-<div class="bg-surface p-6 flex flex-col gap-4">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Global GPU Load</span>
-<div class="h-2 w-full bg-surface-container-high relative">
-<div class="absolute inset-y-0 left-0 bg-primary-container w-[74%]"></div>
-</div>
-<div class="flex justify-between font-technical-sm text-[10px]">
-<span class="text-on-surface-variant">ALLOCATED: 12,442 TFLOPS</span>
-<span class="text-primary-container">74%</span>
-</div>
-</div>
-<div class="bg-surface p-6 flex flex-col gap-4">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Network Latency</span>
-<div class="flex items-end gap-1 h-8">
-<div class="w-2 h-4 bg-primary-container"></div>
-<div class="w-2 h-6 bg-primary-container"></div>
-<div class="w-2 h-3 bg-primary-container"></div>
-<div class="w-2 h-5 bg-primary-container"></div>
-<div class="w-2 h-8 bg-primary-container"></div>
-<div class="w-2 h-4 bg-primary-container"></div>
-<div class="w-2 h-6 bg-primary-container"></div>
-</div>
-<div class="flex justify-between font-technical-sm text-[10px]">
-<span class="text-on-surface-variant">POP: SAN FRANCISCO v.4</span>
-<span class="text-primary-container">12MS</span>
-</div>
-</div>
-<div class="bg-surface p-6 flex flex-col gap-4">
-<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Security Protocol</span>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary-container text-sm">lock</span>
-<span class="font-technical-sm text-technical-sm text-primary">ENCRYPTION: AES-256</span>
-</div>
-<div class="flex justify-between font-technical-sm text-[10px]">
-<span class="text-on-surface-variant">VERIFIED: MERCADREAM_SEC</span>
-<span class="text-primary-container">ACTIVE</span>
-</div>
-</div>
-</section>
-</main>
-<!-- Footer -->
-<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant flex justify-between items-center h-8 px-4 md:px-margin-desktop">
-<div class="flex items-center gap-6">
-<span class="font-technical-sm text-label-xs text-primary uppercase">SYSTEM STATUS: OPTIMAL</span>
-<div class="h-3 w-[1px] bg-outline-variant"></div>
-<div class="flex items-center gap-4 text-on-tertiary-fixed-variant font-label-xs">
-<span>GPU: 84%</span>
-<span>LATENCY: 12MS</span>
-<span>VRAM: 22GB/24GB</span>
-</div>
-</div>
-<nav class="flex items-center gap-6">
-<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Telemetry</a>
-<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Logs</a>
-<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Docs</a>
-<a class="font-label-xs text-label-xs text-on-tertiary-fixed-variant hover:text-primary-fixed-dim transition-colors uppercase cursor-crosshair" href="#">Support</a>
+<script src="/js/md-auth.js"></script>
+</head>
+<body>
+
+<header>
+<nav class="main" aria-label="Main">
+  <a href="index.html" class="logo"><span>MERCADREAM</span><small>STUDIO</small></a>
+  <div class="navright">
+    <span class="balance hidden" id="nav-balance">0 GNS</span>
+    <a class="linkbtn" href="music.html">Song studio</a>
+    <a class="linkbtn" href="certificate.html">My contracts</a>
+    <button class="linkbtn" id="nav-auth" type="button">Log in</button>
+  </div>
 </nav>
+</header>
+
+<main class="wrap">
+  <section class="head">
+    <p class="eyebrow">Credits</p>
+    <h1>Buy GNS credits</h1>
+    <p class="sub">Pay once and create whenever you want. No subscription, no monthly fee — you only spend credits when you create.</p>
+    <div class="facts">
+      <span class="fact"><b>1 GNS</b> = $0.10</span>
+      <span class="fact">No subscription</span>
+      <span class="fact">Secure payment by <b>Stripe</b></span>
+    </div>
+  </section>
+
+  <div id="banner" class="hidden" role="status" aria-live="polite"></div>
+
+  <!-- PACKS -->
+  <section aria-label="Credit packs">
+    <div class="packs">
+      <div class="pack">
+        <span class="name">Starter</span>
+        <span class="gns">50<small>GNS</small></span>
+        <span class="usd">$5</span>
+        <ul>
+          <li>10 songs (Standard)</li>
+          <li>or 5 Studio songs</li>
+          <li>Perfect to try the studio</li>
+        </ul>
+        <button class="btn btn-ghost buy" type="button" data-gns="50">Buy 50 GNS</button>
+      </div>
+      <div class="pack best">
+        <span class="tagline">MOST POPULAR</span>
+        <span class="name">Creator</span>
+        <span class="gns">150<small>GNS</small></span>
+        <span class="usd">$15</span>
+        <ul>
+          <li>30 songs (Standard)</li>
+          <li>or 15 Studio songs</li>
+          <li>Room for ownership contracts</li>
+        </ul>
+        <button class="btn btn-gold buy" type="button" data-gns="150">Buy 150 GNS</button>
+      </div>
+      <div class="pack">
+        <span class="name">Studio</span>
+        <span class="gns">300<small>GNS</small></span>
+        <span class="usd">$30</span>
+        <ul>
+          <li>60 songs (Standard)</li>
+          <li>or 30 Studio songs</li>
+          <li>Room for a music video</li>
+        </ul>
+        <button class="btn btn-ghost buy" type="button" data-gns="300">Buy 300 GNS</button>
+      </div>
+      <div class="pack">
+        <span class="name">Label</span>
+        <span class="gns">1000<small>GNS</small></span>
+        <span class="usd">$100</span>
+        <ul>
+          <li>200 songs (Standard)</li>
+          <li>or 100 Studio songs</li>
+          <li>For channels that publish weekly</li>
+        </ul>
+        <button class="btn btn-ghost buy" type="button" data-gns="1000">Buy 1000 GNS</button>
+      </div>
+    </div>
+
+    <div class="custom">
+      <div class="field">
+        <label for="amount">Or choose your amount</label>
+        <input type="number" id="amount" min="50" max="100000" step="10" value="500" inputmode="numeric"/>
+      </div>
+      <span class="eq">GNS = <b id="usd">$50.00</b></span>
+      <button class="btn btn-gold" id="buy-custom" type="button">Buy</button>
+      <p class="msg" id="buy-msg" role="alert" style="flex:1 1 100%"></p>
+    </div>
+    <p class="secure">🔒 You are redirected to Stripe's secure checkout. We never see or store your card details.</p>
+  </section>
+
+  <!-- WHAT IT COSTS -->
+  <section class="section" aria-labelledby="h-costs">
+    <h2 id="h-costs">What credits buy</h2>
+    <table>
+      <tr><th>Service</th><th>Price</th><th>Notes</th></tr>
+      <tr><td>AI songwriter <small>Lyrics from your idea</small></td><td class="p">Free</td><td>Up to 30 drafts a day</td></tr>
+      <tr><td>Song — Standard <small>Mureka V9, full song with vocals</small></td><td class="p">5 GNS</td><td>Up to 2 versions (5 GNS each)</td></tr>
+      <tr><td>Song — Studio <small>Mureka V9.5, richer vocals and arrangement</small></td><td class="p">10 GNS</td><td>One version, longer lyrics</td></tr>
+      <tr><td>Ownership contract <small>Authorship record, rights assignment, public registry</small></td><td class="p">10 GNS</td><td>Launch offer for the first 100 contracts, then 50 GNS</td></tr>
+      <tr><td>Music video <span class="soon">SOON</span><small>Free stock scenes or AI-generated clip</small></td><td class="p">—</td><td>Coming soon</td></tr>
+    </table>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" aria-labelledby="h-faq">
+    <h2 id="h-faq">Questions</h2>
+    <details>
+      <summary>When are my credits added?</summary>
+      <p>Right after Stripe confirms your payment — usually within a few seconds. Your balance updates on its own; you don't need to refresh.</p>
+    </details>
+    <details>
+      <summary>Do credits expire?</summary>
+      <p>No subscription is needed. Your credits stay in your account until you use them.</p>
+    </details>
+    <details>
+      <summary>What happens if a generation fails?</summary>
+      <p>Credits are used when production starts. If the music engine rejects your request before creating anything, your credits are returned automatically.</p>
+    </details>
+    <details>
+      <summary>Can I get a refund for unused credits?</summary>
+      <p>Credit purchases are final once credits are added to your account. If you were charged but no credits arrived, contact us and we will fix it.</p>
+    </details>
+    <details>
+      <summary>Is my payment secure?</summary>
+      <p>Yes. Payments are processed by Stripe, a certified payment provider. MercaDream Studio never sees or stores your card details.</p>
+    </details>
+  </section>
+</main>
+
+<footer>
+  <div class="foot">
+    <span>© 2026 MercaDream Studio</span>
+    <nav aria-label="Footer"><a href="index.html">Home</a><a href="music.html">Song studio</a><a href="verify.html">Verify a contract</a><a href="ethics.html">Ethics</a></nav>
+  </div>
 </footer>
-<script src="/js/navigation.js"></script><script>
-var RATE=0.10,currentPlan=localStorage.getItem("md_plan")||"free";
-var MIN_GNS=50; // server minimum (= $5)
 
-//  Balance display: REAL balance from Firestore (md-firebase.js keeps md_credits up to date)
-function updateBalance(){
-  var c=parseInt(localStorage.getItem("md_credits")||"0",10)||0;
-  var el=document.querySelector(".font-display-lg.text-primary-container.text-\\[64px\\]");
-  if(el)el.textContent=c.toLocaleString();
-  var hel=document.querySelector(".font-technical-sm.text-technical-sm.text-primary-container");
-  if(hel)hel.textContent=c.toLocaleString()+" GENESIS";
-  updateShield();
-}
-window.addEventListener("creditsUpdated",updateBalance);
+<script>
+(function () {
+  var MIN = 50, MAX = 100000, RATE = 0.10;
+  var $ = function (id) { return document.getElementById(id); };
+  var user = null, credits = null, busy = false;
 
-//  Shield system
-function updateShield(){
-  var shields={free:{label:"UNPROTECTED / NO PLAN",tier:"NONE",color:"#a1a1a1"},creator:{label:"CREATOR SHIELD",tier:"CREATOR",color:"#a8d700"},pro:{label:"PRO SHIELD",tier:"PRO",color:"#ffba3f"},studio:{label:"STUDIO SHIELD ",tier:"STUDIO",color:"#ffffff"}};
-  var s=shields[currentPlan]||shields.free;
-  var shieldLabel=document.querySelector(".font-technical-sm.text-primary.uppercase:not(.text-primary-container)");
-  var tierEl=document.querySelector(".font-technical-sm.text-on-surface-variant.uppercase");
-  var shieldIcon=document.querySelector(".material-symbols-outlined.text-3xl");
-  if(shieldLabel)shieldLabel.textContent=s.label;
-  if(tierEl)tierEl.textContent=s.tier;
-  if(shieldIcon)shieldIcon.style.color=s.color;
-}
-
-//  Calculator
-var input=document.querySelector("input[type=number]");
-var totalEl=document.querySelector(".font-headline-lg.text-primary-container");
-var buyBtn=document.querySelector("button.bg-primary-container.w-full");
-if(input)input.min=MIN_GNS;
-
-function calcTotal(){
-  var amt=parseInt(input.value)||0;
-  var total=(amt*RATE).toFixed(2);
-  if(totalEl)totalEl.textContent="$"+total;
-  if(buyBtn){buyBtn.childNodes[buyBtn.childNodes.length-1].textContent=" BUY "+amt.toLocaleString()+" GENESIS  $"+total;}
-}
-
-if(input)input.oninput=calcTotal;
-
-//  Quick amounts
-document.querySelectorAll(".grid-cols-4 button").forEach(function(btn){
-  btn.onclick=function(){
-    var txt=btn.textContent.trim();
-    var map={"100":100,"500":500,"1K":1000,"5K":5000};
-    var v=map[txt]||(txt.toUpperCase().endsWith('K')?parseInt(txt)*1000:parseInt(txt))||0;
-    if(input){input.value=v;calcTotal();}
-    document.querySelectorAll(".grid-cols-4 button").forEach(function(b){b.style.background="";b.style.color="";});
-    btn.style.background="#c8ff00";btn.style.color="#060606";
-  };
-});
-
-//  Buy genesis via Stripe (credits are added by the server ONLY after Stripe confirms payment)
-if(buyBtn)buyBtn.onclick=async function(){
-  var amt=parseInt(input?input.value:0)||0;
-  if(amt<MIN_GNS){alert("Minimum purchase is "+MIN_GNS+" genesis ($"+(MIN_GNS*RATE).toFixed(2)+").");return;}
-  var user=await window.mdAuthReady;
-  if(!user){alert("Please log in to buy genesis.");window.location.href="/login.html";return;}
-  var cost=(amt*RATE).toFixed(2);
-  if(!confirm("Buy "+amt+" genesis for $"+cost+"?"))return;
-  buyBtn.disabled=true;buyBtn.textContent="REDIRECTING TO STRIPE...";
-  try{
-    var r=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({credits:amt})});
-    var d=await r.json();
-    if(d.url){window.location.href=d.url;return;}
-    if(r.status===401){alert("Session expired. Please log in again.");window.location.href="/login.html";return;}
-    alert("Error: "+(d.error||"Unknown"));
-  }catch(e){alert("Error: "+e.message);}
-  buyBtn.disabled=false;calcTotal();
-};
-
-//  Subscriptions: coming soon (buttons do nothing for now)
-
-//  Back button
-var bb=document.querySelector("header button");
-if(bb)bb.onclick=function(){window.location.href="profile.html";};
-
-//  Monthly/Yearly toggle
-var toggleBtns=document.querySelectorAll(".flex.items-center.gap-4.p-1 button");
-if(toggleBtns[1])toggleBtns[1].onclick=function(){
-  toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
-  this.style.background="#c8ff00";this.style.color="#060606";
-};
-if(toggleBtns[0])toggleBtns[0].onclick=function(){
-  toggleBtns.forEach(function(b){b.style.background="";b.style.color="";});
-  this.style.background="#c8ff00";this.style.color="#060606";
-};
-
-//  Init + Stripe return (NOTHING is added here — the server webhook adds the credits)
-window.addEventListener("load",function(){
-  updateBalance();calcTotal();
-  var params=new URLSearchParams(window.location.search);
-  var status=params.get("status");
-  if(status==="success"){
-    alert("✅ Payment received. Your genesis will appear in your balance within a few seconds.");
-    window.history.replaceState({},"","/pricing.html");
-  } else if(status==="cancelled"){
-    alert("Payment cancelled.");
-    window.history.replaceState({},"","/pricing.html");
+  function money(n) { return '$' + (n * RATE).toFixed(2); }
+  function setMsg(t, kind) { $('buy-msg').textContent = t || ''; $('buy-msg').className = 'msg' + (kind ? ' ' + kind : ''); }
+  function banner(kind, title, sub) {
+    var b = $('banner');
+    var icon = kind === 'wait' ? '<span class="spin" aria-hidden="true"></span>' : '<span class="icon" aria-hidden="true">' + (kind === 'ok' ? '✓' : '!') + '</span>';
+    b.className = 'banner ' + kind;
+    b.innerHTML = icon + '<div><div class="t"></div><div class="s"></div></div>';
+    b.querySelector('.t').textContent = title;
+    b.querySelector('.s').innerHTML = sub || '';
   }
-});
-</script></body></html>
+
+  /* custom amount */
+  function updateCustom() {
+    var n = parseInt($('amount').value, 10) || 0;
+    $('usd').textContent = money(Math.max(0, n));
+  }
+  $('amount').addEventListener('input', updateCustom);
+  updateCustom();
+
+  /* buy */
+  async function buy(gns, btn) {
+    setMsg('');
+    gns = parseInt(gns, 10);
+    if (!Number.isInteger(gns) || gns < MIN) { setMsg('The minimum purchase is ' + MIN + ' GNS (' + money(MIN) + ').', 'err'); return; }
+    if (gns > MAX) { setMsg('The maximum purchase is ' + MAX.toLocaleString() + ' GNS.', 'err'); return; }
+    if (!user) { sessionStorage.setItem('md_after_login', 'pricing.html'); location.href = 'login.html'; return; }
+    if (busy) return;
+    busy = true;
+    var label = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Opening Stripe…'; }
+    try {
+      sessionStorage.setItem('md_buy', JSON.stringify({ gns: gns, before: credits, at: Date.now() }));
+      var r = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ credits: gns }) });
+      var d = await r.json().catch(function () { return {}; });
+      if (r.status === 401) { alert('Please log in again.'); location.href = 'login.html'; return; }
+      if (!r.ok || !d.url) throw new Error(d.error || 'Could not open the payment page. Please try again.');
+      location.href = d.url;
+      return;
+    } catch (e) {
+      setMsg(e.message, 'err');
+      sessionStorage.removeItem('md_buy');
+    }
+    busy = false;
+    if (btn) { btn.disabled = false; btn.textContent = label; }
+  }
+  document.querySelectorAll('.buy').forEach(function (b) { b.addEventListener('click', function () { buy(b.getAttribute('data-gns'), b); }); });
+  $('buy-custom').addEventListener('click', function () { buy($('amount').value, this); });
+
+  /* account + live balance */
+  window.addEventListener('creditsUpdated', function (e) {
+    credits = Number(e.detail.credits || 0);
+    $('nav-balance').textContent = credits.toLocaleString() + ' GNS';
+    checkArrival();
+  });
+  $('nav-auth').addEventListener('click', function () {
+    if (window.MD_USER) firebase.auth().signOut().then(function () { localStorage.removeItem('md_credits'); location.reload(); });
+    else location.href = 'login.html';
+  });
+  if (window.mdAuthReady) window.mdAuthReady.then(function (u) {
+    user = u;
+    if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
+    document.querySelectorAll('.buy').forEach(function (b) { if (!u) b.textContent = 'Log in to buy'; });
+    if (!u) $('buy-custom').textContent = 'Log in to buy';
+  });
+
+  /* return from Stripe */
+  var status = new URLSearchParams(location.search).get('status');
+  var pending = null;
+  try { pending = JSON.parse(sessionStorage.getItem('md_buy') || 'null'); } catch (e) {}
+  var waitTimer = null;
+  function checkArrival() {
+    if (status !== 'success' || !pending || credits === null) return;
+    var before = Number(pending.before);
+    var arrived = isFinite(before) && pending.before !== null ? credits >= before + pending.gns : false;
+    if (arrived) {
+      clearTimeout(waitTimer);
+      banner('ok', 'Payment received — ' + pending.gns.toLocaleString() + ' GNS added', 'Your balance is now <b style="color:#E8B92F">' + credits.toLocaleString() + ' GNS</b>. <a href="music.html">Create a song →</a>');
+      sessionStorage.removeItem('md_buy');
+      pending = null;
+    }
+  }
+  if (status === 'success') {
+    banner('wait', 'Payment received — adding your credits…', 'This usually takes a few seconds. Your balance will update on its own.');
+    if (!pending) {
+      banner('ok', 'Payment received', 'Your credits are added within a few seconds. Your balance appears at the top of the page. <a href="music.html">Create a song →</a>');
+    } else {
+      waitTimer = setTimeout(function () {
+        banner('wait', 'Your payment is confirmed — credits are still on their way', 'Stripe can take up to a minute. Refresh this page in a moment. If the credits have not arrived after 10 minutes, contact us with the email you paid with.');
+      }, 30000);
+      checkArrival();
+    }
+    history.replaceState(null, '', 'pricing.html');
+  } else if (status === 'cancelled') {
+    banner('bad', 'Payment cancelled', 'No money was taken. You can choose a pack again whenever you are ready.');
+    sessionStorage.removeItem('md_buy');
+    history.replaceState(null, '', 'pricing.html');
+  }
+})();
+</script>
+</body>
+</html>
