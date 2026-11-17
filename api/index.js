@@ -1408,7 +1408,7 @@ async function handle_montage(req, res) {
     } catch (e) { return res.status(500).json({ error: e.message }); }
   }
   const m = montagePlan(req.body);
-  if (!m.audio) return res.status(400).json({ error: 'Choose a song or a voice-over first.' });
+
   if (!m.clips.length) return res.status(400).json({ error: 'Add at least one scene.' });
   if (m.total < 3) return res.status(400).json({ error: 'The video is too short.' });
   // video clips: a clip shorter than its slot is repeated so the screen never goes black
@@ -1442,9 +1442,10 @@ async function handle_montage(req, res) {
   }
   tracks.push({ clips: vclips });
   const edit = {
-    timeline: { background: '#000000', soundtrack: { src: m.audio, effect: 'fadeOut' }, tracks },
+    timeline: { background: '#000000', tracks },
     output: { format: 'mp4', resolution: '1080', aspectRatio: m.portrait ? '9:16' : '16:9', fps: 30 }
   };
+  if (m.audio) edit.timeline.soundtrack = { src: m.audio, effect: 'fadeOut' }; // no sound = silent video
   try {
     const r = await fetch('https://api.shotstack.io/edit/' + SHOTSTACK_ENV + '/render', {
       method: 'POST', headers: { 'x-api-key': SHOTSTACK_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(edit)

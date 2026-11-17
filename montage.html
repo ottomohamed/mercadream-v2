@@ -127,6 +127,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="/js/md-firebase.js"></script>
 <script src="/js/md-auth.js"></script>
+<script src="/js/md-library.js"></script>
 </head>
 <body>
 
@@ -139,6 +140,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     <a class="linkbtn" href="trends.html">Trends</a>
     <a class="linkbtn" href="voice.html">Voice</a>
     <a class="linkbtn" href="scenes.html">Scenes</a>
+    <a class="linkbtn" href="library.html">Library</a>
     <a class="linkbtn" href="montage.html" aria-current="page">Montage</a>
     <a class="linkbtn" href="pricing.html">Buy credits</a>
     <button class="linkbtn" id="nav-auth" type="button">Log in</button>
@@ -179,7 +181,8 @@ footer{border-top:1px solid var(--line);margin-top:40px}
         <button class="btn btn-ghost btn-sm" id="up-media-btn" type="button">&#8679; Add your videos or photos</button>
       </div>
       <input type="file" id="up-media" accept="video/*,image/*" multiple hidden/>
-      <p class="hint" id="up-hint">Only upload files you have the right to use. Up to 300 MB per video.</p>
+      <p class="hint" id="up-hint">Only upload files you have the right to use. They are also saved in your <a href="library.html">Library</a>.</p>
+      <p class="hint hidden" id="pick-note"></p>
     </section>
     <section class="panel" aria-labelledby="h-ly">
       <h2 id="h-ly">Words on screen</h2>
@@ -316,6 +319,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   var sources = [], user = null, credits = null, busy = false;
   var aud = new Audio(); aud.preload = 'auto';
   var vids = [], clock = null, raf = 0;
+  var SILENT = { kind: 'silent', title: 'No music', url: '', text: '' };
 
   function mmss(s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
   function setMsg(el, t, k) { el.textContent = t || ''; el.className = 'msg' + (k ? ' ' + k : ''); }
@@ -324,23 +328,38 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   function price() { return 10 * Math.max(1, Math.ceil((S.duration || 0) / 60)); }
 
   /* ---------- sources ---------- */
-  function loadSources() {
+  async function loadSources() {
     var sb = J('md_storyboard') || {}, last = J('md_last_song'), songs = J('md_songs') || [], voices = J('md_voices') || [];
-    S.scenes = (sb.scenes || []).filter(function (s) { return s.chosen && s.chosen.files && (s.chosen.files.sd || s.chosen.files.hd); });
+    var pick = window.MDLib ? MDLib.getPick() : null;
+    S.scenes = pick ? [] : (sb.scenes || []).filter(function (s) { return s.chosen && s.chosen.files && (s.chosen.files.sd || s.chosen.files.hd); });
     S.format = sb.orientation === 'portrait' ? 'portrait' : 'landscape';
     sources = []; var seen = {};
     function add(o) { if (!o.url || seen[o.url]) return; seen[o.url] = 1; sources.push(o); }
+    if (pick) {
+      S.own = [];
+      for (var k = 0; k < (pick.clips || []).length; k++) {
+        var c = pick.clips[k];
+        if (c.type === 'lib') { var b = await MDLib.blob(c.id); if (!b) continue; S.own.push({ kind: c.kind, file: b, url: URL.createObjectURL(b), name: c.name, thumb: c.thumb, dur: c.dur, remote: null }); }
+        else S.own.push({ kind: c.kind || 'video', url: c.prev || c.src, name: c.name, thumb: c.image, dur: c.dur, remote: c.src });
+      }
+      var a = pick.audio;
+      if (a && a.type === 'lib') { var ab = await MDLib.blob(a.id); if (ab) { var u = URL.createObjectURL(ab); seen[u] = 1; sources.push({ url: u, title: a.title, kind: 'song', text: '', upload: true, file: ab, name: a.title, remote: null }); } }
+      else if (a && a.url) add({ url: a.url, title: a.title, kind: a.kind || 'song', text: a.text || '' });
+      var note = $('pick-note'); note.classList.remove('hidden');
+      note.innerHTML = 'Using your Library selection. <a href="library.html">Change it</a> or <a href="#" id="drop-pick">use your storyboard instead</a>.';
+      $('drop-pick').addEventListener('click', function (e) { e.preventDefault(); MDLib.clearPick(); location.reload(); });
+    }
     if (last && last.url) add({ url: last.url, title: last.title || 'My last song', kind: last.style === 'voice-over' ? 'voice' : 'song', text: last.lyrics || '' });
     songs.forEach(function (s) { add({ url: s.url, title: s.title || 'Song', kind: 'song', text: '' }); });
     voices.forEach(function (v) { add({ url: v.url, title: v.title || 'Voice-over', kind: 'voice', text: v.text || '' }); });
-    if (sb.lyrics && sources[0] && sources[0].kind === 'song' && !sources[0].text) sources[0].text = sb.lyrics;
+    if (!pick && sb.lyrics && sources[0] && sources[0].kind === 'song' && !sources[0].text) sources[0].text = sb.lyrics;
+    sources.push(SILENT);
     renderSourceSelect(); renderSceneSummary();
     press($('fmt'), S.format);
   }
   function renderSourceSelect() {
-    var sel = $('audio'); sel.innerHTML = ''; sel.disabled = !sources.length;
-    sources.forEach(function (s, i) { var o = document.createElement('option'); o.value = i; o.textContent = (s.upload ? 'Uploaded: ' : s.kind === 'voice' ? 'Voice-over: ' : 'Song: ') + s.title; sel.appendChild(o); });
-    if (!sources.length) { var o = document.createElement('option'); o.textContent = 'No song or voice-over yet'; sel.appendChild(o); }
+    var sel = $('audio'); sel.innerHTML = ''; sel.disabled = false;
+    sources.forEach(function (s, i) { var o = document.createElement('option'); o.value = i; o.textContent = s.kind === 'silent' ? 'No music (silent video)' : (s.upload ? 'My sound: ' : s.kind === 'voice' ? 'Voice-over: ' : 'Song: ') + s.title; sel.appendChild(o); });
   }
   function renderSceneSummary() {
     var th = $('sc-thumbs'); th.innerHTML = '';
@@ -351,9 +370,31 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     if (S.own.length) parts.push('<b>' + S.own.length + '</b> of your own');
     $('sc-text').innerHTML = parts.length ? parts.join(' + ') : 'No scenes picked yet';
   }
+  function naturalLength() {
+    var t = 0;
+    S.scenes.forEach(function (s) { t += Math.min(60, s.chosen.duration || 8); });
+    S.own.forEach(function (m) { t += m.kind === 'image' ? 4 : Math.min(60, m.dur || 8); });
+    return Math.min(600, t);
+  }
+  function silenceUrl(sec) {
+    var rate = 8000, n = Math.max(rate, Math.round(sec * rate)), buf = new ArrayBuffer(44 + n), d = new DataView(buf);
+    function str(o, x) { for (var i = 0; i < x.length; i++) d.setUint8(o + i, x.charCodeAt(i)); }
+    str(0, 'RIFF'); d.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt '); d.setUint32(16, 16, true); d.setUint16(20, 1, true); d.setUint16(22, 1, true);
+    d.setUint32(24, rate, true); d.setUint32(28, rate, true); d.setUint16(32, 1, true); d.setUint16(34, 8, true); str(36, 'data'); d.setUint32(40, n, true);
+    new Uint8Array(buf, 44).fill(128);
+    return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  }
   function pickAudio(i) {
     var s = sources[i]; S.audio = s || null; S.synced = false;
     if (!s) return emptyState();
+    if (s.kind === 'silent') {
+      var len = naturalLength();
+      if (!len) { $('audio-hint').textContent = 'Add scenes first: the video will be as long as your clips.'; S.duration = 0; S.clips = []; renderTimeline(); refresh(); return; }
+      if (s.url) URL.revokeObjectURL(s.url);
+      s.url = silenceUrl(len); $('lyrics').value = ''; $('f-intro').classList.add('hidden');
+      $('audio-hint').textContent = 'Silent video. Each clip keeps its natural length.';
+      aud.src = s.url; return;
+    }
     $('lyrics').value = (s.text || '').trim();
     $('f-intro').classList.toggle('hidden', s.kind !== 'song');
     $('intro').value = s.kind === 'song' && !s.upload ? 8 : 0;
@@ -362,7 +403,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   }
   aud.addEventListener('loadedmetadata', function () {
     S.duration = Math.min(600, aud.duration || 0);
-    $('audio-hint').textContent = mmss(S.duration) + (aud.duration > 600 ? ' (videos stop at 10:00)' : '');
+    if (!S.audio || S.audio.kind !== 'silent') $('audio-hint').textContent = mmss(S.duration) + (aud.duration > 600 ? ' (videos stop at 10:00)' : '');
     buildClips(); buildLines(); prepVideos(); renderTimeline(); refresh(); drawAt(0);
   });
   aud.addEventListener('error', function () { $('audio-hint').textContent = 'This sound file is no longer available. Pick another one.'; });
@@ -381,6 +422,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
         clipDur: m.kind === 'image' ? 3600 : (m.dur || 10), trim: 0,
         weight: o ? o.weight : 1, effect: o ? o.effect : EFFECT_CYCLE[i % 4], transIn: o ? o.transIn : (i ? 'fade' : 'none'), filter: o ? o.filter : 'none' };
     }));
+    if (S.audio && S.audio.kind === 'silent') S.clips.forEach(function (c) { c.weight = c.kind === 'image' ? 4 : Math.min(60, c.clipDur || 8); });
     timeClips();
   }
   function timeClips() {
@@ -623,6 +665,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
     if (f.size > 60 * MB) { $('audio-hint').textContent = 'That sound is over 60 MB. Use a shorter or compressed file (MP3).'; return; }
     pause();
     sources.unshift({ url: URL.createObjectURL(f), title: f.name.replace(/\.[^.]+$/, ''), kind: 'song', text: '', upload: true, file: f, remote: null });
+    if (window.MDLib) MDLib.add(f).catch(function () {});
     renderSourceSelect(); $('audio').value = '0'; pickAudio(0); emptyState();
   });
   function videoInfo(url) {
@@ -649,15 +692,17 @@ footer{border-top:1px solid var(--line);margin-top:40px}
       if (isImg) item.thumb = url;
       else { var info = await videoInfo(url); if (!info) { bad.push(f.name + ' (cannot be played)'); continue; } item.dur = info.dur; item.thumb = info.thumb; }
       S.own.push(item);
+      if (window.MDLib) MDLib.add(f).catch(function () {});
     }
     $('up-hint').textContent = bad.length ? 'Skipped: ' + bad.join(', ') + '.' : 'Added. Only upload files you have the right to use.';
     renderSceneSummary(); emptyState();
-    if (S.duration) { pause(); buildClips(true); prepVideos(); renderTimeline(); refresh(); drawAt(aud.currentTime || 0, false); }
+    if (S.audio && S.audio.kind === 'silent') { pause(); pickAudio(Number($('audio').value) || sources.indexOf(S.audio)); }
+    else if (S.duration) { pause(); buildClips(true); prepVideos(); renderTimeline(); refresh(); drawAt(aud.currentTime || 0, false); }
   });
   // Cloud render needs your files online: they go straight from your browser to the render service
   async function putOnline(item, label) {
     if (item.remote) return item.remote;
-    var d = await api('/api/upload', { name: item.file.name, size: item.file.size });
+    var d = await api('/api/upload', { name: item.file.name || item.name || 'file', size: item.file.size });
     var body = await item.file.arrayBuffer();
     var put = await fetch(d.url, { method: 'PUT', body: body });
     if (!put.ok) throw new Error('Upload of ' + label + ' failed. Check your connection and try again.');
@@ -715,7 +760,7 @@ footer{border-top:1px solid var(--line);margin-top:40px}
         setMsg($('ai-msg'), 'Uploading your files: ' + (k + 1) + ' of ' + todo.length + '. Keep this page open.');
         await putOnline(todo[k], todo[k].title || todo[k].name || 'a file');
       }
-      var plan = { audio: S.audio.upload ? S.audio.remote : S.audio.url, format: S.format, font: S.font, lyrics: S.lyrics,
+      var plan = { audio: S.audio.kind === 'silent' ? '' : S.audio.upload ? S.audio.remote : S.audio.url, format: S.format, font: S.font, lyrics: S.lyrics,
         clips: S.clips.map(function (c) { return { src: c.own ? c.own.remote : c.src, kind: c.kind, start: c.start, length: c.length, clipDur: c.clipDur, trim: c.trim, effect: c.effect, transIn: c.transIn, filter: c.filter }; }),
         texts: S.lyrics ? S.lines.map(function (l) { return { text: l.text, start: l.start, length: l.length }; }) : [] };
       setMsg($('ai-msg'), 'Sending to the render farm.');
@@ -812,15 +857,15 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   /* ---------- state of the buttons ---------- */
   function emptyState() {
     var e = $('empty'), acts = $('empty-acts'); acts.innerHTML = '';
-    var noSc = !S.scenes.length && !S.own.length, noAu = !sources.length;
+    var noSc = !S.scenes.length && !S.own.length, noAu = !sources.filter(function (x) { return x.kind !== 'silent'; }).length && noSc;
     e.classList.toggle('hidden', !(noSc || noAu)); $('screen').classList.toggle('is-empty', noSc || noAu);
-    if (noAu && noSc) $('empty-text').textContent = 'A montage needs a sound and some scenes. Make a song or a voice-over, then pick scenes for it.';
+    if (noAu && noSc) $('empty-text').textContent = 'A montage needs scenes, and usually a sound. Open your Library, or make a song or a voice-over and pick scenes for it.';
     else if (noAu) $('empty-text').textContent = 'Your scenes are ready. Now make the sound: a song or a voice-over.';
     else if (noSc) $('empty-text').textContent = 'Your sound is ready. Pick free scenes to go with it, or add your own videos and photos.';
     function btn(t, id) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-ghost'; b.textContent = t; b.addEventListener('click', function () { $(id).click(); }); acts.appendChild(b); }
     function link(h, t, gold) { var a = document.createElement('a'); a.className = 'btn ' + (gold ? 'btn-gold' : 'btn-ghost'); a.href = h; a.textContent = t; acts.appendChild(a); }
-    if (noAu) { link('music.html', 'Make a song', true); link('voice.html', 'Make a voice-over'); btn('Upload a sound', 'up-audio'); }
-    if (noSc) { link('scenes.html', 'Pick scenes', !noAu); btn('Upload videos or photos', 'up-media'); }
+    if (noAu) { link('library.html', 'Open my Library', true); link('music.html', 'Make a song'); link('voice.html', 'Make a voice-over'); }
+    if (noSc) { link('scenes.html', 'Pick scenes', false); btn('Upload videos or photos', 'up-media'); }
   }
   function refresh() {
     var ready = !!(S.audio && S.duration && S.clips.length);
@@ -851,8 +896,8 @@ footer{border-top:1px solid var(--line);margin-top:40px}
   });
 
   /* ---------- start ---------- */
-  loadSources(); sizeCanvas(); emptyState(); renderVids();
-  if (sources.length) pickAudio(0);
+  sizeCanvas(); renderVids();
+  loadSources().then(function () { emptyState(); pickAudio(0); refresh(); });
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (aud.paused) drawAt(aud.currentTime || 0, false); });
   refresh();
