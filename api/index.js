@@ -61,7 +61,7 @@ function priceFor(service, body) {
 }
 
 // Free AI endpoints (cost you money, not the user): login + daily cap per user
-const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50, lyrics: 30 };
+const DAILY_LIMITS = { chat: 60, director: 30, semantic: 30, voice: 50, lyrics: 30, pexels: 300, scenes: 30 };
 
 // ── FIREBASE ADMIN (server only) ──────────────────────────────
 let _admin = null;
@@ -337,12 +337,27 @@ async function handle_fingerprint(req, res) {
 }
 
 async function handle_pexels(req, res) {
-  const { query, per_page, orientation } = req.body||{};
+  const b = req.body || {};
+  const query = String(b.query || '').trim().slice(0, 100);
   if (!query) return res.status(400).json({ error: 'query required.' });
   if (!PEXELS_KEY) return res.status(500).json({ error: 'PEXELS_API_KEY not set.' });
-  const r = await fetch(`https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=${per_page||12}&orientation=${orientation||'portrait'}`,
+  const per = Math.min(Math.max(parseInt(b.per_page) || 15, 1), 40);
+  const page = Math.min(Math.max(parseInt(b.page) || 1, 1), 50);
+  const orientation = ['landscape', 'portrait', 'square'].includes(b.orientation) ? b.orientation : 'landscape';
+  const r = await fetch('https://api.pexels.com/videos/search?query=' + encodeURIComponent(query) + '&per_page=' + per + '&page=' + page + '&orientation=' + orientation,
     { headers: { Authorization: PEXELS_KEY } });
-  return res.json(await r.json());
+  if (!r.ok) return res.status(502).json({ error: 'The video library did not answer. Try again.' });
+  const d = await r.json();
+  const pick = (files, maxH) => (files || []).filter(f => f.file_type === 'video/mp4' && f.link)
+    .sort((x, y) => (y.height || 0) - (x.height || 0)).find(f => (Math.min(f.width || 0, f.height || 0)) <= maxH) || null;
+  const videos = (d.videos || []).map(v => {
+    const hd = pick(v.video_files, 1080), sd = pick(v.video_files, 540);
+    return { id: v.id, url: v.url, image: v.image, duration: v.duration, width: v.width, height: v.height,
+      user: { name: v.user && v.user.name, url: v.user && v.user.url },
+      files: { hd: hd && hd.link, sd: (sd || hd) && (sd || hd).link },
+      video_files: (v.video_files || []).filter(f => f.file_type === 'video/mp4').map(f => ({ link: f.link, quality: f.quality, width: f.width, height: f.height })) };
+  });
+  return res.json({ videos, page: d.page, per_page: d.per_page, total_results: d.total_results, next: !!d.next_page });
 }
 
 async function handle_wavespeed(req, res) {
@@ -1154,6 +1169,43 @@ async function handle_verify(req, res) {
   if (!c.exists) return res.status(404).json({ valid: false, error: 'No contract with this number.' });
   return res.json(publicCert(c.data()));
 }
+// AI scene director: turns lyrics into stock-video searches (free for the user, daily cap via limited())
+async function handle_scenes(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set.' });
+  const b = req.body || {};
+  const lyrics = String(b.lyrics || '').trim().slice(0, 5000);
+  const title = String(b.title || '').trim().slice(0, 120);
+  const style = String(b.style || '').trim().slice(0, 300);
+  if (!lyrics) return res.status(400).json({ error: 'Add the lyrics first.' });
+  const system =
+    'You are a music video director choosing stock footage from the Pexels video library. ' +
+    'Split the song into its sections (use the [Verse]/[Chorus] tags when present) and, for each section, write one search query in ENGLISH ' +
+    '(2 to 4 concrete visual words: subject + action + place or light, e.g. "woman walking rain night"). ' +
+    'Prefer scenes that stock libraries really have: people from behind or far away, nature, cities, light, hands, roads, sea, sky. ' +
+    'Never ask for a celebrity, a brand, a logo, violence or nudity. Keep the visual story coherent from section to section. ' +
+    'Return ONLY valid JSON, no other text: {"scenes":[{"section":"Verse 1","excerpt":"first lyric line","query":"...","alt":["...","..."]}]} with at most 12 scenes.';
+  const user = (title ? 'Title: ' + title + '\n' : '') + (style ? 'Style: ' + style + '\n' : '') + 'Lyrics:\n' + lyrics;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1500, system, messages: [{ role: 'user', content: user }] })
+    });
+    const d = await r.json();
+    const text = (d?.content || []).map(c => c.text || '').join('');
+    const m = text.match(/\{[\s\S]*\}/);
+    let out = null;
+    try { out = m ? JSON.parse(m[0]) : null; } catch (e) { out = null; }
+    const clip = (v, n) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, n);
+    const scenes = (out && Array.isArray(out.scenes) ? out.scenes : []).slice(0, 12).map(s => ({
+      section: clip(s.section, 40) || 'Scene', excerpt: clip(s.excerpt, 140), query: clip(s.query, 60),
+      alt: (Array.isArray(s.alt) ? s.alt : []).slice(0, 3).map(a => clip(a, 60)).filter(Boolean)
+    })).filter(s => s.query);
+    if (!scenes.length) return res.status(502).json({ error: 'The director could not read these lyrics. Try again.' });
+    return res.json({ scenes });
+  } catch (e) { return res.status(500).json({ error: e.message }); }
+}
 // AI songwriter (free for the user, daily cap via limited())
 async function handle_lyrics(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only.' });
@@ -1310,7 +1362,7 @@ module.exports = async function handler(req, res) {
     fingerprint: handle_fingerprint,
     record:      handle_record,
     verify:      handle_verify,
-    pexels:      handle_pexels,
+    pexels:      limited('pexels', handle_pexels),
     checkout:    handle_checkout,
     webhook:     handle_webhook,
     analyze:     handle_analyze,
@@ -1322,6 +1374,7 @@ module.exports = async function handler(req, res) {
     semantic:    limited('semantic', handle_semantic),
     voice:       limited('voice', handle_voice),
     lyrics:      limited('lyrics', handle_lyrics),
+    scenes:      limited('scenes', handle_scenes),
     // paid: login + server price + server deduction (refund only if provider rejected)
     wavespeed:   paid('wavespeed', handle_wavespeed),
     video:       paid('video', handle_video),          // GET (polling) stays free

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Scenes | MercaDream Studio</title>
+<meta name="description" content="Pick free stock footage for every part of your song. AI reads your lyrics and suggests the scenes."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#E8B92F; --gold-hi:#F6D365; --gold-dim:#4d3d0a;
+  --bg:#0a0a0a; --bg2:#0d0d0d; --card:#111111; --line:#1f1f1f; --line2:#2a2a2a;
+  --text:#ececec; --soft:#bdbdbd; --muted:#a3a3a3; --white:#ffffff; --red:#ff6b6b; --green:#5fd38a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-hi)}
+.hidden{display:none!important}
+.eyebrow{margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.mono{font-family:'IBM Plex Mono',monospace}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:6px;font-weight:600;font-size:15px;cursor:pointer;border:1px solid transparent;font-family:Inter,sans-serif;background:none;color:var(--text);text-decoration:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:#0a0a0a}
+.btn-gold:hover:not(:disabled){background:var(--gold-hi);color:#0a0a0a}
+.btn-ghost{border-color:#3a3a3a}
+.btn-ghost:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+.btn-sm{min-height:34px;padding:0 12px;font-size:13px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+header{position:sticky;top:0;z-index:50;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav.main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;max-width:1600px;margin:0 auto}
+.logo{display:flex;align-items:baseline;gap:10px;font-family:Orbitron,sans-serif;font-weight:700;font-size:21px;letter-spacing:.08em;color:var(--gold)}
+.logo small{font-size:12px;font-weight:600;letter-spacing:.3em}
+.navright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.balance{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--gold);border:1px solid var(--gold-dim);border-radius:6px;padding:9px 12px}
+.linkbtn{background:none;border:0;color:var(--text);font-size:15px;padding:12px 14px;cursor:pointer;font-family:Inter,sans-serif}
+.linkbtn:hover{color:var(--gold)}
+
+.bar-top{border-bottom:1px solid var(--line);background:#0c0c0c}
+.bar-in{max-width:1600px;margin:0 auto;padding:12px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.head h1{margin:0;font-family:Orbitron,sans-serif;font-weight:700;font-size:24px;color:var(--white)}
+.stat{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--soft)}
+.stat b{color:var(--gold);font-weight:500}
+
+.studio{max-width:1600px;margin:0 auto;padding:16px 24px;display:flex;flex-direction:column;gap:16px}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel{border:1px solid var(--line2);border-radius:12px;background:var(--card);padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.panel-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.panel-h h2{margin:0;font-size:18px;font-weight:600;color:var(--white)}
+.panel-h .num{font-family:Orbitron,sans-serif;font-size:20px;font-weight:700;color:var(--gold);margin-right:10px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.lbl{font-size:14px;font-weight:600}
+.hint{font-size:13px;color:var(--muted);margin:0}
+input[type=text],textarea{width:100%;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:var(--text);font-family:Inter,sans-serif;font-size:15px;padding:10px 12px}
+input[type=text]:focus,textarea:focus{border-color:var(--gold);outline:none}
+#lyrics{min-height:220px;font-family:'IBM Plex Mono',monospace;font-size:14px;resize:vertical;line-height:1.55}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#141414;border:1px solid #333;color:var(--soft);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;min-height:36px;font-family:Inter,sans-serif}
+.chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#0a0a0a;font-weight:600}
+.msg{font-size:14px;margin:0}
+.msg.err{color:var(--red)} .msg.ok{color:var(--green)}
+
+/* storyboard */
+.board{display:flex;flex-direction:column;gap:12px}
+.scene{border:1px solid var(--line2);border-radius:10px;background:#0d0d0d;padding:12px;display:grid;grid-template-columns:150px 1fr;gap:12px;cursor:pointer}
+.scene.portrait{grid-template-columns:84px 1fr}
+.scene.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.thumb{position:relative;width:100%;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:#161616;border:1px solid #222}
+.portrait .thumb{aspect-ratio:9/16}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .dur{position:absolute;right:4px;bottom:4px;background:rgba(0,0,0,.75);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:1px 5px;border-radius:3px}
+.thumb .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);text-align:center;padding:6px}
+.scene .sec{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.scene .ex{font-size:13px;color:var(--soft);margin:2px 0 8px;unicode-bidi:plaintext;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.qrow{display:flex;gap:6px}
+.qrow input{flex:1;min-width:0;padding:7px 10px;font-size:14px}
+.scene .by{font-size:12px;color:var(--muted);margin-top:6px}
+.scene .tools{display:flex;gap:6px;margin-top:6px}
+.iconbtn{background:none;border:1px solid #333;color:var(--soft);border-radius:6px;min-height:32px;padding:0 10px;font-size:12px;cursor:pointer;font-family:Inter,sans-serif}
+.iconbtn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* library */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid.portrait{grid-template-columns:repeat(3,minmax(0,1fr))}
+.item{position:relative;cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid transparent;background:#161616}
+.item:hover,.item:focus-visible{border-color:var(--gold-dim)}
+.item.sel{border-color:var(--gold)}
+.item .thumb{border:0;border-radius:0}
+.item .by{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.7);color:#ddd;font-size:10px;padding:1px 5px;border-radius:3px;max-width:65%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.item .tick{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#0a0a0a;font-size:13px;font-weight:700;display:none;align-items:center;justify-content:center}
+.item.sel .tick{display:flex}
+.libhead{font-size:14px;color:var(--soft)}
+.libhead b{color:var(--white)}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid #3a2f0e;border-top-color:var(--gold);animation:spin 1s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.export ol{margin:0;padding-left:20px;font-size:13px;color:var(--soft);display:flex;flex-direction:column;gap:4px}
+.soon{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;border:1px solid var(--gold-dim);color:var(--gold);border-radius:4px;padding:2px 6px}
+.credit{font-size:12px;color:var(--muted)}
+
+@media (min-width:1100px){
+  .studio{display:grid;grid-template-columns:.9fr 1.2fr 1.1fr;align-items:start}
+}
+@media (min-width:1100px) and (min-height:600px){
+  .studio{align-items:stretch;height:calc(100vh - 72px - 55px)}
+  .col{min-height:0;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+  footer{display:none}
+}
+@media (max-width:560px){ .scene{grid-template-columns:110px 1fr} .grid.portrait{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+footer{border-top:1px solid var(--line);margin-top:40px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;padding:28px 24px;max-width:1200px;margin:0 auto;font-size:14px;color:var(--muted)}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/js/md-firebase.js"></script>
+<script src="/js/md-auth.js"></script>
+</head>
+<body>
+
+<header>
+<nav class="main" aria-label="Main">
+  <a href="index.html" class="logo"><span>MERCADREAM</span><small>STUDIO</small></a>
+  <div class="navright">
+    <span class="balance hidden" id="nav-balance">0 GNS</span>
+    <a class="linkbtn" href="music.html">Song studio</a>
+    <a class="linkbtn" href="pricing.html">Buy credits</a>
+    <button class="linkbtn" id="nav-auth" type="button">Log in</button>
+  </div>
+</nav>
+</header>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <div class="head"><p class="eyebrow">Step 4</p><h1>Pick the scenes</h1></div>
+    <span class="stat" id="stat">0 scenes · <b>0:00</b> of footage</span>
+    <span class="stat">Free footage from <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span>
+  </div>
+</div>
+
+<main class="studio">
+  <!-- SONG -->
+  <div class="col">
+    <section class="panel" aria-labelledby="h-song">
+      <div class="panel-h"><h2 id="h-song"><span class="num">01</span>Your song</h2><button class="iconbtn" id="use-last" type="button">Use my last song</button></div>
+      <div class="field"><label for="title">Song title</label><input type="text" id="title" maxlength="120" placeholder="e.g. Not On You"/></div>
+      <div class="field">
+        <span class="lbl" id="lb-fmt">Video format</span>
+        <div class="chips" id="fmt" role="group" aria-labelledby="lb-fmt">
+          <button class="chip" type="button" data-v="landscape" aria-pressed="true">16:9 · YouTube</button>
+          <button class="chip" type="button" data-v="portrait" aria-pressed="false">9:16 · Shorts, TikTok</button>
+        </div>
+      </div>
+      <div class="field"><label for="lyrics">Lyrics</label><textarea id="lyrics" placeholder="Paste your lyrics with [Verse] and [Chorus] tags…"></textarea></div>
+      <button class="btn btn-gold" id="suggest" type="button">✦ Suggest scenes with AI</button>
+      <p class="msg" id="s-msg" role="status"></p>
+      <p class="hint">The AI reads each part of your song and searches matching free footage. You can change any scene.</p>
+    </section>
+  </div>
+
+  <!-- STORYBOARD -->
+  <div class="col">
+    <section class="panel" aria-labelledby="h-board">
+      <div class="panel-h"><h2 id="h-board"><span class="num">02</span>Storyboard</h2><button class="iconbtn" id="add" type="button">+ Add scene</button></div>
+      <div class="board" id="board"><p class="hint" id="board-empty">Your scenes appear here. Click "Suggest scenes with AI", or add a scene yourself.</p></div>
+    </section>
+    <section class="panel export" aria-labelledby="h-exp">
+      <div class="panel-h"><h2 id="h-exp"><span class="num">03</span>Use your scenes</h2></div>
+      <ol>
+        <li>Your storyboard is saved on this device automatically.</li>
+        <li>Download the clips and edit them with your song in any video editor.</li>
+        <li>Or wait for our one-click montage, cut on the beat with your lyrics on screen. <span class="soon">SOON</span></li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="dl" type="button">Download all clips</button>
+        <button class="btn btn-gold" type="button" disabled>Make the montage <span class="soon" style="color:#0a0a0a;border-color:#0a0a0a">SOON</span></button>
+      </div>
+      <div id="dl-list" class="hidden" style="display:flex;flex-direction:column;gap:4px;font-size:13px"></div>
+      <p class="credit">Videos from Pexels are free to use, including commercially. Crediting the creators is appreciated. Don't present people in the footage as endorsing your song.</p>
+    </section>
+  </div>
+
+  <!-- LIBRARY -->
+  <div class="col">
+    <section class="panel" aria-labelledby="h-lib">
+      <div class="panel-h"><h2 id="h-lib"><span class="num">⌕</span>Library</h2></div>
+      <form class="qrow" id="lib-form"><label for="lib-q" class="hidden">Search footage</label><input type="text" id="lib-q" placeholder="Search free footage…"/><button class="btn btn-gold btn-sm" type="submit">Search</button></form>
+      <p class="libhead" id="lib-head">Choose a scene in the storyboard, then pick a clip here.</p>
+      <div class="grid" id="grid"></div>
+      <button class="btn btn-ghost hidden" id="more" type="button">More results</button>
+    </section>
+  </div>
+</main>
+
+<footer><div class="foot"><span>© 2026 MercaDream Studio</span><span>Footage: Pexels</span></div></footer>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KEY = 'md_storyboard';
+  var state = { title: '', orientation: 'landscape', lyrics: '', scenes: [], active: -1 };
+  var lib = { query: '', page: 1, results: [] };
+  var user = null, loading = false;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function mmss(s) { s = Math.round(s || 0); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function setMsg(t, k) { $('s-msg').textContent = t || ''; $('s-msg').className = 'msg' + (k ? ' ' + k : ''); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.scenes)) state = s; } catch (e) {} }
+  function portrait() { return state.orientation === 'portrait'; }
+
+  async function api(path, body) {
+    var r = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    var d = await r.json().catch(function () { return {}; });
+    if (r.status === 401) { location.href = 'login.html'; throw new Error('Please log in.'); }
+    if (r.status === 429) throw new Error('Daily limit reached. Try again tomorrow.');
+    if (!r.ok) throw new Error(d.error || 'Something went wrong. Try again.');
+    return d;
+  }
+  async function search(q, page) { return api('/api/pexels', { query: q, page: page || 1, per_page: 15, orientation: state.orientation }); }
+
+  /* ── storyboard ───────────────────────── */
+  function renderBoard() {
+    var box = $('board');
+    box.querySelectorAll('.scene').forEach(function (n) { n.remove(); });
+    $('board-empty').classList.toggle('hidden', state.scenes.length > 0);
+    var total = 0;
+    state.scenes.forEach(function (s, i) {
+      if (s.chosen) total += s.chosen.duration || 0;
+      var el = document.createElement('div');
+      el.className = 'scene' + (portrait() ? ' portrait' : '') + (i === state.active ? ' active' : '');
+      el.tabIndex = 0;
+      el.innerHTML =
+        '<div class="thumb">' + (s.chosen ? '<img alt="" loading="lazy"/><span class="dur"></span>' : '<span class="empty">' + (s.busy ? '<span class="spin"></span>' : 'No clip yet') + '</span>') + '</div>' +
+        '<div><div class="sec"></div><div class="ex" dir="auto"></div>' +
+        '<form class="qrow"><input type="text" aria-label="Search for this scene"/><button class="iconbtn" type="submit">Search</button></form>' +
+        (s.chosen ? '<div class="by"></div>' : '') +
+        '<div class="tools"><button class="iconbtn up" type="button" aria-label="Move up">↑</button><button class="iconbtn down" type="button" aria-label="Move down">↓</button><button class="iconbtn del" type="button">Remove</button></div></div>';
+      el.querySelector('.sec').textContent = (i + 1) + ' · ' + (s.section || 'Scene');
+      el.querySelector('.ex').textContent = s.excerpt || '';
+      var inp = el.querySelector('input'); inp.value = s.query || '';
+      if (s.chosen) {
+        el.querySelector('img').src = s.chosen.image;
+        el.querySelector('.dur').textContent = mmss(s.chosen.duration);
+        el.querySelector('.by').textContent = 'Video by ' + (s.chosen.user && s.chosen.user.name || 'Pexels creator');
+      }
+      el.addEventListener('click', function (e) { if (e.target.closest('form,button')) return; activate(i, true); });
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target === el) activate(i, true); });
+      el.addEventListener('focusin', function () { if (state.active === i) return; state.active = i; save(); document.querySelectorAll('.scene').forEach(function (n, k) { n.classList.toggle('active', k === i); }); });
+      el.querySelector('form').addEventListener('submit', function (e) { e.preventDefault(); s.query = inp.value.trim(); save(); activate(i, true); });
+      el.querySelector('.up').addEventListener('click', function () { move(i, -1); });
+      el.querySelector('.down').addEventListener('click', function () { move(i, 1); });
+      el.querySelector('.del').addEventListener('click', function () { state.scenes.splice(i, 1); if (state.active >= state.scenes.length) state.active = state.scenes.length - 1; save(); renderBoard(); });
+      box.appendChild(el);
+    });
+    var chosen = state.scenes.filter(function (s) { return s.chosen; }).length;
+    $('stat').innerHTML = state.scenes.length + ' scenes · ' + chosen + ' clips · <b>' + mmss(total) + '</b> of footage';
+  }
+  function move(i, d) {
+    var j = i + d; if (j < 0 || j >= state.scenes.length) return;
+    var t = state.scenes[i]; state.scenes[i] = state.scenes[j]; state.scenes[j] = t;
+    if (state.active === i) state.active = j; else if (state.active === j) state.active = i;
+    save(); renderBoard();
+  }
+  function activate(i, doSearch) {
+    state.active = i; save(); renderBoard();
+    var s = state.scenes[i]; if (!s) return;
+    $('lib-q').value = s.query || '';
+    if (doSearch && s.query) runLibrary(s.query, 1);
+  }
+
+  /* ── library ──────────────────────────── */
+  async function runLibrary(q, page) {
+    lib.query = q; lib.page = page;
+    var s = state.scenes[state.active];
+    $('lib-head').innerHTML = '<span class="spin"></span> Searching "' + esc(q) + '"…';
+    if (page === 1) $('grid').innerHTML = '';
+    try {
+      var d = await search(q, page);
+      lib.results = page === 1 ? d.videos : lib.results.concat(d.videos);
+      $('lib-head').innerHTML = (d.total_results ? '<b>' + d.total_results.toLocaleString() + '</b> clips for "' + esc(q) + '"' : 'No clips for "' + esc(q) + '". Try simpler words.') +
+        (s ? ' — click a clip to use it for scene ' + (state.active + 1) : '');
+      renderGrid();
+      $('more').classList.toggle('hidden', !d.next);
+    } catch (e) { $('lib-head').textContent = e.message; }
+  }
+  function renderGrid() {
+    var g = $('grid'); g.className = 'grid' + (portrait() ? ' portrait' : ''); g.innerHTML = '';
+    var s = state.scenes[state.active];
+    lib.results.forEach(function (v) {
+      var it = document.createElement('div');
+      it.className = 'item' + (s && s.chosen && s.chosen.id === v.id ? ' sel' : '');
+      it.tabIndex = 0; it.setAttribute('role', 'button');
+      it.setAttribute('aria-label', 'Clip by ' + (v.user && v.user.name || 'Pexels') + ', ' + mmss(v.duration));
+      it.innerHTML = '<div class="thumb"><img alt="" loading="lazy"/><span class="dur"></span></div><span class="by"></span><span class="tick">✓</span>';
+      it.querySelector('img').src = v.image;
+      it.querySelector('.dur').textContent = mmss(v.duration);
+      it.querySelector('.by').textContent = v.user && v.user.name || '';
+      var th = it.querySelector('.thumb'), vid = null;
+      it.addEventListener('mouseenter', function () {
+        if (!v.files || !v.files.sd || vid) return;
+        vid = document.createElement('video'); vid.src = v.files.sd; vid.muted = true; vid.loop = true; vid.playsInline = true; vid.autoplay = true;
+        th.insertBefore(vid, th.firstChild); th.querySelector('img').style.display = 'none';
+      });
+      it.addEventListener('mouseleave', function () { if (vid) { vid.remove(); vid = null; th.querySelector('img').style.display = ''; } });
+      function pick() {
+        if (state.active < 0 || !state.scenes[state.active]) { addScene('Scene', '', lib.query); }
+        state.scenes[state.active].chosen = { id: v.id, image: v.image, duration: v.duration, url: v.url, user: v.user, files: v.files };
+        if (!state.scenes[state.active].query) state.scenes[state.active].query = lib.query;
+        save(); renderBoard(); renderGrid();
+      }
+      it.addEventListener('click', pick);
+      it.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+      g.appendChild(it);
+    });
+  }
+  $('lib-form').addEventListener('submit', function (e) {
+    e.preventDefault(); var q = $('lib-q').value.trim(); if (!q) return;
+    if (!user) { location.href = 'login.html'; return; }
+    if (state.scenes[state.active]) { state.scenes[state.active].query = q; save(); renderBoard(); }
+    runLibrary(q, 1);
+  });
+  $('more').addEventListener('click', function () { runLibrary(lib.query, lib.page + 1); });
+
+  function addScene(section, excerpt, query) {
+    state.scenes.push({ section: section || 'Scene', excerpt: excerpt || '', query: query || '', alt: [], chosen: null });
+    state.active = state.scenes.length - 1; save(); renderBoard();
+  }
+  $('add').addEventListener('click', function () { addScene('Scene', '', ''); $('lib-q').focus(); });
+
+  /* ── AI suggestion ────────────────────── */
+  $('suggest').addEventListener('click', async function () {
+    if (!user) { location.href = 'login.html'; return; }
+    if (loading) return;
+    var lyrics = $('lyrics').value.trim();
+    if (!lyrics) { setMsg('Paste your lyrics first, or click "Use my last song".', 'err'); return; }
+    if (state.scenes.length && !confirm('Replace your current storyboard with new AI suggestions?')) return;
+    loading = true; this.disabled = true; setMsg('The AI director is reading your lyrics…');
+    try {
+      var d = await api('/api/scenes', { lyrics: lyrics, title: $('title').value.trim(), style: state.style || '' });
+      state.scenes = d.scenes.map(function (s) { return { section: s.section, excerpt: s.excerpt, query: s.query, alt: s.alt || [], chosen: null, busy: true }; });
+      state.active = 0; save(); renderBoard();
+      setMsg('Finding footage for ' + state.scenes.length + ' scenes…');
+      for (var i = 0; i < state.scenes.length; i++) {
+        var s = state.scenes[i], found = null, tries = [s.query].concat(s.alt || []);
+        for (var k = 0; k < tries.length && !found; k++) {
+          try { var r = await search(tries[k], 1); if (r.videos && r.videos.length) { found = r.videos[0]; s.query = tries[k]; if (i === 0) { lib.query = tries[k]; lib.page = 1; lib.results = r.videos; } } } catch (e) { if (/limit/i.test(e.message)) throw e; }
+        }
+        s.busy = false;
+        if (found) s.chosen = { id: found.id, image: found.image, duration: found.duration, url: found.url, user: found.user, files: found.files };
+        save(); renderBoard();
+      }
+      activate(0, false); $('lib-head').innerHTML = 'Clips for "<b>' + esc(lib.query) + '</b>" — click a clip to use it for scene 1'; renderGrid(); $('more').classList.toggle('hidden', !lib.results.length);
+      setMsg('Done — click any scene to change its clip.', 'ok');
+    } catch (e) { setMsg(e.message, 'err'); state.scenes.forEach(function (s) { s.busy = false; }); renderBoard(); }
+    loading = false; this.disabled = false;
+  });
+
+  /* ── song inputs ──────────────────────── */
+  $('fmt').addEventListener('click', function (e) {
+    var b = e.target.closest('.chip'); if (!b) return;
+    if (b.getAttribute('data-v') === state.orientation) return;
+    if (state.scenes.some(function (s) { return s.chosen; }) && !confirm('Changing the format clears the chosen clips (they have a different shape). Continue?')) return;
+    state.orientation = b.getAttribute('data-v');
+    state.scenes.forEach(function (s) { s.chosen = null; });
+    syncFmt(); save(); renderBoard(); lib.results = []; renderGrid();
+  });
+  function syncFmt() { $('fmt').querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', String(c.getAttribute('data-v') === state.orientation)); }); }
+  $('title').addEventListener('input', function () { state.title = this.value; save(); });
+  $('lyrics').addEventListener('input', function () { state.lyrics = this.value; save(); });
+  $('use-last').addEventListener('click', function () {
+    var last = null; try { last = JSON.parse(localStorage.getItem('md_last_song') || 'null'); } catch (e) {}
+    if (!last || !last.lyrics) { setMsg('No song found on this device yet. Create one in the Song studio first.', 'err'); return; }
+    $('title').value = state.title = last.title || ''; $('lyrics').value = state.lyrics = last.lyrics; state.style = last.style || '';
+    save(); setMsg('Loaded "' + (last.title || 'your last song') + '".', 'ok');
+  });
+
+  /* ── download list ────────────────────── */
+  $('dl').addEventListener('click', function () {
+    var box = $('dl-list'), list = state.scenes.filter(function (s) { return s.chosen && s.chosen.files && s.chosen.files.hd; });
+    if (!list.length) { box.classList.remove('hidden'); box.textContent = 'Pick at least one clip first.'; return; }
+    box.innerHTML = ''; box.classList.remove('hidden');
+    state.scenes.forEach(function (s, i) {
+      if (!s.chosen || !s.chosen.files || !s.chosen.files.hd) return;
+      var a = document.createElement('a'); a.href = s.chosen.files.hd; a.target = '_blank'; a.rel = 'noopener'; a.download = '';
+      a.textContent = '⬇ Scene ' + (i + 1) + ' — ' + (s.section || '') + ' (' + mmss(s.chosen.duration) + ', by ' + (s.chosen.user && s.chosen.user.name || 'Pexels') + ')';
+      box.appendChild(a);
+    });
+  });
+
+  /* ── account ──────────────────────────── */
+  window.addEventListener('creditsUpdated', function (e) { $('nav-balance').textContent = Number(e.detail.credits || 0).toLocaleString() + ' GNS'; });
+  $('nav-auth').addEventListener('click', function () {
+    if (window.MD_USER) firebase.auth().signOut().then(function () { localStorage.removeItem('md_credits'); location.reload(); });
+    else location.href = 'login.html';
+  });
+  if (window.mdAuthReady) window.mdAuthReady.then(function (u) {
+    user = u;
+    if (u) { $('nav-auth').textContent = 'Log out'; $('nav-balance').classList.remove('hidden'); }
+    else setMsg('Log in to search footage and get AI scene suggestions.', 'err');
+  });
+
+  load();
+  $('title').value = state.title || ''; $('lyrics').value = state.lyrics || '';
+  state.scenes.forEach(function (s) { s.busy = false; });
+  syncFmt(); renderBoard();
+  if (state.active >= 0 && state.scenes[state.active]) $('lib-q').value = state.scenes[state.active].query || '';
+})();
+</script>
+</body>
+</html>

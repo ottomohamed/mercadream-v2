@@ -730,7 +730,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
         '<div class="track-h"><h3></h3><span class="mono" style="font-size:12px;color:var(--muted)">' + (job.q === 'studio' ? 'STUDIO' : 'STANDARD') + '</span></div>' +
         '<audio controls preload="metadata"></audio>' +
         '<div class="track-a"><a class="btn btn-gold" target="_blank" rel="noopener" download>Download MP3</a>' +
-        '<button class="btn btn-ghost" type="button" disabled>Make a music video <span class="soon">SOON</span></button></div>';
+        '<a class="btn btn-ghost" href="scenes.html">Pick scenes for the video &rarr;</a></div>';
       el.querySelector('h3').textContent = name;
       el.querySelector('audio').src = u;
       el.querySelector('a').href = u;
@@ -742,6 +742,7 @@ footer{border-top:1px solid var(--line);margin-top:48px}
       note.textContent = '🔒 Title, lyrics and style were recorded. You can now issue your ownership contract below.';
       box.appendChild(note);
     }
+    try { localStorage.setItem('md_last_song', JSON.stringify({ title: job.title, lyrics: (record && record.lyrics) || $('lyrics').value.trim(), style: stylePrompt(), url: urls[0] })); } catch (e) {}
     var audios = box.querySelectorAll('audio');
     audios.forEach(function (a) { a.addEventListener('play', function () { audios.forEach(function (b) { if (b !== a) b.pause(); }); }); });
     renderMine(); refresh();
