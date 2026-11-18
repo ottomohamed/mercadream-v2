@@ -382,12 +382,19 @@ async function handle_pexels(req, res) {
   return res.json({ videos, page: d.page, per_page: d.per_page, total_results: d.total_results, next: !!d.next_page });
 }
 
+// Video engines allowed from the browser (each one is priced by priceFor: 15 GNS per 5 s)
+const VIDEO_MODELS = {
+  'wavespeed-ai/wan-2.1/t2v-480p': true,
+  'bytedance/seedance-2.0-fast/text-to-video': true
+};
 async function handle_wavespeed(req, res) {
   // Credits are charged by the paid() wrapper. Client "uid" and "cost" are ignored.
   const { prompt, duration, model } = req.body||{};
   if (!prompt) return res.status(400).json({ error: 'prompt required.' });
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
-  const modelId = model||'wavespeed-ai/wan-2.1/t2v-480p';
+  // Only models we priced. A client must never pick an expensive model for a cheap price.
+  const modelId = model || 'wavespeed-ai/wan-2.1/t2v-480p';
+  if (!VIDEO_MODELS[modelId]) return res.status(400).json({ error: 'This video engine is not available.' });
   try {
     // WaveSpeed API v3 - model-specific endpoint
     const endpoint = 'https://api.wavespeed.ai/api/v3/' + modelId;
@@ -491,6 +498,7 @@ async function handle_video(req, res) {
   if (!WAVESPEED_KEY) return res.status(500).json({ error: 'WAVESPEED_API_KEY not set.' });
   try {
     const modelId = model || 'bytedance/seedance-2.0-fast/text-to-video';
+    if (!VIDEO_MODELS[modelId]) return res.status(400).json({ error: 'This video engine is not available.' });
     const r = await fetch('https://api.wavespeed.ai/api/v3/' + modelId, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
