@@ -741,7 +741,10 @@ footer{border-top:1px solid var(--line);margin-top:48px}
           clearInterval(timer);
           localStorage.removeItem('md_pending_song');
           busy = false; refresh();
-          showStatus('Production failed', 'The music engine could not finish this song. Try changing the lyrics or style, or contact us.', false);
+          if (typeof d.balance === 'number') window.dispatchEvent(new CustomEvent('creditsUpdated', { detail: { credits: d.balance } }));
+          showStatus('Production failed', d.refunded
+            ? 'The music engine could not finish this song. Your ' + d.refunded + ' GNS were returned to your balance. Please try again.'
+            : 'The music engine could not finish this song. Try changing the lyrics or style, or contact us.', false);
         }
       } catch (e) { /* network hiccup: keep trying */ }
     }, 5000);

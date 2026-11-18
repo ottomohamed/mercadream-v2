@@ -487,7 +487,10 @@ footer{border-top:1px solid var(--line);margin-top:40px}
         }
         if (d.status === 'failed') {
           localStorage.removeItem('md_pending_voice');
-          setMsg($('g-msg'), 'The studio could not record this text. Try a different voice or shorter text.', 'err'); done(); return;
+          if (typeof d.balance === 'number') window.dispatchEvent(new CustomEvent('creditsUpdated', { detail: { credits: d.balance } }));
+          setMsg($('g-msg'), d.refunded
+            ? 'The studio could not record this text. Your ' + d.refunded + ' GNS were returned to your balance. Please try again.'
+            : 'The studio could not record this text. Try a different voice or shorter text.', 'err'); done(); return;
         }
       } catch (e) {}
     }

@@ -413,6 +413,50 @@ async function handle_wavespeed(req, res) {
   }
 }
 
+// A failed WaveSpeed task: give the credits back ONLY when WaveSpeed itself returned
+// the money to us (its billing shows a deduct and an equal refund for this prediction).
+// No billing data, an unknown billing type, or money still taken = no refund.
+async function settleFailedJob(taskId) {
+  const ref = db().collection('jobs').doc(String(taskId));
+  const snap = await ref.get();
+  if (!snap.exists) return null;
+  const job = snap.data();
+  if (job.refunded) return { refunded: 0, already: true };
+  if (!(job.cost > 0) || !job.uid) return null;
+  const r = await fetch('https://api.wavespeed.ai/api/v3/billings/search', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + WAVESPEED_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prediction_uuids: [String(taskId)], page: 1, page_size: 50 })
+  });
+  const d = await r.json().catch(() => null);
+  const items = d && d.data && Array.isArray(d.data.items) ? d.data.items : null;
+  if (!r.ok || !items || !items.length) return null;
+  let taken = 0, back = 0;
+  for (const it of items) {
+    const type = String(it.billing_type || '').toLowerCase();
+    const amount = Math.abs(Number(it.price) || 0);
+    if (type === 'deduct') taken += amount;
+    else if (/refund|return|rollback|revert/.test(type)) back += amount;
+    else { console.error('settleFailedJob: unknown billing type', type); return null; } // do not guess
+  }
+  if (!(taken > 0) || Math.abs(taken - back) > 0.000001) return null; // we paid: no refund
+  const userRef = db().collection('users').doc(job.uid);
+  const txRef = db().collection('transactions').doc('refund_' + String(taskId));
+  let balance = null, done = false;
+  await db().runTransaction(async (t) => {
+    const j = await t.get(ref);
+    if (!j.exists || j.data().refunded) return;
+    const u = await t.get(userRef);
+    balance = (u.exists ? (Number(u.data().credits) || 0) : 0) + job.cost;
+    t.update(ref, { refunded: true, refundedAt: nowIso(), refundReason: 'provider_refunded' });
+    t.set(userRef, { credits: inc(job.cost) }, { merge: true });
+    t.set(txRef, { uid: job.uid, type: 'refund', amount: job.cost, service: job.service, taskId: String(taskId),
+      reason: 'provider_failed_and_refunded', providerCharged: taken, providerRefunded: back, createdAt: nowIso() });
+    done = true;
+  });
+  return done ? { refunded: job.cost, balance } : { refunded: 0, already: true };
+}
+
 async function handle_video(req, res) {
   // GET: Poll status
   if (req.method === 'GET') {
@@ -427,12 +471,16 @@ async function handle_video(req, res) {
       const status = d?.data?.status;
       const outputs = d?.data?.outputs;
       const videoUrl = Array.isArray(outputs) ? outputs[0] : (outputs || null);
-      return res.json({
-        status: status === 'completed' ? 'completed' : ['failed','cancelled','timeout','deleted'].includes(status) ? 'failed' : 'generating',
+      const mapped = status === 'completed' ? 'completed' : ['failed','cancelled','timeout','deleted'].includes(status) ? 'failed' : 'generating';
+      let settled = null;
+      if (mapped === 'failed') { try { settled = await settleFailedJob(taskId); } catch (e) { console.error('settleFailedJob', e.message); } }
+      const extra = settled && settled.refunded ? { refunded: settled.refunded, balance: settled.balance } : {};
+      return res.json(Object.assign({
+        status: mapped,
         taskId,
         videoUrl: videoUrl || null,
         outputs: Array.isArray(outputs) ? outputs : (outputs ? [outputs] : [])
-      });
+      }, extra));
     } catch(e) {
       return res.status(500).json({ error: e.message });
     }
